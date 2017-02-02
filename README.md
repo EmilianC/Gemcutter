@@ -9,8 +9,8 @@ The framework facilitates expressive and succinct code that is both easy to read
 With a thin API and modern C++14 concepts, Jewel3D provides powerful features without feeling clunky.
 
 Highlight features include:
-* [A Rich shader workflow](Resources\Docs\Shader.md)
-* [Efficient entity queries](Resources\Docs\Entity.md)
+* [A Rich shader workflow](Resources/Docs/Shader.md)
+* [Efficient entity queries](Resources/Docs/Entity.md)
 * A modular and extendable particle system
 * Audio loading and playback
 * Texture and Mesh loading and rendering
