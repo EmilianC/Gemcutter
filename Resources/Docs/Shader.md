@@ -62,22 +62,26 @@ If both the shader and Material bind a buffer or texture to the same ID, the Mat
 
 # System Functions and Uniforms
 A series of matrices are available for all GLSL shader blocks.
-* Jwl_View
-* Jwl_Proj
-* Jwl_ViewProj
-* Jwl_InvView
-* Jwl_InvProj
-* Jwl_MVP
-* Jwl_ModelView
-* Jwl_Model
-* Jwl_InvModel
+```cpp
+mat4 Jwl_View;
+mat4 Jwl_Proj;
+mat4 Jwl_ViewProj;
+mat4 Jwl_InvView;
+mat4 Jwl_InvProj;
+mat4 Jwl_MVP;
+mat4 Jwl_ModelView;
+mat4 Jwl_Model;
+mat4 Jwl_InvModel;
+```
 
 A series of lighting functions are also available for all GLSL shader blocks.
 Values are assumed to be in view space. The first parameter should be a Light's Uniform Buffer.
 These functions will respect the light's attenuation values.
-* vec3 COMPUTE_POINT_LIGHT(Light light, vec3 normal, vec3 pos);
-* vec3 COMPUTE_DIRECTIONAL_LIGHT(Light light, vec3 normal);
-* vec3 COMPUTE_SPOT_LIGHT(Light light, vec3 normal, vec3 pos);
+```cpp
+vec3 COMPUTE_POINT_LIGHT(Light light, vec3 normal, vec3 pos);
+vec3 COMPUTE_DIRECTIONAL_LIGHT(Light light, vec3 normal);
+vec3 COMPUTE_SPOT_LIGHT(Light light, vec3 normal, vec3 pos);
+```
 
 # Lighting Example
 ```cpp
