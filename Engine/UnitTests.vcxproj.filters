@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Application">
+      <UniqueIdentifier>{c0a366b5-88e9-4b8c-a32d-a92a4366a839}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Math">
+      <UniqueIdentifier>{1de13dfa-ec6a-4480-99af-bee3bf9a8e05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Reflection">
+      <UniqueIdentifier>{e867b34a-a8f2-434f-8b3f-1ac3aab77319}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Entity">
+      <UniqueIdentifier>{54c79a28-82d7-4a2d-a243-73ad44bd3d6c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="UnitTests\main.cpp" />
+    <ClCompile Include="UnitTests\EntityComponentSystem.cpp">
+      <Filter>Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="UnitTests\FileSystem.cpp">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="UnitTests\Math.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="UnitTests\Reflection.cpp">
+      <Filter>Reflection</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

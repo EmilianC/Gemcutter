@@ -1,0 +1,11 @@
+Build/include/Jewel3D/
+Engine/obj/
+Engine/bin/
+Tools/TemplateProject/obj/
+Tools/TemplateProject/bin/
+Tools/FontEncoder/obj/
+Tools/FontEncoder/bin/
+Tools/MeshEncoder/obj/
+Tools/MeshEncoder/bin/
+Log_Output.txt
+*.opendb

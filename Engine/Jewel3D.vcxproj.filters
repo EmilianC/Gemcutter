@@ -1,0 +1,370 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Rendering">
+      <UniqueIdentifier>{be5ea328-d351-47c7-b8dc-85ea65eccf26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utilities">
+      <UniqueIdentifier>{50303c0f-2146-44e1-9995-9ac182fa481f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sound">
+      <UniqueIdentifier>{04bf919a-1f1e-46e0-95df-d8f9e42a44d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics">
+      <UniqueIdentifier>{e9378f42-f57e-42eb-913d-aea40fb0ea0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Math">
+      <UniqueIdentifier>{b4777394-3ae7-4de8-802f-47ba47c9013a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Input">
+      <UniqueIdentifier>{c1a3e1b4-2392-48c1-86f0-59add578b4d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Animation">
+      <UniqueIdentifier>{6ea7a15c-530d-40c1-bd58-b7f8ba076666}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource">
+      <UniqueIdentifier>{c7a5aff8-15f6-40ab-aa28-189983006e1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Entity">
+      <UniqueIdentifier>{1b4a5da1-a8ce-43d2-b158-1042683571b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Entity\Components">
+      <UniqueIdentifier>{fa5f9b58-13fb-4b9a-b5e1-77b1d5788353}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Network">
+      <UniqueIdentifier>{37b3f464-2563-427a-ad33-494ad261ae32}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI">
+      <UniqueIdentifier>{ba776168-1a82-4989-8f75-b772b3ee90cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application">
+      <UniqueIdentifier>{02d84368-a1c1-495b-96ed-bcb7a6bae1da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Reflection">
+      <UniqueIdentifier>{68f40c97-7010-4a50-8f62-d4aea0dc0081}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GUI">
+      <UniqueIdentifier>{0e93ed36-3170-430d-a462-33acec4afd3b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Jewel3D\Precompiled.cpp" />
+    <ClCompile Include="Jewel3D\Utilities\Random.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Utilities\String.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Sound\SoundSystem.cpp">
+      <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Resource\Model.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Resource\ParticleBuffer.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Resource\ParticleFunctor.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Resource\Shader.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Resource\Sound.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Resource\Texture.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Resource\UniformBuffer.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Resource\ConfigTable.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Resource\Font.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Rendering\RenderPass.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Rendering\RenderTarget.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Rendering\Viewport.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Rendering\Primitives.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Rendering\Rendering.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Reflection\Reflection.cpp">
+      <Filter>Reflection</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Network\Network.cpp">
+      <Filter>Network</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Math\Matrix.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Math\Quaternion.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Math\Transform.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Math\Vector.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Math\Math.cpp">
+      <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Input\XboxGamePad.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Input\Input.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Entity\EntityGroup.cpp">
+      <Filter>Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Entity\Entity.cpp">
+      <Filter>Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Entity\Components\Material.cpp">
+      <Filter>Entity\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Entity\Components\Mesh.cpp">
+      <Filter>Entity\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Entity\Components\Name.cpp">
+      <Filter>Entity\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Entity\Components\ParticleEmitter.cpp">
+      <Filter>Entity\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Entity\Components\SoundListener.cpp">
+      <Filter>Entity\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Entity\Components\SoundSource.cpp">
+      <Filter>Entity\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Entity\Components\Sprite.cpp">
+      <Filter>Entity\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Entity\Components\Text.cpp">
+      <Filter>Entity\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Entity\Components\Camera.cpp">
+      <Filter>Entity\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Entity\Components\Light.cpp">
+      <Filter>Entity\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Application\Event.cpp">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Application\FileSystem.cpp">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Application\Logging.cpp">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Application\Threading.cpp">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Application\Timer.cpp">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Application\Application.cpp">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Application\CmdArgs.cpp">
+      <Filter>Application</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\AI\ProbabilityMatrix.cpp">
+      <Filter>AI</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Jewel3D\Precompiled.h" />
+    <ClInclude Include="Jewel3D\Utilities\Meta.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Utilities\Random.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Utilities\ScopeGuard.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Utilities\Singleton.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Utilities\String.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Utilities\EnumFlags.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Utilities\Hierarchy.h">
+      <Filter>Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Sound\SoundSystem.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Resource\Model.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Resource\ParticleBuffer.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Resource\ParticleFunctor.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Resource\Resource.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Resource\Shader.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Resource\Shareable.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Resource\Sound.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Resource\Texture.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Resource\UniformBuffer.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Resource\ConfigTable.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Resource\Font.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Rendering\Rendering.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Rendering\RenderPass.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Rendering\RenderTarget.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Rendering\Viewport.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Rendering\Primitives.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Reflection\Reflection.h">
+      <Filter>Reflection</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Network\Network.h">
+      <Filter>Network</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Math\Matrix.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Math\Quaternion.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Math\Transform.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Math\Vector.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Math\Math.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Input\Input.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Input\XboxGamePad.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Entity\Entity.h">
+      <Filter>Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Entity\EntityGroup.h">
+      <Filter>Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Entity\Components\Light.h">
+      <Filter>Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Entity\Components\Material.h">
+      <Filter>Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Entity\Components\Mesh.h">
+      <Filter>Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Entity\Components\Name.h">
+      <Filter>Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Entity\Components\ParticleEmitter.h">
+      <Filter>Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Entity\Components\SoundListener.h">
+      <Filter>Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Entity\Components\SoundSource.h">
+      <Filter>Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Entity\Components\Sprite.h">
+      <Filter>Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Entity\Components\Text.h">
+      <Filter>Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Entity\Components\Camera.h">
+      <Filter>Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Entity\Components\HierarchicalEvent.h">
+      <Filter>Entity\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Application\CmdArgs.h">
+      <Filter>Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Application\Event.h">
+      <Filter>Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Application\FileSystem.h">
+      <Filter>Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Application\Logging.h">
+      <Filter>Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Application\Threading.h">
+      <Filter>Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Application\Timer.h">
+      <Filter>Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Application\Application.h">
+      <Filter>Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\AI\ProbabilityMatrix.h">
+      <Filter>AI</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Jewel3D\Utilities\Hierarchy.inl">
+      <Filter>Utilities</Filter>
+    </None>
+    <None Include="Jewel3D\Reflection\Reflection.inl">
+      <Filter>Reflection</Filter>
+    </None>
+    <None Include="Jewel3D\Entity\Entity.inl">
+      <Filter>Entity</Filter>
+    </None>
+    <None Include="Jewel3D\Entity\Query.inl">
+      <Filter>Entity</Filter>
+    </None>
+  </ItemGroup>
+</Project>
