@@ -1,4 +1,4 @@
-![Jewel3D Logo](Resources\JewelIcon.png)
+![Jewel3D Logo](JewelLogo.png)
 
 # What is Jewel3D?
 Jewel3D is a free C++ game development framework for Windows. It features a powerful Entity-Component-System
