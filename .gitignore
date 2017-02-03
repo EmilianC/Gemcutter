@@ -1,4 +1,5 @@
 Build/include/Jewel3D/
+ipch/
 Engine/obj/
 Engine/bin/
 Tools/TemplateProject/obj/
@@ -8,4 +9,5 @@ Tools/FontEncoder/bin/
 Tools/MeshEncoder/obj/
 Tools/MeshEncoder/bin/
 Log_Output.txt
+Jewel3D.lib
 *.opendb
