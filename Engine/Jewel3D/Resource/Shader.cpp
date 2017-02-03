@@ -650,12 +650,19 @@ namespace Jwl
 				else if (sscanf(&block.source[pos], "#include \"%255s\"", path) == 1)
 				{
 					// Remove invalid characters.
-					while (auto *chr = strchr(path, '\"'))
+					while (char* chr = strchr(path, '\"'))
 					{
 						*chr = '\0';
 					}
 
-					*output = LoadFileAsString(path);
+					if (IsPathRelative(path))
+					{
+						*output = LoadFileAsString(RootAssetDirectory + path);
+					}
+					else
+					{
+						*output = LoadFileAsString(path);
+					}
 
 					if (output->empty())
 					{
