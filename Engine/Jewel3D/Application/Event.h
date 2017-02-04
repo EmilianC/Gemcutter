@@ -176,12 +176,5 @@ namespace Jwl
 #endif
 	} &EventQueue = Singleton<class EventQueue>::instanceRef;
 
-	//- Helper function to bind a member function to an event callback.
-	template<class Class, class EventObj>
-	std::function<void(const EventObj&)> BindEvent(void(Class::*func)(const EventObj&), Class *const ptr)
-	{
-		return std::bind(func, ptr, std::placeholders::_1);
-	}
-
 	template<class derived> std::vector<ListenerBase*> Event<derived>::listeners;
 }
