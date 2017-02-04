@@ -2,10 +2,10 @@
 #pragma once
 #include "Jewel3D/Entity/Entity.h"
 #include "Jewel3D/Math/Vector.h"
-#include "Jewel3D/Utilities/Random.h"
 #include "Jewel3D/Resource/ParticleBuffer.h"
 #include "Jewel3D/Resource/ParticleFunctor.h"
 #include "Jewel3D/Resource/UniformBuffer.h"
+#include "Jewel3D/Utilities/Random.h"
 
 #include <vector>
 

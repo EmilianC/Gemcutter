@@ -6,8 +6,8 @@
 #include "Jewel3D/Math/Math.h"
 
 #include <GLEW/GL/glew.h>
-#include <cstdio>
 #include <algorithm>
+#include <cstdio>
 
 namespace Jwl
 {

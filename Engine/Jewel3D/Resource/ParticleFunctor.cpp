@@ -2,7 +2,7 @@
 #include "Jewel3D/Precompiled.h"
 #include "ParticleFunctor.h"
 #include "Jewel3D/Application/Logging.h"
-#include "Jewel3D/Entity/Components/ParticleEmitter.h"
+#include "Jewel3D/Rendering/ParticleEmitter.h"
 
 namespace Jwl
 {

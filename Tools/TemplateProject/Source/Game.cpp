@@ -1,10 +1,10 @@
 #include "Game.h"
 
 #include <Jewel3D/Application/Logging.h>
-#include <Jewel3D/Entity/Components/Camera.h>
-#include <Jewel3D/Entity/Components/SoundListener.h>
 #include <Jewel3D/Input/Input.h>
+#include <Jewel3D/Rendering/Camera.h>
 #include <Jewel3D/Rendering/Rendering.h>
+#include <Jewel3D/Sound/SoundListener.h>
 
 Game::Game(ConfigTable& _config)
 	: config(_config)

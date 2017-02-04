@@ -1,8 +1,8 @@
 // Copyright (c) 2017 Emilian Cioca
 #include "Jewel3D/Precompiled.h"
 #include "Light.h"
-#include "Jewel3D/Math/Transform.h"
 #include "Jewel3D/Math/Math.h"
+#include "Jewel3D/Math/Transform.h"
 
 namespace Jwl
 {

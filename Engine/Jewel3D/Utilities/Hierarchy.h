@@ -1,7 +1,7 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
-#include "Jewel3D/Resource/Shareable.h"
 #include "Jewel3D/Reflection/Reflection.h"
+#include "Jewel3D/Resource/Shareable.h"
 
 #include <vector>
 

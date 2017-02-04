@@ -2,8 +2,8 @@
 #include "Jewel3D/Precompiled.h"
 #include "UniformBuffer.h"
 #include "Jewel3D/Application/Logging.h"
-#include "Jewel3D/Math/Vector.h"
 #include "Jewel3D/Math/Matrix.h"
+#include "Jewel3D/Math/Vector.h"
 
 #include <GLEW/GL/glew.h>
 #include <algorithm>

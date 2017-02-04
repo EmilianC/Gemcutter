@@ -1,12 +1,12 @@
 #include "Jewel3D/Application/CmdArgs.h"
 
-#include <iostream>
-#include <cstdio>
-#include <string>
-#include <vector>
-#include <Windows.h>
 #include <ft2build.h>
 #include <Freetype/freetype.h>
+#include <Windows.h>
+#include <cstdio>
+#include <iostream>
+#include <string>
+#include <vector>
 
 enum class ConsoleColor
 {

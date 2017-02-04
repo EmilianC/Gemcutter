@@ -1,8 +1,8 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
-#include <vector>
-#include <string>
 #include <fstream>
+#include <string>
+#include <vector>
 
 //Resolve name conflict with our functions
 #undef GetCurrentDirectory

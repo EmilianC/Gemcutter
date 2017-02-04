@@ -1,10 +1,10 @@
 // Copyright (c) 2017 Emilian Cioca
 #include "Jewel3D/Precompiled.h"
 #include "Camera.h"
+#include "Jewel3D/Application/Logging.h"
+#include "Jewel3D/Math/Math.h"
 #include "Jewel3D/Math/Transform.h"
 #include "Jewel3D/Math/Vector.h"
-#include "Jewel3D/Math/Math.h"
-#include "Jewel3D/Application/Logging.h"
 #include "Jewel3D/Rendering/Rendering.h"
 #include "Jewel3D/Rendering/Viewport.h"
 

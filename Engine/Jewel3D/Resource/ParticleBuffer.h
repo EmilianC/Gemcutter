@@ -1,8 +1,8 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
 #include "Jewel3D/Math/Vector.h"
-#include "Jewel3D/Utilities/Random.h"
 #include "Jewel3D/Utilities/EnumFlags.h"
+#include "Jewel3D/Utilities/Random.h"
 
 namespace Jwl
 {

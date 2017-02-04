@@ -1,12 +1,12 @@
 #include <Jewel3D/Application/Application.h>
-#include <Jewel3D/Rendering/Primitives.h>
-#include <Jewel3D/Resource/Texture.h>
-#include <Jewel3D/Resource/ConfigTable.h>
-#include <Jewel3D/Sound/SoundSystem.h>
-#include <Jewel3D/Input/Input.h>
 #include <Jewel3D/Application/Logging.h>
-#include <Jewel3D/Utilities/Random.h>
+#include <Jewel3D/Input/Input.h>
+#include <Jewel3D/Rendering/Primitives.h>
 #include <Jewel3D/Rendering/Rendering.h>
+#include <Jewel3D/Resource/ConfigTable.h>
+#include <Jewel3D/Resource/Texture.h>
+#include <Jewel3D/Sound/SoundSystem.h>
+#include <Jewel3D/Utilities/Random.h>
 
 #include "Game.h"
 

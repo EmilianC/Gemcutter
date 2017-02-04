@@ -1,10 +1,10 @@
 // Copyright (c) 2017 Emilian Cioca
 #include "Jewel3D/Precompiled.h"
 #include "Material.h"
-#include "Jewel3D/Resource/Texture.h"
 #include "Jewel3D/Application/Logging.h"
-#include "Jewel3D/Rendering/Rendering.h"
 #include "Jewel3D/Math/Matrix.h"
+#include "Jewel3D/Rendering/Rendering.h"
+#include "Jewel3D/Resource/Texture.h"
 
 namespace Jwl
 {

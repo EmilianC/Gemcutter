@@ -28,9 +28,6 @@
     <Filter Include="Entity">
       <UniqueIdentifier>{1b4a5da1-a8ce-43d2-b158-1042683571b3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Entity\Components">
-      <UniqueIdentifier>{fa5f9b58-13fb-4b9a-b5e1-77b1d5788353}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Network">
       <UniqueIdentifier>{37b3f464-2563-427a-ad33-494ad261ae32}</UniqueIdentifier>
     </Filter>
@@ -133,36 +130,6 @@
     <ClCompile Include="Jewel3D\Entity\Entity.cpp">
       <Filter>Entity</Filter>
     </ClCompile>
-    <ClCompile Include="Jewel3D\Entity\Components\Material.cpp">
-      <Filter>Entity\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Jewel3D\Entity\Components\Mesh.cpp">
-      <Filter>Entity\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Jewel3D\Entity\Components\Name.cpp">
-      <Filter>Entity\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Jewel3D\Entity\Components\ParticleEmitter.cpp">
-      <Filter>Entity\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Jewel3D\Entity\Components\SoundListener.cpp">
-      <Filter>Entity\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Jewel3D\Entity\Components\SoundSource.cpp">
-      <Filter>Entity\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Jewel3D\Entity\Components\Sprite.cpp">
-      <Filter>Entity\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Jewel3D\Entity\Components\Text.cpp">
-      <Filter>Entity\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Jewel3D\Entity\Components\Camera.cpp">
-      <Filter>Entity\Components</Filter>
-    </ClCompile>
-    <ClCompile Include="Jewel3D\Entity\Components\Light.cpp">
-      <Filter>Entity\Components</Filter>
-    </ClCompile>
     <ClCompile Include="Jewel3D\Application\Event.cpp">
       <Filter>Application</Filter>
     </ClCompile>
@@ -186,6 +153,36 @@
     </ClCompile>
     <ClCompile Include="Jewel3D\AI\ProbabilityMatrix.cpp">
       <Filter>AI</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Entity\Name.cpp">
+      <Filter>Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Sound\SoundSource.cpp">
+      <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Sound\SoundListener.cpp">
+      <Filter>Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Rendering\Text.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Rendering\Camera.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Rendering\Light.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Rendering\Material.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Rendering\Mesh.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Rendering\ParticleEmitter.cpp">
+      <Filter>Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Rendering\Sprite.cpp">
+      <Filter>Rendering</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -295,39 +292,6 @@
     <ClInclude Include="Jewel3D\Entity\EntityGroup.h">
       <Filter>Entity</Filter>
     </ClInclude>
-    <ClInclude Include="Jewel3D\Entity\Components\Light.h">
-      <Filter>Entity\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Jewel3D\Entity\Components\Material.h">
-      <Filter>Entity\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Jewel3D\Entity\Components\Mesh.h">
-      <Filter>Entity\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Jewel3D\Entity\Components\Name.h">
-      <Filter>Entity\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Jewel3D\Entity\Components\ParticleEmitter.h">
-      <Filter>Entity\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Jewel3D\Entity\Components\SoundListener.h">
-      <Filter>Entity\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Jewel3D\Entity\Components\SoundSource.h">
-      <Filter>Entity\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Jewel3D\Entity\Components\Sprite.h">
-      <Filter>Entity\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Jewel3D\Entity\Components\Text.h">
-      <Filter>Entity\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Jewel3D\Entity\Components\Camera.h">
-      <Filter>Entity\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Jewel3D\Entity\Components\HierarchicalEvent.h">
-      <Filter>Entity\Components</Filter>
-    </ClInclude>
     <ClInclude Include="Jewel3D\Application\CmdArgs.h">
       <Filter>Application</Filter>
     </ClInclude>
@@ -351,6 +315,39 @@
     </ClInclude>
     <ClInclude Include="Jewel3D\AI\ProbabilityMatrix.h">
       <Filter>AI</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Entity\Name.h">
+      <Filter>Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Application\HierarchicalEvent.h">
+      <Filter>Application</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Sound\SoundListener.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Sound\SoundSource.h">
+      <Filter>Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Rendering\Sprite.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Rendering\Text.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Rendering\Camera.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Rendering\Light.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Rendering\Material.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Rendering\Mesh.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Rendering\ParticleEmitter.h">
+      <Filter>Rendering</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -3,17 +3,17 @@
 #include "Shader.h"
 #include "Jewel3D/Application/FileSystem.h"
 #include "Jewel3D/Application/Logging.h"
-#include "Jewel3D/Math/Vector.h"
 #include "Jewel3D/Math/Matrix.h"
+#include "Jewel3D/Math/Vector.h"
 #include "Jewel3D/Utilities/ScopeGuard.h"
 #include "Jewel3D/Utilities/String.h"
 
+#include <GLEW/GL/glew.h>
+#include <algorithm>
 #include <cctype>
 #include <fstream>
-#include <iostream>
-#include <algorithm>
 #include <functional>
-#include <GLEW/GL/glew.h>
+#include <iostream>
 
 namespace
 {

@@ -1,7 +1,7 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
-#include <string>
 #include <stdarg.h>
+#include <string>
 
 /*
 * Various Utility functions relating to string manipulation.

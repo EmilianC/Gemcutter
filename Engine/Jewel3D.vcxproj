@@ -43,51 +43,15 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="Jewel3D\Entity\Components\Camera.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Jewel3D\Entity\Components\Light.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Jewel3D\Entity\Components\Material.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Jewel3D\Entity\Components\Mesh.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Jewel3D\Entity\Components\Name.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Jewel3D\Entity\Components\ParticleEmitter.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Jewel3D\Entity\Components\SoundListener.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Jewel3D\Entity\Components\SoundSource.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Jewel3D\Entity\Components\Sprite.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="Jewel3D\Entity\Components\Text.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
-    </ClCompile>
     <ClCompile Include="Jewel3D\Entity\Entity.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="Jewel3D\Entity\EntityGroup.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Entity\Name.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -133,6 +97,26 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="Jewel3D\Rendering\Camera.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Rendering\Light.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Rendering\Material.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Rendering\Mesh.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Rendering\ParticleEmitter.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
+    </ClCompile>
     <ClCompile Include="Jewel3D\Rendering\Primitives.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
@@ -146,6 +130,14 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="Jewel3D\Rendering\RenderTarget.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Rendering\Sprite.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Rendering\Text.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -189,6 +181,14 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="Jewel3D\Sound\SoundListener.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Sound\SoundSource.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
+    </ClCompile>
     <ClCompile Include="Jewel3D\Sound\SoundSystem.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
@@ -208,22 +208,13 @@
     <ClInclude Include="Jewel3D\Application\CmdArgs.h" />
     <ClInclude Include="Jewel3D\Application\Event.h" />
     <ClInclude Include="Jewel3D\Application\FileSystem.h" />
+    <ClInclude Include="Jewel3D\Application\HierarchicalEvent.h" />
     <ClInclude Include="Jewel3D\Application\Logging.h" />
     <ClInclude Include="Jewel3D\Application\Threading.h" />
     <ClInclude Include="Jewel3D\Application\Timer.h" />
-    <ClInclude Include="Jewel3D\Entity\Components\Camera.h" />
-    <ClInclude Include="Jewel3D\Entity\Components\HierarchicalEvent.h" />
-    <ClInclude Include="Jewel3D\Entity\Components\Light.h" />
-    <ClInclude Include="Jewel3D\Entity\Components\Material.h" />
-    <ClInclude Include="Jewel3D\Entity\Components\Mesh.h" />
-    <ClInclude Include="Jewel3D\Entity\Components\Name.h" />
-    <ClInclude Include="Jewel3D\Entity\Components\ParticleEmitter.h" />
-    <ClInclude Include="Jewel3D\Entity\Components\SoundListener.h" />
-    <ClInclude Include="Jewel3D\Entity\Components\SoundSource.h" />
-    <ClInclude Include="Jewel3D\Entity\Components\Sprite.h" />
-    <ClInclude Include="Jewel3D\Entity\Components\Text.h" />
     <ClInclude Include="Jewel3D\Entity\Entity.h" />
     <ClInclude Include="Jewel3D\Entity\EntityGroup.h" />
+    <ClInclude Include="Jewel3D\Entity\Name.h" />
     <ClInclude Include="Jewel3D\Input\Input.h" />
     <ClInclude Include="Jewel3D\Input\XboxGamePad.h" />
     <ClInclude Include="Jewel3D\Math\Math.h" />
@@ -234,10 +225,17 @@
     <ClInclude Include="Jewel3D\Network\Network.h" />
     <ClInclude Include="Jewel3D\Precompiled.h" />
     <ClInclude Include="Jewel3D\Reflection\Reflection.h" />
+    <ClInclude Include="Jewel3D\Rendering\Camera.h" />
+    <ClInclude Include="Jewel3D\Rendering\Light.h" />
+    <ClInclude Include="Jewel3D\Rendering\Material.h" />
+    <ClInclude Include="Jewel3D\Rendering\Mesh.h" />
+    <ClInclude Include="Jewel3D\Rendering\ParticleEmitter.h" />
     <ClInclude Include="Jewel3D\Rendering\Primitives.h" />
     <ClInclude Include="Jewel3D\Rendering\Rendering.h" />
     <ClInclude Include="Jewel3D\Rendering\RenderPass.h" />
     <ClInclude Include="Jewel3D\Rendering\RenderTarget.h" />
+    <ClInclude Include="Jewel3D\Rendering\Sprite.h" />
+    <ClInclude Include="Jewel3D\Rendering\Text.h" />
     <ClInclude Include="Jewel3D\Rendering\Viewport.h" />
     <ClInclude Include="Jewel3D\Resource\ConfigTable.h" />
     <ClInclude Include="Jewel3D\Resource\Font.h" />
@@ -250,6 +248,8 @@
     <ClInclude Include="Jewel3D\Resource\Sound.h" />
     <ClInclude Include="Jewel3D\Resource\Texture.h" />
     <ClInclude Include="Jewel3D\Resource\UniformBuffer.h" />
+    <ClInclude Include="Jewel3D\Sound\SoundListener.h" />
+    <ClInclude Include="Jewel3D\Sound\SoundSource.h" />
     <ClInclude Include="Jewel3D\Sound\SoundSystem.h" />
     <ClInclude Include="Jewel3D\Utilities\EnumFlags.h" />
     <ClInclude Include="Jewel3D\Utilities\Hierarchy.h" />

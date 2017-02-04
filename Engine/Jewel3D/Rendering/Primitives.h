@@ -1,8 +1,8 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
-#include "Jewel3D/Utilities/Singleton.h"
 #include "Jewel3D/Resource/Shader.h"
 #include "Jewel3D/Resource/Texture.h"
+#include "Jewel3D/Utilities/Singleton.h"
 
 namespace Jwl
 {
