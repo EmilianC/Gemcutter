@@ -65,12 +65,13 @@ namespace Jwl
 	//- Rotates particles.
 	class RotationFunc : public ParticleFunctor, public Shareable<RotationFunc>
 	{
-	public:
+		friend ShareableAlloc;
 		RotationFunc() = default;
 		RotationFunc(float rotationSpeed, RandomRange initialRotation = RandomRange(180.0f, 180.0f));
 
-		virtual void Init(ParticleBuffer& particles, ParticleEmitter& emitter, unsigned startIndex, unsigned count) final override;
-		virtual void Update(ParticleBuffer& particles, ParticleEmitter& emitter, float deltaTime) final override;
+	public:
+		virtual void Init(ParticleBuffer& particles, ParticleEmitter& emitter, unsigned startIndex, unsigned count) override;
+		virtual void Update(ParticleBuffer& particles, ParticleEmitter& emitter, float deltaTime) override;
 
 		virtual ParticleBuffers GetRequirements() const final override;
 
