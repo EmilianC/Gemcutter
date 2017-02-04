@@ -1,20 +1,22 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
 #include "Viewport.h"
+#include "Jewel3D/Resource/Shareable.h"
 #include "Jewel3D/Resource/Texture.h"
 
 namespace Jwl
 {
 	class vec4;
 
-	class RenderTarget
+	class RenderTarget : public Shareable<RenderTarget>
 	{
-	public:
+		friend ShareableAlloc;
 		RenderTarget() = default;
-		RenderTarget(const RenderTarget&);
+		RenderTarget(const RenderTarget&) = delete;
 		~RenderTarget();
 
-		RenderTarget& operator=(const RenderTarget&);
+	public:
+		RenderTarget& operator=(const RenderTarget&) = delete;
 
 		//- Must be called first. Implicitly calls Unload().
 		void Init(unsigned pixelWidth, unsigned pixelHeight, unsigned numColorTextures, bool hasDepth, unsigned samples = 1);

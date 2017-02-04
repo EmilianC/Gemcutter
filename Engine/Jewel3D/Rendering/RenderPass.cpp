@@ -45,7 +45,7 @@ namespace Jwl
 	{
 		viewport = other.viewport;
 		camera = other.camera;
-		targetFBO = other.targetFBO;
+		target = other.target;
 		shader = other.shader;
 		skybox = other.skybox;
 
@@ -65,9 +65,9 @@ namespace Jwl
 		shader = program;
 	}
 
-	void RenderPass::SetTarget(const RenderTarget& fbo)
+	void RenderPass::SetTarget(RenderTarget::Ptr _target)
 	{
-		targetFBO = &fbo;
+		target = _target;
 	}
 
 	void RenderPass::SetViewport(const Viewport& vp)
@@ -92,9 +92,9 @@ namespace Jwl
 		return shader;
 	}
 
-	const RenderTarget* RenderPass::GetTarget() const
+	RenderTarget::Ptr RenderPass::GetTarget() const
 	{
-		return targetFBO;
+		return target;
 	}
 
 	const Viewport* RenderPass::GetViewport() const
@@ -113,15 +113,15 @@ namespace Jwl
 		{
 			viewport->bind();
 
-			if (targetFBO != nullptr)
+			if (target)
 			{
-				targetFBO->Bind();
+				target->Bind();
 			}
 		}
-		else if (targetFBO != nullptr)
+		else if (target)
 		{
-			targetFBO->Bind();
-			targetFBO->GetViewport().bind();
+			target->Bind();
+			target->GetViewport().bind();
 		}
 		else
 		{
@@ -141,7 +141,7 @@ namespace Jwl
 	{
 		glBindVertexArray(GL_NONE);
 
-		// UnBind override shader
+		// UnBind override shader.
 		if (shader)
 		{
 			shader->UnBind();
@@ -150,7 +150,7 @@ namespace Jwl
 		textures.UnBind();
 		buffers.UnBind();
 
-		if (targetFBO != nullptr)
+		if (target)
 		{
 			RenderTarget::UnBind();
 		}
@@ -161,22 +161,22 @@ namespace Jwl
 		}
 	}
 
-	void RenderPass::Render()
+	void RenderPass::PostProcess()
 	{
-		Bind();
-
 		ASSERT(shader != nullptr, "RenderPass must have a Shader attached if it is a post-processing pass.");
-		ASSERT(Primitives.IsLoaded(), "Primitives system must be initialized in order to render post process effects.");
+		ASSERT(Primitives.IsLoaded(), "Primitives system must be initialized in order to render a post-processing pass.");
+
+		Bind();
 
 		SetBlendFunc(BlendFunc::None);
 		SetDepthFunc(DepthFunc::None);
+
+		Primitives.DrawFullScreenQuad(*shader);
 
 		if (skybox)
 		{
 			Primitives.DrawSkyBox(*skybox);
 		}
-
-		Primitives.DrawFullScreenQuad(*shader);
 
 		UnBind();
 	}

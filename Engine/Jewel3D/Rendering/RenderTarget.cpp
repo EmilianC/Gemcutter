@@ -11,32 +11,9 @@
 
 namespace Jwl
 {
-	RenderTarget::RenderTarget(const RenderTarget& other)
-	{
-		*this = other;
-	}
-
 	RenderTarget::~RenderTarget()
 	{
 		Unload();
-	}
-
-	RenderTarget &RenderTarget::operator=(const RenderTarget& other)
-	{
-		Unload();
-
-		Init(other.width, other.height, other.numColorAttachments, other.HasDepth(), other.numSamples);
-		for (unsigned i = 0; i < other.numColorAttachments; i++)
-		{
-			CreateAttachment(i, other.GetColorTexture(i)->GetTextureFormat(), TextureFilterMode::Point);
-		}
-
-		if (!Validate())
-		{
-			Warning("Validation of RenderTarget failed during a copy.");
-		}
-
-		return *this;
 	}
 
 	void RenderTarget::Init(unsigned pixelWidth, unsigned pixelHeight, unsigned numColorTextures, bool hasDepth, unsigned samples)

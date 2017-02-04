@@ -1,5 +1,6 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
+#include "RenderTarget.h"
 #include "Jewel3D/Resource/Shader.h"
 #include "Jewel3D/Resource/Texture.h"
 
@@ -8,7 +9,6 @@ namespace Jwl
 	class Camera;
 	class Entity;
 	class EntityGroup;
-	class RenderTarget;
 	class Viewport;
 
 	//- Consolidates the three main components for rendering: input Geometry, shader pipeline and render target.
@@ -25,7 +25,7 @@ namespace Jwl
 		//- The program that will be used if the render call is a post process, or if a renderable does not have a material.
 		void SetShader(Shader::Ptr program);
 		//- If no explicit target is set, the render pass will target the backbuffer.
-		void SetTarget(const RenderTarget& fbo);
+		void SetTarget(RenderTarget::Ptr target);
 		//- If no explicit viewport is set, the viewport will match the render target or back buffer.
 		void SetViewport(const Viewport& vp);
 		//- Rendered after all the group objects attached. Ignored for post process passes.
@@ -33,12 +33,12 @@ namespace Jwl
 
 		Entity::Ptr GetCamera() const;
 		Shader::Ptr GetShader() const;
-		const RenderTarget* GetTarget() const;
+		RenderTarget::Ptr GetTarget() const;
 		const Viewport* GetViewport() const;
 		Texture::Ptr GetSkybox() const;
 
-		//- Initiates the render process based on the attached targets and sources.
-		void Render();
+		//- Renders a fullscreen quad.
+		void PostProcess();
 		//- Traverses the root Entity and renders all renderable children.
 		void Render(const Entity& root);
 		//- Renders every Entity included in the group.
@@ -61,7 +61,7 @@ namespace Jwl
 
 		const Viewport* viewport = nullptr;
 		Entity::Ptr camera;
-		const RenderTarget* targetFBO = nullptr;
+		RenderTarget::Ptr target;
 		Shader::Ptr shader;
 		Texture::Ptr skybox;
 
