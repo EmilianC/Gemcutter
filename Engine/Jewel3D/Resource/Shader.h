@@ -41,10 +41,8 @@ namespace Jwl
 		//- Returns a hash value generated from all internal defines.
 		unsigned GetHash() const;
 
-		bool operator==(const ShaderVariantControl& svc) const
-		{
-			return defines == svc.defines;
-		}
+		bool operator==(const ShaderVariantControl&) const;
+		bool operator!=(const ShaderVariantControl&) const;
 
 	private:
 		void UpdateHash();
@@ -133,7 +131,6 @@ namespace Jwl
 		//- Holds one shader variation, spawned from a ShaderData object.
 		struct ShaderVariant
 		{
-			ShaderVariant() = default;
 			~ShaderVariant();
 
 			bool Load(const std::string& header, const std::string& vertSource, const std::string& geomSource, const std::string& fragSource);

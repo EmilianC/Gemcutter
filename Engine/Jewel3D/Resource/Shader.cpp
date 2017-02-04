@@ -304,6 +304,16 @@ namespace Jwl
 		return hash;
 	}
 
+	bool ShaderVariantControl::operator==(const ShaderVariantControl& svc) const
+	{
+		return defines == svc.defines;
+	}
+
+	bool ShaderVariantControl::operator!=(const ShaderVariantControl& svc) const
+	{
+		return defines != svc.defines;
+	}
+
 	void ShaderVariantControl::UpdateHash()
 	{
 		// Sort alphabetically to eliminate order of defines creating different hashes.
