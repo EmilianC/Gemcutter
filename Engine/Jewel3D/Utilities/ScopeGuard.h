@@ -95,10 +95,9 @@ namespace Jwl
 	{
 		return ScopeGuard<func>(std::forward<func>(f));
 	}
-
-	#define CONCATENATE(s1, s2) s1##s2
-	#define CONCATENATE_INDIRECT(s1, s2) CONCATENATE(s1, s2)
-	#define ANONYMOUS_VARIABLE(str) CONCATENATE_INDIRECT(str, __COUNTER__)
-	#define defer \
-		auto ANONYMOUS_VARIABLE(SCOPE_GUARD_) = ScopeGuard_TYPE() + [&]() 
 }
+
+#define CONCATENATE(s1, s2) s1##s2
+#define CONCATENATE_INDIRECT(s1, s2) CONCATENATE(s1, s2)
+#define ANONYMOUS_VARIABLE(str) CONCATENATE_INDIRECT(str, __COUNTER__)
+#define defer auto ANONYMOUS_VARIABLE(SCOPE_GUARD_) = Jwl::ScopeGuard_TYPE() + [&]()
