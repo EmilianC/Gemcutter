@@ -4,6 +4,7 @@
 #include "Texture.h"
 #include "Jewel3D/Application/Logging.h"
 #include "Jewel3D/Math/Math.h"
+#include "Jewel3D/Utilities/ScopeGuard.h"
 
 #include <GLEW/GL/glew.h>
 #include <algorithm>
@@ -54,15 +55,14 @@ namespace Jwl
 				0.0f, 0.0f, 0.0f,
 
 				/* Texcoords */
-				// The texture's are upside down, so we flip the uvs
 				// face 1
-				0.0f, 1.0f,
-				1.0f, 1.0f,
 				0.0f, 0.0f,
-				// face 2
-				1.0f, 1.0f,
 				1.0f, 0.0f,
-				0.0f, 0.0f,
+				0.0f, 1.0f,
+				// face 2
+				1.0f, 0.0f,
+				1.0f, 1.0f,
+				0.0f, 1.0f,
 
 				/* Normals */
 				// face 1
@@ -109,36 +109,31 @@ namespace Jwl
 		}
 
 		// Load bitmap data.
-		unsigned long int bitmapSize;
+		unsigned long int bitmapSize = 0;
 		unsigned char* bitmap = nullptr;
+		defer{ free(bitmap); };
 
 		// Read header.
 		fread(&bitmapSize, sizeof(unsigned long int), 1, fontFile);
 		fread(&width, sizeof(unsigned), 1, fontFile);
 		fread(&height, sizeof(unsigned), 1, fontFile);
 
-		// Load bitmap.
+		// Load Data.
 		bitmap = static_cast<unsigned char*>(malloc(sizeof(unsigned char) * bitmapSize));
 		fread(bitmap, sizeof(unsigned char), bitmapSize, fontFile);
-		// Load dimensions data.
-		fread(dimensions, sizeof(int) * 2, 94, fontFile);
-		// Load position data.
-		fread(positions, sizeof(int) * 2, 94, fontFile);
-		// Load advance data.
-		fread(advances, sizeof(int) * 2, 94, fontFile);
-		// Load mask.
-		fread(masks, sizeof(unsigned char), 94, fontFile);
+		fread(dimensions, sizeof(CharData), 94, fontFile);
+		fread(positions, sizeof(CharData), 94, fontFile);
+		fread(advances, sizeof(CharData), 94, fontFile);
+		fread(masks, sizeof(bool), 94, fontFile);
 
 		fclose(fontFile);
 
-		/* Upload data to OpenGL */
+		// Upload data to OpenGL.
 		unsigned char* bitmapItr = bitmap;
 		for (unsigned i = 0; i < 94; i++)
 		{
 			if (!masks[i])
-			{
 				continue;
-			}
 
 			glGenTextures(1, &textures[i]);
 			glBindTexture(GL_TEXTURE_2D, textures[i]);
@@ -149,7 +144,7 @@ namespace Jwl
 			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, Texture::GetDefaultAnisotropicLevel());
 
 			// Send the texture data.
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA4,
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_R8,
 				dimensions[i].x,
 				dimensions[i].y,
 				0, GL_RGBA, GL_UNSIGNED_BYTE,
@@ -165,7 +160,6 @@ namespace Jwl
 		}
 
 		glBindTexture(GL_TEXTURE_2D, GL_NONE);
-		free(bitmap);
 
 		return true;
 	}

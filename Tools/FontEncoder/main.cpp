@@ -1,4 +1,5 @@
 #include "Jewel3D/Application/CmdArgs.h"
+#include "Jewel3D/Utilities/ScopeGuard.h"
 
 #include <ft2build.h>
 #include <Freetype/freetype.h>
@@ -7,6 +8,12 @@
 #include <iostream>
 #include <string>
 #include <vector>
+
+struct CharData
+{
+	int x = 0;
+	int y = 0;
+};
 
 enum class ConsoleColor
 {
@@ -36,17 +43,17 @@ static void SetColor(ConsoleColor color)
 
 void OutputUsage()
 {
-	std::cout << "Generate Jewel3D Font Binaries.\n"
+	std::cout << "Generates Jewel3D Font Binaries.\n"
 		<< "Usage:\n"
-		<< "FontEncoder.exe [input .tff] [commands] [output file]\n"
+		<< "FontEncoder.exe [input .tff] [commands] [output .font]\n"
 		<< "Commands:\n"
 		<< "width\t\t-w\tThe standard width resolution of a character.\n"
 		<< "height\t\t-d\tThe standard height resolution of a character.\n";
 }
 
-int main(int argc, char* argv[])
+int main()
 {
-	if (argc != 7)
+	if (Jwl::GetArgc() != 7)
 	{
 		OutputUsage();
 		return EXIT_FAILURE;
@@ -88,19 +95,19 @@ int main(int argc, char* argv[])
 		outputFile += ".font";
 	}
 
-	// File preparation
-	FILE *fontFile = nullptr;
+	// File preparation.
+	FILE* fontFile = nullptr;
 	std::vector<unsigned char> bitmapBuffer;
-	std::vector<int> dimensions;
-	std::vector<int> positions;
-	std::vector<int> advance;
-	std::vector<unsigned char> mask; // If a character is present in the font face (true/false)
+	CharData dimensions[94] = { CharData() };
+	CharData positions[94] = { CharData() };
+	CharData advances[94] = { CharData() };
+	bool masks[94] = { false }; // If a character is present in the font face.
 	
-	// FreeType variables
+	// FreeType variables.
 	FT_Library library;
 	FT_Face face;
 
-	// Initialize FreeType 2
+	// Initialize FreeType2.
 	if (FT_Init_FreeType(&library))
 	{
 		SetColor(ConsoleColor::Red);
@@ -129,11 +136,15 @@ int main(int argc, char* argv[])
 	
 	std::cout << "\n|Char|\t\t|Size|\t\t|Pos|\t\t|Advance|\n";
 
+	// Estimation of the buffer size we will need.
+	bitmapBuffer.reserve(width * height * 94);
+
 	// Process ASCII characters from 33 ('!'), to 126 ('~').
 	for (unsigned char c = 33; c < 127; c++)
 	{
+		unsigned index = c - 33;
 		auto charIndex = FT_Get_Char_Index(face, c);
-		
+
 		// Prepare bitmap.
 		if (FT_Load_Glyph(face, charIndex, FT_LOAD_RENDER))
 		{
@@ -146,41 +157,40 @@ int main(int argc, char* argv[])
 		if (charIndex != 0 &&
 			face->glyph->bitmap.width * face->glyph->bitmap.rows != 0)
 		{
-			// Add bitmap and data to file buffer.
-			for (int i = 0; i < face->glyph->bitmap.width * face->glyph->bitmap.rows; i++)
+			// Save the bitmap as a flipped image.
+			for (int i = face->glyph->bitmap.rows - 1; i >= 0; i--)
 			{
-				//TODO: flip the texture
-				unsigned char pixel = face->glyph->bitmap.buffer[i];
-				bitmapBuffer.push_back(pixel); // r
-				bitmapBuffer.push_back(pixel); // g
-				bitmapBuffer.push_back(pixel); // b
-				bitmapBuffer.push_back(pixel); // a
+				for (int j = 0; j < face->glyph->bitmap.width; j++)
+				{
+					unsigned char pixel = face->glyph->bitmap.buffer[face->glyph->bitmap.width * i + j];
+					bitmapBuffer.push_back(pixel);
+					bitmapBuffer.push_back(pixel);
+					bitmapBuffer.push_back(pixel);
+					bitmapBuffer.push_back(pixel);
+				}
 			}
 
 			SetColor(ConsoleColor::Green);
-			mask.push_back((unsigned char)1);
+			masks[index] = true;
 		}
 		else
 		{
-			SetColor(ConsoleColor::DarkRed);
-			mask.push_back((unsigned char)0);
+			SetColor(ConsoleColor::Red);
+			masks[index] = false;
 		}
 		std::cout << '\'' << c << "\'\t\t";
 
-		dimensions.push_back(face->glyph->bitmap.width);
-		std::cout << dimensions.back() << ' ';
-		dimensions.push_back(face->glyph->bitmap.rows);
-		std::cout << dimensions.back() << "\t\t";
+		dimensions[index].x = face->glyph->bitmap.width;
+		dimensions[index].y = face->glyph->bitmap.rows;
+		std::cout << dimensions[index].x << ' ' << dimensions[index].y << "\t\t";
 
-		positions.push_back(face->glyph->bitmap_left);
-		std::cout << positions.back() << ' ';
-		positions.push_back(face->glyph->bitmap_top - face->glyph->bitmap.rows);
-		std::cout << positions.back() << "\t\t";
+		positions[index].x = face->glyph->bitmap_left;
+		positions[index].y = face->glyph->bitmap_top - face->glyph->bitmap.rows;
+		std::cout << positions[index].x << ' ' << positions[index].y << "\t\t";
 
-		advance.push_back(face->glyph->advance.x / 64);
-		std::cout << advance.back() << ' ';
-		advance.push_back(face->glyph->advance.y / 64);
-		std::cout << advance.back() << '\n';
+		advances[index].x = face->glyph->advance.x / 64;
+		advances[index].y = face->glyph->advance.y / 64;
+		std::cout << advances[index].x << ' ' << advances[index].y << '\n';
 	}
 	SetColor(ConsoleColor::Gray);
 	std::cout << '\n';
@@ -204,30 +214,29 @@ int main(int argc, char* argv[])
 	fwrite(&width, sizeof(unsigned), 1, fontFile);
 	fwrite(&height, sizeof(unsigned), 1, fontFile);
 
-	// bitmapBuffer
-	fwrite(&bitmapBuffer[0], sizeof(unsigned char), bitmapSize, fontFile);
-	// dimensions
-	fwrite(&dimensions[0], sizeof(int), dimensions.size(), fontFile);
-	// positions
-	fwrite(&positions[0], sizeof(int), positions.size(), fontFile);
-	// advances
-	fwrite(&advance[0], sizeof(int), advance.size(), fontFile);
-	// mask
-	fwrite(&mask[0], sizeof(unsigned char), mask.size(), fontFile);
+	// Write Data.
+	fwrite(bitmapBuffer.data(), sizeof(unsigned char), bitmapSize, fontFile);
+	fwrite(dimensions, sizeof(CharData), 94, fontFile);
+	fwrite(positions, sizeof(CharData), 94, fontFile);
+	fwrite(advances, sizeof(CharData), 94, fontFile);
+	fwrite(masks, sizeof(bool), 94, fontFile);
 
-	fclose(fontFile);
+	auto result = fclose(fontFile);
 
 	// Report results.
-	int count = 0;
-	for (unsigned char val : mask)
-	{
-		if (val != 0)
-		{
-			count++;
-		}
-	}
+	unsigned count = 0;
+	for (bool val : masks) 
+		if (val) count++;
 
-	if (count == 0)
+	if (result != 0)
+	{
+		SetColor(ConsoleColor::Red);
+		std::cout << "-Failed to generate Jewel3D Font Binary-\nOutput file could not be saved.\n";
+
+		SetColor(ConsoleColor::Gray);
+		return EXIT_FAILURE;
+	}
+	else if (count == 0)
 	{
 		SetColor(ConsoleColor::Red);
 		std::cout << "-Failed to generate Jewel3D Font Binary-\n0 out of 94 characters loaded.\n";
