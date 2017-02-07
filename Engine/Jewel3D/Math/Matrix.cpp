@@ -9,15 +9,261 @@
 namespace Jwl
 {
 
+#pragma region mat2
+
+	const mat2 mat2::Identity = mat2();
+
+	mat2::mat2()
+	{
+		data[0] = 1.0f;
+		data[1] = 0.0f;
+
+		data[2] = 0.0f;
+		data[3] = 1.0f;
+	}
+
+	mat2::mat2(const vec2& right, const vec2& up)
+	{
+		data[RightX] = right.x;
+		data[RightY] = right.y;
+
+		data[UpX] = up.x;
+		data[UpY] = up.y;
+	}
+
+	mat2::mat2(float f0, float f2, float f1, float f3)
+	{
+		data[0] = f0;
+		data[1] = f1;
+
+		data[2] = f2;
+		data[3] = f3;
+	}
+
+	mat2& mat2::operator=(const mat2& M)
+	{
+		memcpy(data, M.data, sizeof(float) * 4);
+		return *this;
+	}
+
+	mat2& mat2::operator*=(const mat2& M)
+	{
+		return *this = (*this) * M;
+	}
+
+	mat2& mat2::operator*=(float scalar)
+	{
+		data[0] *= scalar;
+		data[1] *= scalar;
+
+		data[2] *= scalar;
+		data[3] *= scalar;
+
+		return *this;
+	}
+
+	mat2& mat2::operator/=(float divisor)
+	{
+		float inverse = 1.0f / divisor;
+
+		data[0] *= inverse;
+		data[1] *= inverse;
+
+		data[2] *= inverse;
+		data[3] *= inverse;
+
+		return *this;
+	}
+
+	mat2& mat2::operator+=(const mat2& M)
+	{
+		data[0] += M.data[0];
+		data[1] += M.data[1];
+
+		data[2] += M.data[2];
+		data[3] += M.data[3];
+
+		return *this;
+	}
+
+	mat2& mat2::operator-=(const mat2& M)
+	{
+		data[0] -= M.data[0];
+		data[1] -= M.data[1];
+
+		data[2] -= M.data[2];
+		data[3] -= M.data[3];
+
+		return *this;
+	}
+
+	mat2 mat2::operator*(const mat2& M) const
+	{
+		return mat2(
+			data[0] + data[2], data[0] + data[2],
+			data[1] + data[3], data[1] + data[3]);
+	}
+
+	mat2 mat2::operator+(const mat2& M) const
+	{
+		return mat2(
+			data[0] + M.data[0], data[2] + M.data[2],
+			data[1] + M.data[1], data[3] + M.data[3]);
+	}
+
+	mat2 mat2::operator-(const mat2& M) const
+	{
+		return mat2(
+			data[0] * M.data[0] + data[2] * M.data[1], data[0] * M.data[2] + data[2] * M.data[3],
+			data[1] * M.data[0] + data[3] * M.data[1], data[1] * M.data[2] + data[3] * M.data[3]);
+	}
+
+	vec2 mat2::operator*(const vec2& V) const
+	{
+		return vec2(
+			data[RightX] * V.x + data[UpX] * V.y,
+			data[RightY] * V.x + data[UpY] * V.y);
+	}
+
+	mat2 mat2::operator*(float scalar) const
+	{
+		return mat2(
+			data[0] * scalar, data[2] * scalar,
+			data[1] * scalar, data[3] * scalar);
+	}
+
+	mat2 mat2::operator/(float scalar) const
+	{
+		return *this * (1.0f / scalar);
+	}
+
+	mat2 mat2::operator-() const
+	{
+		return mat2(
+			-data[0], -data[2],
+			-data[1], -data[3]);
+	}
+
+	float mat2::operator[](unsigned index) const
+	{
+		ASSERT(index >= 0 && index < 9, "'index' must be in the range of [0, 8].");
+		return data[index];
+	}
+
+	float& mat2::operator[](unsigned index)
+	{
+		ASSERT(index >= 0 && index < 9, "'index' must be in the range of [0, 8].");
+		return data[index];
+	}
+
+	void mat2::Transpose()
+	{
+		std::swap(data[0], data[3]);
+		std::swap(data[1], data[2]);
+	}
+
+	void mat2::Inverse()
+	{
+		float det = GetDeterminant();
+
+		if (det == 0.0f)
+		{
+			// Avoid divide by zero error.
+			return;
+		}
+
+		*this = mat2(
+			data[3], -data[2],
+			-data[1], data[0]);
+
+		*this *= (1.0f / det);
+	}
+
+	mat2 mat2::GetTranspose() const
+	{
+		mat2 result(*this);
+		result.Transpose();
+		return result;
+	}
+
+	mat2 mat2::GetInverse() const
+	{
+		mat2 result(*this);
+		result.Inverse();
+		return result;
+	}
+
+	float mat2::GetDeterminant() const
+	{
+		return data[0] * data[3] - data[1] * data[2];
+	}
+
+	void mat2::Scale(const vec2& V)
+	{
+		*this = mat2(
+			V.x, 0.0f,
+			0.0f, V.y) * (*this);
+	}
+
+	void mat2::Scale(float scale)
+	{
+		*this = mat2(
+			scale, 0.0f,
+			0.0f, scale) * (*this);
+	}
+
+	void mat2::Rotate(float degrees)
+	{
+		float radians = ToRadian(degrees);
+		float cosValue = cos(radians);
+		float sinValue = sin(radians);
+
+		*this = mat2(
+			cosValue, -sinValue,
+			sinValue, cosValue) * (*this);
+	}
+
+	void mat2::SetRight(const vec2& V)
+	{
+		data[RightX] = V.x;
+		data[RightY] = V.y;
+	}
+
+	void mat2::SetUp(const vec2& V)
+	{
+		data[UpX] = V.x;
+		data[UpY] = V.y;
+	}
+
+	vec2 mat2::GetRight() const
+	{
+		return vec2(data[RightX], data[RightY]);
+	}
+
+	vec2 mat2::GetUp() const
+	{
+		return vec2(data[UpX], data[UpY]);
+	}
+
+#pragma endregion
+
 #pragma region mat3
 
 	const mat3 mat3::Identity = mat3();
 
 	mat3::mat3()
 	{
-		Set(1.0f, 0.0f, 0.0f,
-			0.0f, 1.0f, 0.0f,
-			0.0f, 0.0f, 1.0f);
+		data[0] = 1.0f;
+		data[1] = 0.0f;
+		data[2] = 0.0f;
+
+		data[3] = 0.0f;
+		data[4] = 1.0f;
+		data[5] = 0.0f;
+
+		data[6] = 0.0f;
+		data[7] = 0.0f;
+		data[8] = 1.0f;
 	}
 
 	mat3::mat3(const quat& rotation)
@@ -385,23 +631,6 @@ namespace Jwl
 		return vec3(data[ForwardX], data[ForwardY], data[ForwardZ]);
 	}
 
-	void mat3::Set(float f0, float f3, float f6,
-		float f1, float f4, float f7,
-		float f2, float f5, float f8)
-	{
-		data[0] = f0;
-		data[1] = f1;
-		data[2] = f2;
-
-		data[3] = f3;
-		data[4] = f4;
-		data[5] = f5;
-
-		data[6] = f6;
-		data[7] = f7;
-		data[8] = f8;
-	}
-
 #pragma endregion
 
 #pragma region mat4
@@ -410,10 +639,25 @@ namespace Jwl
 
 	mat4::mat4()
 	{
-		Set(1.0f, 0.0f, 0.0f, 0.0f,
-			0.0f, 1.0f, 0.0f, 0.0f,
-			0.0f, 0.0f, 1.0f, 0.0f,
-			0.0f, 0.0f, 0.0f, 1.0f);
+		data[0] = 1.0f;
+		data[1] = 0.0f;
+		data[2] = 0.0f;
+		data[3] = 0.0f;
+
+		data[4] = 0.0f;
+		data[5] = 1.0f;
+		data[6] = 0.0f;
+		data[7] = 0.0f;
+
+		data[8] = 0.0f;
+		data[9] = 0.0f;
+		data[10] = 1.0f;
+		data[11] = 0.0f;
+
+		data[12] = 0.0f;
+		data[13] = 0.0f;
+		data[14] = 0.0f;
+		data[15] = 1.0f;
 	}
 
 	mat4::mat4(const quat& rotation)
@@ -439,29 +683,6 @@ namespace Jwl
 		data[15] = 1.0f;
 	}
 
-	mat4::mat4(const quat& rotation, const vec3& translation)
-	{
-		data[0] = 1.0f - 2.0f * (rotation.y * rotation.y + rotation.z * rotation.z);
-		data[1] = 2.0f * (rotation.x * rotation.y + rotation.z * rotation.w);
-		data[2] = 2.0f * (rotation.x * rotation.z - rotation.y * rotation.w);
-		data[3] = 0.0f;
-
-		data[4] = 2.0f * (rotation.x * rotation.y - rotation.z * rotation.w);
-		data[5] = 1.0f - 2.0f * (rotation.x * rotation.x + rotation.z * rotation.z);
-		data[6] = 2.0f * (rotation.y * rotation.z + rotation.x * rotation.w);
-		data[7] = 0.0f;
-
-		data[8] = 2.0f * (rotation.x * rotation.z + rotation.y * rotation.w);
-		data[9] = 2.0f * (rotation.y * rotation.z - rotation.x * rotation.w);
-		data[10] = 1.0f - 2.0f * (rotation.x * rotation.x + rotation.y * rotation.y);
-		data[11] = 0.0f;
-
-		data[12] = translation.x;
-		data[13] = translation.y;
-		data[14] = translation.z;
-		data[15] = 1.0f;
-	}
-
 	mat4::mat4(const mat3& orientation)
 	{
 		data[RightX] = orientation.data[mat3::RightX];
@@ -483,6 +704,29 @@ namespace Jwl
 		data[TransY] = 0.0f;
 		data[TransZ] = 0.0f;
 		data[W3] = 1.0f;
+	}
+
+	mat4::mat4(const quat& rotation, const vec3& translation)
+	{
+		data[0] = 1.0f - 2.0f * (rotation.y * rotation.y + rotation.z * rotation.z);
+		data[1] = 2.0f * (rotation.x * rotation.y + rotation.z * rotation.w);
+		data[2] = 2.0f * (rotation.x * rotation.z - rotation.y * rotation.w);
+		data[3] = 0.0f;
+
+		data[4] = 2.0f * (rotation.x * rotation.y - rotation.z * rotation.w);
+		data[5] = 1.0f - 2.0f * (rotation.x * rotation.x + rotation.z * rotation.z);
+		data[6] = 2.0f * (rotation.y * rotation.z + rotation.x * rotation.w);
+		data[7] = 0.0f;
+
+		data[8] = 2.0f * (rotation.x * rotation.z + rotation.y * rotation.w);
+		data[9] = 2.0f * (rotation.y * rotation.z - rotation.x * rotation.w);
+		data[10] = 1.0f - 2.0f * (rotation.x * rotation.x + rotation.y * rotation.y);
+		data[11] = 0.0f;
+
+		data[12] = translation.x;
+		data[13] = translation.y;
+		data[14] = translation.z;
+		data[15] = 1.0f;
 	}
 
 	mat4::mat4(const mat3& orientation, const vec3& translation)
@@ -1051,29 +1295,6 @@ namespace Jwl
 			0.0f, 1.0f, 0.0f, translation.y,
 			0.0f, 0.0f, 1.0f, translation.z,
 			0.0f, 0.0f, 0.0f, 1.0f) * (*this);
-	}
-
-	void mat4::Set(float f0, float f4, float f8, float f12, float f1, float f5, float f9, float f13, float f2, float f6, float f10, float f14, float f3, float f7, float f11, float f15)
-	{
-		data[0] = f0;
-		data[1] = f1;
-		data[2] = f2;
-		data[3] = f3;
-
-		data[4] = f4;
-		data[5] = f5;
-		data[6] = f6;
-		data[7] = f7;
-
-		data[8] = f8;
-		data[9] = f9;
-		data[10] = f10;
-		data[11] = f11;
-
-		data[12] = f12;
-		data[13] = f13;
-		data[14] = f14;
-		data[15] = f15;
 	}
 
 	mat4 mat4::PerspectiveProjection(float fovyDegrees, float aspect, float zNear, float zFar)

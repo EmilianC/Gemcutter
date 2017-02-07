@@ -10,6 +10,59 @@ namespace Jwl
 	class mat4;
 	class quat;
 
+	class mat2
+	{
+	public:
+		enum // Indexes
+		{
+			RightX = 0, UpX = 2,
+			RightY = 1, UpY = 3
+		};
+
+		mat2();
+		mat2(const vec2& right, const vec2& up);
+		mat2(float f0, float f2,
+			float f1, float f3);
+
+		mat2& operator=(const mat2&);
+		mat2& operator*=(const mat2&);
+		mat2& operator*=(float scalar);
+		mat2& operator/=(float divisor);
+		mat2& operator+=(const mat2&);
+		mat2& operator-=(const mat2&);
+		mat2 operator*(const mat2&) const;
+		mat2 operator+(const mat2&) const;
+		mat2 operator-(const mat2&) const;
+		vec2 operator*(const vec2&) const;
+		mat2 operator*(float scalar) const;
+		mat2 operator/(float divisor) const;
+		mat2 operator-() const;
+
+		float operator[](unsigned index) const;
+		float& operator[](unsigned index);
+
+		void Transpose();
+		void Inverse();
+		mat2 GetTranspose() const;
+		mat2 GetInverse() const;
+		float GetDeterminant() const;
+
+		void Scale(const vec2& scale);
+		void Scale(float scale);
+
+		void Rotate(float degrees);
+
+		void SetRight(const vec2& V);
+		void SetUp(const vec2& V);
+
+		vec2 GetRight() const;
+		vec2 GetUp() const;
+
+		static const mat2 Identity;
+
+		float data[4];
+	};
+
 	class mat3
 	{
 	public:
@@ -21,9 +74,9 @@ namespace Jwl
 		};
 
 		mat3();
-		mat3(const quat& rotation);
+		explicit mat3(const quat& rotation);
 		//- Extracts the rotational component from the 4x4 matrix.
-		mat3(const mat4& mat);
+		explicit mat3(const mat4& mat);
 		mat3(const vec3& right, const vec3& up, const vec3& forward);
 		mat3(float f0, float f3, float f6,
 			float f1, float f4, float f7,
@@ -68,10 +121,6 @@ namespace Jwl
 		vec3 GetUp() const;
 		vec3 GetForward() const;
 
-		void Set(float f0, float f3, float f6,
-			float f1, float f4, float f7,
-			float f2, float f5, float f8);
-
 		static const mat3 Identity;
 
 		float data[9];
@@ -89,9 +138,9 @@ namespace Jwl
 		};
 
 		mat4();
-		mat4(const quat& rotation);
+		explicit mat4(const quat& rotation);
+		explicit mat4(const mat3& rotation);
 		mat4(const quat& rotation, const vec3& translation);
-		mat4(const mat3& rotation);
 		mat4(const mat3& rotation, const vec3& translation);
 		mat4(const vec3& right, const vec3& up, const vec3& forward, const vec4& translation);
 		mat4(float f0, float f4, float f8, float f12,
@@ -149,11 +198,6 @@ namespace Jwl
 		vec3 GetForward() const;
 		vec3 GetTranslation() const;
 
-		void Set(float f0, float f4, float f8, float f12,
-			float f1, float f5, float f9, float f13,
-			float f2, float f6, float f10, float f14,
-			float f3, float f7, float f11, float f15);
-
 		static const mat4 Identity;
 		static mat4 PerspectiveProjection(float fovyDegrees, float aspect, float zNear, float zFar);
 		static mat4 PerspectiveProjection(float fovyDegrees, float aspect, float zNear, float zFar, mat4& outInverse);
@@ -164,6 +208,12 @@ namespace Jwl
 		float data[16];
 	};
 }
+
+REFLECT(Jwl::mat2)<>,
+MEMBERS <
+	REF_MEMBER(data)<>
+>
+REF_END;
 
 REFLECT(Jwl::mat3)<>,
 	MEMBERS <
