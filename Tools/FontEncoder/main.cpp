@@ -162,11 +162,7 @@ int main()
 			{
 				for (int j = 0; j < face->glyph->bitmap.width; j++)
 				{
-					unsigned char pixel = face->glyph->bitmap.buffer[face->glyph->bitmap.width * i + j];
-					bitmapBuffer.push_back(pixel);
-					bitmapBuffer.push_back(pixel);
-					bitmapBuffer.push_back(pixel);
-					bitmapBuffer.push_back(pixel);
+					bitmapBuffer.push_back(face->glyph->bitmap.buffer[face->glyph->bitmap.width * i + j]);
 				}
 			}
 

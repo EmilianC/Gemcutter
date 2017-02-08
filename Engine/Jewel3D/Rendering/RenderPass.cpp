@@ -330,7 +330,7 @@ namespace Jwl
 				}
 				else if (character == '\n')
 				{
-					linePosition += -upDirection * static_cast<float>(font->GetStringHeight()) * 1.15f;
+					linePosition += -upDirection * static_cast<float>(font->GetStringHeight()) * 1.33f;
 					text->owner.position = linePosition;
 					currentLine++;
 
@@ -354,13 +354,13 @@ namespace Jwl
 					continue;
 				}
 
-				/* Adjusts the node's position based on the character ('y','g','-' ...) */
+				/* Adjusts the node's position based on the character. */
 				vec3 characterPosition;
 				characterPosition += advanceDirection * static_cast<float>(positions[charIndex].x);
 				characterPosition += upDirection * static_cast<float>(positions[charIndex].y);
 				text->owner.position += characterPosition;
 
-				/* Construct a polygon based on the current character's dimensions */
+				/* Construct a polygon based on the current character's dimensions. */
 				points[3] = static_cast<float>(dimensions[charIndex].x);
 				points[7] = static_cast<float>(dimensions[charIndex].y);
 				points[9] = static_cast<float>(dimensions[charIndex].x);
@@ -368,11 +368,11 @@ namespace Jwl
 				points[13] = static_cast<float>(dimensions[charIndex].y);
 				points[16] = static_cast<float>(dimensions[charIndex].y);
 
-				/* Update buffers with the new polygon */
+				/* Update buffers with the new polygon. */
 				glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * 18, points);
 
 				/* Render */
-				//TODO: these sends' are duplicated. get rid of them!
+				// TODO: these sends' are duplicated. get rid of them!
 				if (camera)
 				{
 					auto& cameraComponent = camera->Get<Camera>();
@@ -392,7 +392,7 @@ namespace Jwl
 				glBindTexture(GL_TEXTURE_2D, font->GetTextures()[charIndex]);
 				glDrawArrays(GL_TRIANGLES, 0, 6);
 
-				/* Adjust position for the next node */
+				/* Adjust position for the next node. */
 				// Undo character translate.
 				text->owner.position -= characterPosition;
 				// Advance to next character.

@@ -129,13 +129,15 @@ namespace Jwl
 		fclose(fontFile);
 
 		// Upload data to OpenGL.
+		glGenTextures(94, textures);
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
 		unsigned char* bitmapItr = bitmap;
 		for (unsigned i = 0; i < 94; i++)
 		{
 			if (!masks[i])
 				continue;
 
-			glGenTextures(1, &textures[i]);
 			glBindTexture(GL_TEXTURE_2D, textures[i]);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, ResolveFilterMagMode(filter));
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, ResolveFilterMinMode(filter));
@@ -144,32 +146,35 @@ namespace Jwl
 			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, Texture::GetDefaultAnisotropicLevel());
 
 			// Send the texture data.
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_R8,
-				dimensions[i].x,
-				dimensions[i].y,
-				0, GL_RGBA, GL_UNSIGNED_BYTE,
-				bitmapItr);
-
+			int numLevels = 1;
 			if (ResolveMipMapping(filter))
+			{
+				float max = static_cast<float>(Max(dimensions[i].x, dimensions[i].y));
+				numLevels = static_cast<int>(std::floor(std::log2(max))) + 1;
+			}
+
+			glTexStorage2D(GL_TEXTURE_2D, numLevels, GL_R8, dimensions[i].x, dimensions[i].y);
+			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, dimensions[i].x, dimensions[i].y, GL_RED, GL_UNSIGNED_BYTE, bitmapItr);
+
+			if (numLevels > 1)
 			{
 				glGenerateMipmap(GL_TEXTURE_2D);
 			}
 
 			// Move the pointer to the next set of data.
-			bitmapItr += dimensions[i].x * dimensions[i].y * 4;
+			bitmapItr += dimensions[i].x * dimensions[i].y;
 		}
 
 		glBindTexture(GL_TEXTURE_2D, GL_NONE);
+		// Restore default unpack behaviour.
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 
 		return true;
 	}
 
 	void Font::Unload()
 	{
-		for (int i = 0; i < 94; i++)
-		{
-			glDeleteTextures(1, &textures[i]);
-		}
+		glDeleteTextures(94, textures);
 
 		memset(textures, GL_NONE, sizeof(unsigned) * 94);
 	}
