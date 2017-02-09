@@ -34,7 +34,7 @@ namespace
 		"in vec2 texcoord;\n"
 		"out vec4 outColor;\n"
 		"void main()\n{\n"
-			"\toutColor = texture(sTex, texcoord).rgba;\n"
+			"\toutColor = texture(sTex, texcoord);\n"
 		"}\n";
 
 	static const char passThroughProgram[] =
@@ -58,7 +58,7 @@ namespace
 		"	out vec4 outColor;\n"
 		"	void main()\n"
 		"	{\n"
-		"		outColor = texture(sTex, texcoord).rgba;\n"
+		"		outColor = texture(sTex, texcoord);\n"
 		"	}\n"
 		"}\n";
 
@@ -583,6 +583,16 @@ namespace Jwl
 			return false;
 		}
 
+		// If a shader block was left empty, we substitute a pass-through.
+		if (vertexSource.empty())
+		{
+			vertexSource = passThroughVertex;
+		}
+		else if (fragmentSrouce.empty())
+		{
+			fragmentSrouce = passThroughFragment;
+		}
+
 		loaded = true;
 		return true;
 	}
@@ -626,20 +636,16 @@ namespace Jwl
 			block.type == BlockType::Fragment, "Expected a Shader block type.");
 
 		std::string *output = nullptr;
-		const char *passthrough = nullptr;
 		switch (block.type)
 		{
 		case BlockType::Vertex:
 			output = &vertexSource;
-			passthrough = passThroughVertex;
 			break;
 		case BlockType::Geometry:
 			output = &geometrySource;
-			// Geometry passthrough is simply having no shader.
 			break;
 		case BlockType::Fragment:
 			output = &fragmentSrouce;
-			passthrough = passThroughFragment;
 			break;
 		}
 
@@ -650,14 +656,7 @@ namespace Jwl
 		{
 			if (!std::isspace(block.source[pos]))
 			{
-				if (block.source.compare(pos, 12, "passthrough;") == 0)
-				{
-					if (passThroughVertex != nullptr)
-					{
-						*output = passthrough;
-					}
-				}
-				else if (sscanf(&block.source[pos], "#include \"%255s\"", path) == 1)
+				if (sscanf(&block.source[pos], "#include \"%255s\"", path) == 1)
 				{
 					// Remove invalid characters.
 					while (char* chr = strchr(path, '\"'))
@@ -676,7 +675,7 @@ namespace Jwl
 
 					if (output->empty())
 					{
-						Error("Shader external reference could not be resolved.");
+						Error("Shader include (%s) failed to load.", path);
 						return false;
 					}
 				}

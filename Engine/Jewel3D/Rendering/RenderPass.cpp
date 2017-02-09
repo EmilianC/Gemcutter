@@ -171,6 +171,12 @@ namespace Jwl
 		SetBlendFunc(BlendFunc::None);
 		SetDepthFunc(DepthFunc::None);
 
+		MVP.Set(mat4::Identity);
+		modelView.Set(mat4::Identity);
+		model.Set(mat4::Identity);
+		invModel.Set(mat4::Identity);
+		transformBuffer.Bind(static_cast<unsigned>(UniformBufferSlot::Model));
+
 		Primitives.DrawFullScreenQuad(*shader);
 
 		if (skybox)

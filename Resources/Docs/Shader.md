@@ -7,23 +7,33 @@ Shader Outlines allow you to easily describe your own custom data bindings witho
 Attributes
 {
 	vec4 a_vert	: 0;
+	vec2 a_uv   : 1;
 }
 
 Vertex
 {
+	out vec2 texcoord;
+
 	void main()
 	{
 		gl_Position = Jwl_MVP * a_vert;
+		texcoord = a_uv;
 	}
+}
+
+Samplers
+{
+	sampler2D sTex : 0;
 }
 
 Fragment
 {
+	in vec2 texcoord;
 	out vec4 outColor;
 
 	void main()
 	{
-		outColor = vec4(1.0, 1.0, 1.0, 1.0);
+		outColor = texture(sTex, texcoord);
 	}
 }
 ```
@@ -31,18 +41,21 @@ Fragment
 # Shader Blocks
 All key sections of the shader are described in their own blocks.
 
-* Attributes
+* ```Attributes```
 	* Describes input mesh data and bindings
-* Vertex
+* ```Vertex```
 	* A standard GLSL vertex shader
-* Geometry
+* ```Geometry```
 	* A standard GLSL geometry shader
-* Fragment
+* ```Fragment```
 	* A standard GLSL fragment shader
-* Uniforms
+* ```Uniforms```
 	* Describes uniform buffer data and bindings
-* Samplers
+* ```Samplers```
 	* Describes textures samplers and bindings
+	
+If a ```Vertex``` block is not defined, a passthrough is automatically created containing the same ```Attributes``` and ```Vertex``` code from the example above.
+This allows you to easily create post-process shaders. A ```Fragment``` block can also be omitted and will be substituted with the ```Samplers``` and ```Fragment``` code from the example above.
 	
 # Uniforms
 A Uniform block can itself contain multiple Uniform Buffers. A Uniform Buffer is simply a structure of data bound to a specific ID.
