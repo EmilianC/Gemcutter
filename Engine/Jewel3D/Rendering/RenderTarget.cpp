@@ -333,8 +333,6 @@ namespace Jwl
 		}
 
 		glDrawBuffer(GL_COLOR_ATTACHMENT0);
-		glReadBuffer(GL_COLOR_ATTACHMENT0);
-
 		glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
 	}
 
@@ -368,12 +366,12 @@ namespace Jwl
 
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, FBO);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, target.FBO);
-
 		glReadBuffer(GL_COLOR_ATTACHMENT0 + index);
 		glDrawBuffer(GL_COLOR_ATTACHMENT0 + index);
+
 		glBlitFramebuffer(0, 0, width, height, 0, 0, target.width, target.height, GL_COLOR_BUFFER_BIT, filter);
 
-		glDrawBuffer(GL_BACK);
+		glDrawBuffer(GL_COLOR_ATTACHMENT0);
 		glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
 	}
 
@@ -401,11 +399,81 @@ namespace Jwl
 
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, FBO);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, GL_NONE);
-
 		glReadBuffer(GL_COLOR_ATTACHMENT0 + index);
+
 		glBlitFramebuffer(0, 0, width, height, 0, 0, Application.GetScreenWidth(), Application.GetScreenHeight(), GL_COLOR_BUFFER_BIT, filter);
 
 		glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
+	}
+
+	vec4 RenderTarget::ReadPixel(unsigned index, const vec2& position) const
+	{
+		ASSERT(FBO != GL_NONE, "RenderTarget must be initialized before use.");
+		ASSERT(index < numColorAttachments, "'index' must specify a valid color attachment.");
+		ASSERT(numSamples == 1, "RenderTarget must not be multi-sampled.");
+
+		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+		glReadBuffer(GL_COLOR_ATTACHMENT0 + index);
+
+		unsigned format = 0;
+		switch (colorAttachments[index]->GetNumChannels())
+		{
+		case 4: format = GL_RGBA;
+			break;
+		case 3: format = GL_RGB;
+			break;
+		case 1: format = GL_RED;
+			break;
+		}
+
+		vec4 result;
+		switch (colorAttachments[index]->GetTextureFormat())
+		{
+		case TextureFormat::RGB_8:
+		case TextureFormat::RGBA_8:
+			{
+				unsigned char pixel[4] = { 0 };
+				glReadPixels(static_cast<int>(position.x), static_cast<int>(position.y), 1, 1, format, GL_UNSIGNED_BYTE, pixel);
+				// Normalize color range to [0, 1].
+				result = vec4(pixel[0], pixel[1], pixel[2], pixel[3]) / static_cast<float>(UCHAR_MAX);
+			} break;
+
+		case TextureFormat::RGB_16:
+		case TextureFormat::RGBA_16:
+			{
+				unsigned short pixel[4] = { 0 };
+				glReadPixels(static_cast<int>(position.x), static_cast<int>(position.y), 1, 1, format, GL_UNSIGNED_SHORT, pixel);
+				// Normalize color range to [0, 1].
+				result = vec4(pixel[0], pixel[1], pixel[2], pixel[3]) / static_cast<float>(USHRT_MAX);
+			} break;
+
+		case TextureFormat::RGB_32:
+		case TextureFormat::RGBA_32:
+			{
+				unsigned pixel[4] = { 0 };
+				glReadPixels(static_cast<int>(position.x), static_cast<int>(position.y), 1, 1, format, GL_UNSIGNED_INT, pixel);
+				// Normalize color range to [0, 1].
+				result = vec4(
+					static_cast<float>(pixel[0]),
+					static_cast<float>(pixel[1]),
+					static_cast<float>(pixel[2]),
+					static_cast<float>(pixel[3])) / static_cast<float>(UINT_MAX);
+			} break;
+
+		case TextureFormat::RGB_16F:
+		case TextureFormat::RGBA_16F:
+		case TextureFormat::RGBA_32F:
+		case TextureFormat::RGB_32F:
+			glReadPixels(static_cast<int>(position.x), static_cast<int>(position.y), 1, 1, format, GL_FLOAT, &result.x);
+			break;
+
+		default:
+			ASSERT(false, "Unsupported texture format.");
+		}
+
+		glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
+
+		return result;
 	}
 
 	bool RenderTarget::HasDepth() const

@@ -60,6 +60,10 @@ namespace Jwl
 		void CopyDepthToBackBuffer() const;
 		void CopyColorToBackBuffer(unsigned index) const;
 
+		//- Retrieves a pixel from the specified color buffer.
+		//- This is not recommended for real-time use because it can be very expensive.
+		vec4 ReadPixel(unsigned index, const vec2& position) const;
+
 		bool HasDepth() const;
 		bool IsMultisampled() const;
 		unsigned GetNumColorAttachments() const;
