@@ -1,15 +1,22 @@
-# Example Queries
-Any Component or Tag can be part of a query.
-Only currently active Components and Entities are visible to queries.
+# Dynamic Queries
+A Query will only return Active Components and Entities. Any Component or Tag can be part of a query.
 
+# Examples
 ```cpp
-// Process all players by Entity.
+class Player       : public Component<Player> { /**/ };
+class Network      : public Component<Network> { /**/ };
+class Friendly     : public Tag<Friendly> {};
+class Enemy        : public Tag<Enemy> {};
+class SquadLeader  : public Tag<SquadLeader> {};
+
+// Process all Entities with a Player Component.
 for (Entity& e : With<Player>())
 {
 	//...
 }
 
-// Process all players by component.
+// Using All<>() processes the Component directly.
+// This avoids the cost of calling Entity.Get<>().
 for (Player& p : All<Player>())
 {
 	//...
@@ -27,8 +34,8 @@ for (Entity& e : With<Player, Friendly>())
 	//...
 }
 
-// Process all friendly SquadLeaders on the local network.
-for (Entity& e : With<Player, Friendly, LocalNetwork, SquadLeader>())
+// Process all friendly SquadLeaders on the network.
+for (Entity& e : With<Player, Friendly, Network, SquadLeader>())
 {
 	//...
 }

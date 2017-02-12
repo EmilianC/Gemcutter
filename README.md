@@ -12,9 +12,9 @@ Highlight features include:
 * [A Rich shader workflow](Resources/Docs/Shader.md)
 * [Efficient entity queries](Resources/Docs/Entity.md)
 * A modular and extendable particle system
-* Audio loading and playback
-* Texture and Mesh loading and rendering
-* Freetype driven Text rendering
+* Audio powered by OpenAL
+* Mesh and Texture loading
+* [FreeType driven Text rendering](Resources/Docs/Text.md)
 * Event dispatching and response
 * Robust fixed-timestep updates
 * A complete math library
