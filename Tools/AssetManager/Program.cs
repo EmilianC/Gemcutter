@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Mesh_Encoder
+namespace AssetManager
 {
 	static class Program
 	{
@@ -16,7 +16,7 @@ namespace Mesh_Encoder
 		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-			Application.Run(new MeshEncoderForm());
+			Application.Run(new formAssetManager());
 		}
 	}
 }

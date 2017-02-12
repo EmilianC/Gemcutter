@@ -8,6 +8,8 @@ Tools/FontEncoder/obj/
 Tools/FontEncoder/bin/
 Tools/MeshEncoder/obj/
 Tools/MeshEncoder/bin/
+Tools/AssetManager/obj/
+Tools/AssetManager/bin/
 Log_Output.txt
 Jewel3D.lib
 *.opendb
