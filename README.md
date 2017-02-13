@@ -11,7 +11,7 @@ With a thin API and modern C++14 concepts, Jewel3D provides powerful features wi
 Highlight features include:
 * [A Rich shader workflow](Resources/Docs/Shader.md)
 * [Efficient entity queries](Resources/Docs/Entity.md)
-* [Binary Asset Packing](Resources/Docs/AssetManager.md)
+* [Binary asset packing](Resources/Docs/AssetManager.md)
 * A modular and extendable particle system
 * Audio powered by OpenAL
 * Mesh and Texture loading

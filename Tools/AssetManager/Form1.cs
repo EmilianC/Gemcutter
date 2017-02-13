@@ -12,21 +12,22 @@ namespace AssetManager
 		{
 			InitializeComponent();
 			treeViewAssets.AfterSelect += (sender, e) => RefreshItemView();
+			listBoxAssets.MouseDoubleClick += (sender, e) => OpenAsset();
 
-			RefreshWorkspaceView();
+			// Populate the workspace for the first time.
+			RefreshWorkspace();
 
+			// Watch the directory for changes and auto-refresh when needed.
 			watcher = new FileSystemWatcher(Directory.GetCurrentDirectory());
 			watcher.IncludeSubdirectories = true;
 			watcher.EnableRaisingEvents = true;
 			watcher.NotifyFilter = NotifyFilters.FileName | NotifyFilters.DirectoryName;
-			watcher.Changed += (sender, e) => RefreshWorkspaceViewDispatch();
-			watcher.Created += (sender, e) => RefreshWorkspaceViewDispatch();
-			watcher.Deleted += (sender, e) => RefreshWorkspaceViewDispatch();
-
-			listBoxAssets.MouseDoubleClick += (sender, e) => OpenAsset();
+			watcher.Changed += (sender, e) => RefreshWorkspaceDispatch();
+			watcher.Created += (sender, e) => RefreshWorkspaceDispatch();
+			watcher.Deleted += (sender, e) => RefreshWorkspaceDispatch();
 		}
 
-		// Opens the selected asset with the default associated program.
+		//- Opens the selected asset with the default associated program.
 		void OpenAsset()
 		{
 			var selection = listBoxAssets.SelectedItem;
@@ -47,15 +48,16 @@ namespace AssetManager
 			Output.AppendLine(file + " ... ");
 			Refresh();
 
-			Output.AppendText(" Done.");
+			// ...
+
+			Output.AppendText(" [Ok]");
 			Refresh();
 		}
 
+		//- Starts the packing process. Rebuilds the target Asset directory from scratch.
 		private void Button_Pack_Click(object sender, EventArgs e)
 		{
-			Output.AppendLine("--------------------------");
-			Output.AppendLine("Packing started.");
-			Output.AppendLine("--------------------------");
+			Output.AppendLine("--- Started ---");
 
 			// Find all files in the workspace.
 			// Convertible files are put through the appropriate binary converter.
@@ -77,7 +79,7 @@ namespace AssetManager
 				// ...
 			}
 
-			Output.AppendLine("Packing finished.");
+			Output.AppendLine("--- Finished ---");
 		}
 
 		void RefreshItemView()
@@ -94,14 +96,14 @@ namespace AssetManager
 			}
 		}
 
-		void RefreshWorkspaceView()
+		void RefreshWorkspace()
 		{
 			var previousSelection = GetNodePath(treeViewAssets.SelectedNode);
 			treeViewAssets.Nodes.Clear();
 
 			ParseDirectory(Directory.GetCurrentDirectory(), null);
 
-			treeViewAssets.ExpandAll();
+			// Find any files that don't yet have a .meta and initialize them.
 
 			// Reselect the old folder, if it still exists.
 			if (previousSelection.Count != 0)
@@ -119,20 +121,21 @@ namespace AssetManager
 				treeViewAssets.SelectedNode = node;
 			}
 
+			treeViewAssets.ExpandAll();
 			RefreshItemView();
 		}
 
-		delegate void RefreshWorkspaceViewDelegate();
-		void RefreshWorkspaceViewDispatch()
+		delegate void RefreshWorkspaceDelegate();
+		void RefreshWorkspaceDispatch()
 		{
 			// Thread-safe dispatch.
 			if (treeViewAssets.InvokeRequired)
 			{
-				Invoke(new RefreshWorkspaceViewDelegate(RefreshWorkspaceView));
+				Invoke(new RefreshWorkspaceDelegate(RefreshWorkspace));
 			}
 			else
 			{
-				RefreshWorkspaceView();
+				RefreshWorkspace();
 			}
 		}
 
@@ -141,20 +144,23 @@ namespace AssetManager
 			var directories = Directory.GetDirectories(rootFolder);
 			Array.Sort(directories);
 
-			foreach (string folder in Directory.GetDirectories(rootFolder))
+			foreach (string folder in directories)
 			{
-				TreeNode node;
+				// Add the file count to the name.
+				var fileCount = Directory.GetFiles(folder).Count();
 				string name = folder.Split('\\').Last();
+				string text = fileCount == 0 ? name : name + " [" + fileCount.ToString() + "]";
 
-				if (root == null)
-					node = treeViewAssets.Nodes.Add(name, name);
-				else
-					node = root.Nodes.Add(name, name);
+				// Append the new node.
+				var nodes = root?.Nodes ?? treeViewAssets.Nodes;
+				var node = nodes.Add(name, text);
 
+				// Recurse.
 				ParseDirectory(folder, node);
 			}
 		}
 
+		//- Collects all files that must either be copied or converted into the Asset directory.
 		void CollectFiles(string rootFolder, List<string> globalList, List<string> convertList)
 		{
 			var files = Directory.GetFiles(rootFolder);
@@ -180,13 +186,13 @@ namespace AssetManager
 			}
 		}
 
-		// Build the full folder path from the folder tree.
+		//- Build the full folder path from the folder tree.
 		List<string> GetNodePath(TreeNode node)
 		{
 			var path = new List<string>();
 			while (node != null)
 			{
-				path.Add(node.Text);
+				path.Add(node.Name);
 				node = node.Parent;
 			}
 			path.Reverse();
@@ -194,11 +200,13 @@ namespace AssetManager
 			return path;
 		}
 
+		//- Browses to the root workspace directory.
 		private void buttonWorkspaceOpen_Click(object sender, EventArgs e)
 		{
 			System.Diagnostics.Process.Start("explorer.exe", Directory.GetCurrentDirectory());
 		}
 
+		//- Browses to the selected folder directory.
 		private void buttonAssetOpen_Click(object sender, EventArgs e)
 		{
 			var path = GetNodePath(treeViewAssets.SelectedNode);
@@ -207,6 +215,7 @@ namespace AssetManager
 				System.Diagnostics.Process.Start("explorer.exe", string.Join("\\", path));
 		}
 
+		//- Clears the output window.
 		private void buttonClear_Click(object sender, EventArgs e)
 		{
 			Output.Clear();
@@ -214,7 +223,6 @@ namespace AssetManager
 
 		// Automatically refresh the asset directory if there are any changes.
 		FileSystemWatcher watcher;
-
 		// All convertible file types.
 		readonly string[] assetExtensions = { ".obj", ".ttf" };
 		// Ignored file types.
