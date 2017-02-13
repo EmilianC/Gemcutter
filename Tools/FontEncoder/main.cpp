@@ -45,15 +45,17 @@ void OutputUsage()
 {
 	std::cout << "Generates Jewel3D Font Binaries.\n"
 		<< "Usage:\n"
-		<< "FontEncoder.exe [input .tff] [commands] [output .font]\n"
+		<< "FontEncoder.exe input output width height\n"
 		<< "Commands:\n"
+		<< "input\t\t-i\tInput .ttf file.\n"
+		<< "output\t\t-o\tOutput .font file.\n"
 		<< "width\t\t-w\tThe standard width resolution of a character.\n"
 		<< "height\t\t-d\tThe standard height resolution of a character.\n";
 }
 
 int main()
 {
-	if (Jwl::GetArgc() != 7)
+	if (Jwl::GetArgc() != 9)
 	{
 		OutputUsage();
 		return EXIT_FAILURE;
@@ -61,13 +63,13 @@ int main()
 
 	std::string inputFile;
 	std::string outputFile;
-	unsigned width;
-	unsigned height;
+	unsigned width = 0;
+	unsigned height = 0;
 
-	if (!Jwl::GetCommandLineArgument(1, inputFile) ||
+	if (!Jwl::GetCommandLineArgument("-i", inputFile) ||
 		!Jwl::GetCommandLineArgument("-w", width) ||
 		!Jwl::GetCommandLineArgument("-h", height) ||
-		!Jwl::GetCommandLineArgument(6, outputFile))
+		!Jwl::GetCommandLineArgument("-o", outputFile))
 	{
 		OutputUsage();
 		return EXIT_FAILURE;
