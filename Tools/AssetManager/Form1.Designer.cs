@@ -39,13 +39,14 @@
 			this.buttonAssetOpen = new System.Windows.Forms.Button();
 			this.label1 = new System.Windows.Forms.Label();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.buttonClear = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// ButtonPack
 			// 
-			this.ButtonPack.Location = new System.Drawing.Point(562, 11);
+			this.ButtonPack.Location = new System.Drawing.Point(662, 11);
 			this.ButtonPack.Name = "ButtonPack";
-			this.ButtonPack.Size = new System.Drawing.Size(210, 21);
+			this.ButtonPack.Size = new System.Drawing.Size(110, 21);
 			this.ButtonPack.TabIndex = 1;
 			this.ButtonPack.Text = "Pack";
 			this.ButtonPack.UseVisualStyleBackColor = true;
@@ -132,11 +133,22 @@
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Properties";
 			// 
+			// buttonClear
+			// 
+			this.buttonClear.Location = new System.Drawing.Point(546, 11);
+			this.buttonClear.Name = "buttonClear";
+			this.buttonClear.Size = new System.Drawing.Size(110, 21);
+			this.buttonClear.TabIndex = 18;
+			this.buttonClear.Text = "Clear";
+			this.buttonClear.UseVisualStyleBackColor = true;
+			this.buttonClear.Click += new System.EventHandler(this.buttonClear_Click);
+			// 
 			// formAssetManager
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(784, 557);
+			this.Controls.Add(this.buttonClear);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.Output);
@@ -168,6 +180,7 @@
 		private System.Windows.Forms.Button buttonAssetOpen;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.GroupBox groupBox1;
+		private System.Windows.Forms.Button buttonClear;
 	}
 }
 

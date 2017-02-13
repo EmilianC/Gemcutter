@@ -22,6 +22,24 @@ namespace AssetManager
 			watcher.Changed += (sender, e) => RefreshWorkspaceViewDispatch();
 			watcher.Created += (sender, e) => RefreshWorkspaceViewDispatch();
 			watcher.Deleted += (sender, e) => RefreshWorkspaceViewDispatch();
+
+			listBoxAssets.MouseDoubleClick += (sender, e) => OpenAsset();
+		}
+
+		// Opens the selected asset with the default associated program.
+		void OpenAsset()
+		{
+			var selection = listBoxAssets.SelectedItem;
+			if (selection == null)
+				return;
+
+			var node = treeViewAssets.SelectedNode;
+			if (node == null)
+				return;
+
+			var file = string.Join("\\", GetNodePath(node)) + "\\" + listBoxAssets.GetItemText(selection);
+
+			System.Diagnostics.Process.Start(file);
 		}
 
 		private void ConvertFile(string file)
@@ -35,25 +53,31 @@ namespace AssetManager
 
 		private void Button_Pack_Click(object sender, EventArgs e)
 		{
-			// Ask the user for a folder.
-			int count = 0;
-
-			Output.AppendLine("");
+			Output.AppendLine("--------------------------");
 			Output.AppendLine("Packing started.");
+			Output.AppendLine("--------------------------");
 
-			// TODO: Recursive search...
-			var files = Directory.GetFiles(Directory.GetCurrentDirectory());
+			// Find all files in the workspace.
+			// Convertible files are put through the appropriate binary converter.
+			// Other global files are copied as-is.
+			var globalFiles = new List<string>();
+			var convertFiles = new List<string>();
+			CollectFiles(Directory.GetCurrentDirectory(), globalFiles, convertFiles);
 
-			foreach (string file in files)
+			foreach (string file in convertFiles)
 			{
-				if (!file.EndsWith(".meta") && (assetExtensions.Any(x => file.EndsWith(x))))
-				{
-					ConvertFile(Path.GetFileName(file));
-					count++;
-				}
+				ConvertFile(Path.GetFileName(file));
+				// Conversion should target the asset directory.
+				// ...
 			}
 
-			Output.AppendLine(count + " files converted.");
+			foreach (string file in globalFiles)
+			{
+				// Copy to asset directory.
+				// ...
+			}
+
+			Output.AppendLine("Packing finished.");
 		}
 
 		void RefreshItemView()
@@ -131,6 +155,31 @@ namespace AssetManager
 			}
 		}
 
+		void CollectFiles(string rootFolder, List<string> globalList, List<string> convertList)
+		{
+			var files = Directory.GetFiles(rootFolder);
+			foreach (string file in files)
+			{
+				if (ignoreExtensions.Any(x => file.EndsWith(x)))
+					continue;
+
+				if (assetExtensions.Any(x => file.EndsWith(x)))
+				{
+					convertList.Add(rootFolder + file);
+				}
+				else
+				{
+					globalList.Add(rootFolder + file);
+				}
+			}
+
+			var folders = Directory.GetDirectories(rootFolder);
+			foreach (string folder in folders)
+			{
+				CollectFiles(folder, globalList, convertList);
+			}
+		}
+
 		// Build the full folder path from the folder tree.
 		List<string> GetNodePath(TreeNode node)
 		{
@@ -158,11 +207,18 @@ namespace AssetManager
 				System.Diagnostics.Process.Start("explorer.exe", string.Join("\\", path));
 		}
 
+		private void buttonClear_Click(object sender, EventArgs e)
+		{
+			Output.Clear();
+		}
+
 		// Automatically refresh the asset directory if there are any changes.
 		FileSystemWatcher watcher;
 
 		// All convertible file types.
 		readonly string[] assetExtensions = { ".obj", ".ttf" };
+		// Ignored file types.
+		readonly string[] ignoreExtensions = { ".meta" };
 	}
 
 	public static class WinFormsExtensions
