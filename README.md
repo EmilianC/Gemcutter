@@ -11,6 +11,7 @@ With a thin API and modern C++14 concepts, Jewel3D provides powerful features wi
 Highlight features include:
 * [A Rich shader workflow](Resources/Docs/Shader.md)
 * [Efficient entity queries](Resources/Docs/Entity.md)
+* [Binary Asset Packing](Resources/Docs/AssetManager.md)
 * A modular and extendable particle system
 * Audio powered by OpenAL
 * Mesh and Texture loading
@@ -38,7 +39,7 @@ Jewel3D is always being updated and improved. See the [Trello board](https://tre
 
 Future highlight features include:
 * Custom GUI support
-* A fully featured world/UI editor and asset manager
+* A fully featured world/UI editor
 * Bullet physics integration
 * Custom Memory management
 * C++ Reflection driven features
