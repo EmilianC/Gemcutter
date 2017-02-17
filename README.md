@@ -58,6 +58,6 @@ All Dependencies used under their respective licenses. Copyright is held by thei
 * [XInput 1.4](https://msdn.microsoft.com/en-us/library/windows/desktop/ee417001(v=vs.85).aspx)
 
 # Notes
-* Jewel3D is built with Visual Studio 2015 Community for Windows and is not tested on other compilers, IDEs, or platforms.
+* Jewel3D is built for Windows with Visual Studio 2015 Community (Update 3) and is not tested on other compilers, IDEs, or platforms.
 * Jewel3D requires at least OpenGL 3.3.
 * Jewel3D is provided under the MIT License.
