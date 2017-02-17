@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -11,8 +12,10 @@ namespace AssetManager
 		public formAssetManager()
 		{
 			InitializeComponent();
+
 			treeViewAssets.AfterSelect += (sender, e) => RefreshItemView();
 			listBoxAssets.MouseDoubleClick += (sender, e) => OpenAsset();
+			treeViewAssets.AfterSelect += (sender, e) => buttonAssetOpen.Enabled = true;
 
 			// Populate the workspace for the first time.
 			RefreshWorkspace();
@@ -40,24 +43,46 @@ namespace AssetManager
 
 			var file = string.Join("\\", GetNodePath(node)) + "\\" + listBoxAssets.GetItemText(selection);
 
-			System.Diagnostics.Process.Start(file);
+			try
+			{
+				System.Diagnostics.Process.Start(file);
+			}
+			catch (System.ComponentModel.Win32Exception)
+			{}
 		}
 
 		private void ConvertFile(string file)
 		{
-			Output.AppendLine(file + " ... ");
-			Refresh();
+			Output.AppendLine("Encoding ( " + Path.GetFileName(file) + " )\n", Color.Azure);
 
-			// ...
-
-			Output.AppendText(" [Ok]");
-			Refresh();
+			//TODO: Lookup the appropriate encoder from assetEncoders.
+			//if (file.EndsWith(".ttf"))
+			//{
+				//var process = new System.Diagnostics.Process();
+				//
+				//process.EnableRaisingEvents = true;
+				//process.StartInfo.UseShellExecute = false;
+				//process.StartInfo.RedirectStandardOutput = true;
+				//process.StartInfo.FileName = "D:\\Repos\\Jewel3D\\Tools\\FontEncoder\\bin\\Debug_Win32\\FontEncoder.exe";
+				//process.StartInfo.Arguments = "-i " + file;
+				//process.OutputDataReceived += (s, args) => NativeLog(args.Data);
+				//process.Exited += (s, args) =>
+				//{
+				//	// Make sure any output color changes are undone.
+				//	process.CancelOutputRead();
+				//	RichTextBoxExtensions.SetOutputColor(Output, Color.LightGray);
+				//	RichTextBoxExtensions.AppendLine(Output, "--- Finished ---", Color.Azure);
+				//};
+				//
+				//process.Start();
+				//process.BeginOutputReadLine();
+			//}
 		}
 
 		//- Starts the packing process. Rebuilds the target Asset directory from scratch.
 		private void Button_Pack_Click(object sender, EventArgs e)
 		{
-			Output.AppendLine("--- Started ---");
+			Output.AppendLine("--- Started ---", Color.Azure);
 
 			// Find all files in the workspace.
 			// Convertible files are put through the appropriate binary converter.
@@ -68,7 +93,7 @@ namespace AssetManager
 
 			foreach (string file in convertFiles)
 			{
-				ConvertFile(Path.GetFileName(file));
+				ConvertFile(file);
 				// Conversion should target the asset directory.
 				// ...
 			}
@@ -78,8 +103,6 @@ namespace AssetManager
 				// Copy to asset directory.
 				// ...
 			}
-
-			Output.AppendLine("--- Finished ---");
 		}
 
 		void RefreshItemView()
@@ -171,11 +194,11 @@ namespace AssetManager
 
 				if (assetExtensions.Any(x => file.EndsWith(x)))
 				{
-					convertList.Add(rootFolder + file);
+					convertList.Add(file);
 				}
 				else
 				{
-					globalList.Add(rootFolder + file);
+					globalList.Add(file);
 				}
 			}
 
@@ -221,25 +244,110 @@ namespace AssetManager
 			Output.Clear();
 		}
 
+		//- Reads output from a native code converter.
+		delegate void NativeLogDelegate(string text);
+		private void NativeLog(string text)
+		{
+			if (text == null)
+				return;
+
+			if (Output.InvokeRequired)
+			{
+				Output.Invoke(new NativeLogDelegate(NativeLog), new object[] { text });
+			}
+			else
+			{
+				// Parse flags to set the color
+				if (text.StartsWith("[e]", StringComparison.InvariantCultureIgnoreCase))
+				{
+					text = text.Substring(3);
+					Output.SelectionColor = Color.Red;
+				}
+				else if (text.StartsWith("[w]", StringComparison.InvariantCultureIgnoreCase))
+				{
+					text = text.Substring(3);
+					Output.SelectionColor = Color.Yellow;
+				}
+				else if (text.StartsWith("[s]", StringComparison.InvariantCultureIgnoreCase))
+				{
+					text = text.Substring(3);
+					Output.SelectionColor = Color.LightGreen;
+				}
+				else if (text.StartsWith("[r]", StringComparison.InvariantCultureIgnoreCase))
+				{
+					text = text.Substring(3);
+					Output.SelectionColor = Color.LightGray;
+				}
+
+				RichTextBoxExtensions.AppendText(Output, text + Environment.NewLine);
+			}
+		}
+
 		// Automatically refresh the asset directory if there are any changes.
 		FileSystemWatcher watcher;
 		// All convertible file types.
 		readonly string[] assetExtensions = { ".obj", ".ttf" };
 		// Ignored file types.
 		readonly string[] ignoreExtensions = { ".meta" };
+		// Association of fileTypes and their respective encoders.
+		readonly Dictionary<string, string> assetEncoders = new Dictionary<string, string>
+		{
+			{ ".obj", "Encoders/MeshEncoder.exe"},
+			{ ".ttf", "Encoders/FontEncoder.exe"}
+		};
 	}
 
-	public static class WinFormsExtensions
+	public static class RichTextBoxExtensions
 	{
-		public static void AppendLine(this TextBox source, string value)
+		delegate void SetOutputColorDelegate(RichTextBox box, Color color);
+		public static void SetOutputColor(RichTextBox box, Color color)
 		{
-			if (source.Text.Length == 0)
+			if (box.InvokeRequired)
 			{
-				source.Text = value;
+				box.Invoke(new SetOutputColorDelegate(SetOutputColor), new object[] { box, color });
 			}
 			else
 			{
-				source.AppendText("\r\n" + value);
+				box.ForeColor = color;
+			}
+		}
+
+		delegate void AppendTextDelegate(RichTextBox box, string value, Color color = default(Color));
+		public static void AppendText(this RichTextBox box, string value, Color color = default(Color))
+		{
+			if (box.InvokeRequired)
+			{
+				box.Invoke(new AppendTextDelegate(AppendText), new object[] { box, value, color });
+			}
+			else
+			{
+				// Only change the box color if an explicit one was given.
+				if (color != default(Color))
+					box.SelectionColor = color;
+
+				box.SelectionStart = box.TextLength;
+				box.SelectionLength = 0;
+
+				box.AppendText(value);
+				box.SelectionColor = box.ForeColor;
+
+				box.ScrollToCaret();
+			}
+		}
+
+		delegate void AppendLineDelegate(RichTextBox box, string value, Color color = default(Color));
+		public static void AppendLine(this RichTextBox box, string value, Color color = default(Color))
+		{
+			if (box.InvokeRequired)
+			{
+				box.Invoke(new AppendLineDelegate(AppendLine), new object[] { box, value, color });
+			}
+			else
+			{
+				if (box.Text.Length != 0)
+					value = "\r\n" + value;
+
+				AppendText(box, value, color);
 			}
 		}
 	}
