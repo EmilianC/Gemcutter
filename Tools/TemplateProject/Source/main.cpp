@@ -38,11 +38,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	config.SetDefaultValue("vsync", "off");
 	config.SetDefaultValue("asset_directory", "./");
 
-	if (!config.LoadConfig("./Settings.cfg"))
+	if (!config.Load("./Settings.cfg"))
 	{
 		Warning("Could not load \"Settings.cfg\". Generating a new default.");
 
-		if (!config.SaveConfig("./Settings.cfg"))
+		if (!config.Save("./Settings.cfg"))
 		{
 			Warning("Failed to Generate a new Settings.cfg file.");
 		}

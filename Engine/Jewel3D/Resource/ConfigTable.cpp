@@ -7,7 +7,7 @@
 
 namespace Jwl
 {
-	bool ConfigTable::LoadConfig(const std::string& file)
+	bool ConfigTable::Load(const std::string& file)
 	{
 		FileReader input;
 		if (!input.OpenAsBuffer(file))
@@ -42,7 +42,7 @@ namespace Jwl
 		return true;
 	}
 
-	bool ConfigTable::SaveConfig(const std::string& file) const
+	bool ConfigTable::Save(const std::string& file) const
 	{
 		std::ofstream output(file);
 
@@ -51,9 +51,9 @@ namespace Jwl
 			return false;
 		}
 
-		for (auto const& itr : settings)
+		for (auto const& pair : settings)
 		{
-			output << itr.first << "=" << itr.second << '\n';
+			output << pair.first << "=" << pair.second << '\n';
 		}
 
 		output.close();
@@ -64,6 +64,11 @@ namespace Jwl
 	bool ConfigTable::HasSetting(const std::string& setting) const
 	{
 		return settings.find(setting) != settings.end();
+	}
+
+	unsigned ConfigTable::GetSize() const
+	{
+		return settings.size();
 	}
 
 	std::string ConfigTable::GetString(const std::string& setting) const

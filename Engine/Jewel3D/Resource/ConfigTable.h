@@ -8,10 +8,13 @@ namespace Jwl
 	class ConfigTable
 	{
 	public:
-		bool LoadConfig(const std::string& file);
-		bool SaveConfig(const std::string& file) const;
+		bool Load(const std::string& file);
+		bool Save(const std::string& file) const;
 
+		//- Returns true if the setting has a value in the table.
 		bool HasSetting(const std::string& setting) const;
+		//- Returns the number of entries in the table.
+		unsigned GetSize() const;
 
 		std::string GetString(const std::string& setting) const;
 		float GetFloat(const std::string& setting) const;
