@@ -104,6 +104,11 @@ namespace Jwl
 		}
 	}
 
+	bool RemoveFile(const std::string& file)
+	{
+		return DeleteFile(file.c_str()) == TRUE;
+	}
+
 	bool MakeDirectory(const std::string& directory)
 	{
 		if (_mkdir(directory.c_str()) == ENOENT)

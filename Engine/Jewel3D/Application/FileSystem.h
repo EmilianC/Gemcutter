@@ -34,6 +34,9 @@ namespace Jwl
 	//- Returns true if the specified string contains a valid, existing file.
 	bool FileExists(const std::string& file);
 
+	//- Deletes the specified file.
+	bool RemoveFile(const std::string& file);
+
 	//- Attempts to create the specified directory. Returns true on success.
 	bool MakeDirectory(const std::string& directory);
 
