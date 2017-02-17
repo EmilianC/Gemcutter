@@ -187,6 +187,9 @@
     <ClCompile Include="Jewel3D\Resource\Resource.cpp">
       <Filter>Resource</Filter>
     </ClCompile>
+    <ClCompile Include="Jewel3D\Resource\Encoder.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Jewel3D\Precompiled.h" />
@@ -351,6 +354,9 @@
     </ClInclude>
     <ClInclude Include="Jewel3D\Rendering\ParticleEmitter.h">
       <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Jewel3D\Resource\Encoder.h">
+      <Filter>Resource</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
