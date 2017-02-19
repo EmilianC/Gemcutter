@@ -140,7 +140,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	Log("Initialized Game.");
 
 	/* Start Game Loop */
-	Application.GameLoop(std::bind(&Game::Update, game), std::bind(&Game::Draw, game));
+	Application.GameLoop(
+		[=]() { game->Update(); },
+		[=]() { game->Draw(); });
 
 	Log("Clean up...");
 	delete game;

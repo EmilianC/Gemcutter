@@ -35,7 +35,7 @@ namespace Jwl
 
 		virtual void OnEnable() final override
 		{
-			listener.callback = std::bind(&EventDispatcher::Distribute, owner, std::placeholders::_1);
+			listener.callback = [owner](auto& e) { Distribute(owner, e); };
 		}
 
 		virtual void OnDisable() final override
