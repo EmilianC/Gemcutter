@@ -42,7 +42,7 @@
 			this.label2 = new System.Windows.Forms.Label();
 			this.buttonResetMetadata = new System.Windows.Forms.Button();
 			this.textBox1 = new System.Windows.Forms.TextBox();
-			this.button1 = new System.Windows.Forms.Button();
+			this.buttonSettings = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// ButtonPack
@@ -137,6 +137,7 @@
 			// Output
 			// 
 			this.Output.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
+			this.Output.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.Output.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Output.ForeColor = System.Drawing.Color.LightGray;
 			this.Output.Location = new System.Drawing.Point(466, 39);
@@ -178,22 +179,23 @@
 			this.textBox1.Size = new System.Drawing.Size(216, 211);
 			this.textBox1.TabIndex = 22;
 			// 
-			// button1
+			// buttonSettings
 			// 
-			this.button1.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("button1.BackgroundImage")));
-			this.button1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-			this.button1.Location = new System.Drawing.Point(89, 13);
-			this.button1.Name = "button1";
-			this.button1.Size = new System.Drawing.Size(24, 24);
-			this.button1.TabIndex = 23;
-			this.button1.UseVisualStyleBackColor = true;
+			this.buttonSettings.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonSettings.BackgroundImage")));
+			this.buttonSettings.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+			this.buttonSettings.Location = new System.Drawing.Point(89, 13);
+			this.buttonSettings.Name = "buttonSettings";
+			this.buttonSettings.Size = new System.Drawing.Size(24, 24);
+			this.buttonSettings.TabIndex = 23;
+			this.buttonSettings.UseVisualStyleBackColor = true;
+			this.buttonSettings.Click += new System.EventHandler(this.buttonSettings_Click);
 			// 
 			// formAssetManager
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(915, 643);
-			this.Controls.Add(this.button1);
+			this.Controls.Add(this.buttonSettings);
 			this.Controls.Add(this.textBox1);
 			this.Controls.Add(this.buttonResetMetadata);
 			this.Controls.Add(this.label2);
@@ -232,7 +234,7 @@
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Button buttonResetMetadata;
 		private System.Windows.Forms.TextBox textBox1;
-		private System.Windows.Forms.Button button1;
+		private System.Windows.Forms.Button buttonSettings;
 	}
 }
 

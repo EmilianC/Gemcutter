@@ -1,4 +1,5 @@
-﻿using System;
+﻿// Copyright (c) 2017 Emilian Cioca
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -295,6 +296,17 @@ namespace AssetManager
 			{ ".obj", "Encoders/MeshEncoder.exe"},
 			{ ".ttf", "Encoders/FontEncoder.exe"}
 		};
+
+		EncoderList encoderForm;
+
+		private void buttonSettings_Click(object sender, EventArgs e)
+		{
+			if (encoderForm == null || encoderForm.IsDisposed)
+				encoderForm = new EncoderList(assetEncoders);
+
+			encoderForm.Show();
+			encoderForm.BringToFront();
+		}
 	}
 
 	public static class RichTextBoxExtensions
