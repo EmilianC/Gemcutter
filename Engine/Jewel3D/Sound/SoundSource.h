@@ -8,6 +8,7 @@ namespace Jwl
 	//- Position of a SoundSource is updated automatically based on the location of its owning SceneNode.
 	class SoundSource : public Component<SoundSource>
 	{
+		REFLECT_PRIVATE;
 	public:
 		SoundSource(Entity& owner);
 		SoundSource(Entity& owner, Sound::Ptr sound);
@@ -24,20 +25,34 @@ namespace Jwl
 		bool IsPlaying() const;
 		bool IsPaused() const;
 
-		//- Causes the sound to loop to the beginning when done.
+		//- Causes the sound to loop to the beginning when done. Default is off.
 		void SetLooping(bool loop);
+		bool isLooping() const;
+
 		//- Sets the min/max range for attenuation. Should be [0, ...] for both. Default is 1.0f for both.
 		void SetDistance(float min, float max);
+		float GetMinDistance() const;
+		float GetMaxDistance() const;
+
 		//- Volume should be [0, ...]. Default is 1.0f.
 		void SetVolume(float volume);
+		float GetVolume() const;
+
 		//- Minimum volume this source can reach. Should be [0, 1]. Default is 0.0f.
-		void SetMinVolume(float volume);
+		void SetMinVolume(float min);
+		float GetMinVolume() const;
+
 		//- Maximum volume this source can reach. Should be [0, 1]. Default is 1.0f.
-		void SetMaxVolume(float volume);
+		void SetMaxVolume(float max);
+		float GetMaxVolume() const;
+
 		//- Pitch should be [0, ...]. Default is 1.0f.
 		void SetPitch(float pitch);
+		float GetPitch() const;
+
 		//- Roll-off should be [0, ...]. Default is 1.0f. Values > 1 increase intensity of roll-off.
-		void SetRolloffFactor(float factor);
+		void SetRolloffFactor(float rollOff);
+		float GetRolloffFactor() const;
 
 		//- Returns the OpenAL sound handle. Used internally.
 		unsigned GetHandle() const;
@@ -50,8 +65,28 @@ namespace Jwl
 
 		//- An OpenAL sound handle.
 		unsigned hSound = 0;
+
+		bool loop = false;
+		float distanceMin = 1.0f;
+		float distanceMax = 1.0f;
+		float volume = 1.0f;
+		float volumeMin = 0.0f;
+		float volumeMax = 1.0f;
+		float pitch = 1.0f;
+		float rollOff = 1.0f;
 	};
 }
 
-REFLECT(Jwl::SoundSource) < Component >
+REFLECT(Jwl::SoundSource) < Component >,
+MEMBERS <
+	REF_MEMBER(data)<>,
+	REF_MEMBER(loop)<>,
+	REF_MEMBER(distanceMin)<>,
+	REF_MEMBER(distanceMax)<>,
+	REF_MEMBER(volume)<>,
+	REF_MEMBER(volumeMin)<>,
+	REF_MEMBER(volumeMax)<>,
+	REF_MEMBER(pitch)<>,
+	REF_MEMBER(rollOff)<>
+	>
 REF_END;

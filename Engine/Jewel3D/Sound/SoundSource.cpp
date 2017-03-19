@@ -116,10 +116,16 @@ namespace Jwl
 		return state == AL_PAUSED;
 	}
 
-	void SoundSource::SetLooping(bool loop)
+	void SoundSource::SetLooping(bool _loop)
 	{
-		alSourcef(hSound, AL_LOOPING, loop);
+		loop = _loop;
+		alSourcef(hSound, AL_LOOPING, _loop);
 		AL_DEBUG_CHECK();
+	}
+
+	bool SoundSource::isLooping() const
+	{
+		return loop;
 	}
 
 	void SoundSource::SetDistance(float min, float max)
@@ -127,51 +133,93 @@ namespace Jwl
 		ASSERT(min >= 0.0f, "'min' must be non negative.");
 		ASSERT(max >= 0.0f && max >= min, "'min' must be less than or equal to 'max' and 'max' must be non negative.");
 
+		distanceMin = min;
 		alSourcef(hSound, AL_REFERENCE_DISTANCE, min);
 		AL_DEBUG_CHECK();
 
+		distanceMin = max;
 		alSourcef(hSound, AL_MAX_DISTANCE, max);
 		AL_DEBUG_CHECK();
 	}
 
-	void SoundSource::SetVolume(float volume)
+	float SoundSource::GetMinDistance() const
 	{
-		ASSERT(volume >= 0.0f, "'volume' must be non negative.");
+		return distanceMin;
+	}
 
-		alSourcef(hSound, AL_GAIN, volume);
+	float SoundSource::GetMaxDistance() const
+	{
+		return distanceMax;
+	}
+
+	void SoundSource::SetVolume(float _volume)
+	{
+		ASSERT(_volume >= 0.0f, "'volume' must be non negative.");
+
+		volume = _volume;
+		alSourcef(hSound, AL_GAIN, _volume);
 		AL_DEBUG_CHECK();
 	}
 
-	void SoundSource::SetMinVolume(float volume)
+	float SoundSource::GetVolume() const
 	{
-		ASSERT(volume >= 0.0f && volume <= 1.0f, "'volume' must be in the range of [0, 1].");
+		return volume;
+	}
 
-		alSourcef(hSound, AL_MIN_GAIN, volume);
+	void SoundSource::SetMinVolume(float min)
+	{
+		ASSERT(min >= 0.0f && min <= 1.0f, "'volume' must be in the range of [0, 1].");
+
+		volumeMin = min;
+		alSourcef(hSound, AL_MIN_GAIN, min);
 		AL_DEBUG_CHECK();
 	}
 
-	void SoundSource::SetMaxVolume(float volume)
+	float SoundSource::GetMinVolume() const
 	{
-		ASSERT(volume >= 0.0f && volume <= 1.0f, "'volume' must be in the range of [0, 1].");
+		return volumeMin;
+	}
 
-		alSourcef(hSound, AL_MAX_GAIN, volume);
+	void SoundSource::SetMaxVolume(float max)
+	{
+		ASSERT(max >= 0.0f && max <= 1.0f, "'volume' must be in the range of [0, 1].");
+
+		volumeMax = max;
+		alSourcef(hSound, AL_MAX_GAIN, max);
 		AL_DEBUG_CHECK();
 	}
 
-	void SoundSource::SetPitch(float pitch)
+	float SoundSource::GetMaxVolume() const
 	{
-		ASSERT(pitch >= 0.0f, "'pitch' must be non negative.");
+		return volumeMax;
+	}
 
-		alSourcef(hSound, AL_PITCH, pitch);
+	void SoundSource::SetPitch(float _pitch)
+	{
+		ASSERT(_pitch >= 0.0f, "'pitch' must be non negative.");
+
+		pitch = _pitch;
+		alSourcef(hSound, AL_PITCH, _pitch);
 		AL_DEBUG_CHECK();
 	}
 
-	void SoundSource::SetRolloffFactor(float factor)
+	float SoundSource::GetPitch() const
 	{
-		ASSERT(factor >= 0.0f, "'factor' must be non negative.");
+		return pitch;
+	}
 
-		alSourcef(hSound, AL_ROLLOFF_FACTOR, factor);
+	void SoundSource::SetRolloffFactor(float _rollOff)
+	{
+		ASSERT(_rollOff >= 0.0f, "'factor' must be non negative.");
+
+		rollOff = _rollOff;
+		alSourcef(hSound, AL_ROLLOFF_FACTOR, _rollOff);
 		AL_DEBUG_CHECK();
+	}
+
+	float SoundSource::GetRolloffFactor() const
+	{
+		return rollOff;
 	}
 
 	unsigned SoundSource::GetHandle() const
