@@ -8,7 +8,7 @@ Uniforms
 {
 	template static Material : 0
 	{
-		float AlphaCutOff = 1.0;
+		float AlphaCutOff = 0.5;
 	}
 }
 	
