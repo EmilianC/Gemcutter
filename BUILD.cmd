@@ -5,7 +5,7 @@ if errorlevel 1 (
    title Building Debug... Failed!
    echo Debug Build Failure.
    pause
-   exit %errorlevel%
+   goto :eof
 )
 ::
 title Building Release...
@@ -15,8 +15,7 @@ if errorlevel 1 (
    title Building Release... Failed!
    echo Release Build Failure.
    pause
-   exit %errorlevel%
+   goto :eof
 )
 ::
 echo Done!
-pause

@@ -11,3 +11,5 @@ Tools/MeshEncoder/bin/
 Log_Output.txt
 Jewel3D.lib
 *.opendb
+*.TMP
+*.VC.db
