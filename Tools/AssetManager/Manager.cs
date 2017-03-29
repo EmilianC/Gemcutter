@@ -83,6 +83,9 @@ namespace AssetManager
 		//- Starts the packing process. Rebuilds the target Asset directory from scratch.
 		private void Button_Pack_Click(object sender, EventArgs e)
 		{
+			// Make sure that the encoder list is up to date.
+			encoderForm?.Update();
+
 			Output.AppendLine("--- Started ---", Color.Azure);
 
 			// Find all files in the workspace.

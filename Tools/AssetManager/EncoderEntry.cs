@@ -1,4 +1,5 @@
 ﻿// Copyright (c) 2017 Emilian Cioca
+using System;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -8,34 +9,64 @@ namespace AssetManager
 {
 	class EncoderEntry
 	{
-		public EncoderEntry(Control parent, Point location)
+		public EncoderEntry(Panel parentPanel, int offset)
 		{
-			CreateControls(parent, location);
+			parent = parentPanel;
+			CreateControls();
+			SetPosition(offset);
+
 			Validate();
 		}
 
-		public EncoderEntry(Control parent, Point location, string ext, string app)
+		public EncoderEntry(Panel parentPanel, int offset, string ext, string app)
 		{
-			CreateControls(parent, location);
-			SetExtension(ext);
-			SetEncoder(app);
+			parent = parentPanel;
+			CreateControls();
+			SetPosition(offset);
+
+			extension = ext;
+			encoder = app;
 		}
 
-		~EncoderEntry()
+		private void DeleteControls()
 		{
+			status.Dispose();
+			extensionBox.Dispose();
+			encoderBox.Dispose();
+			search.Dispose();
+			delete.Dispose();
+
+			status = null;
+			extensionBox = null;
+			encoderBox = null;
+			search = null;
+			delete = null;
+
 			tabIndex -= 4;
 		}
 
-		public void SetExtension(string ext)
+		public string extension
 		{
-			extension.Text = ext;
-			Validate();
+			get { return extensionBox.Text;  }
+			set { extensionBox.Text = value; Validate(); }
 		}
 
-		public void SetEncoder(string app)
+		public string encoder
 		{
-			encoder.Text = app;
-			Validate();
+			get { return encoderBox.Text; }
+			set { encoderBox.Text = value; Validate(); }
+		}
+
+		public void SetPosition(int offset)
+		{
+			// Adjust for any scrolling offset.
+			offset += parent.AutoScrollPosition.Y;
+
+			status.Location = new Point(3, 9 + offset);
+			extensionBox.Location = new Point(27, 7 + offset);
+			encoderBox.Location = new Point(78, 7 + offset);
+			search.Location = new Point(584, 7 + offset);
+			delete.Location = new Point(610, 7 + offset);
 		}
 
 		// Returns true if the contained data represents a valid extension/encoder pair.
@@ -43,29 +74,29 @@ namespace AssetManager
 		{
 			status.BackgroundImage = Properties.Resources.Error as Image;
 
-			if (extension.Text.Length == 0 ||
-				encoder.Text.Length == 0)
+			if (extensionBox.Text.Length == 0 ||
+				encoderBox.Text.Length == 0)
 			{
 				statusLog.SetToolTip(status, "Fields cannot be empty.");
 				return false;
 			}
 
-			if (extension.Text.Any(x => Path.GetInvalidFileNameChars().Contains(x)))
+			if (extensionBox.Text.Any(x => Path.GetInvalidFileNameChars().Contains(x)))
 			{
 				statusLog.SetToolTip(status, "The Extension name contains invalid characters.");
 				return false;
 			}
 
-			if (encoder.Text.Any(x => Path.GetInvalidPathChars().Contains(x)) ||
-				!encoder.Text.EndsWith(".exe", System.StringComparison.InvariantCultureIgnoreCase))
+			if (encoderBox.Text.Any(x => Path.GetInvalidPathChars().Contains(x)) ||
+				!encoderBox.Text.EndsWith(".exe", System.StringComparison.InvariantCultureIgnoreCase))
 			{
 				statusLog.SetToolTip(status, "The Encoder is not a valid path to an executable.");
 				return false;
 			}
 
-			var encoderPath = Path.IsPathRooted(encoder.Text) ?
-				encoder.Text :
-				Directory.GetCurrentDirectory() + encoder.Text;
+			var encoderPath = Path.IsPathRooted(encoderBox.Text) ?
+				encoderBox.Text :
+				Directory.GetCurrentDirectory() + encoderBox.Text;
 			if (!File.Exists(encoderPath))
 			{
 				statusLog.SetToolTip(status, "The Encoder executable does not exist on the disk.");
@@ -77,29 +108,25 @@ namespace AssetManager
 			return true;
 		}
 
-		private void CreateControls(Control parent, Point location)
+		private void CreateControls()
 		{
 			var font = new Font("Segoe UI", 9F);
 
 			// Manually create the GUI for the table entry.
-			status.Location = new Point(3 + location.X, 8 + location.Y);
 			status.BackgroundImageLayout = ImageLayout.Stretch;
-			status.Size = new Size(19, 19);
+			status.Size = new Size(18, 18);
 			status.TabStop = false;
 
-			extension.Location = new Point(27 + location.X, 7 + location.Y);
-			extension.Size = new Size(45, 23);
-			extension.TabIndex = tabIndex++;
-			extension.Font = font;
-			extension.TextChanged += (sender, e) => Validate();
+			extensionBox.Size = new Size(45, 23);
+			extensionBox.TabIndex = tabIndex++;
+			extensionBox.Font = font;
+			extensionBox.TextChanged += (sender, e) => Validate();
 
-			encoder.Location = new Point(78 + location.X, 7 + location.Y);
-			encoder.Size = new Size(424, 23);
-			encoder.TabIndex = tabIndex++;
-			encoder.Font = font;
-			encoder.TextChanged += (sender, e) => Validate();
+			encoderBox.Size = new Size(500, 23);
+			encoderBox.TabIndex = tabIndex++;
+			encoderBox.Font = font;
+			encoderBox.TextChanged += (sender, e) => Validate();
 
-			search.Location = new Point(508 + location.X, 7 + location.Y);
 			search.Size = new Size(23, 23);
 			search.BackgroundImage = Properties.Resources.Search;
 			search.BackgroundImageLayout = ImageLayout.Stretch;
@@ -107,16 +134,22 @@ namespace AssetManager
 			search.UseVisualStyleBackColor = true;
 			search.Click += (sender, e) => SearchForEncoder();
 
-			delete.Location = new Point(534 + location.X, 7 + location.Y);
 			delete.Size = new Size(23, 23);
 			delete.BackgroundImage = Properties.Resources.Delete;
 			delete.BackgroundImageLayout = ImageLayout.Stretch;
 			delete.TabIndex = tabIndex++;
 			delete.UseVisualStyleBackColor = true;
+			delete.Click += (sender, e) =>
+			{
+				DeleteControls();
+
+				if (onDelete != null)
+					onDelete(this, EventArgs.Empty);
+			};
 
 			parent.Controls.Add(status);
-			parent.Controls.Add(extension);
-			parent.Controls.Add(encoder);
+			parent.Controls.Add(extensionBox);
+			parent.Controls.Add(encoderBox);
 			parent.Controls.Add(search);
 			parent.Controls.Add(delete);
 		}
@@ -129,15 +162,19 @@ namespace AssetManager
 			dialog.RestoreDirectory = true;
 
 			if (dialog.ShowDialog() == DialogResult.OK)
-				encoder.Text = dialog.FileName;
+				encoderBox.Text = dialog.FileName;
 		}
+
+		// Called when the delete button is clicked and the entry should be removed.
+		public event EventHandler onDelete;
 
 		PictureBox status = new PictureBox();
 		ToolTip statusLog = new ToolTip();
-		TextBox extension = new TextBox();
-		TextBox encoder = new TextBox();
+		TextBox extensionBox = new TextBox();
+		TextBox encoderBox = new TextBox();
 		Button search = new Button();
 		Button delete = new Button();
+		Panel parent;
 
 		public static readonly int ItemHeight = 30;
 		private static int tabIndex = 1;

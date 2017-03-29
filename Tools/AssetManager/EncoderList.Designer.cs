@@ -38,16 +38,16 @@
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(13, 21);
+			this.label1.Location = new System.Drawing.Point(38, 23);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(57, 15);
+			this.label1.Size = new System.Drawing.Size(35, 15);
 			this.label1.TabIndex = 3;
-			this.label1.Text = "Extension";
+			this.label1.Text = "Asset";
 			// 
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(88, 21);
+			this.label2.Location = new System.Drawing.Point(88, 23);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(50, 15);
 			this.label2.TabIndex = 4;
@@ -58,13 +58,13 @@
 			this.panel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.panel.Location = new System.Drawing.Point(12, 39);
 			this.panel.Name = "panel";
-			this.panel.Size = new System.Drawing.Size(584, 217);
+			this.panel.Size = new System.Drawing.Size(660, 217);
 			this.panel.TabIndex = 5;
 			// 
 			// buttonAdd
 			// 
 			this.buttonAdd.Font = new System.Drawing.Font("Segoe UI", 9F);
-			this.buttonAdd.Location = new System.Drawing.Point(485, 13);
+			this.buttonAdd.Location = new System.Drawing.Point(561, 13);
 			this.buttonAdd.Name = "buttonAdd";
 			this.buttonAdd.Size = new System.Drawing.Size(111, 24);
 			this.buttonAdd.TabIndex = 9999;
@@ -76,7 +76,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(608, 260);
+			this.ClientSize = new System.Drawing.Size(684, 260);
 			this.Controls.Add(this.buttonAdd);
 			this.Controls.Add(this.panel);
 			this.Controls.Add(this.label2);
