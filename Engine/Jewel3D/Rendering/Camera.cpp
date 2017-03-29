@@ -423,10 +423,10 @@ namespace Jwl
 
 	void Camera::CreateUniformHandles()
 	{
-		uniformView = buffer.GetUniformHandle<mat4>("View");
-		uniformProj = buffer.GetUniformHandle<mat4>("Proj");
-		uniformViewProj = buffer.GetUniformHandle<mat4>("ViewProj");
-		uniformInvView = buffer.GetUniformHandle<mat4>("InvView");
-		uniformInvProj = buffer.GetUniformHandle<mat4>("InvProj");
+		uniformView = buffer.MakeHandle<mat4>("View");
+		uniformProj = buffer.MakeHandle<mat4>("Proj");
+		uniformViewProj = buffer.MakeHandle<mat4>("ViewProj");
+		uniformInvView = buffer.MakeHandle<mat4>("InvView");
+		uniformInvProj = buffer.MakeHandle<mat4>("InvProj");
 	}
 }

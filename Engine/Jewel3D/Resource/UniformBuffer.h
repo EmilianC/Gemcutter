@@ -40,7 +40,7 @@ namespace Jwl
 		void SetUniformArray(const std::string& name, unsigned numElements, T* data);
 
 		template<class T>
-		UniformHandle<T> GetUniformHandle(const std::string& name);
+		UniformHandle<T> MakeHandle(const std::string& name);
 
 		int GetByteSize();
 		bool IsUniform(const std::string& name);
@@ -165,10 +165,10 @@ namespace Jwl
 	};
 
 	template<class T>
-	UniformHandle<T> UniformBuffer::GetUniformHandle(const std::string& name)
+	UniformHandle<T> UniformBuffer::MakeHandle(const std::string& name)
 	{
 		T* loc = reinterpret_cast<T*>(GetBufferLoc(name));
-		ASSERT(loc, "Name does not match with a Uniform value.");
+		ASSERT(loc, "\"%s\" does not match the name of a Uniform.", name.c_str());
 
 		return UniformHandle<T>(*this, *loc);
 	}

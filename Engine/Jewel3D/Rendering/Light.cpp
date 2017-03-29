@@ -112,12 +112,12 @@ namespace Jwl
 	{
 		ASSERT(lightBuffer, "Light Uniform Buffer is not initialized.");
 
-		color = lightBuffer->GetUniformHandle<vec3>("Color");
-		attenuationConstant = lightBuffer->GetUniformHandle<float>("AttenuationConstant");
-		attenuationLinear = lightBuffer->GetUniformHandle<float>("AttenuationLinear");
-		attenuationQuadratic = lightBuffer->GetUniformHandle<float>("AttenuationQuadratic");
-		cosAngle = lightBuffer->GetUniformHandle<float>("Angle");
-		position = lightBuffer->GetUniformHandle<vec3>("Position");
-		direction = lightBuffer->GetUniformHandle<vec3>("Direction");
+		color = lightBuffer->MakeHandle<vec3>("Color");
+		attenuationConstant = lightBuffer->MakeHandle<float>("AttenuationConstant");
+		attenuationLinear = lightBuffer->MakeHandle<float>("AttenuationLinear");
+		attenuationQuadratic = lightBuffer->MakeHandle<float>("AttenuationQuadratic");
+		cosAngle = lightBuffer->MakeHandle<float>("Angle");
+		position = lightBuffer->MakeHandle<vec3>("Position");
+		direction = lightBuffer->MakeHandle<vec3>("Direction");
 	}
 }

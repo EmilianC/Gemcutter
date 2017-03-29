@@ -454,9 +454,9 @@ namespace Jwl
 
 	void RenderPass::CreateUniformHandles()
 	{
-		MVP = transformBuffer.GetUniformHandle<mat4>("MVP");
-		modelView = transformBuffer.GetUniformHandle<mat4>("ModelView");
-		model = transformBuffer.GetUniformHandle<mat4>("Model");
-		invModel = transformBuffer.GetUniformHandle<mat4>("InvModel");
+		MVP = transformBuffer.MakeHandle<mat4>("MVP");
+		modelView = transformBuffer.MakeHandle<mat4>("ModelView");
+		model = transformBuffer.MakeHandle<mat4>("Model");
+		invModel = transformBuffer.MakeHandle<mat4>("InvModel");
 	}
 }
