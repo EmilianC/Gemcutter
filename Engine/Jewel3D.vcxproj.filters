@@ -184,6 +184,9 @@
     <ClCompile Include="Jewel3D\Rendering\Sprite.cpp">
       <Filter>Rendering</Filter>
     </ClCompile>
+    <ClCompile Include="Jewel3D\Resource\Resource.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Jewel3D\Precompiled.h" />

@@ -4,6 +4,7 @@
 #include <Jewel3D/Rendering/Primitives.h>
 #include <Jewel3D/Rendering/Rendering.h>
 #include <Jewel3D/Resource/ConfigTable.h>
+#include <Jewel3D/Resource/Resource.h>
 #include <Jewel3D/Resource/Texture.h>
 #include <Jewel3D/Sound/SoundSystem.h>
 #include <Jewel3D/Utilities/Random.h>
@@ -35,6 +36,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	config.SetDefaultValue("anisotropic_level", 2.0f);
 	config.SetDefaultValue("texture_filter", "trilinear");
 	config.SetDefaultValue("vsync", "off");
+	config.SetDefaultValue("asset_directory", "./");
 
 	if (!config.LoadConfig("./Settings.cfg"))
 	{
@@ -45,6 +47,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 			Warning("Failed to Generate a new Settings.cfg file.");
 		}
 	}
+
+	/* Set Asset Directory */
+	RootAssetDirectory = config.GetString("asset_directory");
 
 	/* Resolve 'auto' settings */
 	RECT desktop;

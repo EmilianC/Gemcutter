@@ -15,7 +15,7 @@ namespace Reflection
 
 namespace Jwl
 {
-	static std::string RootAssetDirectory = "./Assets/";
+	extern std::string RootAssetDirectory;
 
 	//- Base resource class. Provides an interface for cached loading.
 	template<class Asset>
