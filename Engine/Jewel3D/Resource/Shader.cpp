@@ -1230,20 +1230,23 @@ namespace Jwl
 	{
 		ASSERT(IsLoaded(), "ShaderData must have a shader loaded to call this function.");
 
-		// this shader variant is new and needs to be loaded
 		auto itr = variants.find(definitions);
 		if (itr == variants.end())
 		{
-			variants.insert(std::make_pair(definitions, ShaderVariant()));
-			auto& newShader = variants[definitions];
-			
-			// If the shader is not initialized.
+			// This shader variant is new and needs to be created.
+			auto& newShader = variants.emplace(definitions, ShaderVariant()).first->second;
+
 			if (!newShader.Load(
 				version + header + definitions.GetString() + uniformBuffers + samplers,
 				attributes + vertexSource,
 				geometrySource,
 				fragmentSrouce))
 			{
+				if (!definitions.IsEmpty())
+				{
+					Error("Active variant definitions:\n%s", definitions.GetString().c_str());
+				}
+
 				// Instead of doing nothing, we load a hard-coded pink shader on failure.
 				if (!newShader.Load(
 					version + builtInBuffers,
@@ -1259,27 +1262,27 @@ namespace Jwl
 				{
 					ASSERT(false, "Fallback pink-shader failed to compile.");
 				}
-				
-				return;
 			}
-
-			// Make sure the samplers are all set to the correct bindings.
-			for (unsigned i = 0; i < textureBindings.size(); i++)
+			else
 			{
-				unsigned location = glGetUniformLocation(newShader.hProgram, textureBindings[i].name.c_str());
-				ASSERT(location != GL_INVALID_INDEX, "Sampler location for shader variant could not be found.");
+				// Make sure the samplers are all set to the correct bindings.
+				for (unsigned i = 0; i < textureBindings.size(); i++)
+				{
+					unsigned location = glGetUniformLocation(newShader.hProgram, textureBindings[i].name.c_str());
+					ASSERT(location != GL_INVALID_INDEX, "Sampler location for shader variant could not be found.");
 
-				glProgramUniform1i(newShader.hProgram, location, textureBindings[i].unit);
-			}
+					glProgramUniform1i(newShader.hProgram, location, textureBindings[i].unit);
+				}
 
-			// Make sure the UniformBuffers are all set to the correct bindings.
-			for (unsigned i = 0; i < bufferBindings.size(); i++)
-			{
-				unsigned block = glGetUniformBlockIndex(newShader.hProgram, ("Jwl_User_" + bufferBindings[i].name).c_str());
-				ASSERT(block != GL_INVALID_INDEX, "Block index for shader variant could not be found.");
+				// Make sure the UniformBuffers are all set to the correct bindings.
+				for (unsigned i = 0; i < bufferBindings.size(); i++)
+				{
+					unsigned block = glGetUniformBlockIndex(newShader.hProgram, ("Jwl_User_" + bufferBindings[i].name).c_str());
+					ASSERT(block != GL_INVALID_INDEX, "Block index for shader variant could not be found.");
 
-				// We offset the binding unit to make room for the engine defined binding points.
-				glUniformBlockBinding(newShader.hProgram, block, bufferBindings[i].unit);
+					// We offset the binding unit to make room for the engine defined binding points.
+					glUniformBlockBinding(newShader.hProgram, block, bufferBindings[i].unit);
+				}
 			}
 
 			newShader.Bind();
@@ -1334,7 +1337,7 @@ namespace Jwl
 			if (bufferBindings[i].unit == unit)
 			{
 				ASSERT(bufferBindings[i].templateBuff, "Specified binding unit is not marked as 'template' in the shader.");
-				
+
 				newBuf->Copy(*bufferBindings[i].templateBuff);
 
 				return newBuf;
