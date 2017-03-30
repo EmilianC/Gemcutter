@@ -4,36 +4,37 @@
 #include "Jewel3D/Math/Vector.h"
 #include "Jewel3D/Utilities/Singleton.h"
 
-#undef NOVIRTUALKEYCODES
-#include <windows.h>
+struct tagMSG;
+typedef tagMSG MSG;
 
 namespace Jwl
 {
 	enum class Key
 	{
 		//- Keyboard keys
-		Left = VK_LEFT, Right = VK_RIGHT, Up = VK_UP, Down = VK_DOWN,
+		Left = 0x25,
+		Up,
+		Right,
+		Down,
 		
-		LeftShift = VK_LSHIFT,
-		RightShift = VK_RSHIFT,
+		LeftShift = 0xA0,
+		RightShift,
+		LeftControl,
+		RightControl,
+		LeftAlt,
+		RightAlt,
 
-		LeftControl = VK_LCONTROL,
-		RightControl = VK_RCONTROL,
-
-		LeftAlt = VK_LMENU,
-		RightAlt = VK_RMENU,
-
-		Plus = VK_OEM_PLUS,
-		Minus = VK_OEM_MINUS,
-		Delete = VK_DELETE,
-		Space = VK_SPACE,
-		Enter = VK_RETURN,
-		Escape = VK_ESCAPE,
-		Tab = VK_TAB,
+		Plus = 0xBB,
+		Minus = 0xBD,
+		Delete = 0x2E,
+		Space = 0x20,
+		Enter = 0x0D,
+		Escape = 0x1B,
+		Tab = 0x09,
 
 		KeyBoard0 = '0', KeyBoard1, KeyBoard2, KeyBoard3, KeyBoard4, KeyBoard5, KeyBoard6, KeyBoard7, KeyBoard8, KeyBoard9,
-		Numpad0 = VK_NUMPAD0, Numpad1, Numpad2, Numpad3, Numpad4, Numpad5, Numpad6, Numpad7, Numpad8, Numpad9,
-		F1 = VK_F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12,
+		Numpad0 = 0x60, Numpad1, Numpad2, Numpad3, Numpad4, Numpad5, Numpad6, Numpad7, Numpad8, Numpad9,
+		F1 = 0x70, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12,
 		A = 'A', B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
 
 		//- Mouse buttons

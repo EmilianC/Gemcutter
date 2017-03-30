@@ -1,7 +1,6 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
 #include <cmath>
-#include <utility>
 
 namespace Jwl
 {

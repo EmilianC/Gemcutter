@@ -2,7 +2,7 @@
 #pragma once
 #include "Vector.h"
 #include "Quaternion.h"
-#include "../Reflection/Reflection.h"
+#include "Jewel3D/Reflection/Reflection.h"
 
 namespace Jwl
 {

@@ -1,6 +1,5 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
-#include <Windows.h>
 
 namespace Jwl
 {
@@ -42,6 +41,6 @@ namespace Jwl
 		static __int64 ticksPerSecond;
 		static __int64 ticksPerMS;
 
-		LARGE_INTEGER startTime;
+		__int64 startTime;
 	};
 }

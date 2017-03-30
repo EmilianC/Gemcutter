@@ -7,8 +7,6 @@
 #include "Jewel3D/Resource/UniformBuffer.h"
 #include "Jewel3D/Utilities/Random.h"
 
-#include <vector>
-
 namespace Jwl
 {
 	//- Spawns particles and updates their positions.

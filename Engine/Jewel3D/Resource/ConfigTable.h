@@ -34,6 +34,5 @@ namespace Jwl
 
 	private:
 		std::unordered_map<std::string, std::string> settings;
-
 	};
 }

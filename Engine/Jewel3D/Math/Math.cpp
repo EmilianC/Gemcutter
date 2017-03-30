@@ -2,8 +2,6 @@
 #include "Jewel3D/Precompiled.h"
 #include "Math.h"
 
-#include <cmath>
-
 namespace Jwl
 {
 	float SnapToGrid(float value, float step)

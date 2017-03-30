@@ -3,6 +3,7 @@
 #include "Shareable.h"
 #include "Jewel3D/Application/Logging.h"
 #include "Jewel3D/Math/Vector.h"
+#include "Jewel3D/Math/Matrix.h"
 #include "Jewel3D/Reflection/Reflection.h"
 
 #include <unordered_map>
@@ -195,6 +196,9 @@ REFLECT_BASIC(Jwl::UniformHandle<int>)
 REFLECT_BASIC(Jwl::UniformHandle<unsigned int>)
 REFLECT_BASIC(Jwl::UniformHandle<float>)
 REFLECT_BASIC(Jwl::UniformHandle<bool>)
-REFLECT_BASIC(Jwl::UniformHandle<Jwl::vec3>)
 REFLECT_BASIC(Jwl::UniformHandle<Jwl::vec2>)
+REFLECT_BASIC(Jwl::UniformHandle<Jwl::vec3>)
 REFLECT_BASIC(Jwl::UniformHandle<Jwl::vec4>)
+REFLECT_BASIC(Jwl::UniformHandle<Jwl::mat2>)
+REFLECT_BASIC(Jwl::UniformHandle<Jwl::mat3>)
+REFLECT_BASIC(Jwl::UniformHandle<Jwl::mat4>)

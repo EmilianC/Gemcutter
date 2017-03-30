@@ -131,10 +131,6 @@ namespace Jwl
 			EventQueue.Push(std::make_unique<KeyReleased>(Key::MouseMiddle));
 			break;
 
-		case WM_CHAR:
-			// EventManager::PostEvent(new EventData(Input_Char, msg.wParam, 0, 0, 0.0f, false, nullptr));
-			break;
-
 		case WM_MOUSEWHEEL:
 			EventQueue.Push(std::make_unique<MouseScrolled>(static_cast<int>(GET_WHEEL_DELTA_WPARAM(msg.wParam) / WHEEL_DELTA)));
 			break;

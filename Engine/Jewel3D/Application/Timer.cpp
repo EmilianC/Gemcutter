@@ -3,6 +3,8 @@
 #include "Timer.h"
 #include "Logging.h"
 
+#include <Windows.h>
+
 namespace Jwl
 {
 	__int64 Timer::ticksPerSecond = GetResolution();
@@ -32,7 +34,10 @@ namespace Jwl
 
 	void Timer::Reset()
 	{
-		QueryPerformanceCounter(&startTime);
+		LARGE_INTEGER temp;
+		QueryPerformanceCounter(&temp);
+
+		startTime = temp.QuadPart;
 	}
 
 	double Timer::GetElapsedMS() const
@@ -40,7 +45,7 @@ namespace Jwl
 		LARGE_INTEGER currentTime;
 		QueryPerformanceCounter(&currentTime);
 		// (the total time the Timer has been running) / Conversion to MS
-		return (currentTime.QuadPart - startTime.QuadPart) / static_cast<double>(ticksPerMS);
+		return (currentTime.QuadPart - startTime) / static_cast<double>(ticksPerMS);
 	}
 
 	double Timer::GetElapsedSeconds() const
@@ -48,7 +53,7 @@ namespace Jwl
 		LARGE_INTEGER currentTime;
 		QueryPerformanceCounter(&currentTime);
 		// (the total time the Timer has been running) / Conversion to seconds
-		return (currentTime.QuadPart - startTime.QuadPart) / static_cast<double>(ticksPerSecond);
+		return (currentTime.QuadPart - startTime) / static_cast<double>(ticksPerSecond);
 	}
 
 	bool Timer::IsElapsedMS(double ms) const
@@ -64,24 +69,24 @@ namespace Jwl
 	void Timer::SubtractTimeMS(double ms)
 	{
 		// Moving the start time forward effectively removes time.
-		startTime.QuadPart += static_cast<long long>(ms) / ticksPerMS;
+		startTime += static_cast<long long>(ms) / ticksPerMS;
 	}
 
 	void Timer::SubtractTimeSeconds(double seconds)
 	{
 		// Moving the start time forward effectively removes time.
-		startTime.QuadPart += static_cast<long long>(seconds) / ticksPerSecond;
+		startTime += static_cast<long long>(seconds) / ticksPerSecond;
 	}
 
 	void Timer::AddTimeMS(double ms)
 	{
 		// Moving the start time back effective adds more time.
-		startTime.QuadPart -= static_cast<long long>(ms) / ticksPerMS;
+		startTime -= static_cast<long long>(ms) / ticksPerMS;
 	}
 
 	void Timer::AddTimeSeconds(double seconds)
 	{
 		// Moving the start time back effective adds more time.
-		startTime.QuadPart -= static_cast<long long>(seconds) / ticksPerSecond;
+		startTime -= static_cast<long long>(seconds) / ticksPerSecond;
 	}
 }
