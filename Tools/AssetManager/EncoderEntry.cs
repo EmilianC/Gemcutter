@@ -4,21 +4,21 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Xml.Serialization;
 
 namespace AssetManager
 {
-	class EncoderEntry
+	public class EntryData
 	{
-		public EncoderEntry(Panel parentPanel, int offset)
-		{
-			parent = parentPanel;
-			CreateControls();
-			SetPosition(offset);
+		[XmlAttribute]
+		public string extension;
+		[XmlAttribute]
+		public string encoder;
+	}
 
-			Validate();
-		}
-
-		public EncoderEntry(Panel parentPanel, int offset, string ext, string app)
+	public class EncoderEntry
+	{
+		public EncoderEntry(Panel parentPanel, int offset, string ext = "", string app = "")
 		{
 			parent = parentPanel;
 			CreateControls();
@@ -41,8 +41,6 @@ namespace AssetManager
 			encoderBox = null;
 			search = null;
 			delete = null;
-
-			tabIndex -= 4;
 		}
 
 		public string extension
@@ -87,6 +85,12 @@ namespace AssetManager
 				return false;
 			}
 
+			if (extensionBox.Text.Equals(".meta", StringComparison.InvariantCultureIgnoreCase))
+			{
+				statusLog.SetToolTip(status, "This Extension is reserved in the workspace and cannot be used.");
+				return false;
+			}
+
 			if (encoderBox.Text.Any(x => Path.GetInvalidPathChars().Contains(x)) ||
 				!encoderBox.Text.EndsWith(".exe", System.StringComparison.InvariantCultureIgnoreCase))
 			{
@@ -94,9 +98,10 @@ namespace AssetManager
 				return false;
 			}
 
-			var encoderPath = Path.IsPathRooted(encoderBox.Text) ?
-				encoderBox.Text :
-				Directory.GetCurrentDirectory() + encoderBox.Text;
+			var path = Environment.ExpandEnvironmentVariables(encoderBox.Text);
+			var encoderPath = Path.IsPathRooted(path) ?
+				path :
+				Directory.GetCurrentDirectory() + path;
 			if (!File.Exists(encoderPath))
 			{
 				statusLog.SetToolTip(status, "The Encoder executable does not exist on the disk.");

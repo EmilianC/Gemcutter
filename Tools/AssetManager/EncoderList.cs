@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
+using System.IO;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 
@@ -7,63 +9,74 @@ namespace AssetManager
 {
 	public partial class EncoderList : Form
 	{
-		public EncoderList(Dictionary<string, string> list)
+		public EncoderList()
 		{
 			InitializeComponent();
 			panel.AutoScroll = true;
-			encoderList = list;
 
-			foreach (var entry in list)
+			LoadEncoders();
+
+			// Hide the form instead of closing it.
+			FormClosing += (sender, e) =>
 			{
-				AddItem(entry.Key, entry.Value);
+				e.Cancel = true;
+
+				Hide();
+				SaveEncoders();
+			};
+		}
+
+		private void LoadEncoders()
+		{
+			if (File.Exists("config.workspace"))
+			{
+				EntryData[] dict;
+
+				using (var myFileStream = File.OpenRead("config.workspace"))
+				{
+					var mySerializer = new XmlSerializer(typeof(EntryData[]));
+					dict = (EntryData[])mySerializer.Deserialize(myFileStream);
+				}
+
+				foreach (var entry in dict)
+				{
+					AddItem(entry.extension, entry.encoder);
+				}
 			}
-
-			FormClosed += (sender, e) => UpdateList();
+			else
+			{
+				// Setup default encoders...
+				entries.Add(new EncoderEntry(panel, EncoderEntry.ItemHeight * 0, 
+					".ttf", "%JEWEL3D_PATH%\\Tools\\FontEncoder\\bin\\Release_Win32\\FontEncoder.exe"));
+				entries.Add(new EncoderEntry(panel, EncoderEntry.ItemHeight * 1,
+					".obj", "%JEWEL3D_PATH%\\Tools\\MeshEncoder\\bin\\Release_Win32\\MeshEncoder.exe"));
+			}
 		}
 
-		void LoadList()
+		//- 
+		private void SaveEncoders()
 		{
-			//MySerializableClass myObject;
+			File.WriteAllText("config.workspace", string.Empty);
 
-			//// Construct an instance of the XmlSerializer with the type  
-			//// of object that is being deserialized.  
-			//XmlSerializer mySerializer =
-			//new XmlSerializer(typeof(MySerializableClass));
-
-			//// To read the file, create a FileStream.  
-			//FileStream myFileStream =
-			//new FileStream("myFileName.xml", FileMode.Open);
-
-			//// Call the Deserialize method and cast to the object type.  
-			//myObject = (MySerializableClass)
-			//mySerializer.Deserialize(myFileStream)
-		}
-
-		void SaveList()
-		{
-			//Employees Emps = new Employees();
-			// Note that only the collection is serialized -- not the 
-			// CollectionName or any other public property of the class.
-			//Emps.CollectionName = "Employees";
-			//Employee John100 = new Employee("John", "100xxx");
-			//Emps.Add(John100);
-			//XmlSerializer x = new XmlSerializer(typeof(Employees));
-			//TextWriter writer = new StreamWriter(filename);
-			//x.Serialize(writer, Emps);
+			using (var writer = File.OpenWrite("config.workspace"))
+			{
+				var mySerializer = new XmlSerializer(typeof(EntryData[]));
+				mySerializer.Serialize(writer, entries.Select(x => new EntryData() {extension = x.extension, encoder = x.encoder }).ToArray());
+			}
 		}
 
 		// Ensures that the attached list is up to date with the currently valid entries.
-		public void UpdateList()
+		public Dictionary<string, string> GetEncoders()
 		{
-			encoderList.Clear();
+			var result = new Dictionary<string, string>();
 
 			foreach (var entry in entries)
 			{
 				if (entry.Validate())
-				{
-					encoderList.Add(entry.extension, entry.encoder);
-				}
+					result.Add(entry.extension, Environment.ExpandEnvironmentVariables(entry.encoder));
 			}
+
+			return result;
 		}
 
 		// Reorganizes the spacing of the list.
@@ -92,7 +105,6 @@ namespace AssetManager
 			AddItem();
 		}
 
-		Dictionary<string, string> encoderList;
 		List<EncoderEntry> entries = new List<EncoderEntry>();
 	}
 }

@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using System.Xml.Serialization;
 
 namespace AssetManager
 {
@@ -83,9 +84,6 @@ namespace AssetManager
 		//- Starts the packing process. Rebuilds the target Asset directory from scratch.
 		private void Button_Pack_Click(object sender, EventArgs e)
 		{
-			// Make sure that the encoder list is up to date.
-			encoderForm?.Update();
-
 			Output.AppendLine("--- Started ---", Color.Azure);
 
 			// Find all files in the workspace.
@@ -130,8 +128,6 @@ namespace AssetManager
 
 			ParseDirectory(Directory.GetCurrentDirectory(), null);
 
-			// Find any files that don't yet have a .meta and initialize them.
-
 			// Reselect the old folder, if it still exists.
 			if (previousSelection.Count != 0)
 			{
@@ -150,6 +146,9 @@ namespace AssetManager
 
 			treeViewAssets.ExpandAll();
 			RefreshItemView();
+
+			// Find any files that don't yet have a .meta and initialize them.
+			//...
 		}
 
 		delegate void RefreshWorkspaceDelegate();
@@ -190,13 +189,15 @@ namespace AssetManager
 		//- Collects all files that must either be copied or converted into the Asset directory.
 		void CollectFiles(string rootFolder, List<string> globalList, List<string> convertList)
 		{
+			var assetEncoders = encoderForm.GetEncoders();
+
 			var files = Directory.GetFiles(rootFolder);
 			foreach (string file in files)
 			{
-				if (ignoreExtensions.Any(x => file.EndsWith(x)))
+				if (file.EndsWith(".meta", StringComparison.InvariantCultureIgnoreCase))
 					continue;
 
-				if (assetExtensions.Any(x => file.EndsWith(x)))
+				if (assetEncoders.Any(x => file.EndsWith(x.Key, StringComparison.InvariantCultureIgnoreCase)))
 				{
 					convertList.Add(file);
 				}
@@ -289,24 +290,11 @@ namespace AssetManager
 
 		// Automatically refresh the asset directory if there are any changes.
 		FileSystemWatcher watcher;
-		// All convertible file types.
-		readonly string[] assetExtensions = { ".obj", ".ttf" };
-		// Ignored file types.
-		readonly string[] ignoreExtensions = { ".meta" };
-		// Association of fileTypes and their respective encoders.
-		readonly Dictionary<string, string> assetEncoders = new Dictionary<string, string>
-		{
-			{ ".obj", "Encoders/MeshEncoder.exe"},
-			{ ".ttf", "Encoders/FontEncoder.exe"}
-		};
-
-		EncoderList encoderForm;
+		// The form responsible for editing the list of encoders.
+		EncoderList encoderForm = new EncoderList();
 
 		private void buttonSettings_Click(object sender, EventArgs e)
 		{
-			if (encoderForm == null || encoderForm.IsDisposed)
-				encoderForm = new EncoderList(assetEncoders);
-
 			encoderForm.Show();
 			encoderForm.BringToFront();
 		}
