@@ -17,10 +17,10 @@ namespace Jwl
 	};
 
 	//- Enumerates the current directory caches all filenames and folder names it contains.
-	bool ParseCurrentDirectory(DirectoryData& outData);
+	bool ParseDirectory(DirectoryData& outData);
 
 	//- Enumerates a directory and caches all filenames and folder names it contains.
-	bool ParseDirectory(const std::string& directory, DirectoryData& outData);
+	bool ParseDirectory(DirectoryData& outData, const std::string& directory);
 
 	//- Returns true if the specified string contains a valid, existing path.
 	bool DirectoryExists(const std::string& directory);

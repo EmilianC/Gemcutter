@@ -8,7 +8,6 @@
 #include <stack>
 #include <stdlib.h>
 
-#define BUFFER_LENGTH 256
 #define SUCCESS 0
 
 // Resolve name conflict with our functions.
@@ -22,12 +21,12 @@ namespace
 
 namespace Jwl
 {
-	bool ParseCurrentDirectory(DirectoryData& outData)
+	bool ParseDirectory(DirectoryData& outData)
 	{
-		return ParseDirectory(GetCurrentDirectory(), outData);
+		return ParseDirectory(outData, GetCurrentDirectory());
 	}
 
-	bool ParseDirectory(const std::string& directory, DirectoryData& outData)
+	bool ParseDirectory(DirectoryData& outData, const std::string& directory)
 	{
 		outData.files.clear();
 		outData.folders.clear();
@@ -36,44 +35,47 @@ namespace Jwl
 		dirent* drnt = nullptr;
 
 		dir = opendir(directory.c_str());
-		if (dir != nullptr)
+		if (dir == nullptr)
 		{
-			while ((drnt = readdir(dir)) != nullptr)
+			return false;
+		}
+
+		while ((drnt = readdir(dir)) != nullptr)
+		{
+			switch (drnt->d_type)
 			{
-				switch (drnt->d_type)
+			// Regular file.
+			case DT_REG:
+				outData.files.emplace_back(drnt->d_name);
+				break;
+
+			// Directory.
+			case DT_DIR:
+				if (strcmp(drnt->d_name, ".") != 0 &&
+					strcmp(drnt->d_name, "..") != 0)
 				{
-				// Regular file
-				case DT_REG:
-					outData.files.push_back(drnt->d_name);
-					break;
-
-				// Directory
-				case DT_DIR:
-					if (strcmp(drnt->d_name, ".") != 0 &&
-						strcmp(drnt->d_name, "..") != 0)
-					{
-						outData.folders.push_back(drnt->d_name);
-					}
-					break;
-
-				default:
-					continue;
+					outData.folders.emplace_back(drnt->d_name);
 				}
+				break;
 			}
+		}
 
+		closedir(dir);
+
+		return true;
+	}
+
+	bool DirectoryExists(const std::string& directory)
+	{
+		if (auto dir = opendir(directory.c_str()))
+		{
 			closedir(dir);
-
 			return true;
 		}
 		else
 		{
 			return false;
 		}
-	}
-
-	bool DirectoryExists(const std::string& directory)
-	{
-		return opendir(directory.c_str()) != nullptr;
 	}
 
 	bool IsPathRelative(const std::string& directory)
@@ -104,30 +106,21 @@ namespace Jwl
 
 	bool MakeDirectory(const std::string& directory)
 	{
-		if (directory.empty())
+		if (_mkdir(directory.c_str()) == ENOENT)
 		{
-			Error("FileSystem: Cannot process an empty string.");
-			return false;
-		}
-
-		switch (_mkdir(directory.c_str()))
-		{
-		default:
-		case SUCCESS:
-		case EEXIST:
-			return true;
-
-		case ENOENT:
 			Error("FileSystem: Could not create directory due to an invalid directory path.");
 			return false;
+		}
+		else
+		{
+			return true;
 		}
 	}
 
 	std::string GetCurrentDirectory()
 	{
-		char result[BUFFER_LENGTH] = { '\0' };
-
-		GetCurrentDirectoryA(BUFFER_LENGTH, result);
+		char result[MAX_PATH] = { '\0' };
+		GetCurrentDirectoryA(MAX_PATH, result);
 
 		return std::string(result);
 	}
@@ -139,14 +132,14 @@ namespace Jwl
 
 	void PushCurrentDirectory(const std::string& newDirectory)
 	{
+		currentDirectoryStack.push(GetCurrentDirectory());
 		SetCurrentDirectory(newDirectory);
-		currentDirectoryStack.push(newDirectory);
 	}
 
 	void PopCurrentDirectory()
 	{
-		currentDirectoryStack.pop();
 		SetCurrentDirectory(currentDirectoryStack.top());
+		currentDirectoryStack.pop();
 	}
 
 	std::string ExtractDriveLetter(const std::string& path)
@@ -229,7 +222,6 @@ namespace Jwl
 	std::string LoadFileAsString(const std::string& fileName)
 	{
 		std::ifstream inStream(fileName);
-
 		if (!inStream.good())
 		{
 			return std::string();
@@ -256,7 +248,6 @@ namespace Jwl
 		ASSERT(!(*this), "FileReader: Already associated with a file");
 
 		file.open(filePath);
-
 		if (!file.good())
 		{
 			return false;
@@ -284,7 +275,6 @@ namespace Jwl
 		ASSERT(!(*this), "FileReader: Already associated with a file");
 
 		file.open(filePath);
-
 		if (!file.good())
 		{
 			return false;
