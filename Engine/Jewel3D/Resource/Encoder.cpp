@@ -6,23 +6,10 @@
 
 #include <iostream>
 
-// We don't use the Logger in this file because its output is intended to be processed by the AssetManager.
-
 namespace Jwl
 {
-	Encoder::Encoder(unsigned _version)
-		: version(_version)
-	{
-	}
-
 	int Encoder::ProcessCommands()
 	{
-		if (GetArgc() == 1)
-		{
-			std::cout << "[e]No arguments were specified." << std::endl;
-			return EXIT_FAILURE;
-		}
-
 		// Fine the specified asset file.
 		std::string AssetFile;
 		std::string metaFile;
@@ -51,77 +38,25 @@ namespace Jwl
 		// Reset command. Replace the metadata with a default configuration.
 		if (FindCommandLineArgument("-r") != -1)
 		{
-			if (FileExists(metaFile))
-			{
-				if (!RemoveFile(metaFile))
-				{
-					std::cout << "[e]Could not replace meta file. It might be in use by another process." << std::endl;
-					return EXIT_FAILURE;
-				}
-			}
-
-			metadata = GetDefault();
-			if (!SaveData(metaFile))
-			{
-				return EXIT_FAILURE;
-			}
-
-			return EXIT_SUCCESS;
+			
 		}
 
 		// Convert command. Write the binary asset into the output folder.
 		if (FindCommandLineArgument("-c") != -1)
 		{
-			std::string destination;
-			if (!GetCommandLineArgument("-o", destination))
-			{
-				std::cout << "[e]No output file was specified." << std::endl;
-				return EXIT_FAILURE;
-			}
-
-			if (!LoadData(metaFile))
-			{
-				return EXIT_FAILURE;
-			}
-
-			if (!Convert(AssetFile, destination, metadata))
-			{
-				return EXIT_FAILURE;
-			}
-
-			return EXIT_SUCCESS;
+			
 		}
 
 		// Update command. Load the meta file and upgrade to the newest version.
 		if (FindCommandLineArgument("-u") != -1)
 		{
-			if (!LoadData(metaFile))
-			{
-				return EXIT_FAILURE;
-			}
-
-			if (!UpgradeData())
-			{
-				return EXIT_FAILURE;
-			}
-
-			if (!SaveData(metaFile))
-			{
-				return EXIT_FAILURE;
-			}
-
-			return EXIT_SUCCESS;
+			
 		}
 
 		// Validate command. Ensure the metaData is valid.
 		if (FindCommandLineArgument("-v") != -1)
 		{
-			if (!LoadData(metaFile))
-			{
-				return EXIT_FAILURE;
-			}
-
-			return ValidateData() ? EXIT_SUCCESS : EXIT_FAILURE;
+			
 		}
 
 		return EXIT_SUCCESS;

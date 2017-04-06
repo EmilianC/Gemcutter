@@ -5,7 +5,6 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using System.Xml.Serialization;
 
 namespace AssetManager
 {
@@ -18,6 +17,7 @@ namespace AssetManager
 			treeViewAssets.AfterSelect += (sender, e) => RefreshItemView();
 			listBoxAssets.MouseDoubleClick += (sender, e) => OpenAsset();
 			treeViewAssets.AfterSelect += (sender, e) => buttonAssetOpen.Enabled = true;
+			encoderForm.FormClosing += (s, arg) => LoadEncoders();
 
 			// Populate the workspace for the first time.
 			RefreshWorkspace();
@@ -55,7 +55,7 @@ namespace AssetManager
 
 		private void ConvertFile(string file)
 		{
-			Output.AppendLine("Encoding ( " + Path.GetFileName(file) + " )\n", Color.Azure);
+			Output.AppendLine($"Encoding ( {Path.GetFileName(file)} )\n", Color.Azure);
 
 			//TODO: Lookup the appropriate encoder from assetEncoders.
 			//if (file.EndsWith(".ttf"))
@@ -85,6 +85,8 @@ namespace AssetManager
 		private void Button_Pack_Click(object sender, EventArgs e)
 		{
 			Output.AppendLine("--- Started ---", Color.Azure);
+
+			LoadEncoders();
 
 			// Find all files in the workspace.
 			// Convertible files are put through the appropriate binary converter.
@@ -228,25 +230,20 @@ namespace AssetManager
 			return path;
 		}
 
-		//- Browses to the root workspace directory.
-		private void buttonWorkspaceOpen_Click(object sender, EventArgs e)
+		private void LoadEncoders()
 		{
-			System.Diagnostics.Process.Start("explorer.exe", Directory.GetCurrentDirectory());
-		}
+			encoders.Clear();
 
-		//- Browses to the selected folder directory.
-		private void buttonAssetOpen_Click(object sender, EventArgs e)
-		{
-			var path = GetNodePath(treeViewAssets.SelectedNode);
-
-			if (path.Count != 0)
-				System.Diagnostics.Process.Start("explorer.exe", string.Join("\\", path));
-		}
-
-		//- Clears the output window.
-		private void buttonClear_Click(object sender, EventArgs e)
-		{
-			Output.Clear();
+			try
+			{
+				foreach (var dll in encoderForm.GetEncoders())
+					encoders.Add(new Encoder(dll.Value));
+			}
+			catch (ArgumentException e)
+			{
+				Output.AppendLine(e.Message, Color.Red);
+				encoders.Clear();
+			}
 		}
 
 		//- Reads output from a native code converter.
@@ -292,11 +289,41 @@ namespace AssetManager
 		FileSystemWatcher watcher;
 		// The form responsible for editing the list of encoders.
 		EncoderList encoderForm = new EncoderList();
+		// The actual native-code encoders.
+		List<Encoder> encoders = new List<Encoder>();
 
 		private void buttonSettings_Click(object sender, EventArgs e)
 		{
 			encoderForm.Show();
 			encoderForm.BringToFront();
+		}
+
+		private void ButtonUpdate_Click(object sender, EventArgs e)
+		{
+			LoadEncoders();
+
+
+		}
+
+		//- Browses to the root workspace directory.
+		private void buttonWorkspaceOpen_Click(object sender, EventArgs e)
+		{
+			System.Diagnostics.Process.Start("explorer.exe", Directory.GetCurrentDirectory());
+		}
+
+		//- Browses to the selected folder directory.
+		private void buttonAssetOpen_Click(object sender, EventArgs e)
+		{
+			var path = GetNodePath(treeViewAssets.SelectedNode);
+
+			if (path.Count != 0)
+				System.Diagnostics.Process.Start("explorer.exe", string.Join("\\", path));
+		}
+
+		//- Clears the output window.
+		private void buttonClear_Click(object sender, EventArgs e)
+		{
+			Output.Clear();
 		}
 	}
 

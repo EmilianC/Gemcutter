@@ -43,6 +43,7 @@
 			this.buttonResetMetadata = new System.Windows.Forms.Button();
 			this.textBox1 = new System.Windows.Forms.TextBox();
 			this.buttonSettings = new System.Windows.Forms.Button();
+			this.ButtonUpdate = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// ButtonPack
@@ -126,7 +127,7 @@
 			// 
 			// buttonClear
 			// 
-			this.buttonClear.Location = new System.Drawing.Point(672, 13);
+			this.buttonClear.Location = new System.Drawing.Point(555, 13);
 			this.buttonClear.Name = "buttonClear";
 			this.buttonClear.Size = new System.Drawing.Size(111, 24);
 			this.buttonClear.TabIndex = 18;
@@ -190,11 +191,22 @@
 			this.buttonSettings.UseVisualStyleBackColor = true;
 			this.buttonSettings.Click += new System.EventHandler(this.buttonSettings_Click);
 			// 
+			// ButtonUpdate
+			// 
+			this.ButtonUpdate.Location = new System.Drawing.Point(672, 13);
+			this.ButtonUpdate.Name = "ButtonUpdate";
+			this.ButtonUpdate.Size = new System.Drawing.Size(111, 24);
+			this.ButtonUpdate.TabIndex = 24;
+			this.ButtonUpdate.Text = "Update";
+			this.ButtonUpdate.UseVisualStyleBackColor = true;
+			this.ButtonUpdate.Click += new System.EventHandler(this.ButtonUpdate_Click);
+			// 
 			// formAssetManager
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(915, 643);
+			this.Controls.Add(this.ButtonUpdate);
 			this.Controls.Add(this.buttonSettings);
 			this.Controls.Add(this.textBox1);
 			this.Controls.Add(this.buttonResetMetadata);
@@ -235,6 +247,7 @@
 		private System.Windows.Forms.Button buttonResetMetadata;
 		private System.Windows.Forms.TextBox textBox1;
 		private System.Windows.Forms.Button buttonSettings;
+		private System.Windows.Forms.Button ButtonUpdate;
 	}
 }
 

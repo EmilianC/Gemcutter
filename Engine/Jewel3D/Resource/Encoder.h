@@ -1,8 +1,12 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
 #include "ConfigTable.h"
+#include "Jewel3D/Application/FileSystem.h"
 
+#include <iostream>
 #include <string>
+
+// We don't use the Logger in this file because its output is intended to be processed by the AssetManager.
 
 namespace Jwl
 {
@@ -11,11 +15,10 @@ namespace Jwl
 	class Encoder
 	{
 	public:
-		Encoder(unsigned version);
+		Encoder(unsigned version)
+			: version(version)
+		{}
 		virtual ~Encoder() = default;
-
-		//- Reads the command line arguments from the AssetManager and calls the appropriate virtual functions.
-		int ProcessCommands();
 
 	protected:
 		//- The derived function should return default settings for the asset.
@@ -39,10 +42,90 @@ namespace Jwl
 		bool UpgradeData();
 		bool ValidateData() const;
 
-		//- Settings to packing the asset.
+		//- Settings for packing the asset.
 		ConfigTable metadata;
 
 		// The newest version of the asset.
 		const unsigned version;
 	};
+
+	__declspec(dllexport) bool __stdcall Reset(char* file)
+	{
+		Encoder e;
+
+		if (FileExists(metaFile))
+		{
+			if (!RemoveFile(metaFile))
+			{
+				std::cout << "[e]Could not replace meta file. It might be in use by another process." << std::endl;
+				return false;
+			}
+		}
+
+		metadata = GetDefault();
+		if (!SaveData(metaFile))
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	__declspec(dllexport) bool __stdcall Convert(char* src, char* dest)
+	{
+		Encoder e;
+
+		std::string destination;
+		if (!GetCommandLineArgument("-o", destination))
+		{
+			std::cout << "[e]No output file was specified." << std::endl;
+			return false;
+		}
+
+		if (!LoadData(metaFile))
+		{
+			return false;
+		}
+
+		if (!Convert(AssetFile, destination, metadata))
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	__declspec(dllexport) bool __stdcall Update(char* file)
+	{
+		Encoder e;
+
+		if (!LoadData(metaFile))
+		{
+			return false;
+		}
+
+		if (!UpgradeData())
+		{
+			return false;
+		}
+
+		if (!SaveData(metaFile))
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	__declspec(dllexport) bool __stdcall Validate(char* file)
+	{
+		Encoder e;
+
+		if (!LoadData(metaFile))
+		{
+			return false;
+		}
+
+		return ValidateData();
+	}
 }

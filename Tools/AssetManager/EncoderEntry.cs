@@ -85,16 +85,16 @@ namespace AssetManager
 				return false;
 			}
 
-			if (extensionBox.Text.Equals(".meta", StringComparison.InvariantCultureIgnoreCase))
+			if (extensionBox.Text.Equals("meta", StringComparison.InvariantCultureIgnoreCase))
 			{
 				statusLog.SetToolTip(status, "This Extension is reserved in the workspace and cannot be used.");
 				return false;
 			}
 
 			if (encoderBox.Text.Any(x => Path.GetInvalidPathChars().Contains(x)) ||
-				!encoderBox.Text.EndsWith(".exe", System.StringComparison.InvariantCultureIgnoreCase))
+				!encoderBox.Text.EndsWith(".dll", System.StringComparison.InvariantCultureIgnoreCase))
 			{
-				statusLog.SetToolTip(status, "The Encoder is not a valid path to an executable.");
+				statusLog.SetToolTip(status, "The Encoder is not a valid path to a dynamic library.");
 				return false;
 			}
 
@@ -104,7 +104,7 @@ namespace AssetManager
 				Directory.GetCurrentDirectory() + path;
 			if (!File.Exists(encoderPath))
 			{
-				statusLog.SetToolTip(status, "The Encoder executable does not exist on the disk.");
+				statusLog.SetToolTip(status, "The Encoder does not exist on the disk.");
 				return false;
 			}
 
@@ -162,7 +162,7 @@ namespace AssetManager
 		private void SearchForEncoder()
 		{
 			OpenFileDialog dialog = new OpenFileDialog();
-			dialog.Filter = "executable files (*.exe)|*.exe";
+			dialog.Filter = "dynamic libraries (*.dll)|*.dll";
 			dialog.FilterIndex = 1;
 			dialog.RestoreDirectory = true;
 
