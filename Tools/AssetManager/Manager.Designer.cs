@@ -39,9 +39,6 @@
 			this.label1 = new System.Windows.Forms.Label();
 			this.buttonClear = new System.Windows.Forms.Button();
 			this.Output = new System.Windows.Forms.RichTextBox();
-			this.label2 = new System.Windows.Forms.Label();
-			this.buttonResetMetadata = new System.Windows.Forms.Button();
-			this.textBox1 = new System.Windows.Forms.TextBox();
 			this.buttonSettings = new System.Windows.Forms.Button();
 			this.ButtonUpdate = new System.Windows.Forms.Button();
 			this.SuspendLayout();
@@ -62,7 +59,7 @@
 			this.treeViewAssets.Location = new System.Drawing.Point(14, 39);
 			this.treeViewAssets.Margin = new System.Windows.Forms.Padding(5, 3, 5, 3);
 			this.treeViewAssets.Name = "treeViewAssets";
-			this.treeViewAssets.Size = new System.Drawing.Size(216, 592);
+			this.treeViewAssets.Size = new System.Drawing.Size(216, 589);
 			this.treeViewAssets.TabIndex = 7;
 			// 
 			// listBoxAssets
@@ -73,7 +70,7 @@
 			this.listBoxAssets.Location = new System.Drawing.Point(240, 39);
 			this.listBoxAssets.Margin = new System.Windows.Forms.Padding(5, 3, 5, 3);
 			this.listBoxAssets.Name = "listBoxAssets";
-			this.listBoxAssets.Size = new System.Drawing.Size(216, 349);
+			this.listBoxAssets.Size = new System.Drawing.Size(216, 589);
 			this.listBoxAssets.TabIndex = 11;
 			// 
 			// labelWorkspace
@@ -146,39 +143,9 @@
 			this.Output.Name = "Output";
 			this.Output.ReadOnly = true;
 			this.Output.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-			this.Output.Size = new System.Drawing.Size(435, 592);
+			this.Output.Size = new System.Drawing.Size(435, 589);
 			this.Output.TabIndex = 19;
 			this.Output.Text = "";
-			// 
-			// label2
-			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(237, 402);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(57, 15);
-			this.label2.TabIndex = 20;
-			this.label2.Text = "Metadata";
-			// 
-			// buttonResetMetadata
-			// 
-			this.buttonResetMetadata.Enabled = false;
-			this.buttonResetMetadata.Location = new System.Drawing.Point(344, 393);
-			this.buttonResetMetadata.Name = "buttonResetMetadata";
-			this.buttonResetMetadata.Size = new System.Drawing.Size(111, 24);
-			this.buttonResetMetadata.TabIndex = 21;
-			this.buttonResetMetadata.Text = "Reset";
-			this.buttonResetMetadata.UseVisualStyleBackColor = true;
-			// 
-			// textBox1
-			// 
-			this.textBox1.BackColor = System.Drawing.SystemColors.Window;
-			this.textBox1.Enabled = false;
-			this.textBox1.Location = new System.Drawing.Point(240, 420);
-			this.textBox1.Margin = new System.Windows.Forms.Padding(5, 3, 5, 3);
-			this.textBox1.Multiline = true;
-			this.textBox1.Name = "textBox1";
-			this.textBox1.Size = new System.Drawing.Size(216, 211);
-			this.textBox1.TabIndex = 22;
 			// 
 			// buttonSettings
 			// 
@@ -205,12 +172,9 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(915, 643);
+			this.ClientSize = new System.Drawing.Size(915, 641);
 			this.Controls.Add(this.ButtonUpdate);
 			this.Controls.Add(this.buttonSettings);
-			this.Controls.Add(this.textBox1);
-			this.Controls.Add(this.buttonResetMetadata);
-			this.Controls.Add(this.label2);
 			this.Controls.Add(this.Output);
 			this.Controls.Add(this.buttonClear);
 			this.Controls.Add(this.label1);
@@ -243,9 +207,6 @@
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Button buttonClear;
 		private System.Windows.Forms.RichTextBox Output;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.Button buttonResetMetadata;
-		private System.Windows.Forms.TextBox textBox1;
 		private System.Windows.Forms.Button buttonSettings;
 		private System.Windows.Forms.Button ButtonUpdate;
 	}

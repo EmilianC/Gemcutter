@@ -23,10 +23,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTests", "Engine\UnitTes
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssetManager", "Tools\AssetManager\AssetManager.csproj", "{6099E7AD-99A7-4EB4-B3C7-D35EE1184BA5}"
-	ProjectSection(ProjectDependencies) = postProject
-		{99A4C321-FA72-4426-94BF-F16431D8C77F} = {99A4C321-FA72-4426-94BF-F16431D8C77F}
-		{8BBA958D-BB68-4BC7-8A3A-3716808540E4} = {8BBA958D-BB68-4BC7-8A3A-3716808540E4}
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MeshEncoder", "Tools\MeshEncoder\MeshEncoder.vcxproj", "{99A4C321-FA72-4426-94BF-F16431D8C77F}"
 	ProjectSection(ProjectDependencies) = postProject

@@ -2,41 +2,39 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.IO;
 
 namespace AssetManager
 {
+	// Loads and dispatches calls to a native-code encoder.
 	class Encoder
 	{
 		public Encoder(string encoder)
 		{
+			var cd = Directory.GetCurrentDirectory();
+
+			// We change the current directory to the target dll because it might have other adjacent dll dependencies.
+			Directory.SetCurrentDirectory(Path.GetDirectoryName(encoder));
 			dllHandle = LoadLibrary(encoder);
+			Directory.SetCurrentDirectory(cd);
 
 			if (dllHandle == IntPtr.Zero)
-				throw new ArgumentException($"\"{encoder}\"\nfailed to load.");
+				throw new ArgumentException($"\"{encoder}\"\nfailed to load. Error Code {Marshal.GetLastWin32Error()}.");
 
-			var funcHandle = GetProcAddress(dllHandle, "Reset");
-			if (funcHandle != IntPtr.Zero)
-				resetFunc = (ResetDelegate)Marshal.GetDelegateForFunctionPointer(funcHandle, typeof(ResetDelegate));
-			else
-				throw new ArgumentException($"\"{encoder}\"\ndid not contain the \"Reset\" function.");
+			LoadFunction(encoder, "Initialize", initializeFunc);
+			LoadFunction(encoder, "Convert", convertFunc);
+			LoadFunction(encoder, "Update", updateFunc);
+			LoadFunction(encoder, "Validate", validateFunc);
+		}
 
-			funcHandle = GetProcAddress(dllHandle, "Convert");
-			if (funcHandle != IntPtr.Zero)
-				convertFunc = (ConvertDelegate)Marshal.GetDelegateForFunctionPointer(funcHandle, typeof(ConvertDelegate));
-			else
-				throw new ArgumentException($"\"{encoder}\"\ndid not contain the \"Convert\" function.");
+		// Helper for safely loading a function pointer from the dll.
+		private void LoadFunction<T>(string encoder, string name, T funcPtr) where T : class
+		{
+			var funcHandle = GetProcAddress(dllHandle, name);
+			if (funcHandle == IntPtr.Zero)
+				throw new ArgumentException($"{encoder}\ndid not contain the \"{name}\" function. {Marshal.GetLastWin32Error()}");
 
-			funcHandle = GetProcAddress(dllHandle, "Update");
-			if (funcHandle != IntPtr.Zero)
-				updateFunc = (UpdateDelegate)Marshal.GetDelegateForFunctionPointer(funcHandle, typeof(UpdateDelegate));
-			else
-				throw new ArgumentException($"\"{encoder}\"\ndid not contain the \"Update\" function.");
-
-			funcHandle = GetProcAddress(dllHandle, "Validate");
-			if (funcHandle != IntPtr.Zero)
-				validateFunc = (ValidateDelegate)Marshal.GetDelegateForFunctionPointer(funcHandle, typeof(ValidateDelegate));
-			else
-				throw new ArgumentException($"\"{encoder}\"\ndid not contain the \"Validate\" function.");
+			funcPtr = Marshal.GetDelegateForFunctionPointer(funcHandle, typeof(T)) as T;
 		}
 
 		~Encoder()
@@ -45,9 +43,9 @@ namespace AssetManager
 				FreeLibrary(dllHandle);
 		}
 
-		public bool Reset(string file)
+		public bool Initialize(string file)
 		{
-			return resetFunc(new StringBuilder(file));
+			return initializeFunc(new StringBuilder(file));
 		}
 
 		public bool Convert(string file, string destination)
@@ -65,13 +63,13 @@ namespace AssetManager
 			return validateFunc(new StringBuilder(file));
 		}
 
-		[DllImport("kernel32.dll")]
+		[DllImport("kernel32.dll", SetLastError = true)]
 		private static extern IntPtr LoadLibrary(string dll);
 
-		[DllImport("kernel32.dll")]
+		[DllImport("kernel32.dll", SetLastError = true)]
 		private static extern IntPtr GetProcAddress(IntPtr hModule, string procedureName);
 
-		[DllImport("kernel32.dll")]
+		[DllImport("kernel32.dll", SetLastError = true)]
 		private static extern bool FreeLibrary(IntPtr hModule);
 
 		[DllImport("kernel32.dll", SetLastError = true)]
@@ -79,22 +77,22 @@ namespace AssetManager
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		[return: MarshalAs(UnmanagedType.Bool)]
-		delegate bool ResetDelegate([In] StringBuilder file);
+		private delegate bool InitializeDelegate([In] StringBuilder file);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		[return: MarshalAs(UnmanagedType.Bool)]
-		delegate bool ConvertDelegate([In] StringBuilder src, [In] StringBuilder dest);
+		private delegate bool ConvertDelegate([In] StringBuilder src, [In] StringBuilder dest);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		[return: MarshalAs(UnmanagedType.Bool)]
-		delegate bool UpdateDelegate([In] StringBuilder file);
+		private delegate bool UpdateDelegate([In] StringBuilder file);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		[return: MarshalAs(UnmanagedType.Bool)]
-		delegate bool ValidateDelegate([In] StringBuilder file);
+		private delegate bool ValidateDelegate([In] StringBuilder file);
 
 		private IntPtr dllHandle;
-		private ResetDelegate resetFunc;
+		private InitializeDelegate initializeFunc;
 		private ConvertDelegate convertFunc;
 		private UpdateDelegate updateFunc;
 		private ValidateDelegate validateFunc;

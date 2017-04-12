@@ -7,6 +7,11 @@
 
 #define CURRENT_VERSION 1
 
+std::unique_ptr<Jwl::Encoder> GetEncoder()
+{
+	return std::make_unique<FontEncoder>();
+}
+
 struct CharData
 {
 	int x = 0;
