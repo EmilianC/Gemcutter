@@ -55,15 +55,18 @@ namespace Jwl
 
 	Entity::Ptr FindEntity(const std::string& name)
 	{
+		Entity::Ptr result;
+
 		for (auto& comp : All<Name>())
 		{
 			if (comp.name == name)
 			{
-				return comp.owner.GetPtr();
+				result = comp.owner.GetPtr();
+				break;
 			}
 		}
 
-		return nullptr;
+		return result;
 	}
 
 	Name::Name(Entity& _owner)

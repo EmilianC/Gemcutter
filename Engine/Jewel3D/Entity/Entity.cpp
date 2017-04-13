@@ -273,12 +273,10 @@ namespace Jwl
 
 		if (auto parentEntity = GetParent())
 		{
-			return parentEntity->GetWorldTransform() * transform;
+			transform = parentEntity->GetWorldTransform() * transform;
 		}
-		else
-		{
-			return transform;
-		}
+
+		return transform;
 	}
 
 	void Entity::LookAt(const vec3& pos, const vec3& target, const vec3& up)

@@ -76,13 +76,13 @@ namespace Jwl
 	
 	std::string FormatString(const char* format, va_list args)
 	{
-		if (vsnprintf(buffer, BUFFER_SIZE, format, args) < 0)
+		std::string result;
+
+		if (vsnprintf(buffer, BUFFER_SIZE, format, args) >= 0)
 		{
-			return std::string();
+			result = buffer;
 		}
-		else
-		{
-			return buffer;
-		}
+
+		return result;
 	}
 }

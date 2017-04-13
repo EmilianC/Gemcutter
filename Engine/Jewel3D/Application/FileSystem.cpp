@@ -122,7 +122,7 @@ namespace Jwl
 		char result[MAX_PATH] = { '\0' };
 		GetCurrentDirectoryA(MAX_PATH, result);
 
-		return std::string(result);
+		return result;
 	}
 
 	void SetCurrentDirectory(const std::string& directory)
@@ -221,16 +221,18 @@ namespace Jwl
 
 	std::string LoadFileAsString(const std::string& fileName)
 	{
+		std::string result;
+
 		std::ifstream inStream(fileName);
 		if (!inStream.good())
 		{
-			return std::string();
+			return result;
 		}
 
-		std::string data(std::istreambuf_iterator<char>(inStream), (std::istreambuf_iterator<char>()));
+		result = std::string(std::istreambuf_iterator<char>(inStream), (std::istreambuf_iterator<char>()));
 		inStream.close();
 
-		return data;
+		return result;
 	}
 
 	FileReader::~FileReader()
@@ -306,7 +308,7 @@ namespace Jwl
 			// bounds check
 			if (currentPos >= buffer.size())
 			{
-				return 0;
+				return std::string();
 			}
 
 			return buffer.substr(currentPos);
@@ -324,7 +326,7 @@ namespace Jwl
 			// bounds check
 			if (currentPos >= buffer.size())
 			{
-				return 0;
+				return std::string();
 			}
 
 			std::string line = buffer.substr(currentPos, buffer.find('\n', currentPos) - currentPos);

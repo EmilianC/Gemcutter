@@ -68,14 +68,13 @@ namespace Jwl
 
 	std::string ConfigTable::GetString(const std::string& setting) const
 	{
+		std::string result;
 		if (HasSetting(setting))
 		{
-			return settings.at(setting);
+			result = settings.at(setting);
 		}
-		else
-		{
-			return std::string();
-		}
+
+		return result;
 	}
 
 	float ConfigTable::GetFloat(const std::string& setting) const
