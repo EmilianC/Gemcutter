@@ -110,7 +110,7 @@ namespace Jwl
 	};
 	template<class derived> std::vector<Listener<derived>*> Event<derived>::listeners;
 	
-	//- This singleton class handles the queuing and distribution of events.
+	//- This singleton class handles queuing and distribution of events.
 	static class EventQueue : public Singleton<class EventQueue>
 	{
 	public:
@@ -124,7 +124,7 @@ namespace Jwl
 
 		//- Sequences through the queue of events and distributes them to all the listeners.
 		//- There will be no events in the queue when this function returns.
-		//- It is illegal, and unsafe, to post new events while this functions is executing.
+		//- It is illegal, and unsafe, to post new events while this function is executing.
 		void Dispatch();
 
 	private:
@@ -133,7 +133,7 @@ namespace Jwl
 
 #ifdef _DEBUG
 		//- Debug flag to stop events from being queued during a call to Dispatch().
-		bool inDispatch;
+		bool inDispatch = false;
 #endif
 	} &EventQueue = Singleton<class EventQueue>::instanceRef;
 }
