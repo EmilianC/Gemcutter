@@ -51,6 +51,12 @@ namespace Jwl
 
 	bool Sound::Load(const std::string& InputFile)
 	{
+		if (ExtractFileExtension(InputFile) != ".wav")
+		{
+			Error("FontData: ( %s )\nAttempted to load unknown file type as a sound.", InputFile.c_str());
+			return false;
+		}
+
 		FILE* file = fopen(InputFile.c_str(), "rb");
 		if (file == nullptr)
 		{
@@ -58,13 +64,13 @@ namespace Jwl
 			return false;
 		}
 
-		// Variables to store info about the WAVE file
+		// Variables to store info about the WAVE file.
 		char chunkID[5] = { '\0' };
 		unsigned chunkSize;
 		WaveHeader header;
 		unsigned char* soundData = nullptr;
 		
-		// Check that the WAVE file is OK
+		// Check that the WAVE file is OK.
 		fread(chunkID, sizeof(char), 4, file);
 		if (strcmp(chunkID, "RIFF"))
 		{
@@ -90,7 +96,7 @@ namespace Jwl
 			return false;
 		}
 
-		// read sound format
+		// Read sound format.
 		fread(&chunkSize, sizeof(unsigned), 1, file);
 		fread(&header.FormatTag, sizeof(short), 1, file);
 		fread(&header.Channels, sizeof(short), 1, file);
@@ -99,7 +105,7 @@ namespace Jwl
 		fread(&header.BlockAlign, sizeof(short), 1, file);
 		fread(&header.BitsPerSample, sizeof(short), 1, file);
 
-		// skip any extra header information
+		// Skip any extra header information.
 		if (header.FormatTag == WaveFormat::WAVE_FORMAT_EXTENSIBLE)
 		{
 			fseek(file, 24, SEEK_CUR);
@@ -109,12 +115,12 @@ namespace Jwl
 			fseek(file, 2, SEEK_CUR);
 		}
 
-		// search for data chunk
+		// Search for data chunk.
 		while (fread(&chunkID, sizeof(char), 4, file) != 0)
 		{
 			if (strcmp(chunkID, "data") == 0)
 			{
-				// read data
+				// Read data.
 				fread(&chunkSize, sizeof(unsigned), 1, file);
 				soundData = (unsigned char*)malloc(chunkSize * sizeof(unsigned char));
 				fread(soundData, sizeof(unsigned char), chunkSize, file);
@@ -123,7 +129,7 @@ namespace Jwl
 			}
 			else
 			{
-				// skip chunk
+				// Skip chunk.
 				int size;
 				fread(&size, sizeof(int), 1, file);
 				fseek(file, size, SEEK_CUR);
@@ -134,12 +140,12 @@ namespace Jwl
 
 		if (soundData == nullptr)
 		{
-			// we didn't find any data to load.
+			// We didn't find any data to load.
 			Error("Sound: ( %s )\nNo data found in file.", InputFile.c_str());
 			return false;
 		}
 
-		// resolve the format of the WAVE file
+		// Resolve the format of the WAVE file.
 		ALenum format = AL_NONE;
 		if (header.BitsPerSample == 8)
 		{
@@ -170,7 +176,7 @@ namespace Jwl
 			return false;
 		}
 
-		// create OpenAL buffer
+		// Create OpenAL buffer.
 		alGenBuffers(1, &hBuffer);
 		ALenum error = alGetError();
 		if (error != AL_NO_ERROR)
@@ -180,7 +186,7 @@ namespace Jwl
 			return false;
 		}
 
-		// send data to OpenAL
+		// Send data to OpenAL.
 		alBufferData(hBuffer, format, soundData, chunkSize, header.SamplesPerSec);
 		error = alGetError();
 		if (error != AL_NO_ERROR)

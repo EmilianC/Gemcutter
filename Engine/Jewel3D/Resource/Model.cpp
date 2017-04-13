@@ -60,7 +60,7 @@ namespace Jwl
 	bool Model::Load(const std::string& InputFile)
 	{
 		// We support both .obj and our proprietary .model.
-		if (InputFile.find(".model") != std::string::npos)
+		if (ExtractFileExtension(InputFile) == ".model")
 		{
 			// Load binary file.
 			FILE* binaryFile = nullptr;
@@ -105,7 +105,7 @@ namespace Jwl
 			glBindBuffer(GL_ARRAY_BUFFER, VBO);
 			glBufferData(GL_ARRAY_BUFFER, sizeof(float) * bufferSize, data, GL_STATIC_DRAW);
 		}
-		else if (InputFile.find(".obj") != std::string::npos)
+		else if (ExtractFileExtension(InputFile) == ".obj")
 		{
 			// load ASCII file
 			std::ifstream input;

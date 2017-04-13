@@ -85,7 +85,7 @@ namespace Jwl
 			SOIL_free_image_data(image);
 		};
 
-		// invert the Y axis
+		// Invert the Y axis.
 		for (int j = 0; j * 2 < height; ++j)
 		{
 			int index1 = j * width * numChannels;
@@ -117,14 +117,14 @@ namespace Jwl
 
 		if (numChannels == 3)
 		{
-			// send the texture data
+			// Send the texture data.
 			glTexStorage2D(GL_TEXTURE_2D, numLevels, GL_RGB8, width, height);
 			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, image);
 			format = TextureFormat::RGB_8;
 		}
 		else if (numChannels == 4)
 		{
-			// send the texture data
+			// Send the texture data.
 			glTexStorage2D(GL_TEXTURE_2D, numLevels, GL_RGBA8, width, height);
 			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, image);
 			format = TextureFormat::RGBA_8;
@@ -154,7 +154,7 @@ namespace Jwl
 	{
 		ASSERT(hTex == 0, "Texture already has a texture loaded.");
 
-		// Used to compare and make sure every cubemap face is identical
+		// Used to compare and make sure every cubemap face is identical.
 		int widthRef = 0;
 		int heightRef = 0;
 		int channelRef = 0;

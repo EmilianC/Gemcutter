@@ -1,7 +1,7 @@
 ﻿// Copyright (c) 2017 Emilian Cioca
 #include "Jewel3D/Precompiled.h"
 #include "ProbabilityMatrix.h"
-#include "../Utilities/Random.h"
+#include "Jewel3D/Utilities/Random.h"
 
 #include <cstring>
 

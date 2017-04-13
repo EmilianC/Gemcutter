@@ -342,7 +342,7 @@ namespace Jwl
 	{
 		ASSERT(!IsLoaded(), "ShaderData already has a Shader loaded.");
 
-		if (filePath.find(".shader") != std::string::npos)
+		if (ExtractFileExtension(filePath) == ".shader")
 		{
 			std::string source = LoadFileAsString(filePath);
 			if (source.empty())

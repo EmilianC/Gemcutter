@@ -43,7 +43,7 @@ namespace Jwl
 		ASSERT(UBO == GL_NONE, "UniformBuffer has already been initialized and locked.");
 		ASSERT(count != 0, "Must add at least one element.");
 
-		// Since we are using std140 layout, we must follow the rules in the OpenGL specification
+		// Since we are using std140 layout, we must follow the rules in the OpenGL specification:
 		// https://www.opengl.org/registry/doc/glspec45.core.pdf#page=159
 
 		if (count > 1)

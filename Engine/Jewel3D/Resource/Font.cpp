@@ -95,7 +95,7 @@ namespace Jwl
 		}
 
 		/* Load Font from file */
-		if (filePath.find(".font") == std::string::npos)
+		if (ExtractFileExtension(filePath) != ".font")
 		{
 			Error("FontData: ( %s )\nAttempted to load unknown file type as font.", filePath.c_str());
 			return false;

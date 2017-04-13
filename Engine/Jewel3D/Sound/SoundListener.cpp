@@ -30,7 +30,7 @@ namespace Jwl
 	{
 		auto listenerEntity = GetListener();
 
-		// if we are in fact the currently active listener, we can be disabled.
+		// If we are in fact the currently active listener, we can be disabled.
 		if (listenerEntity.get() == &owner)
 		{
 			listener.reset();
@@ -39,7 +39,7 @@ namespace Jwl
 	
 	void SoundListener::OnEnable()
 	{
-		// if there is another listener we must disable it first.
+		// If there is another listener we must disable it first.
 		// OpenAL only supports one listener at a time.
 		if (auto listenerEntity = GetListener())
 		{
