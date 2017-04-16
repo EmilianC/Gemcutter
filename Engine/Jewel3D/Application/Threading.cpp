@@ -68,6 +68,6 @@ namespace Jwl
 
 	DWORD Thread::GetID() const 
 	{ 
-		return id; 
+		return id;
 	}
 }

@@ -3,9 +3,9 @@
 #include "Logging.h"
 #include "Jewel3D/Utilities/String.h"
 
-#include <Windows.h>
 #include <iostream>
 #include <fstream>
+#include <Windows.h>
 
 namespace
 {
@@ -93,7 +93,7 @@ namespace Jwl
 		auto message = FormatString(format, argptr);
 		va_end(argptr);
 
-		//std::endl forces a flush to file
+		// std::endl forces a flush to file.
 		logOutput << "Log:\t\t" << message << std::endl;
 
 		if (consoleOutput)

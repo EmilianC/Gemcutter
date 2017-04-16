@@ -19,7 +19,6 @@ namespace Jwl
 
 	private:
 		HANDLE mutex = 0;
-
 	};
 
 	class Thread
@@ -46,6 +45,5 @@ namespace Jwl
 	private:
 		HANDLE threadHandle = 0;
 		DWORD id = 0;
-
 	};
 }

@@ -282,7 +282,7 @@ namespace Jwl
 			return false;
 		}
 
-		// get length of file
+		// Get length of file.
 		file.seekg(0, file.end);
 		length = (unsigned)file.tellg();
 		file.seekg(0, file.beg);

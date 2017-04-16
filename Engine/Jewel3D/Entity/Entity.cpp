@@ -110,10 +110,6 @@ namespace Jwl
 	void Entity::RemoveAllComponents()
 	{
 		unsigned i = components.size();
-		if (i == 0)
-		{
-			return;
-		}
 
 		// This loop safely removes all components even if they remove others during destruction.
 		while (i-- != 0)

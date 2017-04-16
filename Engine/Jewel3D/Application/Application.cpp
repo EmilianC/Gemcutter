@@ -157,7 +157,8 @@ namespace Jwl
 			// Filter input events from other system/windows events and send them to the Input class.
 			if ((msg.message >= WM_KEYFIRST && msg.message <= WM_KEYLAST) || (msg.message >= WM_MOUSEFIRST && msg.message <= WM_MOUSELAST))
 			{
-				TranslateMessage(&msg); // send WM_CHAR message for capturing character input.
+				// Send WM_CHAR message for capturing character input.
+				TranslateMessage(&msg);
 
 				if (!Input.Update(msg))
 				{
@@ -269,6 +270,9 @@ namespace Jwl
 
 	void Application::GameLoop(std::function<void()> update, std::function<void()> draw)
 	{
+		ASSERT(update, "An update function must be provided.");
+		ASSERT(draw, "A draw function must be provided.");
+
 		if (hwnd == NULL)
 		{
 			Error("Application: Must be initialized and have a window created before a call to GameLoop().");
@@ -514,7 +518,7 @@ namespace Jwl
 			}
 			else if (IsFullscreen())
 			{
-				// state will be applied next time we exit fullscreen mode
+				// State will be applied next time we exit fullscreen mode.
 				bordered = state;
 				return true;
 			}
@@ -541,7 +545,7 @@ namespace Jwl
 
 			if (IsFullscreen() || !IsBordered())
 			{
-				// state will be applied next time we exit fullscreen mode and have a border
+				// State will be applied next time we exit fullscreen mode and have a border.
 				resizable = state;
 				return true;
 			}
@@ -624,7 +628,7 @@ namespace Jwl
 		{
 		case WM_SIZE:
 		{
-			// adjust screen data
+			// Adjust screen data.
 			app.screenViewport.width = LOWORD(lParam);
 			app.screenViewport.height = HIWORD(lParam);
 			app.screenViewport.bind();
@@ -691,12 +695,12 @@ namespace Jwl
 				return -1;
 			}
 
-			// Get the function we can use to generate a modern context
+			// Get the function we can use to generate a modern context.
 			PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress("wglCreateContextAttribsARB");
 
 			if (wglCreateContextAttribsARB)
 			{
-				// Create modern OpenGL context using the new function and delete the old one
+				// Create modern OpenGL context using the new function and delete the old one.
 				app.renderContext = wglCreateContextAttribsARB(app.deviceContext, 0, attribs);
 			}
 
@@ -706,7 +710,7 @@ namespace Jwl
 				return -1;
 			}
 
-			// Switch to new context
+			// Switch to new context.
 			wglMakeCurrent(app.deviceContext, NULL);
 			wglDeleteContext(tmpContext);
 			if (!wglMakeCurrent(app.deviceContext, app.renderContext))
@@ -736,7 +740,7 @@ namespace Jwl
 			glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, 0, GL_FALSE);
 #endif
 
-			// Setup OpenGL settings
+			// Setup OpenGL settings.
 			GPUInfo.ScanDevice();
 			SetCullFunc(CullFunc::Clockwise);
 			SetDepthFunc(DepthFunc::Normal);
@@ -749,7 +753,7 @@ namespace Jwl
 			return 0; break;
 
 		case WM_SYSCOMMAND:
-			// here we block screen savers and monitor power-saving modes
+			// Here we block screen savers and monitor power-saving modes.
 			if (wParam == SC_SCREENSAVE || wParam == SC_MONITORPOWER)
 			{
 				return 0;
