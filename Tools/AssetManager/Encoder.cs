@@ -32,7 +32,7 @@ namespace AssetManager
 		{
 			var funcHandle = GetProcAddress(dllHandle, name);
 			if (funcHandle == IntPtr.Zero)
-				throw new ArgumentException($"{encoder}\ndid not contain the \"{name}\" function. {Marshal.GetLastWin32Error()}");
+				throw new ArgumentException($"{encoder}\nfailed to load the \"{name}\" function. Error code: {Marshal.GetLastWin32Error()}");
 
 			funcPtr = Marshal.GetDelegateForFunctionPointer(funcHandle, typeof(T)) as T;
 		}
@@ -63,16 +63,16 @@ namespace AssetManager
 			return validateFunc(new StringBuilder(file));
 		}
 
-		[DllImport("kernel32.dll", SetLastError = true)]
+		[DllImport("kernel32", CharSet = CharSet.Ansi, SetLastError = true)]
 		private static extern IntPtr LoadLibrary(string dll);
 
-		[DllImport("kernel32.dll", SetLastError = true)]
+		[DllImport("kernel32", CharSet = CharSet.Ansi, ExactSpelling = true, SetLastError = true)]
 		private static extern IntPtr GetProcAddress(IntPtr hModule, string procedureName);
 
-		[DllImport("kernel32.dll", SetLastError = true)]
+		[DllImport("kernel32", SetLastError = true)]
 		private static extern bool FreeLibrary(IntPtr hModule);
 
-		[DllImport("kernel32.dll", SetLastError = true)]
+		[DllImport("kernel32", SetLastError = true)]
 		private static extern int SetStdHandle(int device, IntPtr handle);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]

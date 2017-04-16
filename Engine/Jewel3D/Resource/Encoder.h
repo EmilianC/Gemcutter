@@ -116,7 +116,7 @@ namespace Jwl
 std::unique_ptr<Jwl::Encoder> GetEncoder();
 
 // Reset command. Replace the metadata with a default configuration.
-__declspec(dllexport) bool __cdecl Initialize(char* file)
+extern "C" __declspec(dllexport) bool __cdecl Initialize(char* file)
 {
 	auto encoder = GetEncoder();
 
@@ -140,7 +140,7 @@ __declspec(dllexport) bool __cdecl Initialize(char* file)
 }
 
 // Convert command. Write the binary asset into the output folder.
-__declspec(dllexport) bool __cdecl Convert(char* src, char* dest)
+extern "C" __declspec(dllexport) bool __cdecl Convert(char* src, char* dest)
 {
 	auto encoder = GetEncoder();
 
@@ -159,7 +159,7 @@ __declspec(dllexport) bool __cdecl Convert(char* src, char* dest)
 }
 
 // Update command. Load the meta file and upgrade to the newest version.
-__declspec(dllexport) bool __cdecl Update(char* file)
+extern "C" __declspec(dllexport) bool __cdecl Update(char* file)
 {
 	auto encoder = GetEncoder();
 
@@ -183,7 +183,7 @@ __declspec(dllexport) bool __cdecl Update(char* file)
 }
 
 // Validate command. Ensure the metaData is valid.
-__declspec(dllexport) bool __cdecl Validate(char* file)
+extern "C" __declspec(dllexport) bool __cdecl Validate(char* file)
 {
 	auto encoder = GetEncoder();
 
