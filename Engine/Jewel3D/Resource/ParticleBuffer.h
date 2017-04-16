@@ -20,6 +20,7 @@ namespace Jwl
 	public:
 		ParticleBuffer();
 		ParticleBuffer(const ParticleBuffer&);
+		ParticleBuffer(ParticleBuffer&&);
 		ParticleBuffer& operator=(const ParticleBuffer&);
 		~ParticleBuffer();
 

@@ -11,7 +11,7 @@ namespace Jwl
 	{
 		numStates = _numStates;
 		numActions = _numActions;
-		data = new float[numStates * numActions];
+		data = (float*)malloc(sizeof(float) * numStates * numActions);
 
 		SetUniform();
 	}
@@ -20,9 +20,24 @@ namespace Jwl
 	{
 		numStates = other.numStates;
 		numActions = other.numActions;
-		data = new float[numStates * numActions];
+		data = (float*)malloc(sizeof(float) * numStates * numActions);
 
 		std::memcpy(data, other.data, sizeof(float) * numStates * numActions);
+	}
+
+	ProbabilityMatrix::ProbabilityMatrix(ProbabilityMatrix&& other)
+		: numStates(other.numStates)
+		, numActions(other.numActions)
+		, data(other.data)
+	{
+		other.numStates = 0;
+		other.numActions = 0;
+		other.data = nullptr;
+	}
+
+	ProbabilityMatrix::~ProbabilityMatrix()
+	{
+		free(data);
 	}
 
 	void ProbabilityMatrix::Normalize()
@@ -47,7 +62,7 @@ namespace Jwl
 
 	void ProbabilityMatrix::SetUniform()
 	{
-		//Accumulate sum for each row in order to normalize.
+		// Accumulate sum for each row in order to normalize.
 		for (unsigned i = 0; i < numStates * numActions; i++)
 		{
 			data[i] = 1.0f / numActions;

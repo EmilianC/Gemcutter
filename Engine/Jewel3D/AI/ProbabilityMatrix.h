@@ -9,6 +9,8 @@ namespace Jwl
 	public:
 		ProbabilityMatrix(unsigned numStates, unsigned numActions);
 		ProbabilityMatrix(const ProbabilityMatrix&);
+		ProbabilityMatrix(ProbabilityMatrix&&);
+		~ProbabilityMatrix();
 
 		void Normalize();
 

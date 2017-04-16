@@ -32,6 +32,39 @@ namespace Jwl
 		*this = other;
 	}
 
+	ParticleBuffer::ParticleBuffer(ParticleBuffer&& other)
+		: positions(other.positions)
+		, velocities(other.velocities)
+		, ages(other.ages)
+		, lifetimes(other.lifetimes)
+		, sizes(other.sizes)
+		, colors(other.colors)
+		, alphas(other.alphas)
+		, rotations(other.rotations)
+		, ageRatios(other.ageRatios)
+		, buffers(other.buffers)
+		, numParticles(other.numParticles)
+		, VBO(other.VBO)
+		, VAO(other.VAO)
+	{
+		other.positions = nullptr;
+		other.velocities = nullptr;
+		other.ages = nullptr;
+		other.lifetimes = nullptr;
+		other.sizes = nullptr;
+		other.colors = nullptr;
+		other.alphas = nullptr;
+		other.rotations = nullptr;
+		other.ageRatios = nullptr;
+
+		other.buffers = ParticleBuffers::None;
+
+		other.numParticles = 0;
+
+		other.VBO = GL_NONE;
+		other.VAO = GL_NONE;
+	}
+
 	ParticleBuffer& ParticleBuffer::operator=(const ParticleBuffer& other)
 	{
 		Unload();
