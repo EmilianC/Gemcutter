@@ -47,9 +47,9 @@ namespace AssetManager
 			{
 				// Setup default encoders...
 				entries.Add(new EncoderEntry(panel, EncoderEntry.ItemHeight * 0, 
-					"ttf", "%JEWEL3D_PATH%\\Tools\\FontEncoder\\bin\\Release_Win32\\FontEncoder.dll"));
+					"ttf", "%JEWEL3D_PATH%\\Tools\\FontEncoder\\bin\\ReleaseWithExceptions_Win32\\FontEncoder.dll"));
 				entries.Add(new EncoderEntry(panel, EncoderEntry.ItemHeight * 1,
-					"obj", "%JEWEL3D_PATH%\\Tools\\MeshEncoder\\bin\\Release_Win32\\MeshEncoder.dll"));
+					"obj", "%JEWEL3D_PATH%\\Tools\\MeshEncoder\\bin\\ReleaseWithExceptions_Win32\\MeshEncoder.dll"));
 			}
 		}
 
