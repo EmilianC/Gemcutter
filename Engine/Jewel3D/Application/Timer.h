@@ -12,6 +12,9 @@ namespace Jwl
 		//- Returns true if performance counters are available on the system architecture.
 		static bool IsSupported();
 
+		//- Returns the resolution of the timer in ticks-per-second.
+		static __int64 GetResolution();
+
 		//- Sets the reference time for any other functions called in the future.
 		void Reset();
 
@@ -36,11 +39,6 @@ namespace Jwl
 		void AddTimeSeconds(double seconds);
 
 	private:
-		static __int64 GetResolution();
-
-		static __int64 ticksPerSecond;
-		static __int64 ticksPerMS;
-
 		__int64 startTime;
 	};
 }

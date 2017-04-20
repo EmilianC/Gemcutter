@@ -280,7 +280,7 @@ namespace Jwl
 		}
 
 		//- Timing control variables
-		const unsigned MAX_CONCURRENT_UPDATES = 5u;
+		constexpr unsigned MAX_CONCURRENT_UPDATES = 5u;
 		Timer updateTimer;
 		Timer renderTimer;
 		Timer fpsTimer;
