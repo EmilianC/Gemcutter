@@ -53,60 +53,77 @@ namespace AssetManager
 			{}
 		}
 
-		private void ConvertFile(string file)
-		{
-			Output.AppendLine($"Encoding ( {Path.GetFileName(file)} )\n", Color.Azure);
-
-			//TODO: Lookup the appropriate encoder from assetEncoders.
-			//if (file.EndsWith(".ttf"))
-			//{
-				//var process = new System.Diagnostics.Process();
-				//
-				//process.EnableRaisingEvents = true;
-				//process.StartInfo.UseShellExecute = false;
-				//process.StartInfo.RedirectStandardOutput = true;
-				//process.StartInfo.FileName = "D:\\Repos\\Jewel3D\\Tools\\FontEncoder\\bin\\Debug_Win32\\FontEncoder.exe";
-				//process.StartInfo.Arguments = "-i " + file;
-				//process.OutputDataReceived += (s, args) => NativeLog(args.Data);
-				//process.Exited += (s, args) =>
-				//{
-				//	// Make sure any output color changes are undone.
-				//	process.CancelOutputRead();
-				//	RichTextBoxExtensions.SetOutputColor(Output, Color.LightGray);
-				//	RichTextBoxExtensions.AppendLine(Output, "--- Finished ---", Color.Azure);
-				//};
-				//
-				//process.Start();
-				//process.BeginOutputReadLine();
-			//}
-		}
-
 		//- Starts the packing process. Rebuilds the target Asset directory from scratch.
 		private void Button_Pack_Click(object sender, EventArgs e)
 		{
 			Output.AppendLine("--- Started ---", Color.Azure);
 
+			buttonClear.Enabled = false;
+			ButtonPack.Enabled = false;
+			ButtonUpdate.Enabled = false;
+
 			LoadEncoders();
+			var assetEncoders = encoderForm.GetEncoders();
+
+			string inputRoot = Directory.GetCurrentDirectory();
+			string commonRoot = inputRoot.Remove(inputRoot.LastIndexOf(Path.DirectorySeparatorChar));
+			string outputRoot = $"{commonRoot}{Path.DirectorySeparatorChar}Assets";
+
+			if (Directory.Exists(outputRoot))
+				Directory.Delete(outputRoot, true);
 
 			// Find all files in the workspace.
 			// Convertible files are put through the appropriate binary converter.
-			// Other global files are copied as-is.
-			var globalFiles = new List<string>();
-			var convertFiles = new List<string>();
-			CollectFiles(Directory.GetCurrentDirectory(), globalFiles, convertFiles);
-
-			foreach (string file in convertFiles)
+			// Other files are copied as-is.
+			var filesToCopy = new List<string>();
+			var filesToConvert = new List<string>();
+			foreach (var dir in Directory.GetDirectories(Directory.GetCurrentDirectory(), "*", SearchOption.TopDirectoryOnly))
 			{
-				ConvertFile(file);
-				// Conversion should target the asset directory.
-				// ...
+				foreach (string file in Directory.GetFiles(dir, "*.*", SearchOption.AllDirectories))
+				{
+					if (file.EndsWith(".meta", StringComparison.InvariantCultureIgnoreCase))
+						continue;
+				
+					if (assetEncoders.Any(x => file.EndsWith(x.Key, StringComparison.InvariantCultureIgnoreCase)))
+						filesToConvert.Add(file);
+					else
+						filesToCopy.Add(file);
+				}
 			}
 
-			foreach (string file in globalFiles)
+			Directory.CreateDirectory(outputRoot);
+
+			try
 			{
-				// Copy to asset directory.
-				// ...
+				foreach (string file in filesToConvert)
+				{
+					Output.AppendLine($"Encoding {Path.GetFileName(file)}", Color.Azure);
+
+					// Conversion should target the asset directory.
+					// ...
+				}
+
+				foreach (string file in filesToCopy)
+				{
+					Output.AppendLine($"Copying {Path.GetFileName(file)}", Color.Azure);
+
+					var outFile = file.Replace(inputRoot, outputRoot);
+					if (!Directory.Exists(Path.GetDirectoryName(outFile)))
+						Directory.CreateDirectory(Path.GetDirectoryName(outFile));
+
+					File.Copy(file, outFile);
+				}
+
+				Output.AppendLine($"Done.", Color.Azure);
 			}
+			catch (IOException exception)
+			{
+				Output.AppendLine($"Error: ( {exception.Message} )", Color.Red);
+			}
+
+			buttonClear.Enabled = true;
+			ButtonPack.Enabled = true;
+			ButtonUpdate.Enabled = true;
 		}
 
 		void RefreshItemView()
@@ -185,34 +202,6 @@ namespace AssetManager
 
 				// Recurse.
 				ParseDirectory(folder, node);
-			}
-		}
-
-		//- Collects all files that must either be copied or converted into the Asset directory.
-		void CollectFiles(string rootFolder, List<string> globalList, List<string> convertList)
-		{
-			var assetEncoders = encoderForm.GetEncoders();
-
-			var files = Directory.GetFiles(rootFolder);
-			foreach (string file in files)
-			{
-				if (file.EndsWith(".meta", StringComparison.InvariantCultureIgnoreCase))
-					continue;
-
-				if (assetEncoders.Any(x => file.EndsWith(x.Key, StringComparison.InvariantCultureIgnoreCase)))
-				{
-					convertList.Add(file);
-				}
-				else
-				{
-					globalList.Add(file);
-				}
-			}
-
-			var folders = Directory.GetDirectories(rootFolder);
-			foreach (string folder in folders)
-			{
-				CollectFiles(folder, globalList, convertList);
 			}
 		}
 
