@@ -7,12 +7,24 @@
 
 namespace
 {
-	static __int64 ticksPerSecond = Jwl::Timer::GetResolution();
-	static __int64 ticksPerMS = ticksPerSecond / 1000;
+	__int64 GetTimerResolution()
+	{
+		LARGE_INTEGER temp;
+		if (QueryPerformanceFrequency(&temp))
+		{
+			return temp.QuadPart;
+		}
+
+		Jwl::Error("Timer: High performance timer is not supported by your CPU.");
+		return 0;
+	}
+
+	static const __int64 ticksPerSecond = GetTimerResolution();
+	static const __int64 ticksPerMS = ticksPerSecond / 1000;
 
 	//- Casted ahead of time for a performance boost in GetElapsedMS() and GetElapsedSeconds().
-	static double d_ticksPerSecond = static_cast<double>(ticksPerSecond);
-	static double d_ticksPerMS = static_cast<double>(ticksPerMS);
+	static const double d_ticksPerSecond = static_cast<double>(ticksPerSecond);
+	static const double d_ticksPerMS = static_cast<double>(ticksPerMS);
 }
 
 namespace Jwl
@@ -27,40 +39,37 @@ namespace Jwl
 		return ticksPerSecond > 0;
 	}
 
-	__int64 Timer::GetResolution()
+	__int64 Timer::GetTicksPerMS()
 	{
-		LARGE_INTEGER temp;
-		if (QueryPerformanceFrequency(&temp))
-		{
-			return temp.QuadPart;
-		}
+		return ticksPerMS;
+	}
 
-		Error("Timer: High performance timer is not supported by your CPU.");
-		return 0;
+	__int64 Timer::GetTicksPerSecond()
+	{
+		return ticksPerSecond;
+	}
+
+	__int64 Timer::GetCurrentTick()
+	{
+		LARGE_INTEGER currentTime;
+		QueryPerformanceCounter(&currentTime);
+
+		return currentTime.QuadPart;
 	}
 
 	void Timer::Reset()
 	{
-		LARGE_INTEGER temp;
-		QueryPerformanceCounter(&temp);
-
-		startTime = temp.QuadPart;
+		startTime = GetCurrentTick();
 	}
 
 	double Timer::GetElapsedMS() const
 	{
-		LARGE_INTEGER currentTime;
-		QueryPerformanceCounter(&currentTime);
-		// (the total time the Timer has been running) / Conversion to MS
-		return (currentTime.QuadPart - startTime) / d_ticksPerMS;
+		return (GetCurrentTick() - startTime) / d_ticksPerMS;
 	}
 
 	double Timer::GetElapsedSeconds() const
 	{
-		LARGE_INTEGER currentTime;
-		QueryPerformanceCounter(&currentTime);
-		// (the total time the Timer has been running) / Conversion to seconds
-		return (currentTime.QuadPart - startTime) / d_ticksPerSecond;
+		return (GetCurrentTick() - startTime) / d_ticksPerSecond;
 	}
 
 	bool Timer::IsElapsedMS(double ms) const

@@ -12,8 +12,14 @@ namespace Jwl
 		//- Returns true if performance counters are available on the system architecture.
 		static bool IsSupported();
 
+		//- Returns the resolution of the timer in ticks-per-millisecond.
+		static __int64 GetTicksPerMS();
 		//- Returns the resolution of the timer in ticks-per-second.
-		static __int64 GetResolution();
+		static __int64 GetTicksPerSecond();
+
+		//- Returns the current global tick count. Can be subtracted from a previous call
+		// in order to calculate the amount of time that has passed.
+		static __int64 GetCurrentTick();
 
 		//- Sets the reference time for any other functions called in the future.
 		void Reset();
@@ -28,14 +34,14 @@ namespace Jwl
 		//- Returns true if the specified amount of seconds have elapsed since the last Reset().
 		bool IsElapsedSeconds(double seconds) const;
 
-		//- Removes the milliseconds from the running internal clock.
+		//- Removes milliseconds from the running internal clock.
 		void SubtractTimeMS(double ms);
-		//- Removes the seconds from the running internal clock.
+		//- Removes seconds from the running internal clock.
 		void SubtractTimeSeconds(double seconds);
 
-		//- Adds the milliseconds to the running internal clock.
+		//- Adds milliseconds to the running internal clock.
 		void AddTimeMS(double ms);
-		//- Adds the seconds to the running internal clock.
+		//- Adds seconds to the running internal clock.
 		void AddTimeSeconds(double seconds);
 
 	private:

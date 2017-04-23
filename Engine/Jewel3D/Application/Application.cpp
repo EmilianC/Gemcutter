@@ -30,14 +30,112 @@ extern "C" IMAGE_DOS_HEADER __ImageBase;
 #define STYLE_BORDERLESS		(WS_POPUP | WS_VISIBLE)
 #define STYLE_EXTENDED			(WS_EX_APPWINDOW)
 
-static LONG GetStyle(bool fullScreen, bool bordered, bool resizable);
-static RECT GetWindowSize(LONG style, unsigned clientWidth, unsigned clientHeight);
-static bool ApplyFullscreen(HWND window, bool state, unsigned clientWidth, unsigned clientHeight);
-static bool ApplyStyle(HWND window, LONG style, unsigned clientWidth, unsigned clientHeight);
-static bool ApplyResolution(HWND window, LONG style, unsigned clientWidth, unsigned clientHeight);
-
 namespace
 {
+	static LONG GetStyle(bool fullScreen, bool bordered, bool resizable)
+	{
+		if (bordered && !fullScreen)
+		{
+			if (resizable)
+			{
+				return STYLE_BORDERED;
+			}
+			else
+			{
+				return STYLE_BORDERED_FIXED;
+			}
+		}
+		else
+		{
+			return STYLE_BORDERLESS;
+		}
+	}
+
+	static RECT GetWindowSize(LONG style, unsigned clientWidth, unsigned clientHeight)
+	{
+		RECT windowRect;
+		windowRect.left = 0;
+		windowRect.right = clientWidth;
+		windowRect.top = 0;
+		windowRect.bottom = clientHeight;
+
+		if (!AdjustWindowRectEx(&windowRect, style, FALSE, STYLE_EXTENDED))
+		{
+			Jwl::Warning("Console: Could not resolve the window's size.");
+		}
+
+		return windowRect;
+	}
+
+	static bool ApplyFullscreen(HWND window, bool state, unsigned clientWidth, unsigned clientHeight)
+	{
+		if (state)
+		{
+			DEVMODE dmScreenSettings;
+			memset(&dmScreenSettings, 0, sizeof(dmScreenSettings));
+
+			dmScreenSettings.dmSize = sizeof(DEVMODE);
+			dmScreenSettings.dmPelsWidth = clientWidth;
+			dmScreenSettings.dmPelsHeight = clientHeight;
+			dmScreenSettings.dmBitsPerPel = BITS_PER_PIXEL;
+			dmScreenSettings.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
+
+			if (ChangeDisplaySettings(&dmScreenSettings, CDS_FULLSCREEN) != DISP_CHANGE_SUCCESSFUL)
+			{
+				Jwl::Warning("Console: Could not enter fullscreen mode.");
+				return false;
+			}
+
+			if (SetWindowPos(window, 0, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW) == ERROR)
+			{
+				Jwl::Warning("Console: Could not enter fullscreen mode.");
+				return false;
+			}
+		}
+		else
+		{
+			if (ChangeDisplaySettings(NULL, 0) != DISP_CHANGE_SUCCESSFUL)
+			{
+				Jwl::Warning("Console: Could not successfully exit fullscreen mode.");
+				return false;
+			}
+
+			if (SetWindowPos(window, 0, 20, 20, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW) == ERROR)
+			{
+				Jwl::Warning("Console: Could not successfully exit fullscreen mode.");
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	static bool ApplyStyle(HWND window, LONG style, unsigned clientWidth, unsigned clientHeight)
+	{
+		RECT windowRect = GetWindowSize(style, clientWidth, clientHeight);
+
+		if (SetWindowLongPtr(window, GWL_STYLE, style) == ERROR ||
+			SetWindowPos(window, 0, 0, 0, windowRect.right - windowRect.left, windowRect.bottom - windowRect.top, SWP_NOMOVE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW) == ERROR)
+		{
+			Jwl::Warning("Console: Could not apply the window's border style.");
+			return false;
+		}
+
+		return true;
+	}
+
+	static bool ApplyResolution(HWND window, LONG style, unsigned clientWidth, unsigned clientHeight)
+	{
+		RECT windowRect = GetWindowSize(style, clientWidth, clientHeight);
+		if (SetWindowPos(window, 0, 0, 0, windowRect.right - windowRect.left, windowRect.bottom - windowRect.top, SWP_NOMOVE | SWP_NOZORDER | SWP_SHOWWINDOW) == ERROR)
+		{
+			Jwl::Warning("Console: Could not apply the resolution.");
+			return false;
+		}
+
+		return true;
+	}
+
 	#ifdef _DEBUG
 	static void CALLBACK OpenGLDebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* msg, const void* data)
 	{
@@ -235,6 +333,9 @@ namespace Jwl
 		ShowWindow(hwnd, SW_SHOW);
 		SetForegroundWindow(hwnd);
 
+		// Ensure that the deltaTime between frames has been computed.
+		SetUpdatesPerSecond(updatesPerSecond);
+
 		return true;
 	}
 
@@ -279,32 +380,25 @@ namespace Jwl
 			return;
 		}
 
-		//- Timing control variables
-		constexpr unsigned MAX_CONCURRENT_UPDATES = 5u;
-		Timer updateTimer;
-		Timer renderTimer;
-		Timer fpsTimer;
-
-		double updateElapsed = 0.0;
-		double updateRollover = 0.0;
-		double renderElapsed = 0.0;
-		double renderRollover = 0.0;
+		//- Timing control variables.
+		constexpr unsigned MAX_CONCURRENT_UPDATES = 5;
 		unsigned fpsCounter = 0;
+		__int64 lastUpdate = Timer::GetCurrentTick();
+		__int64 lastRender = lastUpdate;
+		__int64 lastFpsCapture = lastRender;
 
 		while (appIsRunning)
 		{
 			// Updates our input and Windows OS events.
 			DrainEventQueue();
 
-			updateElapsed = updateTimer.GetElapsedSeconds() + updateRollover;
-			renderElapsed = renderTimer.GetElapsedSeconds() + renderRollover;
-
 			// Record the FPS for the previous second of time.
-			if (fpsTimer.GetElapsedSeconds() >= 1.0)
+			__int64 currentTime = Timer::GetCurrentTick();
+			if (currentTime - lastFpsCapture >= Timer::GetTicksPerSecond())
 			{
-				// We don't want to use a counter with "-= 1.0" here. After a lag spike this 
+				// We don't want to update the timer variable with "+= 1.0" here. After a lag spike this 
 				// would cause FPS to suddenly be recorded more often than once a second.
-				fpsTimer.Reset();
+				lastFpsCapture = currentTime;
 
 				fps = fpsCounter;
 				fpsCounter = 0;
@@ -312,11 +406,11 @@ namespace Jwl
 
 			// Update to keep up with real time.
 			unsigned updateCount = 0;
-			while (updateElapsed >= updateStep)
+			while (currentTime - lastUpdate >= updateStep)
 			{
 				update();
 
-				updateElapsed -= updateStep;
+				lastUpdate += updateStep;
 				updateCount++;
 
 				// Avoid spiral of death. This also allows us to keep rendering even in a worst-case scenario.
@@ -328,22 +422,13 @@ namespace Jwl
 
 			if (updateCount > 0)
 			{
-				// Save leftover time for the next update.
-				updateRollover = updateElapsed;
-				updateTimer.Reset();
-
 				// If the frame rate is uncapped or we are due for a new frame, render the latest game-state.
-				if (FPSCap == 0 ||
-					renderElapsed >= renderStep)
+				if (FPSCap == 0 || (currentTime - lastRender) >= renderStep)
 				{
 					draw();
-
-					// Save leftover time for the next render.
-					renderRollover = renderElapsed - renderStep;
-					renderTimer.Reset();
-					
 					SwapBuffers(deviceContext);
 
+					lastRender += renderStep;
 					fpsCounter++;
 				}
 			}
@@ -424,7 +509,7 @@ namespace Jwl
 
 	float Application::GetDeltaTime() const
 	{
-		return static_cast<float>(updateStep);
+		return 1.0f / updatesPerSecond;
 	}
 
 	unsigned Application::GetFPS() const
@@ -436,11 +521,11 @@ namespace Jwl
 	{
 		if (_fps == 0)
 		{
-			renderStep = 0.0;
+			renderStep = 0;
 		}
 		else
 		{
-			renderStep = 1.0 / static_cast<double>(_fps);
+			renderStep = Timer::GetTicksPerSecond() / _fps;
 		}
 
 		FPSCap = _fps;
@@ -460,7 +545,8 @@ namespace Jwl
 	{
 		ASSERT(ups > 0, "Invalid update rate.");
 
-		updateStep = 1.0 / static_cast<double>(ups);
+		updateStep = Timer::GetTicksPerSecond() / ups;
+
 		updatesPerSecond = ups;
 	}
 
@@ -774,108 +860,4 @@ namespace Jwl
 	{
 		return static_cast<float>(width) / static_cast<float>(height);
 	}
-}
-
-static LONG GetStyle(bool fullScreen, bool bordered, bool resizable)
-{
-	if (bordered && !fullScreen)
-	{
-		if (resizable)
-		{
-			return STYLE_BORDERED;
-		}
-		else
-		{
-			return STYLE_BORDERED_FIXED;
-		}
-	}
-	else
-	{
-		return STYLE_BORDERLESS;
-	}
-}
-
-static RECT GetWindowSize(LONG style, unsigned clientWidth, unsigned clientHeight)
-{
-	RECT windowRect;
-	windowRect.left = 0;
-	windowRect.right = clientWidth;
-	windowRect.top = 0;
-	windowRect.bottom = clientHeight;
-
-	if (!AdjustWindowRectEx(&windowRect, style, FALSE, STYLE_EXTENDED))
-	{
-		Jwl::Warning("Console: Could not resolve the window's size.");
-	}
-
-	return windowRect;
-}
-
-static bool ApplyFullscreen(HWND window, bool state, unsigned clientWidth, unsigned clientHeight)
-{
-	if (state)
-	{
-		DEVMODE dmScreenSettings;
-		memset(&dmScreenSettings, 0, sizeof(dmScreenSettings));
-
-		dmScreenSettings.dmSize = sizeof(DEVMODE);
-		dmScreenSettings.dmPelsWidth = clientWidth;
-		dmScreenSettings.dmPelsHeight = clientHeight;
-		dmScreenSettings.dmBitsPerPel = BITS_PER_PIXEL;
-		dmScreenSettings.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
-		
-		if (ChangeDisplaySettings(&dmScreenSettings, CDS_FULLSCREEN) != DISP_CHANGE_SUCCESSFUL)
-		{
-			Jwl::Warning("Console: Could not enter fullscreen mode.");
-			return false;
-		}
-
-		if (SetWindowPos(window, 0, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW) == ERROR)
-		{
-			Jwl::Warning("Console: Could not enter fullscreen mode.");
-			return false;
-		}
-	}
-	else
-	{
-		if (ChangeDisplaySettings(NULL, 0) != DISP_CHANGE_SUCCESSFUL)
-		{
-			Jwl::Warning("Console: Could not successfully exit fullscreen mode.");
-			return false;
-		}
-
-		if (SetWindowPos(window, 0, 20, 20, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW) == ERROR)
-		{
-			Jwl::Warning("Console: Could not successfully exit fullscreen mode.");
-			return false;
-		}
-	}
-
-	return true;
-}
-
-static bool ApplyStyle(HWND window, LONG style, unsigned clientWidth, unsigned clientHeight)
-{
-	RECT windowRect = GetWindowSize(style, clientWidth, clientHeight);
-
-	if (SetWindowLongPtr(window, GWL_STYLE, style) == ERROR ||
-		SetWindowPos(window, 0, 0, 0, windowRect.right - windowRect.left, windowRect.bottom - windowRect.top, SWP_NOMOVE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW) == ERROR)
-	{
-		Jwl::Warning("Console: Could not apply the window's border style.");
-		return false;
-	}
-
-	return true;
-}
-
-static bool ApplyResolution(HWND window, LONG style, unsigned clientWidth, unsigned clientHeight)
-{
-	RECT windowRect = GetWindowSize(style, clientWidth, clientHeight);
-	if (SetWindowPos(window, 0, 0, 0, windowRect.right - windowRect.left, windowRect.bottom - windowRect.top, SWP_NOMOVE | SWP_NOZORDER | SWP_SHOWWINDOW) == ERROR)
-	{
-		Jwl::Warning("Console: Could not apply the resolution.");
-		return false;
-	}
-
-	return true;
 }

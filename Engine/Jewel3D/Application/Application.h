@@ -75,9 +75,9 @@ namespace Jwl
 		bool appIsRunning = true;
 		
 		//- The target amount of time between updates.
-		double updateStep = 1.0 / 60.0;
+		__int64 updateStep = 0;
 		//- The target amount of time between renders.
-		double renderStep = 0.0;
+		__int64 renderStep = 0;
 		//- Display variables.
 		bool fullscreen = false;
 		bool bordered = true;
