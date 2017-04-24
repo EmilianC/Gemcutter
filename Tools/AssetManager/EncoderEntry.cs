@@ -125,26 +125,26 @@ namespace AssetManager
 			extensionBox.Size = new Size(45, 23);
 			extensionBox.TabIndex = tabIndex++;
 			extensionBox.Font = font;
-			extensionBox.TextChanged += (sender, e) => Validate();
+			extensionBox.TextChanged += delegate { Validate(); };
 
 			encoderBox.Size = new Size(500, 23);
 			encoderBox.TabIndex = tabIndex++;
 			encoderBox.Font = font;
-			encoderBox.TextChanged += (sender, e) => Validate();
+			encoderBox.TextChanged += delegate { Validate(); };
 
 			search.Size = new Size(23, 23);
 			search.BackgroundImage = Properties.Resources.Search;
 			search.BackgroundImageLayout = ImageLayout.Stretch;
 			search.TabIndex = tabIndex++;
 			search.UseVisualStyleBackColor = true;
-			search.Click += (sender, e) => SearchForEncoder();
+			search.Click += delegate { SearchForEncoder(); };
 
 			delete.Size = new Size(23, 23);
 			delete.BackgroundImage = Properties.Resources.Delete;
 			delete.BackgroundImageLayout = ImageLayout.Stretch;
 			delete.TabIndex = tabIndex++;
 			delete.UseVisualStyleBackColor = true;
-			delete.Click += (sender, e) =>
+			delete.Click += delegate
 			{
 				DeleteControls();
 

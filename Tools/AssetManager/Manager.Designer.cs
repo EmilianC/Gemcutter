@@ -1,6 +1,6 @@
 ﻿namespace AssetManager
 {
-	partial class formAssetManager
+	partial class Manager
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -28,7 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(formAssetManager));
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Manager));
 			this.ButtonPack = new System.Windows.Forms.Button();
 			this.treeViewAssets = new System.Windows.Forms.TreeView();
 			this.listBoxAssets = new System.Windows.Forms.ListBox();
@@ -51,7 +51,6 @@
 			this.ButtonPack.TabIndex = 1;
 			this.ButtonPack.Text = "Pack";
 			this.ButtonPack.UseVisualStyleBackColor = true;
-			this.ButtonPack.Click += new System.EventHandler(this.Button_Pack_Click);
 			// 
 			// treeViewAssets
 			// 

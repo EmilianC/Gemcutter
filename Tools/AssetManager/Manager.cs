@@ -8,16 +8,17 @@ using System.Windows.Forms;
 
 namespace AssetManager
 {
-	public partial class formAssetManager : Form
+	public partial class Manager : Form
 	{
-		public formAssetManager()
+		public Manager()
 		{
 			InitializeComponent();
 
-			treeViewAssets.AfterSelect += (sender, e) => RefreshItemView();
-			listBoxAssets.MouseDoubleClick += (sender, e) => OpenAsset();
-			treeViewAssets.AfterSelect += (sender, e) => buttonAssetOpen.Enabled = true;
-			encoderForm.FormClosing += (s, arg) => LoadEncoders();
+			treeViewAssets.AfterSelect += delegate { RefreshItemView(); };
+			listBoxAssets.MouseDoubleClick += delegate { OpenAsset(); };
+			treeViewAssets.AfterSelect += delegate { buttonAssetOpen.Enabled = true; };
+			encoderForm.FormClosing += delegate { LoadEncoders(); };
+			ButtonPack.Click += delegate { Pack(); };
 
 			// Populate the workspace for the first time.
 			RefreshWorkspace();
@@ -27,9 +28,9 @@ namespace AssetManager
 			watcher.IncludeSubdirectories = true;
 			watcher.EnableRaisingEvents = true;
 			watcher.NotifyFilter = NotifyFilters.FileName | NotifyFilters.DirectoryName;
-			watcher.Changed += (sender, e) => RefreshWorkspaceDispatch();
-			watcher.Created += (sender, e) => RefreshWorkspaceDispatch();
-			watcher.Deleted += (sender, e) => RefreshWorkspaceDispatch();
+			watcher.Changed += delegate { RefreshWorkspaceDispatch(); };
+			watcher.Created += delegate { RefreshWorkspaceDispatch(); };
+			watcher.Deleted += delegate { RefreshWorkspaceDispatch(); };
 		}
 
 		//- Opens the selected asset with the default associated program.
@@ -54,9 +55,9 @@ namespace AssetManager
 		}
 
 		//- Starts the packing process. Rebuilds the target Asset directory from scratch.
-		private void Button_Pack_Click(object sender, EventArgs e)
+		public bool Pack()
 		{
-			Output.AppendLine("--- Started ---", Color.Azure);
+			Log("--- Started ---");
 
 			buttonClear.Enabled = false;
 			ButtonPack.Enabled = false;
@@ -93,11 +94,12 @@ namespace AssetManager
 
 			Directory.CreateDirectory(outputRoot);
 
+			bool result = false;
 			try
 			{
 				foreach (string file in filesToConvert)
 				{
-					Output.AppendLine($"Encoding {Path.GetFileName(file)}", Color.Azure);
+					Log($"Encoding [{Path.GetFileName(file)}]");
 
 					// Conversion should target the asset directory.
 					// ...
@@ -105,7 +107,7 @@ namespace AssetManager
 
 				foreach (string file in filesToCopy)
 				{
-					Output.AppendLine($"Copying {Path.GetFileName(file)}", Color.Azure);
+					Log($"Copying [{Path.GetFileName(file)}]");
 
 					var outFile = file.Replace(inputRoot, outputRoot);
 					if (!Directory.Exists(Path.GetDirectoryName(outFile)))
@@ -114,16 +116,20 @@ namespace AssetManager
 					File.Copy(file, outFile);
 				}
 
-				Output.AppendLine($"Done.", Color.Azure);
+				Log("--- Finished ---", ConsoleColor.Green);
+				result = true;
 			}
-			catch (IOException exception)
+			catch (IOException e)
 			{
-				Output.AppendLine($"Error: ( {exception.Message} )", Color.Red);
+				Log($"Error: {e.Message}");
+				result = false;
 			}
 
 			buttonClear.Enabled = true;
 			ButtonPack.Enabled = true;
 			ButtonUpdate.Enabled = true;
+
+			return result;
 		}
 
 		void RefreshItemView()
@@ -135,9 +141,7 @@ namespace AssetManager
 				return;
 
 			foreach (string file in Directory.GetFiles(string.Join("\\", GetNodePath(node))))
-			{
 				listBoxAssets.Items.Add(Path.GetFileName(file));
-			}
 		}
 
 		void RefreshWorkspace()
@@ -175,13 +179,9 @@ namespace AssetManager
 		{
 			// Thread-safe dispatch.
 			if (treeViewAssets.InvokeRequired)
-			{
 				Invoke(new RefreshWorkspaceDelegate(RefreshWorkspace));
-			}
 			else
-			{
 				RefreshWorkspace();
-			}
 		}
 
 		void ParseDirectory(string rootFolder, TreeNode root)
@@ -219,6 +219,11 @@ namespace AssetManager
 			return path;
 		}
 
+		public RichTextBox GetOutput()
+		{
+			return Output;
+		}
+
 		private void LoadEncoders()
 		{
 			encoders.Clear();
@@ -230,9 +235,20 @@ namespace AssetManager
 			}
 			catch (ArgumentException e)
 			{
-				Output.AppendLine(e.Message, Color.Red);
+				Log(e.Message, ConsoleColor.Red);
 				encoders.Clear();
 			}
+		}
+
+		private void Log(string text, ConsoleColor color = ConsoleColor.Gray)
+		{
+			Console.ForegroundColor = color;
+			RichTextBoxStreamWriter.ForegroundColor = color;
+
+			Console.Write(text + "\n");
+
+			Console.ResetColor();
+			RichTextBoxStreamWriter.ForegroundColor = ConsoleColor.Gray;
 		}
 
 		//- Reads output from a native code converter.
@@ -270,7 +286,7 @@ namespace AssetManager
 					Output.SelectionColor = Color.LightGray;
 				}
 
-				RichTextBoxExtensions.AppendText(Output, text + Environment.NewLine);
+				Log(text);
 			}
 		}
 
@@ -313,61 +329,6 @@ namespace AssetManager
 		private void buttonClear_Click(object sender, EventArgs e)
 		{
 			Output.Clear();
-		}
-	}
-
-	public static class RichTextBoxExtensions
-	{
-		delegate void SetOutputColorDelegate(RichTextBox box, Color color);
-		public static void SetOutputColor(RichTextBox box, Color color)
-		{
-			if (box.InvokeRequired)
-			{
-				box.Invoke(new SetOutputColorDelegate(SetOutputColor), new object[] { box, color });
-			}
-			else
-			{
-				box.ForeColor = color;
-			}
-		}
-
-		delegate void AppendTextDelegate(RichTextBox box, string value, Color color = default(Color));
-		public static void AppendText(this RichTextBox box, string value, Color color = default(Color))
-		{
-			if (box.InvokeRequired)
-			{
-				box.Invoke(new AppendTextDelegate(AppendText), new object[] { box, value, color });
-			}
-			else
-			{
-				// Only change the box color if an explicit one was given.
-				if (color != default(Color))
-					box.SelectionColor = color;
-
-				box.SelectionStart = box.TextLength;
-				box.SelectionLength = 0;
-
-				box.AppendText(value);
-				box.SelectionColor = box.ForeColor;
-
-				box.ScrollToCaret();
-			}
-		}
-
-		delegate void AppendLineDelegate(RichTextBox box, string value, Color color = default(Color));
-		public static void AppendLine(this RichTextBox box, string value, Color color = default(Color))
-		{
-			if (box.InvokeRequired)
-			{
-				box.Invoke(new AppendLineDelegate(AppendLine), new object[] { box, value, color });
-			}
-			else
-			{
-				if (box.Text.Length != 0)
-					value = "\r\n" + value;
-
-				AppendText(box, value, color);
-			}
 		}
 	}
 }

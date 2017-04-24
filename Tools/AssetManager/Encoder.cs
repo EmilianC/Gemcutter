@@ -21,14 +21,14 @@ namespace AssetManager
 			if (dllHandle == IntPtr.Zero)
 				throw new ArgumentException($"\"{encoder}\"\nfailed to load. Error Code {Marshal.GetLastWin32Error()}.");
 
-			LoadFunction(encoder, "Initialize", initializeFunc);
-			LoadFunction(encoder, "Convert", convertFunc);
-			LoadFunction(encoder, "Update", updateFunc);
-			LoadFunction(encoder, "Validate", validateFunc);
+			LoadFunction(encoder, "Initialize", ref initializeFunc);
+			LoadFunction(encoder, "Convert", ref convertFunc);
+			LoadFunction(encoder, "Update", ref updateFunc);
+			LoadFunction(encoder, "Validate", ref validateFunc);
 		}
 
 		// Helper for safely loading a function pointer from the dll.
-		private void LoadFunction<T>(string encoder, string name, T funcPtr) where T : class
+		private void LoadFunction<T>(string encoder, string name, ref T funcPtr) where T : class
 		{
 			var funcHandle = GetProcAddress(dllHandle, name);
 			if (funcHandle == IntPtr.Zero)
