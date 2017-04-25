@@ -6,6 +6,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <Windows.h>
 
 // We don't use the Logger in this file because output is intended to be processed by the AssetManager instead.
 
@@ -115,36 +116,13 @@ namespace Jwl
 // Must be implemented to return your derived Encoder.
 std::unique_ptr<Jwl::Encoder> GetEncoder();
 
-// Reset command. Replace the metadata with a default configuration.
-extern "C" __declspec(dllexport) bool __cdecl Initialize(char* file)
-{
-	auto encoder = GetEncoder();
-
-	if (Jwl::ExtractFileExtension(file) != ".meta")
-	{
-		std::cout << "[e]Invalid file extension." << std::endl;
-		return false;
-	}
-
-	if (!Jwl::FileExists(file))
-	{
-		auto metadata = encoder->GetDefault();
-		if (metadata.Save(file))
-		{
-			std::cout << "[e]Could create a new meta file." << std::endl;
-			return false;
-		}
-	}
-	
-	return true;
-}
-
 // Convert command. Write the binary asset into the output folder.
 extern "C" __declspec(dllexport) bool __cdecl Convert(char* src, char* dest)
 {
+	AttachConsole(ATTACH_PARENT_PROCESS);
 	auto encoder = GetEncoder();
 
-	auto metadata = Jwl::Encoder::LoadMetaData(Jwl::ExtractPath(src) + Jwl::ExtractFilename(src) + ".meta");
+	auto metadata = Jwl::Encoder::LoadMetaData(std::string(src) + ".meta");
 	if (metadata.GetSize() == 0)
 	{
 		return false;
@@ -161,9 +139,24 @@ extern "C" __declspec(dllexport) bool __cdecl Convert(char* src, char* dest)
 // Update command. Load the meta file and upgrade to the newest version.
 extern "C" __declspec(dllexport) bool __cdecl Update(char* file)
 {
+	AttachConsole(ATTACH_PARENT_PROCESS);
 	auto encoder = GetEncoder();
 
-	auto metadata = Jwl::Encoder::LoadMetaData(file);
+	const std::string metaFile = std::string(file) + ".meta";
+
+	if (!Jwl::FileExists(metaFile))
+	{
+		auto metadata = encoder->GetDefault();
+		if (!metadata.Save(metaFile))
+		{
+			std::cout << "[e]Could create a new meta file." << std::endl;
+			return false;
+		}
+
+		return true;
+	}
+
+	auto metadata = Jwl::Encoder::LoadMetaData(metaFile);
 	if (metadata.GetSize() == 0)
 	{
 		return false;
@@ -174,7 +167,7 @@ extern "C" __declspec(dllexport) bool __cdecl Update(char* file)
 		return false;
 	}
 
-	if (!metadata.Save(file))
+	if (!metadata.Save(metaFile))
 	{
 		return false;
 	}
@@ -185,6 +178,7 @@ extern "C" __declspec(dllexport) bool __cdecl Update(char* file)
 // Validate command. Ensure the metaData is valid.
 extern "C" __declspec(dllexport) bool __cdecl Validate(char* file)
 {
+	AttachConsole(ATTACH_PARENT_PROCESS);
 	auto encoder = GetEncoder();
 
 	auto metadata = Jwl::Encoder::LoadMetaData(file);

@@ -9,6 +9,35 @@ namespace AssetManager
 	// Loads and dispatches calls to a native-code encoder.
 	class Encoder
 	{
+		[DllImport("kernel32", CharSet = CharSet.Ansi, SetLastError = true)]
+		private static extern IntPtr LoadLibrary(string dll);
+
+		[DllImport("kernel32", CharSet = CharSet.Ansi, ExactSpelling = true, SetLastError = true)]
+		private static extern IntPtr GetProcAddress(IntPtr hModule, string procedureName);
+
+		[DllImport("kernel32", SetLastError = true)]
+		private static extern bool FreeLibrary(IntPtr hModule);
+
+		[DllImport("kernel32", SetLastError = true)]
+		private static extern int SetStdHandle(int device, IntPtr handle);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		private delegate bool ConvertDelegate([In] StringBuilder src, [In] StringBuilder dest);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		private delegate bool UpdateDelegate([In] StringBuilder file);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		private delegate bool ValidateDelegate([In] StringBuilder file);
+
+		private IntPtr dllHandle;
+		private ConvertDelegate convertFunc;
+		private UpdateDelegate updateFunc;
+		private ValidateDelegate validateFunc;
+
 		public Encoder(string encoder)
 		{
 			var cd = Directory.GetCurrentDirectory();
@@ -21,7 +50,6 @@ namespace AssetManager
 			if (dllHandle == IntPtr.Zero)
 				throw new ArgumentException($"\"{encoder}\"\nfailed to load. Error Code {Marshal.GetLastWin32Error()}.");
 
-			LoadFunction(encoder, "Initialize", ref initializeFunc);
 			LoadFunction(encoder, "Convert", ref convertFunc);
 			LoadFunction(encoder, "Update", ref updateFunc);
 			LoadFunction(encoder, "Validate", ref validateFunc);
@@ -43,11 +71,6 @@ namespace AssetManager
 				FreeLibrary(dllHandle);
 		}
 
-		public bool Initialize(string file)
-		{
-			return initializeFunc(new StringBuilder(file));
-		}
-
 		public bool Convert(string file, string destination)
 		{
 			return convertFunc(new StringBuilder(file), new StringBuilder(destination));
@@ -62,39 +85,5 @@ namespace AssetManager
 		{
 			return validateFunc(new StringBuilder(file));
 		}
-
-		[DllImport("kernel32", CharSet = CharSet.Ansi, SetLastError = true)]
-		private static extern IntPtr LoadLibrary(string dll);
-
-		[DllImport("kernel32", CharSet = CharSet.Ansi, ExactSpelling = true, SetLastError = true)]
-		private static extern IntPtr GetProcAddress(IntPtr hModule, string procedureName);
-
-		[DllImport("kernel32", SetLastError = true)]
-		private static extern bool FreeLibrary(IntPtr hModule);
-
-		[DllImport("kernel32", SetLastError = true)]
-		private static extern int SetStdHandle(int device, IntPtr handle);
-
-		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		[return: MarshalAs(UnmanagedType.Bool)]
-		private delegate bool InitializeDelegate([In] StringBuilder file);
-
-		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		[return: MarshalAs(UnmanagedType.Bool)]
-		private delegate bool ConvertDelegate([In] StringBuilder src, [In] StringBuilder dest);
-
-		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		[return: MarshalAs(UnmanagedType.Bool)]
-		private delegate bool UpdateDelegate([In] StringBuilder file);
-
-		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		[return: MarshalAs(UnmanagedType.Bool)]
-		private delegate bool ValidateDelegate([In] StringBuilder file);
-
-		private IntPtr dllHandle;
-		private InitializeDelegate initializeFunc;
-		private ConvertDelegate convertFunc;
-		private UpdateDelegate updateFunc;
-		private ValidateDelegate validateFunc;
 	}
 }

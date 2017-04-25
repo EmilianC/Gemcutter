@@ -25,18 +25,18 @@ namespace AssetManager
 				if (!AttachConsole(ATTACH_PARENT_PROCESS))
 					throw new SystemException("Could not link output to the calling console window.");
 
-				//if (Environment.GetCommandLineArgs().Contains("--update", StringComparer.InvariantCultureIgnoreCase))
-				//{
-				//	if (!builder.Update())
-				//	{
-				//		Environment.ExitCode = 1;
-				//		return;
-				//	}
-				//}
+				if (Environment.GetCommandLineArgs().Contains("--update", StringComparer.InvariantCultureIgnoreCase))
+				{
+					if (!builder.UpdateWorkspace())
+					{
+						Environment.ExitCode = 1;
+						return;
+					}
+				}
 
 				if (Environment.GetCommandLineArgs().Contains("--pack", StringComparer.InvariantCultureIgnoreCase))
 				{
-					if (!builder.Pack())
+					if (!builder.PackWorkspace())
 					{
 						Environment.ExitCode = 1;
 						return;

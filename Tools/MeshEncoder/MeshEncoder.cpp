@@ -77,15 +77,9 @@ bool MeshEncoder::Validate(const Jwl::ConfigTable& data, unsigned loadedVersion)
 
 bool MeshEncoder::Convert(const std::string& source, const std::string& destination, const Jwl::ConfigTable& data) const
 {
-	std::string outputFile = destination;
-	bool packUvs = data.GetBool("uvs");
-	bool packNormals = data.GetBool("normals");
-
-	//- Append our new extension.
-	if (outputFile.find(".model") == std::string::npos)
-	{
-		outputFile += ".model";
-	}
+	const std::string outputFile = destination + Jwl::ExtractFilename(source) + ".model";
+	const bool packUvs = data.GetBool("uvs");
+	const bool packNormals = data.GetBool("normals");
 
 	// load ASCII file.
 	std::ifstream input;

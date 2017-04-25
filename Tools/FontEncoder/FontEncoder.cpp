@@ -77,15 +77,9 @@ bool FontEncoder::Validate(const Jwl::ConfigTable& data, unsigned loadedVersion)
 
 bool FontEncoder::Convert(const std::string& source, const std::string& destination, const Jwl::ConfigTable& data) const
 {
-	std::string outputFile = destination;
-	unsigned width = static_cast<unsigned>(data.GetInt("width"));
-	unsigned height = static_cast<unsigned>(data.GetInt("height"));
-
-	//- Append our new extension.
-	if (outputFile.find(".font") == std::string::npos)
-	{
-		outputFile += ".font";
-	}
+	const std::string outputFile = destination + Jwl::ExtractFilename(source) + ".font";
+	const unsigned width = static_cast<unsigned>(data.GetInt("width"));
+	const unsigned height = static_cast<unsigned>(data.GetInt("height"));
 
 	// File preparation.
 	FILE* fontFile = nullptr;

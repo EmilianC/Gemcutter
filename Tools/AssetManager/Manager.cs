@@ -10,6 +10,13 @@ namespace AssetManager
 {
 	public partial class Manager : Form
 	{
+		// Automatically refresh the asset directory if there are any changes.
+		FileSystemWatcher watcher;
+		// The form responsible for editing the list of encoders.
+		EncoderList encoderForm = new EncoderList();
+		// The actual native-code encoders.
+		Dictionary<string, Encoder> encoders = new Dictionary<string, Encoder>();
+
 		public Manager()
 		{
 			InitializeComponent();
@@ -18,7 +25,6 @@ namespace AssetManager
 			listBoxAssets.MouseDoubleClick += delegate { OpenAsset(); };
 			treeViewAssets.AfterSelect += delegate { buttonAssetOpen.Enabled = true; };
 			encoderForm.FormClosing += delegate { LoadEncoders(); };
-			ButtonPack.Click += delegate { Pack(); };
 
 			// Populate the workspace for the first time.
 			RefreshWorkspace();
@@ -54,17 +60,55 @@ namespace AssetManager
 			{}
 		}
 
-		//- Starts the packing process. Rebuilds the target Asset directory from scratch.
-		public bool Pack()
+		public bool UpdateWorkspace()
 		{
-			Log("--- Started ---");
+			Log("--- Started Packing ---");
 
 			buttonClear.Enabled = false;
 			ButtonPack.Enabled = false;
 			ButtonUpdate.Enabled = false;
 
 			LoadEncoders();
-			var assetEncoders = encoderForm.GetEncoders();
+
+			var filesToUpdate = new List<string>();
+			foreach (var dir in Directory.GetDirectories(Directory.GetCurrentDirectory(), "*", SearchOption.TopDirectoryOnly))
+			{
+				foreach (string file in Directory.GetFiles(dir, "*.*", SearchOption.AllDirectories))
+				{
+					if (file.EndsWith(".meta", StringComparison.InvariantCultureIgnoreCase))
+						continue;
+
+					if (encoders.Any(x => file.EndsWith(x.Key, StringComparison.InvariantCultureIgnoreCase)))
+						filesToUpdate.Add(file);
+				}
+			}
+
+			foreach (var file in filesToUpdate)
+			{
+				Log($"Checking [{Path.GetFileName(file)}]");
+
+				if (!encoders[Path.GetExtension(file).Substring(1)].Update(file))
+					Log($"FAILED [{Path.GetFileName(file)}]", ConsoleColor.Red);
+			}
+
+			buttonClear.Enabled = true;
+			ButtonPack.Enabled = true;
+			ButtonUpdate.Enabled = true;
+
+			Log("--- Finished Updating ---", ConsoleColor.Green);
+			return true;
+		}
+
+		//- Starts the packing process. Rebuilds the target Asset directory from scratch.
+		public bool PackWorkspace()
+		{
+			Log("--- Started Packing ---");
+
+			buttonClear.Enabled = false;
+			ButtonPack.Enabled = false;
+			ButtonUpdate.Enabled = false;
+
+			LoadEncoders();
 
 			string inputRoot = Directory.GetCurrentDirectory();
 			string commonRoot = inputRoot.Remove(inputRoot.LastIndexOf(Path.DirectorySeparatorChar));
@@ -85,7 +129,7 @@ namespace AssetManager
 					if (file.EndsWith(".meta", StringComparison.InvariantCultureIgnoreCase))
 						continue;
 				
-					if (assetEncoders.Any(x => file.EndsWith(x.Key, StringComparison.InvariantCultureIgnoreCase)))
+					if (encoders.Any(x => file.EndsWith(x.Key, StringComparison.InvariantCultureIgnoreCase)))
 						filesToConvert.Add(file);
 					else
 						filesToCopy.Add(file);
@@ -101,8 +145,12 @@ namespace AssetManager
 				{
 					Log($"Encoding [{Path.GetFileName(file)}]");
 
-					// Conversion should target the asset directory.
-					// ...
+					var outDir = Path.GetDirectoryName(file.Replace(inputRoot, outputRoot)) + Path.DirectorySeparatorChar;
+					if (!Directory.Exists(outDir))
+						Directory.CreateDirectory(outDir);
+
+					if (!encoders[Path.GetExtension(file).Substring(1)].Convert(file, outDir))
+						Log($"FAILED [{Path.GetFileName(file)}]", ConsoleColor.Red);
 				}
 
 				foreach (string file in filesToCopy)
@@ -116,7 +164,7 @@ namespace AssetManager
 					File.Copy(file, outFile);
 				}
 
-				Log("--- Finished ---", ConsoleColor.Green);
+				Log("--- Finished Packing ---", ConsoleColor.Green);
 				result = true;
 			}
 			catch (IOException e)
@@ -169,9 +217,6 @@ namespace AssetManager
 
 			treeViewAssets.ExpandAll();
 			RefreshItemView();
-
-			// Find any files that don't yet have a .meta and initialize them.
-			//...
 		}
 
 		delegate void RefreshWorkspaceDelegate();
@@ -192,7 +237,7 @@ namespace AssetManager
 			foreach (string folder in directories)
 			{
 				// Add the file count to the name.
-				var fileCount = Directory.GetFiles(folder).Count();
+				var fileCount = Directory.GetFiles(folder).Where(x => Path.GetExtension(x) != ".meta").Count();
 				string name = folder.Split('\\').Last();
 				string text = fileCount == 0 ? name : name + " [" + fileCount.ToString() + "]";
 
@@ -231,7 +276,7 @@ namespace AssetManager
 			try
 			{
 				foreach (var dll in encoderForm.GetEncoders())
-					encoders.Add(new Encoder(dll.Value));
+					encoders.Add(dll.Key, new Encoder(dll.Value));
 			}
 			catch (ArgumentException e)
 			{
@@ -290,24 +335,10 @@ namespace AssetManager
 			}
 		}
 
-		// Automatically refresh the asset directory if there are any changes.
-		FileSystemWatcher watcher;
-		// The form responsible for editing the list of encoders.
-		EncoderList encoderForm = new EncoderList();
-		// The actual native-code encoders.
-		List<Encoder> encoders = new List<Encoder>();
-
 		private void buttonSettings_Click(object sender, EventArgs e)
 		{
 			encoderForm.Show();
 			encoderForm.BringToFront();
-		}
-
-		private void ButtonUpdate_Click(object sender, EventArgs e)
-		{
-			LoadEncoders();
-
-
 		}
 
 		//- Browses to the root workspace directory.
@@ -329,6 +360,16 @@ namespace AssetManager
 		private void buttonClear_Click(object sender, EventArgs e)
 		{
 			Output.Clear();
+		}
+
+		private void ButtonUpdate_Click(object sender, EventArgs e)
+		{
+			UpdateWorkspace();
+		}
+
+		private void ButtonPack_Click(object sender, EventArgs e)
+		{
+			PackWorkspace();
 		}
 	}
 }
