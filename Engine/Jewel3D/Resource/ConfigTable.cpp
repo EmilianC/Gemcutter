@@ -45,19 +45,17 @@ namespace Jwl
 	bool ConfigTable::Save(const std::string& file) const
 	{
 		std::ofstream output(file);
-
 		if (!output)
 		{
 			return false;
 		}
 
-		for (auto const& pair : settings)
+		for (auto& pair : settings)
 		{
 			output << pair.first << "=" << pair.second << '\n';
 		}
 
 		output.close();
-
 		return true;
 	}
 
@@ -84,26 +82,12 @@ namespace Jwl
 
 	float ConfigTable::GetFloat(const std::string& setting) const
 	{
-		if (HasSetting(setting))
-		{
-			return std::stof(settings.at(setting));
-		}
-		else
-		{
-			return 0.0f;
-		}
+		return HasSetting(setting) ? std::stof(settings.at(setting)) : 0.0f;
 	}
 
 	int ConfigTable::GetInt(const std::string& setting) const
 	{
-		if (HasSetting(setting))
-		{
-			return std::stoi(settings.at(setting));
-		}
-		else
-		{
-			return 0;
-		}
+		return HasSetting(setting) ? std::stoi(settings.at(setting)) : 0;
 	}
 
 	bool ConfigTable::GetBool(const std::string& setting) const
@@ -123,34 +107,22 @@ namespace Jwl
 
 	void ConfigTable::SetValue(const std::string& setting, const std::string& value)
 	{
-		if (HasSetting(setting))
-		{
-			settings[setting] = value;
-		}
+		settings[setting] = value;
 	}
 
 	void ConfigTable::SetValue(const std::string& setting, float value)
 	{
-		if (HasSetting(setting))
-		{
-			settings[setting] = std::to_string(value);
-		}
+		settings[setting] = std::to_string(value);
 	}
 
 	void ConfigTable::SetValue(const std::string& setting, int value)
 	{
-		if (HasSetting(setting))
-		{
-			settings[setting] = std::to_string(value);
-		}
+		settings[setting] = std::to_string(value);
 	}
 
 	void ConfigTable::SetValue(const std::string& setting, bool value)
 	{
-		if (HasSetting(setting))
-		{
-			settings[setting] = value ? "on" : "off";
-		}
+		settings[setting] = value ? "on" : "off";
 	}
 
 	void ConfigTable::SetDefaultValue(const std::string& setting, const std::string& value)

@@ -1,7 +1,7 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
 #include <string>
-#include <unordered_map>
+#include <map>
 
 namespace Jwl
 {
@@ -21,21 +21,19 @@ namespace Jwl
 		int GetInt(const std::string& setting) const;
 		bool GetBool(const std::string& setting) const;
 
+		//- Creates or overwrites an existing setting.
 		void SetValue(const std::string& setting, const std::string& value);
 		void SetValue(const std::string& setting, float value);
 		void SetValue(const std::string& setting, int value);
 		void SetValue(const std::string& setting, bool value);
 
-		//- Does not override an existing setting, but creates it if it doesn't exist.
+		//- Does not overwrite an existing setting, but creates it if it doesn't exist.
 		void SetDefaultValue(const std::string& setting, const std::string& value);
-		//- Does not override an existing setting, but creates it if it doesn't exist.
 		void SetDefaultValue(const std::string& setting, float value);
-		//- Does not override an existing setting, but creates it if it doesn't exist.
 		void SetDefaultValue(const std::string& setting, int value);
-		//- Does not override an existing setting, but creates it if it doesn't exist.
 		void SetDefaultValue(const std::string& setting, bool value);
 
 	private:
-		std::unordered_map<std::string, std::string> settings;
+		std::map<std::string, std::string> settings;
 	};
 }
