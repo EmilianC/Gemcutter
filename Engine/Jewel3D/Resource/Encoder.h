@@ -24,35 +24,35 @@ namespace Jwl
 		virtual ~Encoder() = default;
 
 		// 
-		static ConfigTable LoadMetaData(const std::string& file)
+		static bool LoadMetaData(const std::string& file, ConfigTable& out)
 		{
-			ConfigTable result;
+			out = ConfigTable();
 
 			if (Jwl::ExtractFileExtension(file) != ".meta")
 			{
 				std::cout << "[e]Invalid file extension." << std::endl;
-				return result;
+				return false;
 			}
 
-			if (!result.Load(file))
+			if (!out.Load(file))
 			{
 				std::cout << "[e]Failed to open metadata file." << std::endl;
-				return result;
+				return false;
 			}
 
-			if (!result.HasSetting("version"))
+			if (!out.HasSetting("version"))
 			{
 				std::cout << "[e]Metadata file is missing a version specifier." << std::endl;
-				return result;
+				return false;
 			}
 
-			if (result.GetInt("version") < 1)
+			if (out.GetInt("version") < 1)
 			{
 				std::cout << "[e]Metadata version is invalid." << std::endl;
-				return result;
+				return false;
 			}
 
-			return result;
+			return true;
 		}
 
 		bool UpgradeData(ConfigTable& data) const
@@ -122,8 +122,13 @@ extern "C" __declspec(dllexport) bool __cdecl Convert(char* src, char* dest)
 	AttachConsole(ATTACH_PARENT_PROCESS);
 	auto encoder = GetEncoder();
 
-	auto metadata = Jwl::Encoder::LoadMetaData(std::string(src) + ".meta");
-	if (metadata.GetSize() == 0)
+	Jwl::ConfigTable metadata;
+	if (!Jwl::Encoder::LoadMetaData(std::string(src) + ".meta", metadata))
+	{
+		return false;
+	}
+
+	if (!encoder->ValidateData(metadata))
 	{
 		return false;
 	}
@@ -156,36 +161,26 @@ extern "C" __declspec(dllexport) bool __cdecl Update(char* file)
 		return true;
 	}
 
-	auto metadata = Jwl::Encoder::LoadMetaData(metaFile);
-	if (metadata.GetSize() == 0)
+	Jwl::ConfigTable metadata;
+	if (!Jwl::Encoder::LoadMetaData(metaFile, metadata))
 	{
 		return false;
 	}
 
-	if (!encoder->UpgradeData(metadata))
+	Jwl::ConfigTable upgradedData = metadata;
+	if (!encoder->UpgradeData(upgradedData))
 	{
 		return false;
 	}
 
-	if (!metadata.Save(metaFile))
+	// Avoid touching the file if it is not changed.
+	if (metadata != upgradedData)
 	{
-		return false;
+		if (!upgradedData.Save(metaFile))
+		{
+			return false;
+		}
 	}
 
 	return true;
-}
-
-// Validate command. Ensure the metaData is valid.
-extern "C" __declspec(dllexport) bool __cdecl Validate(char* file)
-{
-	AttachConsole(ATTACH_PARENT_PROCESS);
-	auto encoder = GetEncoder();
-
-	auto metadata = Jwl::Encoder::LoadMetaData(file);
-	if (metadata.GetSize() == 0)
-	{
-		return false;
-	}
-
-	return encoder->ValidateData(metadata);
 }

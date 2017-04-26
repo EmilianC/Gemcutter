@@ -18,9 +18,6 @@ namespace AssetManager
 		[DllImport("kernel32", SetLastError = true)]
 		private static extern bool FreeLibrary(IntPtr hModule);
 
-		[DllImport("kernel32", SetLastError = true)]
-		private static extern int SetStdHandle(int device, IntPtr handle);
-
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		[return: MarshalAs(UnmanagedType.Bool)]
 		private delegate bool ConvertDelegate([In] StringBuilder src, [In] StringBuilder dest);
@@ -29,14 +26,9 @@ namespace AssetManager
 		[return: MarshalAs(UnmanagedType.Bool)]
 		private delegate bool UpdateDelegate([In] StringBuilder file);
 
-		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		[return: MarshalAs(UnmanagedType.Bool)]
-		private delegate bool ValidateDelegate([In] StringBuilder file);
-
 		private IntPtr dllHandle;
 		private ConvertDelegate convertFunc;
 		private UpdateDelegate updateFunc;
-		private ValidateDelegate validateFunc;
 
 		public Encoder(string encoder)
 		{
@@ -50,19 +42,16 @@ namespace AssetManager
 			if (dllHandle == IntPtr.Zero)
 				throw new ArgumentException($"\"{encoder}\"\nfailed to load. Error Code {Marshal.GetLastWin32Error()}.");
 
-			LoadFunction(encoder, "Convert", ref convertFunc);
-			LoadFunction(encoder, "Update", ref updateFunc);
-			LoadFunction(encoder, "Validate", ref validateFunc);
-		}
+			var convertHandle = GetProcAddress(dllHandle, "Convert");
+			if (convertHandle == IntPtr.Zero)
+				throw new ArgumentException($"{encoder}\nfailed to load the \"Convert\" function. Error code: {Marshal.GetLastWin32Error()}");
 
-		// Helper for safely loading a function pointer from the dll.
-		private void LoadFunction<T>(string encoder, string name, ref T funcPtr) where T : class
-		{
-			var funcHandle = GetProcAddress(dllHandle, name);
-			if (funcHandle == IntPtr.Zero)
-				throw new ArgumentException($"{encoder}\nfailed to load the \"{name}\" function. Error code: {Marshal.GetLastWin32Error()}");
+			var updateHandle = GetProcAddress(dllHandle, "Update");
+			if (updateHandle == IntPtr.Zero)
+				throw new ArgumentException($"{encoder}\nfailed to load the \"Update\" function. Error code: {Marshal.GetLastWin32Error()}");
 
-			funcPtr = Marshal.GetDelegateForFunctionPointer(funcHandle, typeof(T)) as T;
+			convertFunc = (ConvertDelegate)Marshal.GetDelegateForFunctionPointer(convertHandle, typeof(ConvertDelegate));
+			updateFunc = (UpdateDelegate)Marshal.GetDelegateForFunctionPointer(updateHandle, typeof(UpdateDelegate));
 		}
 
 		~Encoder()
@@ -79,11 +68,6 @@ namespace AssetManager
 		public bool Update(string file)
 		{
 			return updateFunc(new StringBuilder(file));
-		}
-
-		public bool ValidateMetaData(string file)
-		{
-			return validateFunc(new StringBuilder(file));
 		}
 	}
 }

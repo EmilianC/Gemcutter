@@ -271,7 +271,7 @@ namespace Jwl
 		file.read(buff, length);
 		buffer = buff;
 
-		delete buff;
+		delete[] buff;
 		file.close();
 
 		return true;

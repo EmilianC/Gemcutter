@@ -53,12 +53,6 @@ bool MeshEncoder::Validate(const Jwl::ConfigTable& data, unsigned loadedVersion)
 	switch (loadedVersion)
 	{
 	case 1:
-		if (data.GetSize() != 3)
-		{
-			std::cout << "[e]Incorrect number of value entries." << std::endl;
-			return false;
-		}
-
 		if (!data.HasSetting("uvs"))
 		{
 			std::cout << "[e]Missing \"uvs\" value." << std::endl;
@@ -68,6 +62,12 @@ bool MeshEncoder::Validate(const Jwl::ConfigTable& data, unsigned loadedVersion)
 		if (!data.HasSetting("normals"))
 		{
 			std::cout << "[e]Missing \"normals\" value." << std::endl;
+			return false;
+		}
+
+		if (data.GetSize() != 3)
+		{
+			std::cout << "[e]Incorrect number of value entries." << std::endl;
 			return false;
 		}
 	}
@@ -176,6 +176,9 @@ bool MeshEncoder::Convert(const std::string& source, const std::string& destinat
 
 	input.close();
 
+	bool useUvs = packUvs && hasUvs;
+	bool useNormals = packUvs && hasNormals;
+
 	// Unpack the data.
 	for (unsigned i = 0; i < faceData.size(); i++)
 	{
@@ -185,13 +188,13 @@ bool MeshEncoder::Convert(const std::string& source, const std::string& destinat
 			unPackedData.push_back(vertexData[faceData[i].vertices[j] - 1].y);
 			unPackedData.push_back(vertexData[faceData[i].vertices[j] - 1].z);
 
-			if (packUvs && hasUvs)
+			if (useUvs)
 			{
 				unPackedData.push_back(textureData[faceData[i].textures[j] - 1].x);
 				unPackedData.push_back(textureData[faceData[i].textures[j] - 1].y);
 			}
 
-			if (packUvs && hasNormals)
+			if (useNormals)
 			{
 				unPackedData.push_back(normalData[faceData[i].normals[j] - 1].x);
 				unPackedData.push_back(normalData[faceData[i].normals[j] - 1].y);
@@ -210,8 +213,6 @@ bool MeshEncoder::Convert(const std::string& source, const std::string& destinat
 
 	// Write header.
 	unsigned numFaces = faceData.size();
-	bool useUvs = packUvs && hasUvs;
-	bool useNormals = packUvs && hasNormals;
 	fwrite(&numFaces, sizeof(int), 1, modelFile);
 	fwrite(&useUvs, sizeof(bool), 1, modelFile);
 	fwrite(&useNormals, sizeof(bool), 1, modelFile);

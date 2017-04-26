@@ -39,12 +39,6 @@ bool FontEncoder::Validate(const Jwl::ConfigTable& data, unsigned loadedVersion)
 	switch (loadedVersion)
 	{
 	case 1:
-		if (data.GetSize() != 3)
-		{
-			std::cout << "[e]Incorrect number of value entries." << std::endl;
-			return false;
-		}
-
 		// Check Width
 		if (!data.HasSetting("width"))
 		{
@@ -68,6 +62,12 @@ bool FontEncoder::Validate(const Jwl::ConfigTable& data, unsigned loadedVersion)
 		if (data.GetInt("height") == 0)
 		{
 			std::cout << "[e]Height must be greater than 0." << std::endl;
+			return false;
+		}
+
+		if (data.GetSize() != 3)
+		{
+			std::cout << "[e]Incorrect number of value entries." << std::endl;
 			return false;
 		}
 	}
