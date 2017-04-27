@@ -63,7 +63,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TextBoxStreamWriter.cs" />
+    <Compile Include="RichTextBoxStreamWriter.cs" />
     <EmbeddedResource Include="EncoderList.resx">
       <DependentUpon>EncoderList.cs</DependentUpon>
     </EmbeddedResource>

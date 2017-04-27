@@ -87,7 +87,7 @@ bool MeshEncoder::Convert(const std::string& source, const std::string& destinat
 	if (!input)
 	{
 		std::cout << "[e]Input file could not be opened or processed." << std::endl;
-		return EXIT_FAILURE;
+		return false;
 	}
 
 	char inputString[CHAR_BUFFER_SIZE];
@@ -208,7 +208,7 @@ bool MeshEncoder::Convert(const std::string& source, const std::string& destinat
 	if (modelFile == nullptr)
 	{
 		std::cout << "[e]Output file could not be created." << std::endl;
-		return EXIT_FAILURE;
+		return false;
 	}
 
 	// Write header.
@@ -225,7 +225,7 @@ bool MeshEncoder::Convert(const std::string& source, const std::string& destinat
 	if (result != 0)
 	{
 		std::cout << "[e]Failed to generate Mesh Binary\nOutput file could not be saved." << std::endl;
-		return EXIT_FAILURE;
+		return false;
 	}
 	else
 	{
@@ -239,7 +239,6 @@ bool MeshEncoder::Convert(const std::string& source, const std::string& destinat
 			std::cout << "[w]Output of normals was enabled but no normals were found in the mesh." << std::endl;
 		}
 
-		std::cout << "[s]Mesh Binary created successfully" << std::endl;
-		return EXIT_SUCCESS;
+		return true;
 	}
 }

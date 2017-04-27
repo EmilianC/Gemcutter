@@ -117,7 +117,7 @@ namespace Jwl
 std::unique_ptr<Jwl::Encoder> GetEncoder();
 
 // Convert command. Write the binary asset into the output folder.
-extern "C" __declspec(dllexport) bool __cdecl Convert(char* src, char* dest)
+extern "C" __declspec(dllexport) bool __cdecl Convert(const char* src, const char* dest)
 {
 	AttachConsole(ATTACH_PARENT_PROCESS);
 	auto encoder = GetEncoder();
@@ -142,7 +142,7 @@ extern "C" __declspec(dllexport) bool __cdecl Convert(char* src, char* dest)
 }
 
 // Update command. Load the meta file and upgrade to the newest version.
-extern "C" __declspec(dllexport) bool __cdecl Update(char* file)
+extern "C" __declspec(dllexport) bool __cdecl Update(const char* file)
 {
 	AttachConsole(ATTACH_PARENT_PROCESS);
 	auto encoder = GetEncoder();

@@ -114,8 +114,6 @@ bool FontEncoder::Convert(const std::string& source, const std::string& destinat
 		return false;
 	}
 
-	std::cout << "|Char|\t|Size|\t|Pos|\t|Advance|" << std::endl;
-
 	// Estimation of the buffer size we will need.
 	bitmapBuffer.reserve(width * height * 94);
 
@@ -144,27 +142,21 @@ bool FontEncoder::Convert(const std::string& source, const std::string& destinat
 				}
 			}
 
-			std::cout << "[r]";
 			masks[index] = true;
 		}
 		else
 		{
-			std::cout << "[e]";
 			masks[index] = false;
 		}
-		std::cout << '\'' << c << "\'\t";
 
 		dimensions[index].x = face->glyph->bitmap.width;
 		dimensions[index].y = face->glyph->bitmap.rows;
-		std::cout << dimensions[index].x << ' ' << dimensions[index].y << "\t";
 
 		positions[index].x = face->glyph->bitmap_left;
 		positions[index].y = face->glyph->bitmap_top - face->glyph->bitmap.rows;
-		std::cout << positions[index].x << ' ' << positions[index].y << "\t";
 
 		advances[index].x = face->glyph->advance.x / 64;
 		advances[index].y = face->glyph->advance.y / 64;
-		std::cout << advances[index].x << ' ' << advances[index].y << '\n';
 	}
 
 	// We don't need FreeType anymore.
@@ -214,11 +206,9 @@ bool FontEncoder::Convert(const std::string& source, const std::string& destinat
 	{
 		if (count != 94)
 		{
-			std::cout << "[w]";
+			std::cout << "[w]" << 94 - count << " characters were not created." << std::endl;
 		}
-		std::cout << count << " out of 94 characters loaded." << std::endl;
-
-		std::cout << "[s]Font Binary created successfully" << std::endl;
+		
 		return true;
 	}
 }

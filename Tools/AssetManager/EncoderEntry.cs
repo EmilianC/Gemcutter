@@ -18,6 +18,20 @@ namespace AssetManager
 
 	public class EncoderEntry
 	{
+		// Called when the delete button is clicked and the entry should be removed.
+		public event EventHandler onDelete;
+
+		PictureBox status = new PictureBox();
+		ToolTip statusLog = new ToolTip();
+		TextBox extensionBox = new TextBox();
+		TextBox encoderBox = new TextBox();
+		Button search = new Button();
+		Button delete = new Button();
+		Panel parent;
+
+		public const int ItemHeight = 30;
+		private static int tabIndex = 1;
+
 		public EncoderEntry(Panel parentPanel, int offset, string ext = "", string app = "")
 		{
 			parent = parentPanel;
@@ -169,19 +183,5 @@ namespace AssetManager
 			if (dialog.ShowDialog() == DialogResult.OK)
 				encoderBox.Text = dialog.FileName;
 		}
-
-		// Called when the delete button is clicked and the entry should be removed.
-		public event EventHandler onDelete;
-
-		PictureBox status = new PictureBox();
-		ToolTip statusLog = new ToolTip();
-		TextBox extensionBox = new TextBox();
-		TextBox encoderBox = new TextBox();
-		Button search = new Button();
-		Button delete = new Button();
-		Panel parent;
-
-		public static readonly int ItemHeight = 30;
-		private static int tabIndex = 1;
 	}
 }

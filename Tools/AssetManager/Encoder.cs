@@ -1,7 +1,6 @@
 ﻿// Copyright (c) 2017 Emilian Cioca
 using System;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.IO;
 
 namespace AssetManager
@@ -19,12 +18,12 @@ namespace AssetManager
 		private static extern bool FreeLibrary(IntPtr hModule);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		[return: MarshalAs(UnmanagedType.Bool)]
-		private delegate bool ConvertDelegate([In] StringBuilder src, [In] StringBuilder dest);
+		[return: MarshalAs(UnmanagedType.I1)]
+		private delegate bool ConvertDelegate([MarshalAs(UnmanagedType.LPStr)]string src, [MarshalAs(UnmanagedType.LPStr)]string dest);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		[return: MarshalAs(UnmanagedType.Bool)]
-		private delegate bool UpdateDelegate([In] StringBuilder file);
+		[return: MarshalAs(UnmanagedType.I1)]
+		private delegate bool UpdateDelegate([MarshalAs(UnmanagedType.LPStr)]string file);
 
 		private IntPtr dllHandle;
 		private ConvertDelegate convertFunc;
@@ -62,12 +61,12 @@ namespace AssetManager
 
 		public bool Convert(string file, string destination)
 		{
-			return convertFunc(new StringBuilder(file), new StringBuilder(destination));
+			return convertFunc(file, destination);
 		}
 
 		public bool Update(string file)
 		{
-			return updateFunc(new StringBuilder(file));
+			return updateFunc(file);
 		}
 	}
 }

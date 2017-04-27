@@ -62,7 +62,7 @@ namespace AssetManager
 
 		public bool UpdateWorkspace()
 		{
-			Log("--- Started Packing ---");
+			Log("---- Started Updating ----");
 
 			buttonClear.Enabled = false;
 			ButtonPack.Enabled = false;
@@ -83,26 +83,39 @@ namespace AssetManager
 				}
 			}
 
-			foreach (var file in filesToUpdate)
+			bool result = false;
+			try
 			{
-				Log($"Checking [{Path.GetFileName(file)}]");
+				foreach (var file in filesToUpdate)
+				{
+					Log($"Checking [{Path.GetFileName(file)}]");
 
-				if (!encoders[Path.GetExtension(file).Substring(1)].Update(file))
-					Log($"FAILED [{Path.GetFileName(file)}]", ConsoleColor.Red);
+					if (!encoders[Path.GetExtension(file).Substring(1)].Update(file))
+						throw new Exception($"Failed to update [{Path.GetFileName(file)}]");
+				}
+
+				Log("---- Finished Updating ----", ConsoleColor.Green);
+				result = true;
+			}
+			catch (Exception e)
+			{
+				Log($"Error: {e.Message}", ConsoleColor.Red);
+				result = false;
+			}
+			finally
+			{
+				buttonClear.Enabled = true;
+				ButtonPack.Enabled = true;
+				ButtonUpdate.Enabled = true;
 			}
 
-			buttonClear.Enabled = true;
-			ButtonPack.Enabled = true;
-			ButtonUpdate.Enabled = true;
-
-			Log("--- Finished Updating ---", ConsoleColor.Green);
-			return true;
+			return result;
 		}
 
 		//- Starts the packing process. Rebuilds the target Asset directory from scratch.
 		public bool PackWorkspace()
 		{
-			Log("--- Started Packing ---");
+			Log("---- Started Packing ----");
 
 			buttonClear.Enabled = false;
 			ButtonPack.Enabled = false;
@@ -143,14 +156,14 @@ namespace AssetManager
 			{
 				foreach (string file in filesToConvert)
 				{
-					Log($"Encoding [{Path.GetFileName(file)}]");
+					Log($"Packing [{Path.GetFileName(file)}]");
 
 					var outDir = Path.GetDirectoryName(file.Replace(inputRoot, outputRoot)) + Path.DirectorySeparatorChar;
 					if (!Directory.Exists(outDir))
 						Directory.CreateDirectory(outDir);
 
 					if (!encoders[Path.GetExtension(file).Substring(1)].Convert(file, outDir))
-						Log($"FAILED [{Path.GetFileName(file)}]", ConsoleColor.Red);
+						throw new Exception($"Failed to pack [{Path.GetFileName(file)}]");
 				}
 
 				foreach (string file in filesToCopy)
@@ -164,18 +177,20 @@ namespace AssetManager
 					File.Copy(file, outFile);
 				}
 
-				Log("--- Finished Packing ---", ConsoleColor.Green);
+				Log("---- Finished Packing ----", ConsoleColor.Green);
 				result = true;
 			}
-			catch (IOException e)
+			catch (Exception e)
 			{
-				Log($"Error: {e.Message}");
+				Log($"Error: {e.Message}", ConsoleColor.Red);
 				result = false;
 			}
-
-			buttonClear.Enabled = true;
-			ButtonPack.Enabled = true;
-			ButtonUpdate.Enabled = true;
+			finally
+			{
+				buttonClear.Enabled = true;
+				ButtonPack.Enabled = true;
+				ButtonUpdate.Enabled = true;
+			}
 
 			return result;
 		}
