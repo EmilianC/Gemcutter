@@ -18,7 +18,7 @@
 namespace
 {
 	// Built in shaders.
-	static const char passThroughVertex[] =
+	static constexpr char passThroughVertex[] =
 		"\n"
 		"layout(location = 0) in vec4 a_vert;\n"
 		"layout(location = 1) in vec2 a_uv;\n"
@@ -28,7 +28,7 @@ namespace
 			"\ttexcoord = a_uv;\n"
 		"}\n";
 
-	static const char passThroughFragment[] =
+	static constexpr char passThroughFragment[] =
 		"\n"
 		"uniform sampler2D sTex;\n"
 		"in vec2 texcoord;\n"
@@ -37,7 +37,7 @@ namespace
 			"\toutColor = texture(sTex, texcoord);\n"
 		"}\n";
 
-	static const char passThroughProgram[] =
+	static constexpr char passThroughProgram[] =
 		"Attributes\n{\n"
 		"	vec4 a_vert : 0;\n"
 		"	vec2 a_uv : 1;\n"
@@ -62,7 +62,7 @@ namespace
 		"	}\n"
 		"}\n";
 
-	static const char builtInBuffers[] =
+	static constexpr char builtInBuffers[] =
 		"\n"
 		"layout(std140) uniform Jwl_Camera_Uniforms\n"
 		"{\n"
@@ -92,7 +92,7 @@ namespace
 		"};\n"
 		"\n";
 
-	static const char builtInLightingFunctions[] =
+	static constexpr char builtInLightingFunctions[] =
 		"vec3 JWL_COMPUTE_POINT_LIGHT(vec3 normal, vec3 surfacePos, vec3 color, vec3 lightPos, float attenConstant, float attenLinear, float attenQuadratic)\n"
 		"{\n"
 		"	lightPos = (Jwl_View * vec4(lightPos, 1.0)).xyz;\n"
@@ -143,7 +143,7 @@ namespace
 		"	return vec3(0.0);\n"
 		"}\n";
 
-	static const char builtInLightingMacros[] =
+	static constexpr char builtInLightingMacros[] =
 		"#define COMPUTE_POINT_LIGHT(light, normal, pos) "
 		"JWL_COMPUTE_POINT_LIGHT(normal, pos, light##.Color, light##.Position, light##.AttenuationConstant, light##.AttenuationLinear, light##.AttenuationQuadratic)\n"
 		"#define COMPUTE_DIRECTIONAL_LIGHT(light, normal) "

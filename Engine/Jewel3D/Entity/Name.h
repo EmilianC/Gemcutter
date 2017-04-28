@@ -12,7 +12,7 @@ namespace Jwl
 	//- Searches the given entity's sub-tree for the first child with the specified name.
 	Entity::Ptr FindChild(const Entity& root, const std::string& name);
 
-	//- Searches all Entities and returns the first one found with the specified name.
+	//- Searches all Entities with a name component and returns the first one found with the specified name.
 	Entity::Ptr FindEntity(const std::string& name);
 
 	//- Associates an entity with a name. Used by LogSceneGraph() and FindEntity().

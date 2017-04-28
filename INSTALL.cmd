@@ -5,7 +5,7 @@ net session >nul 2>&1
 if %ERRORLEVEL% NEQ 0 (
     ECHO INSTALL.cmd must be run as admin.
     Pause
-    Exit
+    goto :eof
 )
 
 ECHO -----------------------------------------------------------------------------------------

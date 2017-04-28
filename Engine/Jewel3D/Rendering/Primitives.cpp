@@ -9,7 +9,7 @@
 
 namespace
 {
-	static const char LINE_PROGRAM[] =
+	static constexpr char LINE_PROGRAM[] =
 	"Uniforms\n{\n"
 	"	static Data : 0\n{\n"
 	"		vec4 uP1;\n"
@@ -45,7 +45,7 @@ namespace
 	"	}\n"
 	"}\n";
 
-	static const char TEXTURED_LINE_PROGRAM[] =
+	static constexpr char TEXTURED_LINE_PROGRAM[] =
 	"Uniforms\n{\n"
 	"	static Data : 0\n{\n"
 	"		vec4 uP1;\n"
@@ -83,7 +83,7 @@ namespace
 	"	}\n"
 	"}\n";
 
-	static const char TRIANGLE_PROGRAM[] =
+	static constexpr char TRIANGLE_PROGRAM[] =
 	"Uniforms\n{\n"
 	"	static Data : 0\n{\n"
 	"		vec4 uP1;\n"
@@ -124,7 +124,7 @@ namespace
 	"	}\n"
 	"}\n";
 
-	static const char TEXTURED_TRIANGLE_PROGRAM[] =
+	static constexpr char TEXTURED_TRIANGLE_PROGRAM[] =
 	"Uniforms\n{\n"
 	"	static Data : 0\n{\n"
 	"		vec4 uP1;\n"
@@ -166,7 +166,7 @@ namespace
 	"	}\n"
 	"}\n";
 
-	static const char RECTANGE_PROGRAM[] =
+	static constexpr char RECTANGE_PROGRAM[] =
 	"Uniforms\n{\n"
 	"	static Data : 0\n{\n"
 	"		vec4 uP1;\n"
@@ -213,7 +213,7 @@ namespace
 	"	}\n"
 	"}\n";
 
-	static const char TEXTURED_RECTANGLE_PROGRAM[] =
+	static constexpr char TEXTURED_RECTANGLE_PROGRAM[] =
 	"Uniforms\n{\n"
 	"	static Data : 0\n{\n"
 	"		vec4 uP1;\n"
@@ -259,7 +259,7 @@ namespace
 	"	}\n"
 	"}\n";
 
-	static const char TEXTURED_FULLSCREEN_QUAD_PROGRAM[] =
+	static constexpr char TEXTURED_FULLSCREEN_QUAD_PROGRAM[] =
 	"Attributes\n{\n"
 	"	vec4 a_vert : 0;"
 	"	vec2 a_uv : 1;\n"
@@ -284,7 +284,7 @@ namespace
 	"	}\n"
 	"}\n";
 
-	static const char SKYBOX_PROGRAM[] =
+	static constexpr char SKYBOX_PROGRAM[] =
 	"Attributes\n{\n"
 	"	vec3 a_vert : 0;"
 	"}\n"
