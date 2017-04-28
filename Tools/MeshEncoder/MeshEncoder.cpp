@@ -42,6 +42,7 @@ Jwl::ConfigTable MeshEncoder::GetDefault() const
 	Jwl::ConfigTable defaultConfig;
 
 	defaultConfig.SetValue("version", CURRENT_VERSION);
+	defaultConfig.SetValue("scale", 1);
 	defaultConfig.SetValue("uvs", true);
 	defaultConfig.SetValue("normals", true);
 
@@ -65,7 +66,13 @@ bool MeshEncoder::Validate(const Jwl::ConfigTable& data, unsigned loadedVersion)
 			return false;
 		}
 
-		if (data.GetSize() != 3)
+		if (!data.HasSetting("scale"))
+		{
+			std::cout << "[e]Missing \"scale\" value." << std::endl;
+			return false;
+		}
+
+		if (data.GetSize() != 4)
 		{
 			std::cout << "[e]Incorrect number of value entries." << std::endl;
 			return false;
@@ -80,6 +87,7 @@ bool MeshEncoder::Convert(const std::string& source, const std::string& destinat
 	const std::string outputFile = destination + Jwl::ExtractFilename(source) + ".model";
 	const bool packUvs = data.GetBool("uvs");
 	const bool packNormals = data.GetBool("normals");
+	const float scale = data.GetFloat("scale");
 
 	// load ASCII file.
 	std::ifstream input;
@@ -134,7 +142,7 @@ bool MeshEncoder::Convert(const std::string& source, const std::string& destinat
 			// Load vertices.
 			Jwl::vec3 temp;
 			std::sscanf(inputString, "v %f %f %f", &temp.x, &temp.y, &temp.z);
-			vertexData.push_back(temp);
+			vertexData.push_back(temp * scale);
 		}
 		else if (std::strstr(inputString, "f") == inputString)
 		{
