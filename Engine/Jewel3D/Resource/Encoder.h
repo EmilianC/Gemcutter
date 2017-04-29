@@ -158,6 +158,11 @@ extern "C" __declspec(dllexport) bool __cdecl Update(const char* file)
 			return false;
 		}
 
+		if (!encoder->ValidateData(metadata))
+		{
+			return false;
+		}
+
 		return true;
 	}
 

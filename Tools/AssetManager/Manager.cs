@@ -39,30 +39,12 @@ namespace AssetManager
 			watcher.Deleted += delegate { RefreshWorkspaceDispatch(); };
 		}
 
-		//- Opens the selected asset with the default associated program.
-		void OpenAsset()
-		{
-			var selection = listBoxAssets.SelectedItem;
-			if (selection == null)
-				return;
-
-			var node = treeViewAssets.SelectedNode;
-			if (node == null)
-				return;
-
-			var file = string.Join("\\", GetNodePath(node)) + "\\" + listBoxAssets.GetItemText(selection);
-
-			try
-			{
-				System.Diagnostics.Process.Start(file);
-			}
-			catch (System.ComponentModel.Win32Exception)
-			{}
-		}
-
+		//- Starts the updating process.
+		//- Any assets without a .meta file will have one added.
+		//- Assets with an existing .meta file will 
 		public bool UpdateWorkspace()
 		{
-			Log("---- Started Updating ----");
+			Log(">>>>>> Started Updating <<<<<<");
 
 			buttonClear.Enabled = false;
 			ButtonPack.Enabled = false;
@@ -70,23 +52,11 @@ namespace AssetManager
 
 			LoadEncoders();
 
-			var filesToUpdate = new List<string>();
-			foreach (var dir in Directory.GetDirectories(Directory.GetCurrentDirectory(), "*", SearchOption.TopDirectoryOnly))
-			{
-				foreach (string file in Directory.GetFiles(dir, "*.*", SearchOption.AllDirectories))
-				{
-					if (file.EndsWith(".meta", StringComparison.InvariantCultureIgnoreCase))
-						continue;
-
-					if (encoders.Any(x => file.EndsWith(x.Key, StringComparison.InvariantCultureIgnoreCase)))
-						filesToUpdate.Add(file);
-				}
-			}
-
 			bool result = false;
 			try
 			{
-				foreach (var file in filesToUpdate)
+				foreach (var file in GetWorkspaceFiles().Where(file =>
+					encoders.Any(x => file.EndsWith(x.Key, StringComparison.InvariantCultureIgnoreCase))))
 				{
 					Log($"Checking [{Path.GetFileName(file)}]");
 
@@ -94,7 +64,7 @@ namespace AssetManager
 						throw new Exception($"Failed to update [{Path.GetFileName(file)}]");
 				}
 
-				Log("---- Finished Updating ----", ConsoleColor.Green);
+				Log(">>>>>> Finished Updating <<<<<<", ConsoleColor.Green);
 				result = true;
 			}
 			catch (Exception e)
@@ -113,9 +83,10 @@ namespace AssetManager
 		}
 
 		//- Starts the packing process. Rebuilds the target Asset directory from scratch.
+		//- Convertible files are put through the appropriate binary converter. Other files are copied as-is.
 		public bool PackWorkspace()
 		{
-			Log("---- Started Packing ----");
+			Log(">>>>>> Started Packing <<<<<<");
 
 			buttonClear.Enabled = false;
 			ButtonPack.Enabled = false;
@@ -125,59 +96,45 @@ namespace AssetManager
 
 			string inputRoot = Directory.GetCurrentDirectory();
 			string commonRoot = inputRoot.Remove(inputRoot.LastIndexOf(Path.DirectorySeparatorChar));
-			string outputRoot = $"{commonRoot}{Path.DirectorySeparatorChar}Assets";
+			string outputRoot = commonRoot + Path.DirectorySeparatorChar + "Assets";
 
+			// Clear and duplicate the directory structure in the output folder.
 			if (Directory.Exists(outputRoot))
 				Directory.Delete(outputRoot, true);
 
-			// Find all files in the workspace.
-			// Convertible files are put through the appropriate binary converter.
-			// Other files are copied as-is.
-			var filesToCopy = new List<string>();
-			var filesToConvert = new List<string>();
-			foreach (var dir in Directory.GetDirectories(Directory.GetCurrentDirectory(), "*", SearchOption.TopDirectoryOnly))
-			{
-				foreach (string file in Directory.GetFiles(dir, "*.*", SearchOption.AllDirectories))
-				{
-					if (file.EndsWith(".meta", StringComparison.InvariantCultureIgnoreCase))
-						continue;
-				
-					if (encoders.Any(x => file.EndsWith(x.Key, StringComparison.InvariantCultureIgnoreCase)))
-						filesToConvert.Add(file);
-					else
-						filesToCopy.Add(file);
-				}
-			}
-
 			Directory.CreateDirectory(outputRoot);
 
+			foreach (var path in Directory.GetDirectories(inputRoot, "*", SearchOption.AllDirectories))
+				Directory.CreateDirectory(path.Replace(inputRoot, outputRoot));
+
 			bool result = false;
+			var workspaceFiles = GetWorkspaceFiles();
+			workspaceFiles.RemoveAll(x => x.EndsWith(".meta", StringComparison.InvariantCultureIgnoreCase));
 			try
 			{
-				foreach (string file in filesToConvert)
+				// Pack all files with an associated encoder.
+				foreach (string file in workspaceFiles.Where(file =>
+					encoders.Any(x => file.EndsWith(x.Key, StringComparison.InvariantCultureIgnoreCase))))
 				{
 					Log($"Packing [{Path.GetFileName(file)}]");
 
 					var outDir = Path.GetDirectoryName(file.Replace(inputRoot, outputRoot)) + Path.DirectorySeparatorChar;
-					if (!Directory.Exists(outDir))
-						Directory.CreateDirectory(outDir);
 
 					if (!encoders[Path.GetExtension(file).Substring(1)].Convert(file, outDir))
 						throw new Exception($"Failed to pack [{Path.GetFileName(file)}]");
 				}
 
-				foreach (string file in filesToCopy)
+				// Copy all the remaining files.
+				foreach (string file in workspaceFiles.Where(file =>
+					!encoders.Any(x => file.EndsWith(x.Key, StringComparison.InvariantCultureIgnoreCase))))
 				{
 					Log($"Copying [{Path.GetFileName(file)}]");
 
 					var outFile = file.Replace(inputRoot, outputRoot);
-					if (!Directory.Exists(Path.GetDirectoryName(outFile)))
-						Directory.CreateDirectory(Path.GetDirectoryName(outFile));
-
 					File.Copy(file, outFile);
 				}
 
-				Log("---- Finished Packing ----", ConsoleColor.Green);
+				Log(">>>>>> Finished Packing <<<<<<", ConsoleColor.Green);
 				result = true;
 			}
 			catch (Exception e)
@@ -212,7 +169,7 @@ namespace AssetManager
 			var previousSelection = GetNodePath(treeViewAssets.SelectedNode);
 			treeViewAssets.Nodes.Clear();
 
-			ParseDirectory(Directory.GetCurrentDirectory(), null);
+			ParseDirectory(Directory.GetCurrentDirectory());
 
 			// Reselect the old folder, if it still exists.
 			if (previousSelection.Count != 0)
@@ -244,7 +201,8 @@ namespace AssetManager
 				RefreshWorkspace();
 		}
 
-		void ParseDirectory(string rootFolder, TreeNode root)
+		// Populates a tree with the contents of a directory on the disk.
+		void ParseDirectory(string rootFolder, TreeNode root = null)
 		{
 			var directories = Directory.GetDirectories(rootFolder);
 			Array.Sort(directories);
@@ -265,7 +223,21 @@ namespace AssetManager
 			}
 		}
 
-		//- Build the full folder path from the folder tree.
+		// Returns a list of all the files in the workspace.
+		List<string> GetWorkspaceFiles()
+		{
+			var result = new List<string>();
+
+			foreach (var dir in Directory.GetDirectories(Directory.GetCurrentDirectory(), "*", SearchOption.TopDirectoryOnly))
+			{
+				foreach (string file in Directory.GetFiles(dir, "*.*", SearchOption.AllDirectories))
+					result.Add(file);
+			}
+
+			return result;
+		}
+
+		// Build the full folder path from the folder tree.
 		List<string> GetNodePath(TreeNode node)
 		{
 			var path = new List<string>();
@@ -311,7 +283,7 @@ namespace AssetManager
 			RichTextBoxStreamWriter.ForegroundColor = ConsoleColor.Gray;
 		}
 
-		//- Reads output from a native code converter.
+		// Reads output from a native code converter.
 		delegate void NativeLogDelegate(string text);
 		private void NativeLog(string text)
 		{
@@ -350,19 +322,42 @@ namespace AssetManager
 			}
 		}
 
+		// Opens the selected asset with the default associated program.
+		void OpenAsset()
+		{
+			var selection = listBoxAssets.SelectedItem;
+			if (selection == null)
+				return;
+
+			var node = treeViewAssets.SelectedNode;
+			if (node == null)
+				return;
+
+			var file = string.Join("\\", GetNodePath(node)) + "\\" + listBoxAssets.GetItemText(selection);
+
+			try
+			{
+				System.Diagnostics.Process.Start(file);
+			}
+			catch (System.ComponentModel.Win32Exception)
+			{
+				// The file might not have an associated program to open with.
+			}
+		}
+
 		private void buttonSettings_Click(object sender, EventArgs e)
 		{
 			encoderForm.Show();
 			encoderForm.BringToFront();
 		}
 
-		//- Browses to the root workspace directory.
+		// Browses to the root workspace directory.
 		private void buttonWorkspaceOpen_Click(object sender, EventArgs e)
 		{
 			System.Diagnostics.Process.Start("explorer.exe", Directory.GetCurrentDirectory());
 		}
 
-		//- Browses to the selected folder directory.
+		// Browses to the selected folder directory.
 		private void buttonAssetOpen_Click(object sender, EventArgs e)
 		{
 			var path = GetNodePath(treeViewAssets.SelectedNode);
@@ -371,7 +366,7 @@ namespace AssetManager
 				System.Diagnostics.Process.Start("explorer.exe", string.Join("\\", path));
 		}
 
-		//- Clears the output window.
+		// Clears the output window.
 		private void buttonClear_Click(object sender, EventArgs e)
 		{
 			Output.Clear();
