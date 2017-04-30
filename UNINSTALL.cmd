@@ -19,6 +19,7 @@ ECHO.
 
 ECHO 2) Removing Template Project.
 del "%USERPROFILE%\Documents\Visual Studio 2015\Templates\ProjectTemplates\Jewel3D Project.zip" > nul
+del "%USERPROFILE%\Documents\Visual Studio 2015\Templates\ProjectTemplates\Jewel3D Encoder.zip" > nul
 ECHO Done!
 ECHO.
 

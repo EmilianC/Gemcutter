@@ -11,7 +11,7 @@ namespace Jwl
 	public:
 		~Model();
 
-		//- Loads .model files as well as the standard .obj format.
+		//- Loads .model files.
 		bool Load(const std::string& filePath);
 		void Unload();
 

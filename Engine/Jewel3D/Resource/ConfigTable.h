@@ -11,6 +11,9 @@ namespace Jwl
 		bool Load(const std::string& file);
 		bool Save(const std::string& file) const;
 
+		bool operator==(const ConfigTable&) const;
+		bool operator!=(const ConfigTable&) const;
+
 		//- Returns true if the setting has a value in the table.
 		bool HasSetting(const std::string& setting) const;
 		//- Returns the number of entries in the table.

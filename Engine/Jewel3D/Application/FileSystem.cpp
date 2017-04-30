@@ -2,11 +2,11 @@
 #include "Jewel3D/Precompiled.h"
 #include "FileSystem.h"
 #include "Logging.h"
+#include "Jewel3D/Utilities/ScopeGuard.h"
 
 #include <Dirent/dirent.h>
 #include <direct.h>
 #include <stack>
-#include <stdlib.h>
 
 #define SUCCESS 0
 
@@ -102,6 +102,11 @@ namespace Jwl
 		{
 			return false;
 		}
+	}
+
+	bool RemoveFile(const std::string& file)
+	{
+		return DeleteFile(file.c_str()) == TRUE;
 	}
 
 	bool MakeDirectory(const std::string& directory)
@@ -257,16 +262,17 @@ namespace Jwl
 
 		// Get length of file.
 		file.seekg(0, file.end);
-		length = (unsigned)file.tellg();
+		length = static_cast<unsigned>(file.tellg());
 		file.seekg(0, file.beg);
 
 		// Read data as a block.
-		char* buff = new char[length];
+		char* buff = static_cast<char*>(malloc(sizeof(char) * length));
+		defer { free(buff); };
+
 		memset(buff, '\0', length);
 		file.read(buff, length);
 		buffer = buff;
 
-		delete buff;
 		file.close();
 
 		return true;
@@ -284,7 +290,7 @@ namespace Jwl
 
 		// Get length of file.
 		file.seekg(0, file.end);
-		length = (unsigned)file.tellg();
+		length = static_cast<unsigned>(file.tellg());
 		file.seekg(0, file.beg);
 
 		return true;

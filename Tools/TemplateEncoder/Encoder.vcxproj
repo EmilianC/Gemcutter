@@ -11,16 +11,16 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="FontEncoder.cpp" />
+    <ClCompile Include="Encoder.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="FontEncoder.h" />
+    <ClInclude Include="Encoder.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{8BBA958D-BB68-4BC7-8A3A-3716808540E4}</ProjectGuid>
+    <ProjectGuid>{6D5238A1-B5F5-44D5-9E36-FBAAA7207CEB}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>FontGenerator</RootNamespace>
-    <ProjectName>FontEncoder</ProjectName>
+    <ProjectName>TemplateEncoder</ProjectName>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

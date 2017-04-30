@@ -59,6 +59,16 @@ namespace Jwl
 		return true;
 	}
 
+	bool ConfigTable::operator==(const ConfigTable& other) const
+	{
+		return settings == other.settings;
+	}
+
+	bool ConfigTable::operator!=(const ConfigTable& other) const
+	{
+		return settings != other.settings;
+	}
+
 	bool ConfigTable::HasSetting(const std::string& setting) const
 	{
 		return settings.find(setting) != settings.end();
