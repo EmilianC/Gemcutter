@@ -1,4 +1,5 @@
-﻿using System;
+﻿// Copyright (c) 2017 Emilian Cioca
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.IO;
@@ -9,6 +10,8 @@ namespace AssetManager
 {
 	public partial class EncoderList : Form
 	{
+		List<EncoderEntry> entries = new List<EncoderEntry>();
+
 		public EncoderList()
 		{
 			InitializeComponent();
@@ -45,7 +48,7 @@ namespace AssetManager
 			}
 			else
 			{
-				// Setup default encoders...
+				// Setup default encoders.
 				entries.Add(new EncoderEntry(panel, EncoderEntry.ItemHeight * 0, 
 					"ttf", "%JEWEL3D_PATH%\\Tools\\FontEncoder\\bin\\ReleaseWithExceptions_Win32\\FontEncoder.dll"));
 				entries.Add(new EncoderEntry(panel, EncoderEntry.ItemHeight * 1,
@@ -53,7 +56,6 @@ namespace AssetManager
 			}
 		}
 
-		//- 
 		private void SaveEncoders()
 		{
 			File.WriteAllText("config.workspace", string.Empty);
@@ -104,7 +106,5 @@ namespace AssetManager
 		{
 			AddItem();
 		}
-
-		List<EncoderEntry> entries = new List<EncoderEntry>();
 	}
 }

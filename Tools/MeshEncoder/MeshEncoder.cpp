@@ -4,7 +4,6 @@
 #include "Jewel3D/Resource/Encoder.h"
 
 #include <fstream>
-#include <iostream>
 #include <string>
 #include <vector>
 
@@ -56,25 +55,25 @@ bool MeshEncoder::Validate(const Jwl::ConfigTable& data, unsigned loadedVersion)
 	case 1:
 		if (!data.HasSetting("uvs"))
 		{
-			std::cout << "[e]Missing \"uvs\" value." << std::endl;
+			Jwl::Error("Missing \"uvs\" value.");
 			return false;
 		}
 
 		if (!data.HasSetting("normals"))
 		{
-			std::cout << "[e]Missing \"normals\" value." << std::endl;
+			Jwl::Error("Missing \"normals\" value.");
 			return false;
 		}
 
 		if (!data.HasSetting("scale"))
 		{
-			std::cout << "[e]Missing \"scale\" value." << std::endl;
+			Jwl::Error("Missing \"scale\" value.");
 			return false;
 		}
 
 		if (data.GetSize() != 4)
 		{
-			std::cout << "[e]Incorrect number of value entries." << std::endl;
+			Jwl::Error("Incorrect number of value entries.");
 			return false;
 		}
 	}
@@ -94,7 +93,7 @@ bool MeshEncoder::Convert(const std::string& source, const std::string& destinat
 	input.open(source);
 	if (!input)
 	{
-		std::cout << "[e]Input file could not be opened or processed." << std::endl;
+		Jwl::Error("Input file could not be opened or processed.");
 		return false;
 	}
 
@@ -215,7 +214,7 @@ bool MeshEncoder::Convert(const std::string& source, const std::string& destinat
 	FILE* modelFile = fopen(outputFile.c_str(), "wb");
 	if (modelFile == nullptr)
 	{
-		std::cout << "[e]Output file could not be created." << std::endl;
+		Jwl::Error("Output file could not be created.");
 		return false;
 	}
 
@@ -232,19 +231,19 @@ bool MeshEncoder::Convert(const std::string& source, const std::string& destinat
 	// Report results.
 	if (result != 0)
 	{
-		std::cout << "[e]Failed to generate Mesh Binary\nOutput file could not be saved." << std::endl;
+		Jwl::Error("Failed to generate mesh Binary\nOutput file could not be saved.");
 		return false;
 	}
 	else
 	{
 		if (packUvs && !hasUvs)
 		{
-			std::cout << "[w]Output of uvs was enabled but no uvs were found in the mesh." << std::endl;
+			Jwl::Warning("Output of uvs was enabled but no uvs were found in the mesh.");
 		}
 		
 		if (packUvs && !hasNormals)
 		{
-			std::cout << "[w]Output of normals was enabled but no normals were found in the mesh." << std::endl;
+			Jwl::Warning("Output of normals was enabled but no normals were found in the mesh.");
 		}
 
 		return true;

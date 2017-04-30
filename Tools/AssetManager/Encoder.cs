@@ -33,7 +33,7 @@ namespace AssetManager
 		{
 			var cd = Directory.GetCurrentDirectory();
 
-			// We change the current directory to the target dll because it might have other adjacent dll dependencies.
+			// We change the current directory to the target dll because it might have other adjacent dll dependencies to find.
 			Directory.SetCurrentDirectory(Path.GetDirectoryName(encoder));
 			dllHandle = LoadLibrary(encoder);
 			Directory.SetCurrentDirectory(cd);

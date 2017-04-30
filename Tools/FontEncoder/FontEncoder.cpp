@@ -2,7 +2,6 @@
 
 #include <ft2build.h>
 #include <Freetype/freetype.h>
-#include <iostream>
 #include <vector>
 
 #define CURRENT_VERSION 1
@@ -42,32 +41,32 @@ bool FontEncoder::Validate(const Jwl::ConfigTable& data, unsigned loadedVersion)
 		// Check Width
 		if (!data.HasSetting("width"))
 		{
-			std::cout << "[e]Missing \"width\" value." << std::endl;
+			Jwl::Error("Missing \"width\" value.");
 			return false;
 		}
 		
 		if (data.GetInt("width") == 0)
 		{
-			std::cout << "[e]Width must be greater than 0." << std::endl;
+			Jwl::Error("Width must be greater than 0.");
 			return false;
 		}
 
 		// Check Height
 		if (!data.HasSetting("height"))
 		{
-			std::cout << "[e]Missing \"height\" value." << std::endl;
+			Jwl::Error("Missing \"height\" value.");
 			return false;
 		}
 
 		if (data.GetInt("height") == 0)
 		{
-			std::cout << "[e]Height must be greater than 0." << std::endl;
+			Jwl::Error("Height must be greater than 0.");
 			return false;
 		}
 
 		if (data.GetSize() != 3)
 		{
-			std::cout << "[e]Incorrect number of value entries." << std::endl;
+			Jwl::Error("Incorrect number of value entries.");
 			return false;
 		}
 	}
@@ -93,24 +92,24 @@ bool FontEncoder::Convert(const std::string& source, const std::string& destinat
 	FT_Library library;
 	FT_Face face;
 
-	// Initialize FreeType2.
 	if (FT_Init_FreeType(&library))
 	{
-		std::cout << "[e]FreeType failed to initialize." << std::endl;
+		Jwl::Error("FreeType failed to initialize.");
 		return false;
 	}
+	defer { FT_Done_FreeType(library); };
 
 	// Create the face data.
 	if (FT_New_Face(library, source.c_str(), 0, &face))
 	{
-		std::cout << "[e]Input file could not be opened or processed." << std::endl;
+		Jwl::Error("Input file could not be opened or processed.");
 		return false;
 	}
 
 	// Set font size.
 	if (FT_Set_Char_Size(face, width * 64, height * 64, 96, 96))
 	{
-		std::cout << "[e]The width and height could not be processed." << std::endl;
+		Jwl::Error("The width and height could not be processed.");
 		return false;
 	}
 
@@ -126,7 +125,7 @@ bool FontEncoder::Convert(const std::string& source, const std::string& destinat
 		// Prepare bitmap.
 		if (FT_Load_Glyph(face, charIndex, FT_LOAD_RENDER))
 		{
-			std::cout << "[e]Glyph (" << c << ") could not be processed." << std::endl;
+			Jwl::Error("Glyph (%c) could not be processed.", c);
 			return false;
 		}
 
@@ -159,14 +158,11 @@ bool FontEncoder::Convert(const std::string& source, const std::string& destinat
 		advances[index].y = face->glyph->advance.y / 64;
 	}
 
-	// We don't need FreeType anymore.
-	FT_Done_FreeType(library);
-
 	// Save file.
 	fontFile = fopen(outputFile.c_str(), "wb");
 	if (fontFile == nullptr)
 	{
-		std::cout << "[e]Output file could not be created." << std::endl;
+		Jwl::Error("Output file could not be created.");
 		return false;
 	}
 
@@ -194,19 +190,19 @@ bool FontEncoder::Convert(const std::string& source, const std::string& destinat
 
 	if (result != 0)
 	{
-		std::cout << "[e]Failed to generate Font Binary\nOutput file could not be saved." << std::endl;
+		Jwl::Error("Failed to generate Font Binary\nOutput file could not be saved.");
 		return false;
 	}
 	else if (count == 0)
 	{
-		std::cout << "[e]Failed to generate Font Binary\n0 out of 94 characters loaded." << std::endl;
+		Jwl::Error("Failed to generate Font Binary\n0 out of 94 characters loaded.");
 		return false;
 	}
 	else
 	{
 		if (count != 94)
 		{
-			std::cout << "[w]" << 94 - count << " characters were not created." << std::endl;
+			Jwl::Warning("%d characters were not created.", 94 - count);
 		}
 		
 		return true;

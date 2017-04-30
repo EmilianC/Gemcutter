@@ -2,13 +2,10 @@
 #pragma once
 #include "ConfigTable.h"
 #include "Jewel3D/Application/FileSystem.h"
+#include "Jewel3D/Application/Logging.h"
+#include "Jewel3D/Utilities/ScopeGuard.h"
 
-#include <iostream>
 #include <memory>
-#include <string>
-#include <Windows.h>
-
-// We don't use the Logger in this file because output is intended to be processed by the AssetManager instead.
 
 namespace Jwl
 {
@@ -23,32 +20,32 @@ namespace Jwl
 		}
 		virtual ~Encoder() = default;
 
-		// 
+		//- Loads a .meta file and ensures that it has a valid version number.
 		static bool LoadMetaData(const std::string& file, ConfigTable& out)
 		{
 			out = ConfigTable();
 
-			if (Jwl::ExtractFileExtension(file) != ".meta")
+			if (ExtractFileExtension(file) != ".meta")
 			{
-				std::cout << "[e]Invalid file extension." << std::endl;
+				Error("Invalid file extension.");
 				return false;
 			}
 
 			if (!out.Load(file))
 			{
-				std::cout << "[e]Failed to open metadata file." << std::endl;
+				Error("Failed to open metadata file.");
 				return false;
 			}
 
 			if (!out.HasSetting("version"))
 			{
-				std::cout << "[e]Metadata file is missing a version specifier." << std::endl;
+				Error("Metadata file is missing a version specifier.");
 				return false;
 			}
 
 			if (out.GetInt("version") < 1)
 			{
-				std::cout << "[e]Metadata version is invalid." << std::endl;
+				Error("Metadata version is invalid.");
 				return false;
 			}
 
@@ -63,13 +60,13 @@ namespace Jwl
 			{
 				if (!Validate(data, currentVersion))
 				{
-					std::cout << "[e]Failed to validate metadata. Try resetting to defaults." << std::endl;
+					Error("Failed to validate metadata. Try resetting to defaults.");
 					return false;
 				}
 
 				if (!Upgrade(data, currentVersion))
 				{
-					std::cout << "[e]Failed to update metadata. Try resetting to defaults." << std::endl;
+					Error("Failed to update metadata. Try resetting to defaults.");
 					return false;
 				}
 
@@ -79,7 +76,7 @@ namespace Jwl
 
 			if (!Validate(data, currentVersion))
 			{
-				std::cout << "[e]Failed to validate metadata. Try resetting to defaults." << std::endl;
+				Error("Failed to validate metadata. Try resetting to defaults.");
 				return false;
 			}
 
@@ -116,45 +113,17 @@ namespace Jwl
 // Must be implemented to return your derived Encoder.
 std::unique_ptr<Jwl::Encoder> GetEncoder();
 
-// Convert command. Write the binary asset into the output folder.
-extern "C" __declspec(dllexport) bool __cdecl Convert(const char* src, const char* dest)
+extern "C"
 {
-	AttachConsole(ATTACH_PARENT_PROCESS);
-	auto encoder = GetEncoder();
-
-	Jwl::ConfigTable metadata;
-	if (!Jwl::Encoder::LoadMetaData(std::string(src) + ".meta", metadata))
+	// Convert command. Write the binary asset into the output folder.
+	__declspec(dllexport) bool __cdecl Convert(const char* src, const char* dest)
 	{
-		return false;
-	}
+		defer { Jwl::ResetConsoleColor(); };
+		auto encoder = GetEncoder();
 
-	if (!encoder->ValidateData(metadata))
-	{
-		return false;
-	}
-
-	if (!encoder->Convert(src, dest, metadata))
-	{
-		return false;
-	}
-
-	return true;
-}
-
-// Update command. Load the meta file and upgrade to the newest version.
-extern "C" __declspec(dllexport) bool __cdecl Update(const char* file)
-{
-	AttachConsole(ATTACH_PARENT_PROCESS);
-	auto encoder = GetEncoder();
-
-	const std::string metaFile = std::string(file) + ".meta";
-
-	if (!Jwl::FileExists(metaFile))
-	{
-		auto metadata = encoder->GetDefault();
-		if (!metadata.Save(metaFile))
+		Jwl::ConfigTable metadata;
+		if (!Jwl::Encoder::LoadMetaData(std::string(src) + ".meta", metadata))
 		{
-			std::cout << "[e]Could create a new meta file." << std::endl;
 			return false;
 		}
 
@@ -163,29 +132,59 @@ extern "C" __declspec(dllexport) bool __cdecl Update(const char* file)
 			return false;
 		}
 
-		return true;
-	}
-
-	Jwl::ConfigTable metadata;
-	if (!Jwl::Encoder::LoadMetaData(metaFile, metadata))
-	{
-		return false;
-	}
-
-	Jwl::ConfigTable upgradedData = metadata;
-	if (!encoder->UpgradeData(upgradedData))
-	{
-		return false;
-	}
-
-	// Avoid touching the file if it is not changed.
-	if (metadata != upgradedData)
-	{
-		if (!upgradedData.Save(metaFile))
+		if (!encoder->Convert(src, dest, metadata))
 		{
 			return false;
 		}
+
+		return true;
 	}
 
-	return true;
+	// Update command. Load the meta file and upgrade to the newest version.
+	__declspec(dllexport) bool __cdecl Update(const char* file)
+	{
+		defer { Jwl::ResetConsoleColor(); };
+		auto encoder = GetEncoder();
+
+		const std::string metaFile = std::string(file) + ".meta";
+		if (!Jwl::FileExists(metaFile))
+		{
+			auto metadata = encoder->GetDefault();
+			if (!metadata.Save(metaFile))
+			{
+				Jwl::Error("Could create a new meta file.");
+				return false;
+			}
+
+			if (!encoder->ValidateData(metadata))
+			{
+				return false;
+			}
+
+			return true;
+		}
+
+		Jwl::ConfigTable metadata;
+		if (!Jwl::Encoder::LoadMetaData(metaFile, metadata))
+		{
+			return false;
+		}
+
+		Jwl::ConfigTable upgradedData = metadata;
+		if (!encoder->UpgradeData(upgradedData))
+		{
+			return false;
+		}
+
+		// Avoid touching the file if it is not changed.
+		if (metadata != upgradedData)
+		{
+			if (!upgradedData.Save(metaFile))
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
 }

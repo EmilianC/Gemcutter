@@ -1,4 +1,5 @@
-﻿using System;
+﻿// Copyright (c) 2017 Emilian Cioca
+using System;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -7,10 +8,9 @@ namespace AssetManager
 {
 	static class Program
 	{
-		static readonly int ATTACH_PARENT_PROCESS = -1;
-
-		[DllImport("kernel32", SetLastError = true)]
+		[DllImport("kernel32")]
 		private static extern bool AttachConsole(int dwProcessId);
+		const int ATTACH_PARENT_PROCESS = -1;
 
 		[STAThread]
 		static void Main()
@@ -43,7 +43,6 @@ namespace AssetManager
 					}
 				}
 
-				Environment.ExitCode = 0;
 				return;
 			}
 			else

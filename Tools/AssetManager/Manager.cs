@@ -194,7 +194,6 @@ namespace AssetManager
 		delegate void RefreshWorkspaceDelegate();
 		void RefreshWorkspaceDispatch()
 		{
-			// Thread-safe dispatch.
 			if (treeViewAssets.InvokeRequired)
 				Invoke(new RefreshWorkspaceDelegate(RefreshWorkspace));
 			else
