@@ -19,6 +19,7 @@ ECHO.
 
 ECHO 2) Installing Template Project.
 XCOPY "%~dp0\Resources\Jewel3D Project.zip" "%USERPROFILE%\Documents\Visual Studio 2015\Templates\ProjectTemplates\" /Y /V > nul
+XCOPY "%~dp0\Resources\Jewel3D Encoder.zip" "%USERPROFILE%\Documents\Visual Studio 2015\Templates\ProjectTemplates\" /Y /V > nul
 ECHO Done!
 ECHO.
 

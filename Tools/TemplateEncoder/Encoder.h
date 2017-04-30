@@ -3,10 +3,10 @@
 
 #include <string>
 
-class MeshEncoder : public Jwl::Encoder
+class Encoder : public Jwl::Encoder
 {
 public:
-	MeshEncoder();
+	Encoder();
 
 	virtual Jwl::ConfigTable GetDefault() const override;
 

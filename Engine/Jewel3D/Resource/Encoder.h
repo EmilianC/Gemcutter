@@ -52,29 +52,29 @@ namespace Jwl
 			return true;
 		}
 
-		bool UpgradeData(ConfigTable& data) const
+		bool UpgradeData(ConfigTable& metadata) const
 		{
 			// Sequentially upgrade the data to the latest version.
-			auto currentVersion = static_cast<unsigned>(data.GetInt("version"));
+			auto currentVersion = static_cast<unsigned>(metadata.GetInt("version"));
 			while (currentVersion < version)
 			{
-				if (!Validate(data, currentVersion))
+				if (!Validate(metadata, currentVersion))
 				{
 					Error("Failed to validate metadata. Try resetting to defaults.");
 					return false;
 				}
 
-				if (!Upgrade(data, currentVersion))
+				if (!Upgrade(metadata, currentVersion))
 				{
 					Error("Failed to update metadata. Try resetting to defaults.");
 					return false;
 				}
 
 				currentVersion++;
-				data.SetValue("version", static_cast<int>(currentVersion));
+				metadata.SetValue("version", static_cast<int>(currentVersion));
 			}
 
-			if (!Validate(data, currentVersion))
+			if (!Validate(metadata, currentVersion))
 			{
 				Error("Failed to validate metadata. Try resetting to defaults.");
 				return false;
@@ -83,9 +83,9 @@ namespace Jwl
 			return true;
 		}
 
-		bool ValidateData(const ConfigTable& data) const
+		bool ValidateData(const ConfigTable& metadata) const
 		{
-			return Validate(data, version);
+			return Validate(metadata, version);
 		}
 
 		//- The derived function should return default settings for the asset.
@@ -93,16 +93,16 @@ namespace Jwl
 
 		//- The derived function should read from the source file and output the packed asset to the destination file.
 		//- data will contain settings of the newest version.
-		virtual bool Convert(const std::string& source, const std::string& destination, const ConfigTable& data) const = 0;
+		virtual bool Convert(const std::string& source, const std::string& destination, const ConfigTable& metadata) const = 0;
 
 	protected:
 		//- The derived function should ensure that all fields are present and contain correct data.
 		//- Validation should be done based on the provided version.
-		virtual bool Validate(const ConfigTable& data, unsigned loadedVersion) const = 0;
+		virtual bool Validate(const ConfigTable& metadata, unsigned loadedVersion) const = 0;
 
 		//- The derived function should update the provided data in order boost its version number by one.
 		//- Upgrading is a sequential process, meaning that you only need to provide code to upgrade from 1->2 and from 2->3, not 1->3.
-		virtual bool Upgrade(ConfigTable& data, unsigned loadedVersion) const { return true; };
+		virtual bool Upgrade(ConfigTable& metadata, unsigned loadedVersion) const { return true; };
 
 	private:
 		// The newest version of the asset.

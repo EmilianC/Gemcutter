@@ -29,6 +29,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MeshEncoder", "Tools\MeshEn
 		{3954E1F3-B90E-4883-AD0A-5EEF757A3726} = {3954E1F3-B90E-4883-AD0A-5EEF757A3726}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TemplateEncoder", "Tools\TemplateEncoder\Encoder.vcxproj", "{6D5238A1-B5F5-44D5-9E36-FBAAA7207CEB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3954E1F3-B90E-4883-AD0A-5EEF757A3726} = {3954E1F3-B90E-4883-AD0A-5EEF757A3726}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -88,6 +93,14 @@ Global
 		{99A4C321-FA72-4426-94BF-F16431D8C77F}.ReleaseWithExceptions|Any CPU.ActiveCfg = ReleaseWithExceptions|Win32
 		{99A4C321-FA72-4426-94BF-F16431D8C77F}.ReleaseWithExceptions|Win32.ActiveCfg = ReleaseWithExceptions|Win32
 		{99A4C321-FA72-4426-94BF-F16431D8C77F}.ReleaseWithExceptions|Win32.Build.0 = ReleaseWithExceptions|Win32
+		{6D5238A1-B5F5-44D5-9E36-FBAAA7207CEB}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{6D5238A1-B5F5-44D5-9E36-FBAAA7207CEB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6D5238A1-B5F5-44D5-9E36-FBAAA7207CEB}.Debug|Win32.Build.0 = Debug|Win32
+		{6D5238A1-B5F5-44D5-9E36-FBAAA7207CEB}.Release|Any CPU.ActiveCfg = Debug|Win32
+		{6D5238A1-B5F5-44D5-9E36-FBAAA7207CEB}.Release|Win32.ActiveCfg = ReleaseWithExceptions|Win32
+		{6D5238A1-B5F5-44D5-9E36-FBAAA7207CEB}.ReleaseWithExceptions|Any CPU.ActiveCfg = ReleaseWithExceptions|Win32
+		{6D5238A1-B5F5-44D5-9E36-FBAAA7207CEB}.ReleaseWithExceptions|Win32.ActiveCfg = ReleaseWithExceptions|Win32
+		{6D5238A1-B5F5-44D5-9E36-FBAAA7207CEB}.ReleaseWithExceptions|Win32.Build.0 = ReleaseWithExceptions|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -97,5 +110,6 @@ Global
 		{2B9B0F54-5AC3-4F53-8AEC-3D2DFEE1E931} = {7EFC9B41-1C48-4AE3-98F8-A5EA701459C0}
 		{6099E7AD-99A7-4EB4-B3C7-D35EE1184BA5} = {7EFC9B41-1C48-4AE3-98F8-A5EA701459C0}
 		{99A4C321-FA72-4426-94BF-F16431D8C77F} = {7EFC9B41-1C48-4AE3-98F8-A5EA701459C0}
+		{6D5238A1-B5F5-44D5-9E36-FBAAA7207CEB} = {7EFC9B41-1C48-4AE3-98F8-A5EA701459C0}
 	EndGlobalSection
 EndGlobal

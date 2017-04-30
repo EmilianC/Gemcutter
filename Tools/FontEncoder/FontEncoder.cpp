@@ -33,38 +33,38 @@ Jwl::ConfigTable FontEncoder::GetDefault() const
 	return defaultConfig;
 }
 
-bool FontEncoder::Validate(const Jwl::ConfigTable& data, unsigned loadedVersion) const
+bool FontEncoder::Validate(const Jwl::ConfigTable& metadata, unsigned loadedVersion) const
 {
 	switch (loadedVersion)
 	{
 	case 1:
 		// Check Width
-		if (!data.HasSetting("width"))
+		if (!metadata.HasSetting("width"))
 		{
 			Jwl::Error("Missing \"width\" value.");
 			return false;
 		}
 		
-		if (data.GetInt("width") == 0)
+		if (metadata.GetInt("width") == 0)
 		{
 			Jwl::Error("Width must be greater than 0.");
 			return false;
 		}
 
 		// Check Height
-		if (!data.HasSetting("height"))
+		if (!metadata.HasSetting("height"))
 		{
 			Jwl::Error("Missing \"height\" value.");
 			return false;
 		}
 
-		if (data.GetInt("height") == 0)
+		if (metadata.GetInt("height") == 0)
 		{
 			Jwl::Error("Height must be greater than 0.");
 			return false;
 		}
 
-		if (data.GetSize() != 3)
+		if (metadata.GetSize() != 3)
 		{
 			Jwl::Error("Incorrect number of value entries.");
 			return false;
@@ -74,11 +74,11 @@ bool FontEncoder::Validate(const Jwl::ConfigTable& data, unsigned loadedVersion)
 	return true;
 }
 
-bool FontEncoder::Convert(const std::string& source, const std::string& destination, const Jwl::ConfigTable& data) const
+bool FontEncoder::Convert(const std::string& source, const std::string& destination, const Jwl::ConfigTable& metadata) const
 {
 	const std::string outputFile = destination + Jwl::ExtractFilename(source) + ".font";
-	const unsigned width = static_cast<unsigned>(data.GetInt("width"));
-	const unsigned height = static_cast<unsigned>(data.GetInt("height"));
+	const unsigned width = static_cast<unsigned>(metadata.GetInt("width"));
+	const unsigned height = static_cast<unsigned>(metadata.GetInt("height"));
 
 	// File preparation.
 	FILE* fontFile = nullptr;

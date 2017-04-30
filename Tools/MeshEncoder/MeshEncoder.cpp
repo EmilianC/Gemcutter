@@ -48,30 +48,30 @@ Jwl::ConfigTable MeshEncoder::GetDefault() const
 	return defaultConfig;
 }
 
-bool MeshEncoder::Validate(const Jwl::ConfigTable& data, unsigned loadedVersion) const
+bool MeshEncoder::Validate(const Jwl::ConfigTable& metadata, unsigned loadedVersion) const
 {
 	switch (loadedVersion)
 	{
 	case 1:
-		if (!data.HasSetting("uvs"))
+		if (!metadata.HasSetting("uvs"))
 		{
 			Jwl::Error("Missing \"uvs\" value.");
 			return false;
 		}
 
-		if (!data.HasSetting("normals"))
+		if (!metadata.HasSetting("normals"))
 		{
 			Jwl::Error("Missing \"normals\" value.");
 			return false;
 		}
 
-		if (!data.HasSetting("scale"))
+		if (!metadata.HasSetting("scale"))
 		{
 			Jwl::Error("Missing \"scale\" value.");
 			return false;
 		}
 
-		if (data.GetSize() != 4)
+		if (metadata.GetSize() != 4)
 		{
 			Jwl::Error("Incorrect number of value entries.");
 			return false;
@@ -81,12 +81,12 @@ bool MeshEncoder::Validate(const Jwl::ConfigTable& data, unsigned loadedVersion)
 	return true;
 }
 
-bool MeshEncoder::Convert(const std::string& source, const std::string& destination, const Jwl::ConfigTable& data) const
+bool MeshEncoder::Convert(const std::string& source, const std::string& destination, const Jwl::ConfigTable& metadata) const
 {
 	const std::string outputFile = destination + Jwl::ExtractFilename(source) + ".model";
-	const bool packUvs = data.GetBool("uvs");
-	const bool packNormals = data.GetBool("normals");
-	const float scale = data.GetFloat("scale");
+	const bool packUvs = metadata.GetBool("uvs");
+	const bool packNormals = metadata.GetBool("normals");
+	const float scale = metadata.GetFloat("scale");
 
 	// load ASCII file.
 	std::ifstream input;

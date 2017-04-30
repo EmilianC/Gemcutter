@@ -13,7 +13,7 @@ goto :eof
 :BuildConfiguration
 title Building %1 - %2
 echo ^>^>^>^>^>^> Building %1 - %2 ^<^<^<^<^<^<
-"C:\Program Files (x86)\MSBuild\14.0\Bin\MSbuild.exe" /t:Build /p:Configuration=%1 /property:Platform=%2 "Jewel3D.sln"
+"%ProgramFiles(x86)%\MSBuild\14.0\Bin\MSbuild.exe" /t:Build /p:Configuration=%1 /property:Platform=%2 "Jewel3D.sln"
 if errorlevel 1 (
    title Build Failure %1 - %2
    echo ^>^>^>^>^>^> Build Failure %1 - %2 ^<^<^<^<^<^<

@@ -11,7 +11,7 @@ namespace Jwl
 	{
 		numStates = _numStates;
 		numActions = _numActions;
-		data = (float*)malloc(sizeof(float) * numStates * numActions);
+		data = static_cast<float*>(malloc(sizeof(float) * numStates * numActions));
 
 		SetUniform();
 	}
@@ -20,7 +20,7 @@ namespace Jwl
 	{
 		numStates = other.numStates;
 		numActions = other.numActions;
-		data = (float*)malloc(sizeof(float) * numStates * numActions);
+		data = static_cast<float*>(malloc(sizeof(float) * numStates * numActions));
 
 		std::memcpy(data, other.data, sizeof(float) * numStates * numActions);
 	}
