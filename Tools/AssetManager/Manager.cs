@@ -1,7 +1,6 @@
 ﻿// Copyright (c) 2017 Emilian Cioca
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -69,7 +68,7 @@ namespace AssetManager
 			}
 			catch (Exception e)
 			{
-				Log($"Error: {e.Message}", ConsoleColor.Red);
+				Log($"ERROR:   {e.Message}", ConsoleColor.Red);
 				result = false;
 			}
 			finally
@@ -116,19 +115,19 @@ namespace AssetManager
 				foreach (string file in workspaceFiles.Where(file =>
 					encoders.Any(x => file.EndsWith(x.Key, StringComparison.InvariantCultureIgnoreCase))))
 				{
-					Log($"Packing [{Path.GetFileName(file)}]");
+					Log($"Encoding [{Path.GetFileName(file)}]");
 
 					var outDir = Path.GetDirectoryName(file.Replace(inputRoot, outputRoot)) + Path.DirectorySeparatorChar;
 
 					if (!encoders[Path.GetExtension(file).Substring(1)].Convert(file, outDir))
-						throw new Exception($"Failed to pack [{Path.GetFileName(file)}]");
+						throw new Exception($"Failed to encode [{Path.GetFileName(file)}]");
 				}
 
 				// Copy all the remaining files.
 				foreach (string file in workspaceFiles.Where(file =>
 					!encoders.Any(x => file.EndsWith(x.Key, StringComparison.InvariantCultureIgnoreCase))))
 				{
-					Log($"Copying [{Path.GetFileName(file)}]");
+					Log($"Copying  [{Path.GetFileName(file)}]");
 
 					var outFile = file.Replace(inputRoot, outputRoot);
 					File.Copy(file, outFile);
@@ -139,7 +138,7 @@ namespace AssetManager
 			}
 			catch (Exception e)
 			{
-				Log($"Error: {e.Message}", ConsoleColor.Red);
+				Log($"ERROR:   {e.Message}", ConsoleColor.Red);
 				result = false;
 			}
 			finally
@@ -282,45 +281,6 @@ namespace AssetManager
 			RichTextBoxStreamWriter.ForegroundColor = ConsoleColor.Gray;
 		}
 
-		// Reads output from a native code converter.
-		delegate void NativeLogDelegate(string text);
-		private void NativeLog(string text)
-		{
-			if (text == null)
-				return;
-
-			if (Output.InvokeRequired)
-			{
-				Output.Invoke(new NativeLogDelegate(NativeLog), new object[] { text });
-			}
-			else
-			{
-				// Parse flags to set the color
-				if (text.StartsWith("[e]", StringComparison.InvariantCultureIgnoreCase))
-				{
-					text = text.Substring(3);
-					Output.SelectionColor = Color.Red;
-				}
-				else if (text.StartsWith("[w]", StringComparison.InvariantCultureIgnoreCase))
-				{
-					text = text.Substring(3);
-					Output.SelectionColor = Color.Yellow;
-				}
-				else if (text.StartsWith("[s]", StringComparison.InvariantCultureIgnoreCase))
-				{
-					text = text.Substring(3);
-					Output.SelectionColor = Color.LightGreen;
-				}
-				else if (text.StartsWith("[r]", StringComparison.InvariantCultureIgnoreCase))
-				{
-					text = text.Substring(3);
-					Output.SelectionColor = Color.LightGray;
-				}
-
-				Log(text);
-			}
-		}
-
 		// Opens the selected asset with the default associated program.
 		void OpenAsset()
 		{
@@ -365,7 +325,6 @@ namespace AssetManager
 				System.Diagnostics.Process.Start("explorer.exe", string.Join("\\", path));
 		}
 
-		// Clears the output window.
 		private void buttonClear_Click(object sender, EventArgs e)
 		{
 			Output.Clear();
