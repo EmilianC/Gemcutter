@@ -7,6 +7,9 @@
     <Filter Include="Math">
       <UniqueIdentifier>{1de13dfa-ec6a-4480-99af-bee3bf9a8e05}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Reflection">
+      <UniqueIdentifier>{e867b34a-a8f2-434f-8b3f-1ac3aab77319}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Entity">
       <UniqueIdentifier>{54c79a28-82d7-4a2d-a243-73ad44bd3d6c}</UniqueIdentifier>
     </Filter>
@@ -33,6 +36,9 @@
     </ClCompile>
     <ClCompile Include="UnitTests\EnumFlags.cpp">
       <Filter>Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="UnitTests\Reflection.cpp">
+      <Filter>Reflection</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

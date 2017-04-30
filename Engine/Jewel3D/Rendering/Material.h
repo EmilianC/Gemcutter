@@ -14,6 +14,7 @@ namespace Jwl
 	// - Shader definitions and permutations
 	class Material : public Component<Material>
 	{
+		REFLECT_PRIVATE;
 		friend class RenderPass;
 	public:
 		Material(Entity& owner);
@@ -65,3 +66,15 @@ namespace Jwl
 		static Shader::WeakPtr passThroughShader;
 	};
 }
+
+REFLECT(Jwl::Material) < Component >,
+	MEMBERS <
+		REF_MEMBER(variantDefinitions)<>,
+		REF_MEMBER(shader)<>,
+		REF_MEMBER(textures)<>,
+		REF_MEMBER(buffers)<>,
+		REF_MEMBER(blendMode)< Setter<Jwl::Material, Jwl::BlendFunc, &Jwl::Material::SetBlendMode> >,
+		REF_MEMBER(depthMode)< Setter<Jwl::Material, Jwl::DepthFunc, &Jwl::Material::SetDepthMode> >,
+		REF_MEMBER(cullMode)< Setter<Jwl::Material, Jwl::CullFunc, &Jwl::Material::SetCullMode> >
+	>
+REF_END;

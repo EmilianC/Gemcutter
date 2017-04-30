@@ -1,5 +1,6 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
+#include "Jewel3D/Reflection/Reflection.h"
 
 namespace Jwl
 {
@@ -219,3 +220,21 @@ namespace Jwl
 		float data[16];
 	};
 }
+
+REFLECT(Jwl::mat2)<>,
+MEMBERS <
+	REF_MEMBER(data)<>
+>
+REF_END;
+
+REFLECT(Jwl::mat3)<>,
+	MEMBERS <
+		REF_MEMBER(data)<>
+	>
+REF_END;
+
+REFLECT(Jwl::mat4)<>,
+	MEMBERS <
+		REF_MEMBER(data)<>
+	>
+REF_END;

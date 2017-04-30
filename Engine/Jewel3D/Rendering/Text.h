@@ -10,6 +10,7 @@ namespace Jwl
 	// Causes text to render at the entity's position.
 	class Text : public Component<Text>
 	{
+		REFLECT_PRIVATE;
 	public:
 		Text(Entity& owner);
 		Text(Entity& owner, Font::Ptr font);
@@ -27,3 +28,13 @@ namespace Jwl
 		float kernel = 1.0f;
 	};
 }
+
+REFLECT(Jwl::Text) < Component >,
+	MEMBERS <
+		REF_MEMBER(font)<>,
+		REF_MEMBER(text)<>,
+		REF_MEMBER(centeredX)<>,
+		REF_MEMBER(centeredY)<>,
+		REF_MEMBER(kernel)<>
+	>
+REF_END;

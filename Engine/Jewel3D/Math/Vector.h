@@ -1,5 +1,6 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
+#include "Jewel3D/Reflection/Reflection.h"
 
 namespace Jwl
 {
@@ -167,3 +168,27 @@ namespace Jwl
 	vec4 operator*(float scalar, const vec4&);
 	vec4 operator/(float divisor, const vec4&);
 }
+
+REFLECT(Jwl::vec2)<>,
+	MEMBERS <
+		REF_MEMBER(x)<>,
+		REF_MEMBER(y)<>
+	>
+REF_END;
+
+REFLECT(Jwl::vec3)<>,
+	MEMBERS <
+		REF_MEMBER(x)<>,
+		REF_MEMBER(y)<>,
+		REF_MEMBER(z)<>
+	>
+REF_END;
+
+REFLECT(Jwl::vec4)<>,
+	MEMBERS <
+		REF_MEMBER(x)<>,
+		REF_MEMBER(y)<>,
+		REF_MEMBER(z)<>,
+		REF_MEMBER(w)<>
+	>
+REF_END;

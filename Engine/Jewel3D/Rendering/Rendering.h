@@ -1,5 +1,7 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
+#include "Jewel3D/Reflection/Reflection.h"
+
 #include <string_view>
 
 namespace Jwl
@@ -193,3 +195,65 @@ namespace Jwl
 		unsigned maxDrawBuffers = 0;
 	};
 }
+
+REFLECT(Jwl::TextureFormat)<>,
+	VALUES <
+		REF_VALUE(RGB_8),
+		REF_VALUE(RGB_16),
+		REF_VALUE(RGB_16F),
+		REF_VALUE(RGB_32),
+		REF_VALUE(RGB_32F),
+		REF_VALUE(RGBA_8),
+		REF_VALUE(RGBA_16),
+		REF_VALUE(RGBA_16F),
+		REF_VALUE(RGBA_32),
+		REF_VALUE(RGBA_32F),
+		REF_VALUE(DEPTH_24)
+	>
+REF_END;
+
+REFLECT(Jwl::TextureWrap)<>,
+	VALUES <
+		REF_VALUE(Clamp),
+		REF_VALUE(ClampWithBorder),
+		REF_VALUE(Repeat),
+		REF_VALUE(RepeatMirrored),
+		REF_VALUE(RepeatMirroredOnce)
+	>
+REF_END;
+
+REFLECT(Jwl::TextureFilter)<>,
+	VALUES <
+		REF_VALUE(Point),
+		REF_VALUE(Linear),
+		REF_VALUE(Bilinear),
+		REF_VALUE(Trilinear)
+	>
+REF_END;
+
+REFLECT(Jwl::CullFunc)<>,
+	VALUES <
+		REF_VALUE(None),
+		REF_VALUE(Clockwise),
+		REF_VALUE(CounterClockwise)
+	>
+REF_END;
+
+REFLECT(Jwl::BlendFunc)<>,
+	VALUES <
+		REF_VALUE(None),
+		REF_VALUE(Linear),
+		REF_VALUE(Additive),
+		REF_VALUE(Multiplicative),
+		REF_VALUE(CutOut)
+	>
+REF_END;
+
+REFLECT(Jwl::DepthFunc)<>,
+	VALUES <
+		REF_VALUE(None),
+		REF_VALUE(WriteOnly),
+		REF_VALUE(TestOnly),
+		REF_VALUE(Normal)
+	>
+REF_END;

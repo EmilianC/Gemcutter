@@ -4,6 +4,7 @@
 #include "Shareable.h"
 #include "Texture.h"
 #include "UniformBuffer.h"
+#include "Jewel3D/Reflection/Reflection.h"
 
 #include <string_view>
 #include <unordered_map>
@@ -14,6 +15,7 @@ namespace Jwl
 	// Manages a set of defines used to control shaders.
 	class ShaderVariantControl
 	{
+		REFLECT_PRIVATE;
 	public:
 		// Adds a new define, or updates its value.
 		void Define(std::string_view name, std::string_view value = "");
@@ -197,3 +199,22 @@ namespace Jwl
 		std::string fragmentSrouce;
 	};
 }
+
+REFLECT(Jwl::ShaderVariantControl::Entry)<>,
+	MEMBERS <
+		REF_MEMBER(name)<>,
+		REF_MEMBER(value)<>
+	>
+REF_END;
+
+REFLECT_BASIC(std::vector<Jwl::ShaderVariantControl::Entry>)
+
+REFLECT(Jwl::ShaderVariantControl)<>,
+	MEMBERS <
+		REF_MEMBER(defines)<>
+	>
+REF_END;
+
+REFLECT_SHAREABLE(Jwl::Shader)
+REFLECT(Jwl::Shader) < Resource >
+REF_END;

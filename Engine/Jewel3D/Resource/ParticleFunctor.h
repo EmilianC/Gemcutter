@@ -2,9 +2,15 @@
 #pragma once
 #include "ParticleBuffer.h"
 #include "Shareable.h"
+#include "Jewel3D/Reflection/Reflection.h"
 #include "Jewel3D/Utilities/Random.h"
 
 #include <vector>
+
+namespace Reflection
+{
+	struct ParticleFunctor : MetaTagBase {};
+}
 
 namespace Jwl
 {
@@ -29,6 +35,7 @@ namespace Jwl
 	// A list of ParticleFunctors acting on a ParticleEmitter.
 	class FunctorList
 	{
+		REFLECT_PRIVATE;
 		friend ParticleEmitter;
 	public:
 		FunctorList() = default;
@@ -74,3 +81,19 @@ namespace Jwl
 		Range initialRotation{ 0.0f, 360.0f };
 	};
 }
+
+REFLECT_BASIC(std::vector<std::shared_ptr<Jwl::ParticleFunctor>>)
+REFLECT(Jwl::FunctorList)<>,
+	MEMBERS <
+		REF_MEMBER(functors)<>,
+		REF_MEMBER(dirty)< NoSerialize, ReadOnly >
+	>
+REF_END;
+
+REFLECT_SHAREABLE(Jwl::RotationFunc)
+REFLECT(Jwl::RotationFunc) < ParticleFunctor >,
+	MEMBERS <
+		REF_MEMBER(rotationSpeed)<>,
+		REF_MEMBER(initialRotation)<>
+	>
+REF_END;

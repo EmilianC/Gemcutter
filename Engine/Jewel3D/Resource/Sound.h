@@ -2,6 +2,7 @@
 #pragma once
 #include "Resource.h"
 #include "Shareable.h"
+#include "Jewel3D/Reflection/Reflection.h"
 
 namespace Jwl
 {
@@ -23,3 +24,7 @@ namespace Jwl
 		unsigned hBuffer = 0;
 	};
 }
+
+REFLECT_SHAREABLE(Jwl::Sound)
+REFLECT(Jwl::Sound) < Resource >
+REF_END;

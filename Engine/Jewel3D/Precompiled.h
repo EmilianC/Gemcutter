@@ -20,6 +20,7 @@
 #include "Jewel3D/Math/Quaternion.h"
 #include "Jewel3D/Math/Transform.h"
 #include "Jewel3D/Math/Vector.h"
+#include "Jewel3D/Reflection/Reflection.h"
 #include "Jewel3D/Resource/Shareable.h"
 #include "Jewel3D/Utilities/Meta.h"
 #include "Jewel3D/Utilities/Random.h"

@@ -3,7 +3,8 @@
 #include "Resource.h"
 #include "Shareable.h"
 #include "VertexArray.h"
-#include "Jewel3D\Math\Vector.h"
+#include "Jewel3D/Math/Vector.h"
+#include "Jewel3D/Reflection/Reflection.h"
 
 namespace Jwl
 {
@@ -16,6 +17,7 @@ namespace Jwl
 	//	Tangent : 3
 	class Model : public VertexArray, public Resource<Model>
 	{
+		REFLECT_PRIVATE;
 	public:
 		// Loads pre-packed *.model resources.
 		bool Load(std::string filePath);
@@ -38,3 +40,13 @@ namespace Jwl
 		bool hasTangents = false;
 	};
 }
+
+REFLECT_SHAREABLE(Jwl::Model)
+REFLECT(Jwl::Model) < Resource >,
+	MEMBERS<
+		REF_MEMBER(hasUvs)< ReadOnly >,
+		REF_MEMBER(hasNormals)< ReadOnly >,
+		REF_MEMBER(numFaces)< ReadOnly >,
+		REF_MEMBER(numVertices)< ReadOnly >
+	>
+REF_END;

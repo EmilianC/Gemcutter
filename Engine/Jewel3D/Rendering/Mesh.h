@@ -8,6 +8,7 @@ namespace Jwl
 	// Causes an entity to render as a 3D mesh.
 	class Mesh : public Component<Mesh>
 	{
+		REFLECT_PRIVATE;
 	public:
 		Mesh(Entity& owner);
 		Mesh(Entity& owner, VertexArray::Ptr array);
@@ -15,3 +16,9 @@ namespace Jwl
 		VertexArray::Ptr array;
 	};
 }
+
+REFLECT(Jwl::Mesh) < Component >,
+	MEMBERS<
+		REF_MEMBER(model)<>
+	>
+REF_END;

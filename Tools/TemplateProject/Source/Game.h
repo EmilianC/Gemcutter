@@ -27,4 +27,5 @@ private:
 	/* Assets */
 	// The config contains all the properties found in Settings.cfg.
 	ConfigTable& config;
+
 };

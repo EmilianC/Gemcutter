@@ -8,6 +8,7 @@ namespace Jwl
 	// Plays audio clips in 3D space.
 	class SoundSource : public Component<SoundSource>
 	{
+		REFLECT_PRIVATE;
 	public:
 		SoundSource(Entity& owner);
 		SoundSource(Entity& owner, Sound::Ptr sound);
@@ -75,3 +76,17 @@ namespace Jwl
 		float rollOff = 1.0f;
 	};
 }
+
+REFLECT(Jwl::SoundSource) < Component >,
+MEMBERS <
+	REF_MEMBER(data)<>,
+	REF_MEMBER(loop)<>,
+	REF_MEMBER(distanceMin)<>,
+	REF_MEMBER(distanceMax)<>,
+	REF_MEMBER(volume)<>,
+	REF_MEMBER(volumeMin)<>,
+	REF_MEMBER(volumeMax)<>,
+	REF_MEMBER(pitch)<>,
+	REF_MEMBER(rollOff)<>
+	>
+REF_END;

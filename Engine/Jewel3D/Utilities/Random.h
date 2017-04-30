@@ -1,5 +1,6 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
+#include "Jewel3D/Reflection/Reflection.h"
 
 namespace Jwl
 {
@@ -35,3 +36,10 @@ namespace Jwl
 		float max = 1.0f;
 	};
 }
+
+REFLECT(Jwl::Range)<>,
+	MEMBERS <
+		REF_MEMBER(min)<>,
+		REF_MEMBER(max)<>
+	>
+REF_END;

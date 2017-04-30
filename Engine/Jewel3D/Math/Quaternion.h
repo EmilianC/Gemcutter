@@ -1,5 +1,6 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
+#include "Jewel3D/Reflection/Reflection.h"
 
 namespace Jwl
 {
@@ -50,3 +51,12 @@ namespace Jwl
 	float Dot(const quat& p0, const quat& p1);
 	quat Slerp(const quat& p0, const quat& p1, float percent);
 }
+
+REFLECT(Jwl::quat)<>,
+	MEMBERS <
+		REF_MEMBER(x)<>,
+		REF_MEMBER(y)<>,
+		REF_MEMBER(z)<>,
+		REF_MEMBER(w)<>
+	>
+REF_END;

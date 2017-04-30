@@ -2,10 +2,16 @@
 #pragma once
 #include "Jewel3D/Application/FileSystem.h"
 #include "Jewel3D/Application/Logging.h"
+#include "Jewel3D/Reflection/Reflection.h"
 #include "Jewel3D/Utilities/Container.h"
 
 #include <string>
 #include <unordered_map>
+
+namespace Reflection
+{
+	struct Resource : MetaTagBase {};
+}
 
 namespace Jwl
 {

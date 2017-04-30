@@ -1,6 +1,7 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
 #include "Jewel3D/Entity/Entity.h"
+#include "Jewel3D/Reflection/Reflection.h"
 
 namespace Jwl
 {
@@ -17,6 +18,7 @@ namespace Jwl
 	// Alignment and BillBoard options are supported by the default sprite shader.
 	class Sprite : public Component<Sprite>
 	{
+		REFLECT_PRIVATE;
 	public:
 		Sprite(Entity& owner);
 		Sprite(Entity& owner, Alignment pivot);
@@ -38,3 +40,17 @@ namespace Jwl
 		bool billBoarded = false;
 	};
 }
+
+REFLECT(Jwl::Sprite) < Component >,
+	MEMBERS <
+		REF_MEMBER(billBoarded)<
+			Setter<Jwl::Sprite, bool, &Jwl::Sprite::SetBillBoarded>
+		>,
+		REF_MEMBER(centeredX)<
+			Setter<Jwl::Sprite, bool, &Jwl::Sprite::SetCenteredX>
+		>,
+		REF_MEMBER(centeredY)<
+			Setter<Jwl::Sprite, bool, &Jwl::Sprite::SetCenteredY>
+		>
+	>
+REF_END;
