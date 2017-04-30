@@ -15,6 +15,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 {
 	using namespace Jwl;
 
+	OpenOutputLog();
 #ifdef _DEBUG
 	CreateConsoleWindow();
 #endif
@@ -160,6 +161,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 #ifdef _DEBUG
 	DestroyConsoleWindow();
 #endif
-
+	CloseOutputLog();
+	
 	return EXIT_SUCCESS;
 }

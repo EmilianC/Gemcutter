@@ -9,45 +9,31 @@
 
 namespace
 {
-	static std::ofstream logOutput{ "Log_Output.txt", std::ofstream::app };
-	static HANDLE stdOutputHandle = NULL;
-	static bool consoleOutput = false;
-
-	enum class LogColor
-	{
-		DarkBlue = 1,
-		DarkGreen,
-		DarkTeal,
-		DarkRed,
-		DarkPink,
-		DarkYellow,
-		Gray,
-		DarkGray,
-		Blue,
-		Green,
-		Teal,
-		Red,
-		Pink,
-		Yellow,
-		White
-	};
-
-	static void SetColor(LogColor color)
-	{
-		SetConsoleTextAttribute(stdOutputHandle, (WORD)color);
-	}
-
-	static void ResetToDefaultColor()
-	{
-		SetConsoleTextAttribute(stdOutputHandle, (WORD)LogColor::Gray);
-	}
+	static std::ofstream logOutput;
+	static HANDLE stdOutputHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 }
 
 namespace Jwl
 {
+	void OpenOutputLog()
+	{
+		if (!logOutput.is_open())
+		{
+			logOutput.open("Log_Output.txt", std::ofstream::app);
+		}
+	}
+
+	void CloseOutputLog()
+	{
+		if (logOutput.is_open())
+		{
+			logOutput.close();
+		}
+	}
+
 	void CreateConsoleWindow()
 	{
-		if (consoleOutput)
+		if (GetConsoleWindow() != NULL)
 		{
 			return;
 		}
@@ -57,13 +43,11 @@ namespace Jwl
 		freopen("CONOUT$", "w", stdout);
 		freopen("CONIN$", "r", stdin);
 		stdOutputHandle = GetStdHandle(STD_OUTPUT_HANDLE);
-
-		consoleOutput = true;
 	}
 
 	void DestroyConsoleWindow()
 	{
-		if (!consoleOutput)
+		if (GetConsoleWindow() == NULL)
 		{
 			return;
 		}
@@ -71,19 +55,30 @@ namespace Jwl
 		fclose(stdout);
 		fclose(stdin);
 		FreeConsole();
-		stdOutputHandle = NULL;
-
-		consoleOutput = false;
+		
+		// There might still be an output stream so we try to obtain a new handle just in case.
+		stdOutputHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 	}
 
 	void MoveConsoleWindowToForeground()
 	{
-		if (!consoleOutput)
-		{
-			return;
-		}
-
 		SetForegroundWindow(GetConsoleWindow());
+	}
+
+	void SetConsoleColor(ConsoleColor color)
+	{
+		if (stdOutputHandle != INVALID_HANDLE_VALUE)
+		{
+			SetConsoleTextAttribute(stdOutputHandle, static_cast<WORD>(color));
+		}
+	}
+
+	void ResetConsoleColor()
+	{
+		if (stdOutputHandle != INVALID_HANDLE_VALUE)
+		{
+			SetConsoleTextAttribute(stdOutputHandle, static_cast<WORD>(ConsoleColor::Gray));
+		}
 	}
 
 	void Log(const char* format, ...)
@@ -94,9 +89,12 @@ namespace Jwl
 		va_end(argptr);
 
 		// std::endl forces a flush to file.
-		logOutput << "Log:\t\t" << message << std::endl;
+		if (logOutput.is_open())
+		{
+			logOutput << "Log:\t\t" << message << std::endl;
+		}
 
-		if (consoleOutput)
+		if (stdOutputHandle != INVALID_HANDLE_VALUE)
 		{
 			std::cout << "Log:     " << message << std::endl;
 		}
@@ -104,9 +102,12 @@ namespace Jwl
 
 	void Log(const std::string& message)
 	{
-		logOutput << "Log:\t\t" << message << std::endl;
+		if (logOutput.is_open())
+		{
+			logOutput << "Log:\t\t" << message << std::endl;
+		}
 
-		if (consoleOutput)
+		if (stdOutputHandle != INVALID_HANDLE_VALUE)
 		{
 			std::cout << "Log:     " << message << std::endl;
 		}
@@ -119,25 +120,31 @@ namespace Jwl
 		auto message = FormatString(format, argptr);
 		va_end(argptr);
 
-		logOutput << "ERROR:\t\t" << message << std::endl;
-
-		if (consoleOutput)
+		if (logOutput.is_open())
 		{
-			SetColor(LogColor::Red);
+			logOutput << "ERROR:\t\t" << message << std::endl;
+		}
+
+		if (stdOutputHandle != INVALID_HANDLE_VALUE)
+		{
+			SetConsoleColor(ConsoleColor::Red);
 			std::cout << "ERROR:   " << message << std::endl;
-			ResetToDefaultColor();
+			ResetConsoleColor();
 		}
 	}
 
 	void Error(const std::string& message)
 	{
-		logOutput << "ERROR:\t\t" << message << std::endl;
-
-		if (consoleOutput)
+		if (logOutput.is_open())
 		{
-			SetColor(LogColor::Red);
+			logOutput << "ERROR:\t\t" << message << std::endl;
+		}
+
+		if (stdOutputHandle != INVALID_HANDLE_VALUE)
+		{
+			SetConsoleColor(ConsoleColor::Red);
 			std::cout << "ERROR:   " << message << std::endl;
-			ResetToDefaultColor();
+			ResetConsoleColor();
 		}
 	}
 
@@ -148,25 +155,31 @@ namespace Jwl
 		auto message = FormatString(format, argptr);
 		va_end(argptr);
 
-		logOutput << "WARNING:\t" << message << std::endl;
-
-		if (consoleOutput)
+		if (logOutput.is_open())
 		{
-			SetColor(LogColor::Yellow);
+			logOutput << "WARNING:\t" << message << std::endl;
+		}
+
+		if (stdOutputHandle != INVALID_HANDLE_VALUE)
+		{
+			SetConsoleColor(ConsoleColor::Yellow);
 			std::cout << "WARNING: " << message << std::endl;
-			ResetToDefaultColor();
+			ResetConsoleColor();
 		}
 	}
 
 	void Warning(const std::string& message)
 	{
-		logOutput << "WARNING:\t" << message << std::endl;
-
-		if (consoleOutput)
+		if (logOutput.is_open())
 		{
-			SetColor(LogColor::Yellow);
+			logOutput << "WARNING:\t" << message << std::endl;
+		}
+
+		if (stdOutputHandle != INVALID_HANDLE_VALUE)
+		{
+			SetConsoleColor(ConsoleColor::Yellow);
 			std::cout << "WARNING: " << message << std::endl;
-			ResetToDefaultColor();
+			ResetConsoleColor();
 		}
 	}
 
@@ -177,26 +190,32 @@ namespace Jwl
 		auto message = FormatString(format, argptr);
 		va_end(argptr);
 
-		logOutput << "ERROR:\t\t" << message << std::endl;
-
-		if (consoleOutput)
+		if (logOutput.is_open())
 		{
-			SetColor(LogColor::Red);
+			logOutput << "ERROR:\t\t" << message << std::endl;
+		}
+
+		if (stdOutputHandle != INVALID_HANDLE_VALUE)
+		{
+			SetConsoleColor(ConsoleColor::Red);
 			std::cout << "ERROR:   " << message << std::endl;
-			ResetToDefaultColor();
+			ResetConsoleColor();
 		}
 
 		MessageBox(HWND_DESKTOP, message.c_str(), "Error", MB_ICONERROR);
 	}
 	void ErrorBox(const std::string& message)
 	{
-		logOutput << "ERROR:\t\t" << message << std::endl;
-
-		if (consoleOutput)
+		if (logOutput.is_open())
 		{
-			SetColor(LogColor::Red);
+			logOutput << "ERROR:\t\t" << message << std::endl;
+		}
+
+		if (stdOutputHandle != INVALID_HANDLE_VALUE)
+		{
+			SetConsoleColor(ConsoleColor::Red);
 			std::cout << "ERROR:   " << message << std::endl;
-			ResetToDefaultColor();
+			ResetConsoleColor();
 		}
 
 		MessageBox(HWND_DESKTOP, message.c_str(), "Error", MB_ICONERROR);
@@ -209,13 +228,16 @@ namespace Jwl
 		auto message = FormatString(format, argptr);
 		va_end(argptr);
 
-		logOutput << "WARNING:\t" << message << std::endl;
-
-		if (consoleOutput)
+		if (logOutput.is_open())
 		{
-			SetColor(LogColor::Yellow);
+			logOutput << "WARNING:\t" << message << std::endl;
+		}
+
+		if (stdOutputHandle != INVALID_HANDLE_VALUE)
+		{
+			SetConsoleColor(ConsoleColor::Yellow);
 			std::cout << "WARNING: " << message << std::endl;
-			ResetToDefaultColor();
+			ResetConsoleColor();
 		}
 
 		MessageBox(HWND_DESKTOP, message.c_str(), "Warning", MB_ICONWARNING);
@@ -223,13 +245,16 @@ namespace Jwl
 
 	void WarningBox(const std::string& message)
 	{
-		logOutput << "WARNING:\t" << message << std::endl;
-
-		if (consoleOutput)
+		if (logOutput.is_open())
 		{
-			SetColor(LogColor::Yellow);
+			logOutput << "WARNING:\t" << message << std::endl;
+		}
+
+		if (stdOutputHandle != INVALID_HANDLE_VALUE)
+		{
+			SetConsoleColor(ConsoleColor::Yellow);
 			std::cout << "WARNING: " << message << std::endl;
-			ResetToDefaultColor();
+			ResetConsoleColor();
 		}
 
 		MessageBox(HWND_DESKTOP, message.c_str(), "Warning", MB_ICONWARNING);
@@ -242,13 +267,16 @@ namespace Jwl
 		auto message = FormatString(format, argptr);
 		va_end(argptr);
 
-		logOutput << "ASSERT:\t\t( " << exp << " )\n" << message << std::endl;
-
-		if (consoleOutput)
+		if (logOutput.is_open())
 		{
-			SetColor(LogColor::Pink);
+			logOutput << "ASSERT:\t\t( " << exp << " )\n" << message << std::endl;
+		}
+
+		if (stdOutputHandle != INVALID_HANDLE_VALUE)
+		{
+			SetConsoleColor(ConsoleColor::Pink);
 			std::cout << "ASSERT:  ( " << exp << " )\n" << message << std::endl;
-			ResetToDefaultColor();
+			ResetConsoleColor();
 		}
 	}
 }

@@ -4,17 +4,41 @@
 
 /*
 - This file defines various functions and macros for logging.
-- "Log_Output.txt" is appended to with every execution of the program.
-- Console output can be toggled as well.
+- "Log_Output.txt" is appended with every message if it has been previously opened with OpenOutputLog().
+- Console output can be toggled as well with CreateConsoleWindow() and DestroyConsoleWindow().
 - DEBUG_* macros allow you to log only when in debug mode.
-- To force macros off, define JWL_DISABLE_DEBUG_MESSAGES
+- To force macros off, define JWL_DISABLE_DEBUG_MESSAGES.
 */
 
 namespace Jwl
 {
+	enum class ConsoleColor
+	{
+		DarkBlue = 1,
+		DarkGreen,
+		DarkTeal,
+		DarkRed,
+		DarkPink,
+		DarkYellow,
+		Gray,
+		DarkGray,
+		Blue,
+		Green,
+		Teal,
+		Red,
+		Pink,
+		Yellow,
+		White
+	};
+
+	void OpenOutputLog();
+	void CloseOutputLog();
+
 	void CreateConsoleWindow();
 	void DestroyConsoleWindow();
 	void MoveConsoleWindowToForeground();
+	void SetConsoleColor(ConsoleColor color);
+	void ResetConsoleColor();
 
 	void Log(const char* format, ...);
 	void Log(const std::string& message);
