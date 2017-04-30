@@ -8,29 +8,26 @@
     <Filter Include="Source">
       <UniqueIdentifier>{62fb0277-f5bd-4fdd-8813-25c92148ad0e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Assets">
-      <UniqueIdentifier>{e579fa6b-7b5d-4b1b-8986-cca3f5d4c109}</UniqueIdentifier>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{88b60d85-c22c-44b1-83d1-591502cc41c9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Assets\Shaders">
-      <UniqueIdentifier>{b8b34e2d-d924-4edf-aa4d-08c516d88362}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Assets\Shaders\Default">
-      <UniqueIdentifier>{ad45dfd3-b245-4dfe-81d6-37302102494f}</UniqueIdentifier>
+    <Filter Include="Shaders\Default">
+      <UniqueIdentifier>{c4c6c959-18aa-424a-8260-53458871f225}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\Shaders\Default\Font.shader">
-      <Filter>Assets\Shaders\Default</Filter>
-    </None>
     <None Include="Settings.cfg" />
-    <None Include="Assets\Shaders\Default\ParticleBillBoard.shader">
-      <Filter>Assets\Shaders\Default</Filter>
+    <None Include="Workspace\Shaders\Default\Font.shader">
+      <Filter>Shaders\Default</Filter>
     </None>
-    <None Include="Assets\Shaders\Default\Sprite.shader">
-      <Filter>Assets\Shaders\Default</Filter>
+    <None Include="Workspace\Shaders\Default\Lambert.shader">
+      <Filter>Shaders\Default</Filter>
     </None>
-    <None Include="Assets\Shaders\Default\Lambert.shader">
-      <Filter>Assets\Shaders\Default</Filter>
+    <None Include="Workspace\Shaders\Default\ParticleBillBoard.shader">
+      <Filter>Shaders\Default</Filter>
+    </None>
+    <None Include="Workspace\Shaders\Default\Sprite.shader">
+      <Filter>Shaders\Default</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

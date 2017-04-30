@@ -94,11 +94,11 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="Assets\Shaders\Default\Font.shader" />
-    <None Include="Assets\Shaders\Default\Lambert.shader" />
-    <None Include="Assets\Shaders\Default\ParticleBillBoard.shader" />
-    <None Include="Assets\Shaders\Default\Sprite.shader" />
     <None Include="Settings.cfg" />
+    <None Include="Workspace\Shaders\Default\Font.shader" />
+    <None Include="Workspace\Shaders\Default\Lambert.shader" />
+    <None Include="Workspace\Shaders\Default\ParticleBillBoard.shader" />
+    <None Include="Workspace\Shaders\Default\Sprite.shader" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Game.cpp" />
