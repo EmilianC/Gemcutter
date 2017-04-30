@@ -2,7 +2,7 @@
 
 # What is Jewel3D?
 Jewel3D is a free C++ game development framework for Windows. It features a powerful Entity-Component-System
-and fine-grain control of both 3D and 2D rendering.
+and fine-grain control of both 2D and 3D rendering.
 
 # Why use Jewel3D?
 The framework facilitates expressive and succinct code that is both easy to read, and to use.
@@ -11,7 +11,7 @@ With a thin API and modern C++14 concepts, Jewel3D provides powerful features wi
 Highlight features include:
 * [A Rich shader workflow](Resources/Docs/Shader.md)
 * [Efficient entity queries](Resources/Docs/Entity.md)
-* [Binary asset packing](Resources/Docs/AssetManager.md)
+* [Extendable asset management](Resources/Docs/AssetManager.md)
 * A modular and extendable particle system
 * Audio powered by OpenAL
 * Mesh and Texture loading
@@ -24,7 +24,7 @@ Highlight features include:
 * C++ Reflection
 
 # Quick Start
-1. Run "INSTALL.cmd" to save the checkout path to the environment and instal the project template.
+1. Run "INSTALL.cmd" to save the checkout path to the environment and install project templates.
 	- You might have to restart your computer for this to take effect.
 2. Run "BUILD.cmd" to compile the engine and tools.
 3. Create a new game project by selecting ```Add New Project -> Visual C++ -> Jewel3D Project```. 
