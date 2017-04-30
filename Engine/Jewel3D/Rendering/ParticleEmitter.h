@@ -13,7 +13,6 @@ namespace Jwl
 	//- Can be extended with ParticleFunctors to add custom functionality.
 	class ParticleEmitter : public Component<ParticleEmitter>
 	{
-		REFLECT_PRIVATE;
 	public:
 		ParticleEmitter(Entity& owner, unsigned maxParticles = 100);
 		ParticleEmitter& operator=(const ParticleEmitter&);
@@ -81,28 +80,3 @@ namespace Jwl
 		UniformBuffer particleParameters;
 	};
 }
-
-REFLECT(Jwl::ParticleEmitter::Type)<>,
-	VALUES <
-		REF_VALUE(Omni),
-		REF_VALUE(Box)
-	>
-REF_END;
-
-REFLECT(Jwl::ParticleEmitter) < Component >,
-	MEMBERS <
-		REF_MEMBER(functors)<>,
-		REF_MEMBER(velocity)<>,
-		REF_MEMBER(lifetime)<>,
-		REF_MEMBER(spawnType)<>,
-		REF_MEMBER(spawnPerSecond)<>,
-		REF_MEMBER(axisX)<>,
-		REF_MEMBER(axisY)<>,
-		REF_MEMBER(axisZ)<>,
-		REF_MEMBER(radius)<>,
-		REF_MEMBER(isPaused)<>,
-		REF_MEMBER(localSpace)< Setter<Jwl::ParticleEmitter, bool, &Jwl::ParticleEmitter::SetLocalSpace> >,
-		REF_MEMBER(maxParticles)<>,
-		REF_MEMBER(numCurrentParticles)< NoSerialize, ReadOnly >
-	>
-REF_END;

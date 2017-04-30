@@ -3,7 +3,6 @@
 #include "Jewel3D/Application/Logging.h"
 #include "Jewel3D/Math/Matrix.h"
 #include "Jewel3D/Math/Transform.h"
-#include "Jewel3D/Reflection/Reflection.h"
 #include "Jewel3D/Utilities/Hierarchy.h"
 #include "Jewel3D/Utilities/Meta.h"
 
@@ -13,13 +12,6 @@
 #include <unordered_map>
 #include <vector>
 
-namespace Reflection
-{
-	//- Marks a class as being a component which can be attached to an entity.
-	struct Component : MetaTagBase {};
-	struct Tag : MetaTagBase {};
-}
-
 namespace Jwl
 {
 	class Entity;
@@ -27,7 +19,6 @@ namespace Jwl
 	class ComponentBase
 	{
 		friend Entity;
-		REFLECT_PRIVATE;
 	public:
 		ComponentBase() = delete;
 		ComponentBase(const ComponentBase&) = delete;
@@ -94,7 +85,6 @@ namespace Jwl
 	//- All Entities must be created through Entity::MakeNew().
 	class Entity : public Hierarchy<Entity>, public Transform
 	{
-		REFLECT_PRIVATE;
 		friend ShareableAlloc;
 
 		Entity() = default;
@@ -212,30 +202,3 @@ namespace Jwl
 
 #include "Query.inl"
 #include "Entity.inl"
-
-REFLECT(Jwl::ComponentBase)<>,
-	MEMBERS <
-		REF_MEMBER(isEnabled)<>
-	>
-REF_END;
-
-REFLECT_SHAREABLE(Jwl::Entity)
-REFLECT_BASIC(std::vector<Jwl::ComponentBase*>)
-REFLECT_BASIC(Jwl::Hierarchy<Jwl::Entity>)
-
-REFLECT(Jwl::Entity)<>,
-	BASES <
-		Jwl::Hierarchy<Jwl::Entity>,
-		Jwl::Transform
-	>,
-	MEMBERS <
-		REF_MEMBER(isEnabled)<>,
-		REF_MEMBER(components)<>,
-		REF_MEMBER(tags)<>
-	>
-REF_END;
-
-#define REFLECT_TAG(Class) \
-	static_assert(std::is_base_of<Jwl::TagBase, Class>::value, "REFLECT_TAG must be used on a Tag."); \
-	REFLECT(Class)< Tag > \
-	REF_END;

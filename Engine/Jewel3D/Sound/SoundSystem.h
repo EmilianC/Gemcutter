@@ -1,6 +1,5 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
-#include "Jewel3D/Reflection/Reflection.h"
 #include "Jewel3D/Utilities/Singleton.h"
 
 struct ALCdevice_struct;
@@ -39,15 +38,3 @@ namespace Jwl
 		ALCcontext_struct* context = nullptr;
 	} &SoundSystem = Singleton<class SoundSystem>::instanceRef;
 }
-
-REFLECT(Jwl::AttenuationMode)<>,
-	VALUES <
-		REF_VALUE(None),
-		REF_VALUE(Linear_Distance),
-		REF_VALUE(Linear_Distance_Clamped),
-		REF_VALUE(Inverse_Distance),
-		REF_VALUE(Inverse_Distance_Clamped),
-		REF_VALUE(Exponent_Distance),
-		REF_VALUE(Exponent_Distance_Clamped)
-	>
-REF_END;

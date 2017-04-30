@@ -49,22 +49,3 @@ namespace Jwl
 		UniformBuffer::Ptr lightBuffer;
 	};
 }
-
-REFLECT(Jwl::Light::Type)<>,
-	VALUES <
-		REF_VALUE(Point),
-		REF_VALUE(Directional),
-		REF_VALUE(Spot)
-	>
-REF_END;
-
-REFLECT(Jwl::Light) < Component >,
-	MEMBERS <
-		REF_MEMBER(type)<>,
-		REF_MEMBER(color)<>,
-		REF_MEMBER(attenuationConstant)<>,
-		REF_MEMBER(attenuationLinear)<>,
-		REF_MEMBER(attenuationQuadratic)<>,
-		REF_MEMBER(angle)<>
-	>
-REF_END;

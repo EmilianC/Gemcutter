@@ -7,7 +7,6 @@ namespace Jwl
 {
 	class Mesh : public Component<Mesh>
 	{
-		REFLECT_PRIVATE;
 	public:
 		Mesh(Entity& owner);
 		Mesh(Entity& owner, Model::Ptr model);
@@ -19,9 +18,3 @@ namespace Jwl
 		Model::Ptr data;
 	};
 }
-
-REFLECT(Jwl::Mesh) < Component >,
-	MEMBERS<
-		REF_MEMBER(data)<>
-	>
-REF_END;

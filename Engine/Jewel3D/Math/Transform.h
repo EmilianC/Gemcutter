@@ -2,7 +2,6 @@
 #pragma once
 #include "Vector.h"
 #include "Quaternion.h"
-#include "Jewel3D/Reflection/Reflection.h"
 
 namespace Jwl
 {
@@ -26,11 +25,3 @@ namespace Jwl
 		vec3 scale = vec3::One;
 	};
 }
-
-REFLECT(Jwl::Transform)<>,
-	MEMBERS <
-		REF_MEMBER(position)<>,
-		REF_MEMBER(rotation)<>,
-		REF_MEMBER(scale)<>
-	>
-REF_END;

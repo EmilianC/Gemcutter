@@ -24,6 +24,3 @@ namespace Jwl
 		static Entity::WeakPtr listener;
 	};
 }
-
-REFLECT(Jwl::SoundListener) < Component >
-REF_END;

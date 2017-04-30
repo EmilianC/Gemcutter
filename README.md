@@ -21,7 +21,6 @@ Highlight features include:
 * A complete math library
 * Keyboard/Mouse/Xbox-Gamepad support
 * Local networking
-* C++ Reflection
 
 # Quick Start
 1. Run "INSTALL.cmd" to save the checkout path to the environment and install project templates.

@@ -11,7 +11,6 @@ namespace Jwl
 
 	class Camera : public Component<Camera>
 	{
-		REFLECT_PRIVATE;
 	public:
 		Camera(Entity& owner);
 		Camera(Entity& owner, float fovyDegrees, float aspectRatio, float zNear, float zFar);
@@ -106,17 +105,3 @@ namespace Jwl
 		float bottom		= -100.0f;
 	};
 }
-
-REFLECT(Jwl::Camera) < Component >,
-	MEMBERS <
-		REF_MEMBER(isPerspective)<>,
-		REF_MEMBER(fovyDegrees)<>,
-		REF_MEMBER(aspectRatio)<>,
-		REF_MEMBER(zNear)< Setter<Jwl::Camera, float, &Jwl::Camera::SetNearPlane> >,
-		REF_MEMBER(zFar)< Setter<Jwl::Camera, float, &Jwl::Camera::SetFarPlane> >,
-		REF_MEMBER(left)<>,
-		REF_MEMBER(right)<>,
-		REF_MEMBER(top)<>,
-		REF_MEMBER(bottom)<>
-	>
-REF_END;

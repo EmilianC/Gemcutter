@@ -1,13 +1,11 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
 #include "Jewel3D/Entity/Entity.h"
-#include "Jewel3D/Reflection/Reflection.h"
 
 namespace Jwl
 {
 	class Sprite : public Component<Sprite>
 	{
-		REFLECT_PRIVATE;
 	public:
 		Sprite(Entity& owner);
 		Sprite& operator=(const Sprite&);
@@ -26,17 +24,3 @@ namespace Jwl
 		bool centeredY = false;
 	};
 }
-
-REFLECT(Jwl::Sprite) < Component >,
-	MEMBERS <
-		REF_MEMBER(billBoarded)<
-			Setter<Jwl::Sprite, bool, &Jwl::Sprite::SetBillBoarded>
-		>,
-		REF_MEMBER(centeredX)<
-			Setter<Jwl::Sprite, bool, &Jwl::Sprite::SetCenteredX>
-		>,
-		REF_MEMBER(centeredY)<
-			Setter<Jwl::Sprite, bool, &Jwl::Sprite::SetCenteredY>
-		>
-	>
-REF_END;

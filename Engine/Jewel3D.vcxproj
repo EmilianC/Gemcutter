@@ -118,11 +118,6 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='ReleaseWithExceptions|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="Jewel3D\Reflection\Reflection.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='ReleaseWithExceptions|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
-    </ClCompile>
     <ClCompile Include="Jewel3D\Rendering\Camera.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
@@ -281,7 +276,6 @@
     <ClInclude Include="Jewel3D\Math\Vector.h" />
     <ClInclude Include="Jewel3D\Network\Network.h" />
     <ClInclude Include="Jewel3D\Precompiled.h" />
-    <ClInclude Include="Jewel3D\Reflection\Reflection.h" />
     <ClInclude Include="Jewel3D\Rendering\Camera.h" />
     <ClInclude Include="Jewel3D\Rendering\Light.h" />
     <ClInclude Include="Jewel3D\Rendering\Material.h" />
@@ -319,7 +313,6 @@
   <ItemGroup>
     <None Include="Jewel3D\Entity\Entity.inl" />
     <None Include="Jewel3D\Entity\Query.inl" />
-    <None Include="Jewel3D\Reflection\Reflection.inl" />
     <None Include="Jewel3D\Utilities\Hierarchy.inl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

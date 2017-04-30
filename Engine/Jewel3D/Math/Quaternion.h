@@ -1,6 +1,5 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
-#include "Jewel3D/Reflection/Reflection.h"
 
 namespace Jwl
 {
@@ -44,12 +43,3 @@ namespace Jwl
 		float w = 1.0f;
 	};
 }
-
-REFLECT(Jwl::quat)<>,
-	MEMBERS <
-		REF_MEMBER(x)<>,
-		REF_MEMBER(y)<>,
-		REF_MEMBER(z)<>,
-		REF_MEMBER(w)<>
-	>
-REF_END;

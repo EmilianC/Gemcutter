@@ -4,7 +4,6 @@
 #include "Jewel3D/Application/Logging.h"
 #include "Jewel3D/Math/Vector.h"
 #include "Jewel3D/Math/Matrix.h"
-#include "Jewel3D/Reflection/Reflection.h"
 
 #include <unordered_map>
 #include <vector>
@@ -100,7 +99,6 @@ namespace Jwl
 	//- A group of UniformBuffers that are bound and unbound together.
 	class BufferList
 	{
-		REFLECT_PRIVATE;
 	public:
 		void Bind() const;
 		void UnBind() const;
@@ -174,31 +172,3 @@ namespace Jwl
 		return UniformHandle<T>(*this, *loc);
 	}
 }
-
-REFLECT_SHAREABLE(Jwl::UniformBuffer)
-REFLECT_BASIC(Jwl::UniformBuffer)
-
-REFLECT(Jwl::BufferSlot)<>,
-	MEMBERS<
-		REF_MEMBER(buffer)<>,
-		REF_MEMBER(unit)<>
-	>
-REF_END;
-
-REFLECT_BASIC(std::vector<Jwl::BufferSlot>)
-REFLECT(Jwl::BufferList)<>,
-	MEMBERS<
-		REF_MEMBER(buffers)<>
-	>
-REF_END;
-
-REFLECT_BASIC(Jwl::UniformHandle<int>)
-REFLECT_BASIC(Jwl::UniformHandle<unsigned int>)
-REFLECT_BASIC(Jwl::UniformHandle<float>)
-REFLECT_BASIC(Jwl::UniformHandle<bool>)
-REFLECT_BASIC(Jwl::UniformHandle<Jwl::vec2>)
-REFLECT_BASIC(Jwl::UniformHandle<Jwl::vec3>)
-REFLECT_BASIC(Jwl::UniformHandle<Jwl::vec4>)
-REFLECT_BASIC(Jwl::UniformHandle<Jwl::mat2>)
-REFLECT_BASIC(Jwl::UniformHandle<Jwl::mat3>)
-REFLECT_BASIC(Jwl::UniformHandle<Jwl::mat4>)

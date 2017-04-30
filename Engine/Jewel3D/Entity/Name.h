@@ -27,9 +27,3 @@ namespace Jwl
 		std::string name;
 	};
 }
-
-REFLECT(Jwl::Name) < Component >,
-	MEMBERS <
-		REF_MEMBER(name)<>
-	>
-REF_END;

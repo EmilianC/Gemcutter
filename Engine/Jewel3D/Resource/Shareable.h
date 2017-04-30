@@ -45,9 +45,3 @@ namespace Jwl
 		}
 	};
 }
-
-#define REFLECT_SHAREABLE(Class) \
-	REFLECT_BASIC(Class::Ptr) \
-	REFLECT_BASIC(Class::ConstPtr) \
-	REFLECT_BASIC(Class::WeakPtr) \
-	REFLECT_BASIC(Class::ConstWeakPtr)
