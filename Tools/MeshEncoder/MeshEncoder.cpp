@@ -1,3 +1,4 @@
+// Copyright (c) 2017 Emilian Cioca
 #include "MeshEncoder.h"
 
 #include "Jewel3D/Math/Vector.h"

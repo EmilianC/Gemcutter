@@ -1,3 +1,4 @@
+// Copyright (c) 2017 Emilian Cioca
 #pragma once
 #include "Jewel3D/Resource/Encoder.h"
 

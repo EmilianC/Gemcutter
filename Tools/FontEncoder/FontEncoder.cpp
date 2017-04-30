@@ -1,3 +1,4 @@
+// Copyright (c) 2017 Emilian Cioca
 #include "FontEncoder.h"
 
 #include <ft2build.h>
