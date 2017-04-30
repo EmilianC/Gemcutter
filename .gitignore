@@ -2,6 +2,7 @@ Build/include/Jewel3D/
 ipch/
 Engine/obj/
 Engine/bin/
+Tools/TemplateProject/Assets/
 Tools/TemplateProject/obj/
 Tools/TemplateProject/bin/
 Tools/TemplateEncoder/obj/
