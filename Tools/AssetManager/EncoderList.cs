@@ -1,8 +1,8 @@
 ﻿// Copyright (c) 2017 Emilian Cioca
 using System;
-using System.Linq;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using System.Xml.Serialization;
 

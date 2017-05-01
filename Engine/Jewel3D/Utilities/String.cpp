@@ -85,4 +85,22 @@ namespace Jwl
 
 		return result;
 	}
+
+	bool CompareLowercase(const std::string& a, const std::string& b)
+	{
+		if (a.size() != b.size())
+		{
+			return false;
+		}
+
+		for (unsigned i = 0; i < a.size(); ++i)
+		{
+			if (std::tolower(a[i]) != std::tolower(b[i]))
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
 }

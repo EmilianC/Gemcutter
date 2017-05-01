@@ -1,7 +1,7 @@
 ﻿// Copyright (c) 2017 Emilian Cioca
 using System;
-using System.Runtime.InteropServices;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace AssetManager
 {

@@ -1,9 +1,10 @@
 ﻿// Copyright (c) 2017 Emilian Cioca
 using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using System.Drawing;
 using System.Xml.Serialization;
 
 namespace AssetManager

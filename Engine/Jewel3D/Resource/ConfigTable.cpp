@@ -2,8 +2,7 @@
 #include "Jewel3D/Precompiled.h"
 #include "ConfigTable.h"
 #include "Jewel3D/Application/FileSystem.h"
-
-#include <algorithm>
+#include "Jewel3D/Utilities/String.h"
 
 namespace Jwl
 {
@@ -104,10 +103,12 @@ namespace Jwl
 	{
 		if (HasSetting(setting))
 		{
-			std::string temp = settings.at(setting);
-			std::transform(temp.begin(), temp.end(), temp.begin(), ::tolower);
+			const auto& value = settings.at(setting);
 
-			return temp == "on" || temp == "1" || temp == "true";
+			return
+				value == "1" ||
+				CompareLowercase(value, "on") || 
+				CompareLowercase(value, "true");
 		}
 		else
 		{

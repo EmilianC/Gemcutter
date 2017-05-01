@@ -1,10 +1,10 @@
 ﻿// Copyright (c) 2017 Emilian Cioca
 using System;
-using System.Text;
-using System.IO;
 using System.Collections.Generic;
-using System.Windows.Forms;
 using System.Drawing;
+using System.IO;
+using System.Text;
+using System.Windows.Forms;
 
 namespace AssetManager
 {
