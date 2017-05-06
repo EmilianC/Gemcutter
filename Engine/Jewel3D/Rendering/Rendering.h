@@ -82,7 +82,7 @@ namespace Jwl
 	enum class VSyncMode
 	{
 		// Frames are sent to display device as soon as they are ready. 
-		// Screen tearing can occur. Input is most responsive.
+		// Screen tearing can occur but input is most responsive.
 		Off = 0,
 		// Framerate is locked to multiples of the display's refresh rate to eliminate tearing.
 		// Can introduce input lag or stuttering.

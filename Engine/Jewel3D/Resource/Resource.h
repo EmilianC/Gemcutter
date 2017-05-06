@@ -32,7 +32,7 @@ namespace Jwl
 			}
 			else
 			{
-				Warning("Asset loaded with an absolute path. To ensure proper asset caching, it is recommended to use relative paths only.");
+				Warning("Asset loaded with an absolute path. To ensure proper asset caching, it is recommended to use only relative paths.");
 			}
 
 			auto itr = resourceCache.find(filePath);

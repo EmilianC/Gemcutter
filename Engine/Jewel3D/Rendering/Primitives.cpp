@@ -377,11 +377,11 @@ namespace Jwl
 			return false;
 		}
 
-		//create dummy VAO for attribute-less rendering of primitives
+		// Create dummy VAO for attribute-less rendering of primitives.
 		glGenVertexArrays(1, &primitivesVAO);
 		glBindVertexArray(primitivesVAO);
 
-		//set up full screen quad VAO containing vertices and textureCoords
+		// Set up full screen quad VAO containing vertices and textureCoords.
 		unsigned vertexSize = sizeof(float) * 6 * 3;
 		unsigned texCoordSize = sizeof(float) * 6 * 2;
 		float VBO_Data[30] = 
@@ -424,7 +424,7 @@ namespace Jwl
 		glVertexAttribPointer((GLuint)0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 5, reinterpret_cast<void*>(0));
 		glVertexAttribPointer((GLuint)1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5, reinterpret_cast<void*>(sizeof(float) * 3));
 
-		//load unit cube for skyboxes
+		// Load unit cube for skyboxes.
 		unsigned skyboxSize = sizeof(float) * 6 * 3 * 6;
 		float skyboxData[108] =
 		{
@@ -492,7 +492,7 @@ namespace Jwl
 		glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
 		glBindVertexArray(GL_NONE);
 
-		//prepare buffer for unit quad rendering
+		// Prepare buffer for unit quad rendering.
 		vertexSize = sizeof(float) * 6 * 3;
 		texCoordSize = sizeof(float) * 6 * 2;
 		float quad_Data[30] =
@@ -723,13 +723,13 @@ namespace Jwl
 	{
 		ASSERT(IsLoaded(), "Primitives must be initialized to call this function.");
 
-		//draw perimeter
+		// Draw perimeter.
 		DrawLine(p1, p2, color);
 		DrawLine(p2, p3, color);
 		DrawLine(p3, p4, color);
 		DrawLine(p4, p1, color);
 
-		//draw grid lines
+		// Draw grid lines.
 		vec3 step = (p2 - p1) / static_cast<float>(numDivisions + 1);
 		for (unsigned i = 1; i <= numDivisions; i++)
 		{

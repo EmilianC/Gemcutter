@@ -9,7 +9,7 @@ namespace Jwl
 	public:
 		~Model();
 
-		//- Loads .model files.
+		//- Loads pre-packed *.model resources.
 		bool Load(const std::string& filePath);
 		void Unload();
 

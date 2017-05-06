@@ -2,7 +2,7 @@
 #pragma once
 
 /*
-* ScopeGuard assists in preventing memory leaks and makes coding easier.
+* ScopeGuard assists in preventing memory leaks and makes code more clear.
 * Following RAII principles, this can allow you to create safer functions.
 * 
 * A function that allocates memory but has many exit points can easily 

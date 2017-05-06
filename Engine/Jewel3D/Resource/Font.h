@@ -17,6 +17,7 @@ namespace Jwl
 		Font();
 		~Font();
 
+		//- Loads pre-packed *.font resources.
 		bool Load(const std::string& filePath);
 		bool Load(const std::string& filePath, TextureFilterMode filter);
 		void Unload();
