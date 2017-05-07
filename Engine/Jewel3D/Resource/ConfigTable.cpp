@@ -121,6 +121,11 @@ namespace Jwl
 		settings[setting] = value;
 	}
 
+	void ConfigTable::SetValue(const std::string& setting, const char* value)
+	{
+		settings[setting] = value;
+	}
+
 	void ConfigTable::SetValue(const std::string& setting, float value)
 	{
 		settings[setting] = std::to_string(value);
@@ -137,6 +142,14 @@ namespace Jwl
 	}
 
 	void ConfigTable::SetDefaultValue(const std::string& setting, const std::string& value)
+	{
+		if (!HasSetting(setting))
+		{
+			settings[setting] = value;
+		}
+	}
+
+	void ConfigTable::SetDefaultValue(const std::string& setting, const char* value)
 	{
 		if (!HasSetting(setting))
 		{
