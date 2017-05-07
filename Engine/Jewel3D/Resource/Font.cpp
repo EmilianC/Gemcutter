@@ -4,6 +4,7 @@
 #include "Texture.h"
 #include "Jewel3D/Application/Logging.h"
 #include "Jewel3D/Math/Math.h"
+#include "Jewel3D/Rendering/Rendering.h"
 #include "Jewel3D/Utilities/ScopeGuard.h"
 
 #include <GLEW/GL/glew.h>
@@ -30,11 +31,6 @@ namespace Jwl
 	}
 
 	bool Font::Load(const std::string& filePath)
-	{
-		return Load(filePath, Texture::GetDefaultFilterMode());
-	}
-
-	bool Font::Load(const std::string& filePath, TextureFilterMode filter)
 	{
 		if (VAO == GL_NONE)
 		{
@@ -109,6 +105,7 @@ namespace Jwl
 		}
 
 		// Load bitmap data.
+		TextureFilterMode filter;
 		unsigned long int bitmapSize = 0;
 		unsigned char* bitmap = nullptr;
 		defer{ free(bitmap); };
@@ -117,6 +114,7 @@ namespace Jwl
 		fread(&bitmapSize, sizeof(unsigned long int), 1, fontFile);
 		fread(&width, sizeof(unsigned), 1, fontFile);
 		fread(&height, sizeof(unsigned), 1, fontFile);
+		fread(&filter, sizeof(TextureFilterMode), 1, fontFile);
 
 		// Load Data.
 		bitmap = static_cast<unsigned char*>(malloc(sizeof(unsigned char) * bitmapSize));

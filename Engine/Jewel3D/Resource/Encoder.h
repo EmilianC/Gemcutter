@@ -54,24 +54,30 @@ namespace Jwl
 
 		bool UpgradeData(ConfigTable& metadata) const
 		{
-			// Sequentially upgrade the data to the latest version.
 			auto currentVersion = static_cast<unsigned>(metadata.GetInt("version"));
-			while (currentVersion < version)
+
+			if (currentVersion < version)
 			{
-				if (!Validate(metadata, currentVersion))
-				{
-					Error("Failed to validate metadata. Try resetting to defaults.");
-					return false;
-				}
+				Log("Upgrading from version %d to %d.", currentVersion, version);
 
-				if (!Upgrade(metadata, currentVersion))
+				// Sequentially upgrade the data to the latest version.
+				while (currentVersion < version)
 				{
-					Error("Failed to update metadata. Try resetting to defaults.");
-					return false;
-				}
+					if (!Validate(metadata, currentVersion))
+					{
+						Error("Failed to validate metadata. Try resetting to defaults.");
+						return false;
+					}
 
-				currentVersion++;
-				metadata.SetValue("version", static_cast<int>(currentVersion));
+					if (!Upgrade(metadata, currentVersion))
+					{
+						Error("Failed to update metadata. Try resetting to defaults.");
+						return false;
+					}
+
+					currentVersion++;
+					metadata.SetValue("version", static_cast<int>(currentVersion));
+				}
 			}
 
 			if (!Validate(metadata, currentVersion))

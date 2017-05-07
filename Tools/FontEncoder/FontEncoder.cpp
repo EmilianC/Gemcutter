@@ -1,11 +1,13 @@
 // Copyright (c) 2017 Emilian Cioca
 #include "FontEncoder.h"
+#include "Jewel3D/Rendering/Rendering.h"
+#include "Jewel3D/Utilities/String.h"
 
 #include <ft2build.h>
 #include <Freetype/freetype.h>
 #include <vector>
 
-#define CURRENT_VERSION 1
+#define CURRENT_VERSION 2
 
 std::unique_ptr<Jwl::Encoder> GetEncoder()
 {
@@ -30,46 +32,100 @@ Jwl::ConfigTable FontEncoder::GetDefault() const
 	defaultConfig.SetValue("version", CURRENT_VERSION);
 	defaultConfig.SetValue("width", 64);
 	defaultConfig.SetValue("height", 64);
+	defaultConfig.SetValue("texture_filter", "bilinear");
 
 	return defaultConfig;
 }
 
 bool FontEncoder::Validate(const Jwl::ConfigTable& metadata, unsigned loadedVersion) const
 {
-	switch (loadedVersion)
+	auto checkWidth = [](const Jwl::ConfigTable& data)
 	{
-	case 1:
-		// Check Width
-		if (!metadata.HasSetting("width"))
+		if (!data.HasSetting("width"))
 		{
 			Jwl::Error("Missing \"width\" value.");
 			return false;
 		}
-		
-		if (metadata.GetInt("width") == 0)
+
+		if (data.GetInt("width") == 0)
 		{
 			Jwl::Error("Width must be greater than 0.");
 			return false;
 		}
 
-		// Check Height
-		if (!metadata.HasSetting("height"))
+		return true;
+	};
+
+	auto checkHeight = [](const Jwl::ConfigTable& data)
+	{
+		if (!data.HasSetting("height"))
 		{
 			Jwl::Error("Missing \"height\" value.");
 			return false;
 		}
 
-		if (metadata.GetInt("height") == 0)
+		if (data.GetInt("height") == 0)
 		{
 			Jwl::Error("Height must be greater than 0.");
 			return false;
 		}
+
+		return true;
+	};
+
+	auto checkTextureFilter = [](const Jwl::ConfigTable& data)
+	{
+		if (!data.HasSetting("texture_filter"))
+		{
+			Jwl::Error("Missing \"texture_filter\" value.");
+			return false;
+		}
+
+		auto str = data.GetString("texture_filter");
+		if (!Jwl::CompareLowercase(str, "point") &&
+			!Jwl::CompareLowercase(str, "linear") &&
+			!Jwl::CompareLowercase(str, "bilinear") &&
+			!Jwl::CompareLowercase(str, "trilinear"))
+		{
+			Jwl::Error("\"texture_filter\" is invalid. Valid options are \"point\", \"linear\", \"bilinear\", or \"trilinear\".");
+			return false;
+		}
+
+		return true;
+	};
+
+	switch (loadedVersion)
+	{
+	case 1:
+		if (!checkWidth(metadata))
+			return false;
+
+		if (!checkHeight(metadata))
+			return false;
 
 		if (metadata.GetSize() != 3)
 		{
 			Jwl::Error("Incorrect number of value entries.");
 			return false;
 		}
+		break;
+
+	case 2:
+		if (!checkWidth(metadata))
+			return false;
+
+		if (!checkHeight(metadata))
+			return false;
+
+		if (!checkTextureFilter(metadata))
+			return false;
+
+		if (metadata.GetSize() != 4)
+		{
+			Jwl::Error("Incorrect number of value entries.");
+			return false;
+		}
+		break;
 	}
 
 	return true;
@@ -80,6 +136,17 @@ bool FontEncoder::Convert(const std::string& source, const std::string& destinat
 	const std::string outputFile = destination + Jwl::ExtractFilename(source) + ".font";
 	const unsigned width = static_cast<unsigned>(metadata.GetInt("width"));
 	const unsigned height = static_cast<unsigned>(metadata.GetInt("height"));
+	
+	Jwl::TextureFilterMode filter = Jwl::TextureFilterMode::Point;
+	{
+		std::string str = metadata.GetString("texture_filter");
+		if (Jwl::CompareLowercase(str, "linear"))
+			filter = Jwl::TextureFilterMode::Linear;
+		else if (Jwl::CompareLowercase(str, "bilinear"))
+			filter = Jwl::TextureFilterMode::Bilinear;
+		else if (Jwl::CompareLowercase(str, "trilinear"))
+			filter = Jwl::TextureFilterMode::Trilinear;
+	}
 
 	// File preparation.
 	FILE* fontFile = nullptr;
@@ -172,6 +239,7 @@ bool FontEncoder::Convert(const std::string& source, const std::string& destinat
 	fwrite(&bitmapSize, sizeof(unsigned long int), 1, fontFile);
 	fwrite(&width, sizeof(unsigned), 1, fontFile);
 	fwrite(&height, sizeof(unsigned), 1, fontFile);
+	fwrite(&filter, sizeof(Jwl::TextureFilterMode), 1, fontFile);
 
 	// Write Data.
 	fwrite(bitmapBuffer.data(), sizeof(unsigned char), bitmapSize, fontFile);
@@ -208,4 +276,17 @@ bool FontEncoder::Convert(const std::string& source, const std::string& destinat
 		
 		return true;
 	}
+}
+
+bool FontEncoder::Upgrade(Jwl::ConfigTable& metadata, unsigned loadedVersion) const
+{
+	switch (loadedVersion)
+	{
+	case 1:
+		// Added texture_filter field.
+		metadata.SetValue("texture_filter", "bilinear");
+		break;
+	}
+
+	return true;
 }

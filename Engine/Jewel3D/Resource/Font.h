@@ -1,7 +1,6 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
 #include "Resource.h"
-#include "Jewel3D/Rendering/Rendering.h"
 
 namespace Jwl
 {
@@ -19,7 +18,6 @@ namespace Jwl
 
 		//- Loads pre-packed *.font resources.
 		bool Load(const std::string& filePath);
-		bool Load(const std::string& filePath, TextureFilterMode filter);
 		void Unload();
 
 		//- Returns the real world unit width of the string.
