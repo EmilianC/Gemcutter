@@ -473,7 +473,7 @@ namespace Jwl
 
 	void TextureList::Bind() const
 	{
-		for (auto slot : textureSlots)
+		for (auto& slot : textureSlots)
 		{
 			slot.Bind();
 		}
@@ -481,7 +481,7 @@ namespace Jwl
 
 	void TextureList::UnBind() const
 	{
-		for (auto slot : textureSlots)
+		for (auto& slot : textureSlots)
 		{
 			slot.UnBind();
 		}
@@ -513,7 +513,7 @@ namespace Jwl
 
 	Texture::Ptr& TextureList::operator[](unsigned unit)
 	{
-		auto textureSlot = std::find_if(textureSlots.begin(), textureSlots.end(), [unit](TextureSlot &slot) {
+		auto textureSlot = std::find_if(textureSlots.begin(), textureSlots.end(), [unit](TextureSlot& slot) {
 			return slot.unit == unit;
 		});
 

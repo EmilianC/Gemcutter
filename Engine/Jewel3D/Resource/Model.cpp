@@ -4,6 +4,7 @@
 #include "Jewel3D/Application/Logging.h"
 #include "Jewel3D/Math/Vector.h"
 #include "Jewel3D/Utilities/ScopeGuard.h"
+#include "Jewel3D/Utilities/String.h"
 
 #include <GLEW/GL/glew.h>
 
@@ -16,7 +17,7 @@ namespace Jwl
 
 	bool Model::Load(const std::string& InputFile)
 	{
-		if (ExtractFileExtension(InputFile) != ".model")
+		if (!CompareLowercase(ExtractFileExtension(InputFile), ".model"))
 		{
 			Error("Model: ( %s )\nAttempted to load unknown file type as mesh.", InputFile.c_str());
 			return false;

@@ -6,6 +6,7 @@
 #include "Jewel3D/Math/Math.h"
 #include "Jewel3D/Rendering/Rendering.h"
 #include "Jewel3D/Utilities/ScopeGuard.h"
+#include "Jewel3D/Utilities/String.h"
 
 #include <GLEW/GL/glew.h>
 #include <algorithm>
@@ -91,7 +92,7 @@ namespace Jwl
 		}
 
 		/* Load Font from file */
-		if (ExtractFileExtension(filePath) != ".font")
+		if (!CompareLowercase(ExtractFileExtension(filePath), ".font"))
 		{
 			Error("FontData: ( %s )\nAttempted to load unknown file type as font.", filePath.c_str());
 			return false;

@@ -164,7 +164,7 @@ namespace Jwl
 		
 		if (loc != table.end())
 		{
-			return (char*)buffer + loc->second;
+			return static_cast<char*>(buffer) + loc->second;
 		}
 		else
 		{
@@ -193,7 +193,7 @@ namespace Jwl
 
 	void BufferList::Bind() const
 	{
-		for (auto slot : buffers)
+		for (auto& slot : buffers)
 		{
 			slot.Bind();
 		}
@@ -201,7 +201,7 @@ namespace Jwl
 
 	void BufferList::UnBind() const
 	{
-		for (auto slot : buffers)
+		for (auto& slot : buffers)
 		{
 			slot.UnBind();
 		}
@@ -233,7 +233,7 @@ namespace Jwl
 
 	UniformBuffer::Ptr& BufferList::operator[](unsigned unit)
 	{
-		auto bufferSlot = std::find_if(buffers.begin(), buffers.end(), [unit](BufferSlot &slot) {
+		auto bufferSlot = std::find_if(buffers.begin(), buffers.end(), [unit](BufferSlot& slot) {
 			return slot.unit == unit;
 		});
 

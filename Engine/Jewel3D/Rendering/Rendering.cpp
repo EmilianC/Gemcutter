@@ -233,7 +233,6 @@ namespace Jwl
 
 		typedef bool (APIENTRY *FUNC)(int);
 		FUNC wglSwapIntervalEXT = (FUNC)wglGetProcAddress("wglSwapIntervalEXT");
-
 		if (!wglSwapIntervalEXT)
 		{
 			Error("Could not retrieve \"wglSwapIntervalEXT\" function.");
@@ -247,7 +246,6 @@ namespace Jwl
 		}
 
 		bool result = wglSwapIntervalEXT(static_cast<int>(mode));
-
 		if (!result)
 		{
 			Error("Failed to change VSync mode.");

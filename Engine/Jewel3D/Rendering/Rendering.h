@@ -59,7 +59,7 @@ namespace Jwl
 
 	enum class BlendFunc
 	{
-		// Blending is disabled
+		// Blending is disabled.
 		None,
 		// Color is interpolated with the pixels in the renderTarget based on alpha.
 		Linear,
@@ -81,7 +81,7 @@ namespace Jwl
 
 	enum class VSyncMode
 	{
-		// Frames are sent to display device as soon as they are ready. 
+		// Frames are sent to display device as soon as they are ready.
 		// Screen tearing can occur but input is most responsive.
 		Off = 0,
 		// Framerate is locked to multiples of the display's refresh rate to eliminate tearing.
