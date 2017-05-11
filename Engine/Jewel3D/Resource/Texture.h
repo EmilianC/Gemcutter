@@ -29,7 +29,6 @@ namespace Jwl
 		void SetWrapMode(TextureWrapMode wrap);
 		void SetWrapModeS(TextureWrapMode wrap);
 		void SetWrapModeT(TextureWrapMode wrap);
-		void SetWrapModeR(TextureWrapMode wrap);
 		void SetFilterMode(TextureFilterMode filter);
 		void SetFilterModeMin(TextureFilterMode filter);
 		void SetFilterModeMag(TextureFilterMode filter);

@@ -265,7 +265,6 @@ namespace Jwl
 		glBindTexture(target, hTex);
 		glTexParameteri(target, GL_TEXTURE_WRAP_S, ResolveWrapMode(wrap));
 		glTexParameteri(target, GL_TEXTURE_WRAP_T, ResolveWrapMode(wrap));
-		glTexParameteri(target, GL_TEXTURE_WRAP_R, ResolveWrapMode(wrap));
 		glBindTexture(target, GL_NONE);
 	}
 
@@ -286,16 +285,6 @@ namespace Jwl
 
 		glBindTexture(target, hTex);
 		glTexParameteri(target, GL_TEXTURE_WRAP_T, ResolveWrapMode(wrap));
-		glBindTexture(target, GL_NONE);
-	}
-
-	void Texture::SetWrapModeR(TextureWrapMode wrap)
-	{
-		ASSERT(hTex != 0, "A texture must be loaded to call this function.");
-		ASSERT(numSamples == 1, "It is illegal to change the wrap mode of a multisampled texture.");
-
-		glBindTexture(target, hTex);
-		glTexParameteri(target, GL_TEXTURE_WRAP_R, ResolveWrapMode(wrap));
 		glBindTexture(target, GL_NONE);
 	}
 
