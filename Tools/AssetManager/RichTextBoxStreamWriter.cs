@@ -54,6 +54,7 @@ namespace AssetManager
 			output.SelectionColor = output.ForeColor;
 
 			output.ScrollToCaret();
+			output.Refresh();
 		}
 
 		public override Encoding Encoding
