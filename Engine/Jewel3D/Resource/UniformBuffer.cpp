@@ -5,8 +5,8 @@
 #include "Jewel3D/Math/Matrix.h"
 #include "Jewel3D/Math/Vector.h"
 
-#include <GLEW/GL/glew.h>
 #include <algorithm>
+#include <GLEW/GL/glew.h>
 
 namespace Jwl
 {

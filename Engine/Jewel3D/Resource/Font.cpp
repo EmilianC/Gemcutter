@@ -8,9 +8,9 @@
 #include "Jewel3D/Utilities/ScopeGuard.h"
 #include "Jewel3D/Utilities/String.h"
 
-#include <GLEW/GL/glew.h>
 #include <algorithm>
 #include <cstdio>
+#include <GLEW/GL/glew.h>
 
 namespace Jwl
 {
@@ -142,7 +142,6 @@ namespace Jwl
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, ResolveFilterMinMode(filter));
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, Texture::GetDefaultAnisotropicLevel());
 
 			// Send the texture data.
 			int numLevels = 1;

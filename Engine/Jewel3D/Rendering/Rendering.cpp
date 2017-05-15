@@ -1,9 +1,10 @@
 // Copyright (c) 2017 Emilian Cioca
 #include "Jewel3D/Precompiled.h"
 #include "Rendering.h"
-#include "Jewel3D/Application/Application.h"
 #include "Jewel3D/Application/Logging.h"
+#include "Jewel3D/Math/Math.h"
 #include "Jewel3D/Math/Vector.h"
+#include "Jewel3D/Utilities/String.h"
 
 #include <GLEW/GL/glew.h>
 #include <GLEW/GL/wglew.h>
@@ -42,6 +43,16 @@ namespace
 
 namespace Jwl
 {
+	TextureWrapModes::TextureWrapModes(TextureWrapMode xy)
+		: x(xy), y(xy)
+	{
+	}
+
+	TextureWrapModes::TextureWrapModes(TextureWrapMode _x, TextureWrapMode _y)
+		: x(_x), y(_y)
+	{
+	}
+
 	int ResolveFilterMagMode(TextureFilterMode filter)
 	{
 		if (filter == TextureFilterMode::Point)
@@ -74,7 +85,45 @@ namespace Jwl
 		return format_Resolve[static_cast<unsigned>(format)];
 	}
 
-	int ResolveChannels(TextureFormat format)
+	TextureFilterMode StringToFilterMode(const std::string& str)
+	{
+		if (CompareLowercase(str, "linear"))
+			return TextureFilterMode::Linear;
+		else if (CompareLowercase(str, "bilinear"))
+			return TextureFilterMode::Bilinear;
+		else if (CompareLowercase(str, "trilinear"))
+			return TextureFilterMode::Trilinear;
+		else
+			return TextureFilterMode::Point;
+	}
+
+	TextureWrapMode StringToWrapMode(const std::string& str)
+	{
+		if (CompareLowercase(str, "clampwithborder"))
+			return TextureWrapMode::ClampWithBorder;
+		else if (CompareLowercase(str, "repeat"))
+			return TextureWrapMode::Repeat;
+		else if (CompareLowercase(str, "repeatmirrored"))
+			return TextureWrapMode::RepeatMirrored;
+		else if (CompareLowercase(str, "repeatmirroredonce"))
+			return TextureWrapMode::RepeatMirroredOnce;
+		else
+			return TextureWrapMode::Clamp;
+	}
+
+	unsigned CountMipLevels(unsigned width, unsigned height, TextureFilterMode filter)
+	{
+		unsigned numLevels = 1;
+		if (ResolveMipMapping(filter))
+		{
+			float max = static_cast<float>(Max(width, height));
+			numLevels = static_cast<unsigned>(std::floor(std::log2(max))) + 1;
+		}
+
+		return numLevels;
+	}
+
+	unsigned CountChannels(TextureFormat format)
 	{
 		switch (format)
 		{

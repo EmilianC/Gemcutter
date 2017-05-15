@@ -2,6 +2,8 @@
 #pragma once
 #include "Jewel3D/Utilities/Singleton.h"
 
+#include <string>
+
 namespace Jwl
 {
 	class vec4;
@@ -37,6 +39,16 @@ namespace Jwl
 		Repeat,
 		RepeatMirrored,
 		RepeatMirroredOnce
+	};
+
+	struct TextureWrapModes
+	{
+		TextureWrapModes() = default;
+		TextureWrapModes(TextureWrapMode xy);
+		TextureWrapModes(TextureWrapMode x, TextureWrapMode y);
+
+		TextureWrapMode x = TextureWrapMode::Clamp;
+		TextureWrapMode y = TextureWrapMode::Clamp;
 	};
 
 	enum class TextureFilterMode
@@ -97,7 +109,12 @@ namespace Jwl
 	bool ResolveMipMapping(TextureFilterMode filter);
 	int ResolveWrapMode(TextureWrapMode wrapMode);
 	unsigned ResolveFormat(TextureFormat format);
-	int ResolveChannels(TextureFormat format);
+
+	TextureFilterMode StringToFilterMode(const std::string&);
+	TextureWrapMode StringToWrapMode(const std::string&);
+
+	unsigned CountMipLevels(unsigned width, unsigned height, TextureFilterMode filter);
+	unsigned CountChannels(TextureFormat format);
 
 	void ClearBackBuffer();
 	void ClearBackBufferDepth();

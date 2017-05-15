@@ -37,7 +37,7 @@ namespace Jwl
 			depthAttachment->CreateTexture(
 				width, height,
 				TextureFormat::DEPTH_24, TextureFilterMode::Point,
-				numSamples);
+				TextureWrapMode::Clamp, 1.0f, numSamples);
 			
 			glFramebufferTexture2D(
 				GL_FRAMEBUFFER,
@@ -104,7 +104,7 @@ namespace Jwl
 		ASSERT(format != TextureFormat::DEPTH_24, "'format' cannot be DEPTH_24 for a color attachment.");
 
 		colorAttachments[index] = Texture::MakeNew();
-		colorAttachments[index]->CreateTexture(width, height, format, filter, numSamples);
+		colorAttachments[index]->CreateTexture(width, height, format, filter, TextureWrapMode::Clamp, 1.0f, numSamples);
 
 		// Attach to framebuffer.
 		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
@@ -416,7 +416,7 @@ namespace Jwl
 		glReadBuffer(GL_COLOR_ATTACHMENT0 + index);
 
 		unsigned format = 0;
-		switch (colorAttachments[index]->GetNumChannels())
+		switch (CountChannels(colorAttachments[index]->GetTextureFormat()))
 		{
 		case 4: format = GL_RGBA;
 			break;

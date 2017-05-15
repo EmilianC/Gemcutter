@@ -14,53 +14,51 @@ namespace Jwl
 		Texture() = default;
 		~Texture();
 
-		void CreateTexture(unsigned width, unsigned height, TextureFormat format, TextureFilterMode filter = defaultFilterMode, unsigned numSamples = 1);
-		bool Load(const std::string& filePath, TextureFilterMode filter = defaultFilterMode);
-		bool LoadCubeMap(
-			const std::string& filePathPosX, const std::string& filePathNegX,
-			const std::string& filePathPosY, const std::string& filePathNegY,
-			const std::string& filePathPosZ, const std::string& filePathNegZ,
-			TextureFilterMode filter = defaultFilterMode);
+		// Creates an empty texture.
+		void CreateTexture(
+			unsigned width, unsigned height,
+			TextureFormat format,
+			TextureFilterMode filter = TextureFilterMode::Point,
+			TextureWrapModes wrapModes = TextureWrapMode::Clamp,
+			float anisotropicLevel = 1.0f,
+			unsigned numSamples = 1);
+
+		// Loads packed *.texture resources, as well as *.png, *.jpg, *.tga, *.bmp.
+		bool Load(const std::string& filePath);
 		void Unload();
 
 		void Bind(unsigned slot);
 		void UnBind(unsigned slot);
 
-		void SetWrapMode(TextureWrapMode wrap);
-		void SetWrapModeS(TextureWrapMode wrap);
-		void SetWrapModeT(TextureWrapMode wrap);
 		void SetFilterMode(TextureFilterMode filter);
-		void SetFilterModeMin(TextureFilterMode filter);
-		void SetFilterModeMag(TextureFilterMode filter);
+		void SetWrapModes(TextureWrapModes wrapModes);
+		// Must be in the range of [1, 16].
 		void SetAnisotropicLevel(float level);
 
 		unsigned GetHandle() const;
+		unsigned GetNumSamples() const;
+		unsigned GetBindingTarget() const;
 		unsigned GetWidth() const;
 		unsigned GetHeight() const;
-		unsigned GetNumChannels() const;
-		unsigned GetNumSamples() const;
 		TextureFormat GetTextureFormat() const;
-		unsigned GetBindingTarget() const;
+		TextureFilterMode GetFilterMode() const;
+		TextureWrapModes GetWrapModes() const;
+		float GetAnisotropicLevel() const;
+
 		bool IsCubeMap() const;
 
 		void RegenerateMipmaps();
-
-		static void SetDefaultFilterMode(TextureFilterMode filterMode);
-		static void SetDefaultAnisotropicLevel(float level);
-		static TextureFilterMode GetDefaultFilterMode();
-		static float GetDefaultAnisotropicLevel();
 
 	private:
 		unsigned hTex		= 0;
 		unsigned numSamples = 1;
 		unsigned target		= 0;
-		int numChannels		= 0;
 		int width			= 0;
 		int height			= 0;
-		TextureFormat format;
-
-		static TextureFilterMode defaultFilterMode;
-		static float defaultAnisotropicLevel;
+		TextureFormat format = TextureFormat::RGB_8;
+		TextureFilterMode filter = TextureFilterMode::Point;
+		TextureWrapModes wrapModes = TextureWrapMode::Clamp;
+		float anisotropicLevel = 1.0f;
 	};
 
 	//- Used to associate a Texture with a particular binding point.
@@ -96,5 +94,23 @@ namespace Jwl
 
 	private:
 		std::vector<TextureSlot> textureSlots;
+	};
+
+	//- Loads raw image data from the disk.
+	//- Can be used when an image is needed for non-rendering use.
+	class Image
+	{
+	public:
+		Image() = default;
+		Image(int width, int height, TextureFormat format, unsigned char* data);
+		~Image();
+
+		// Loads *.png, *.jpg, *.tga, and *.bmp.
+		static Image Load(const std::string& file, bool flipY = true);
+
+		const int width = 0;
+		const int height = 0;
+		const TextureFormat format = TextureFormat::RGB_8;
+		const unsigned char* data = nullptr;
 	};
 }

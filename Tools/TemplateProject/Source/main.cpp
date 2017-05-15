@@ -1,11 +1,9 @@
 #include <Jewel3D/Application/Application.h>
 #include <Jewel3D/Application/Logging.h>
-#include <Jewel3D/Input/Input.h>
 #include <Jewel3D/Rendering/Primitives.h>
 #include <Jewel3D/Rendering/Rendering.h>
 #include <Jewel3D/Resource/ConfigTable.h>
 #include <Jewel3D/Resource/Resource.h>
-#include <Jewel3D/Resource/Texture.h>
 #include <Jewel3D/Sound/SoundSystem.h>
 #include <Jewel3D/Utilities/Random.h>
 
@@ -34,8 +32,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	config.SetDefaultValue("updatesPerSecond", 120);
 	config.SetDefaultValue("FPSCap", 120);
 	config.SetDefaultValue("MSAA", 1);
-	config.SetDefaultValue("anisotropic_level", 2.0f);
-	config.SetDefaultValue("texture_filter", "trilinear");
 	config.SetDefaultValue("vsync", "off");
 	config.SetDefaultValue("asset_directory", "./");
 
@@ -64,28 +60,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	if (config.GetInt("resolution_y") == 0)
 	{
 		config.SetValue("resolution_y", desktopResolutionOkay ? desktop.bottom : 720);
-	}
-
-	/* Apply texture Settings */
-	Texture::SetDefaultAnisotropicLevel(config.GetFloat("anisotropic_level"));
-	{
-		auto filterMode = config.GetString("texture_filter");
-		if (filterMode == "trilinear")
-		{
-			Texture::SetDefaultFilterMode(TextureFilterMode::Trilinear);
-		}
-		else if (filterMode == "bilinear")
-		{
-			Texture::SetDefaultFilterMode(TextureFilterMode::Bilinear);
-		}
-		else if (filterMode == "linear")
-		{
-			Texture::SetDefaultFilterMode(TextureFilterMode::Linear);
-		}
-		else
-		{
-			Texture::SetDefaultFilterMode(TextureFilterMode::Point);
-		}
 	}
 
 	/* Seed RNG */

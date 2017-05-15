@@ -53,6 +53,14 @@ namespace AssetManager
 					"ttf", "%JEWEL3D_PATH%\\Tools\\FontEncoder\\bin\\ReleaseWithExceptions_Win32\\FontEncoder.dll"));
 				entries.Add(new EncoderEntry(panel, EncoderEntry.ItemHeight * 1,
 					"obj", "%JEWEL3D_PATH%\\Tools\\MeshEncoder\\bin\\ReleaseWithExceptions_Win32\\MeshEncoder.dll"));
+				entries.Add(new EncoderEntry(panel, EncoderEntry.ItemHeight * 2,
+					"png", "%JEWEL3D_PATH%\\Tools\\TextureEncoder\\bin\\ReleaseWithExceptions_Win32\\TextureEncoder.dll"));
+				entries.Add(new EncoderEntry(panel, EncoderEntry.ItemHeight * 3,
+					"jpg", "%JEWEL3D_PATH%\\Tools\\TextureEncoder\\bin\\ReleaseWithExceptions_Win32\\TextureEncoder.dll"));
+				entries.Add(new EncoderEntry(panel, EncoderEntry.ItemHeight * 4,
+					"tga", "%JEWEL3D_PATH%\\Tools\\TextureEncoder\\bin\\ReleaseWithExceptions_Win32\\TextureEncoder.dll"));
+				entries.Add(new EncoderEntry(panel, EncoderEntry.ItemHeight * 5,
+					"bmp", "%JEWEL3D_PATH%\\Tools\\TextureEncoder\\bin\\ReleaseWithExceptions_Win32\\TextureEncoder.dll"));
 			}
 		}
 

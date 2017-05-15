@@ -11,6 +11,8 @@ Tools/FontEncoder/obj/
 Tools/FontEncoder/bin/
 Tools/MeshEncoder/obj/
 Tools/MeshEncoder/bin/
+Tools/TextureEncoder/obj/
+Tools/TextureEncoder/bin/
 Tools/AssetManager/obj/
 Tools/AssetManager/bin/
 Log_Output.txt
