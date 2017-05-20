@@ -415,9 +415,7 @@ namespace Jwl
 
 				// Avoid spiral of death. This also allows us to keep rendering even in a worst-case scenario.
 				if (updateCount >= MAX_CONCURRENT_UPDATES)
-				{
 					break;
-				}
 			}
 
 			if (updateCount > 0)

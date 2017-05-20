@@ -2,7 +2,6 @@
 #include "Jewel3D/Precompiled.h"
 #include "Model.h"
 #include "Jewel3D/Application/Logging.h"
-#include "Jewel3D/Math/Vector.h"
 #include "Jewel3D/Utilities/ScopeGuard.h"
 #include "Jewel3D/Utilities/String.h"
 
@@ -24,14 +23,13 @@ namespace Jwl
 		}
 
 		// Load binary file.
-		FILE* binaryFile = nullptr;
-		fopen_s(&binaryFile, InputFile.c_str(), "rb");
-
+		FILE* binaryFile = fopen(InputFile.c_str(), "rb");
 		if (binaryFile == nullptr)
 		{
 			Error("Model: ( %s )\nUnable to open file.", InputFile.c_str());
 			return false;
 		}
+		defer { fclose(binaryFile); };
 
 		fread(&numFaces, sizeof(int), 1, binaryFile);
 		// Which attributes are enabled?
@@ -47,9 +45,7 @@ namespace Jwl
 		// Read the data buffer.
 		float* data = static_cast<float*>(malloc(sizeof(float) * bufferSize));
 		defer { free(data); };
-
 		fread(data, sizeof(float), bufferSize, binaryFile);
-		fclose(binaryFile);
 
 		// Send data to OpenGL.
 		glGenVertexArrays(1, &VAO);

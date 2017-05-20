@@ -145,24 +145,20 @@ namespace Jwl
 		int ReceiveTCP(std::string& out_packet);
 	
 	private:
-		struct _Client_
+		struct Client
 		{
-			_Client_()
-				: TCPAddressSize(sizeof(sockaddr))
-				, UDPAddressSize(sizeof(sockaddr))
-				, TCPSocket(-1)
-				, ID(-1)
+			Client()
 			{
-				memset((char*)&TCPAddress, 0, sizeof(sockaddr_in));
-				memset((char*)&UDPAddress, 0, sizeof(sockaddr_in));
+				memset(&TCPAddress, 0, sizeof(sockaddr_in));
+				memset(&UDPAddress, 0, sizeof(sockaddr_in));
 			}
 
 			sockaddr_in TCPAddress;
 			sockaddr_in UDPAddress;
-			int TCPAddressSize;
-			int UDPAddressSize;
-			int TCPSocket;
-			int ID;
+			int TCPAddressSize = sizeof(sockaddr);
+			int UDPAddressSize = sizeof(sockaddr);
+			int TCPSocket = -1;
+			int ID = -1;
 		};
 
 		sockaddr_in TCPAddress;
@@ -178,7 +174,7 @@ namespace Jwl
 
 		char receiveBuffer[PACKET_LENGTH];
 
-		std::vector<_Client_> clients;
+		std::vector<Client> clients;
 
 		//- Returns the array index of the client with ID.
 		//- Returns -1 if no client exists with ID.

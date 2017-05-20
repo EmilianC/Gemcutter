@@ -229,13 +229,11 @@ namespace Jwl
 		std::string result;
 
 		std::ifstream inStream(fileName);
-		if (!inStream.good())
+		if (inStream.good())
 		{
-			return result;
+			result = std::string(std::istreambuf_iterator<char>(inStream), std::istreambuf_iterator<char>());
+			inStream.close();
 		}
-
-		result = std::string(std::istreambuf_iterator<char>(inStream), (std::istreambuf_iterator<char>()));
-		inStream.close();
 
 		return result;
 	}
@@ -321,7 +319,7 @@ namespace Jwl
 		}
 		else
 		{// Stream mode
-			return std::string(std::istreambuf_iterator<char>(file), (std::istreambuf_iterator<char>()));
+			return std::string(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
 		}
 	}
 
@@ -413,7 +411,7 @@ namespace Jwl
 	{
 		if (!buffer.empty())
 		{// Buffer mode
-			// bounds check
+			// Bounds check.
 			if (currentPos >= buffer.size())
 			{
 				return 0;

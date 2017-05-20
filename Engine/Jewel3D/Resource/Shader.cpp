@@ -979,9 +979,7 @@ namespace Jwl
 			for (unsigned i = 0; i < uniforms.size(); i++)
 			{
 				if (uniforms[i].value.empty())
-				{
 					continue;
-				}
 
 				// Macros to help with switch statement.
 				#define EXIT() \

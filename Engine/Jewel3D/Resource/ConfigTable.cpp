@@ -19,18 +19,14 @@ namespace Jwl
 			std::string line = input.GetLine();
 
 			if (line.size() == 0 || line[0] == ':')
-			{
 				continue;
-			}
 
 			// Line must have an '=' to be processed.
 			size_t pos = line.find("=");
 
 			// Check that the position is valid and not the last character.
 			if (pos == std::string::npos || pos == line.size() - 1)
-			{
 				continue;
-			}
 
 			std::string leftSide = line.substr(0, pos);
 			std::string rightSide = line.substr(pos + 1);

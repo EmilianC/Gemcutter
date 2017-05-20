@@ -4,6 +4,7 @@
 #include "Jewel3D/Application/Logging.h"
 #include "Jewel3D/Math/Vector.h"
 #include "Jewel3D/Sound/SoundSystem.h"
+#include "Jewel3D/Utilities/ScopeGuard.h"
 
 #include <OpenAL_Soft/al.h>
 #include <OpenAL_Soft/alc.h>
@@ -63,18 +64,19 @@ namespace Jwl
 			Error("Sound: ( %s )\nUnable to open file.", InputFile.c_str());
 			return false;
 		}
+		defer { fclose(file); };
 
 		// Variables to store info about the WAVE file.
 		char chunkID[5] = { '\0' };
 		unsigned chunkSize;
 		WaveHeader header;
 		unsigned char* soundData = nullptr;
+		defer { free(soundData); };
 		
 		// Check that the WAVE file is OK.
 		fread(chunkID, sizeof(char), 4, file);
 		if (strcmp(chunkID, "RIFF"))
 		{
-			fclose(file);
 			Error("Sound: ( %s )\nIncorrect file type.", InputFile.c_str());
 			return false;
 		}
@@ -83,7 +85,6 @@ namespace Jwl
 		fread(chunkID, sizeof(char), 4, file);
 		if (strcmp(chunkID, "WAVE"))
 		{
-			fclose(file);
 			Error("Sound: ( %s )\nIncorrect file type.", InputFile.c_str());
 			return false;
 		}
@@ -91,7 +92,6 @@ namespace Jwl
 		fread(chunkID, sizeof(char), 4, file);
 		if (strcmp(chunkID, "fmt "))
 		{
-			fclose(file);
 			Error("Sound: ( %s )\nIncorrect file type.", InputFile.c_str());
 			return false;
 		}
@@ -122,7 +122,7 @@ namespace Jwl
 			{
 				// Read data.
 				fread(&chunkSize, sizeof(unsigned), 1, file);
-				soundData = (unsigned char*)malloc(chunkSize * sizeof(unsigned char));
+				soundData = static_cast<unsigned char*>(malloc(chunkSize * sizeof(unsigned char)));
 				fread(soundData, sizeof(unsigned char), chunkSize, file);
 
 				break;
@@ -135,8 +135,6 @@ namespace Jwl
 				fseek(file, size, SEEK_CUR);
 			}
 		}
-
-		fclose(file);
 
 		if (soundData == nullptr)
 		{
@@ -195,8 +193,6 @@ namespace Jwl
 			Error("Sound: ( %s )\n%s", InputFile.c_str(), alGetString(error));
 			return false;
 		}
-
-		free(soundData);
 
 		return true;
 	}

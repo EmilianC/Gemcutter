@@ -2,19 +2,12 @@
 #pragma once
 #include "Shareable.h"
 #include "Jewel3D/Application/Logging.h"
-#include "Jewel3D/Math/Vector.h"
-#include "Jewel3D/Math/Matrix.h"
 
 #include <unordered_map>
 #include <vector>
 
 namespace Jwl
 {
-	class vec2;
-	class vec3;
-	class vec4;
-	class mat3;
-	class mat4;
 	template<class T> class UniformHandle;
 
 	class UniformBuffer : public Shareable<UniformBuffer>

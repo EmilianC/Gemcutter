@@ -4,14 +4,11 @@
 #include "Network.h"
 #include "Jewel3D/Application/Logging.h"
 
-#include <sstream>
-
 namespace Jwl
 {
 	bool InitWinSock()
 	{
 		WSADATA wsa;
-
 		return WSAStartup(MAKEWORD(2, 2), &wsa) == 0;
 	}
 
@@ -28,8 +25,8 @@ namespace Jwl
 		, inputSocket(-1)
 		, outputSocket(-1)
 	{
-		memset((char*)&localAddress, 0, sizeof(sockaddr_in));
-		memset((char*)&remoteAddress, 0, sizeof(sockaddr_in));
+		memset(&localAddress, 0, sizeof(sockaddr_in));
+		memset(&remoteAddress, 0, sizeof(sockaddr_in));
 		memset(receiveBuffer, '\0', PACKET_LENGTH);
 	}
 
@@ -42,16 +39,17 @@ namespace Jwl
 			Destroy();
 			return false;
 		}
+
 		localAddress.sin_family = AF_INET;
 		localAddress.sin_port = htons(static_cast<u_short>(localPort));
 		localAddress.sin_addr.S_un.S_addr = INADDR_ANY;
-		//bind
 		if (bind(inputSocket, (sockaddr*)&localAddress, sizeof(sockaddr)) == SOCKET_ERROR)
 		{
 			Destroy();
 			return false;
 		}
-		//Set as Non-Blocking
+
+		// Set as Non-Blocking.
 		u_long iMode = 1;
 		ioctlsocket(inputSocket, FIONBIO, &iMode);
 
@@ -68,10 +66,12 @@ namespace Jwl
 			Destroy();
 			return false;
 		}
+
 		remoteAddress.sin_family = AF_INET;
 		remoteAddress.sin_port = htons(static_cast<u_short>(remotePort));
 		remoteAddress.sin_addr.S_un.S_addr = inet_addr(remoteIp.c_str());
-		//Set as Non-Blocking
+		
+		// Set as Non-Blocking.
 		u_long iMode = 1;
 		ioctlsocket(outputSocket, FIONBIO, &iMode);
 
@@ -92,8 +92,8 @@ namespace Jwl
 			outputSocket = -1;
 		}
 
-		memset((char*)&localAddress, 0, sizeof(sockaddr_in));
-		memset((char*)&remoteAddress, 0, sizeof(sockaddr_in));
+		memset(&localAddress, 0, sizeof(sockaddr_in));
+		memset(&remoteAddress, 0, sizeof(sockaddr_in));
 		memset(receiveBuffer, '\0', PACKET_LENGTH);
 	}
 
@@ -109,7 +109,7 @@ namespace Jwl
 
 		int length = recvfrom(inputSocket, receiveBuffer, PACKET_LENGTH, 0, nullptr, nullptr);
 
-		//did we receive anything?
+		// Did we receive anything?
 		if (length == SOCKET_ERROR || WSAGetLastError() == WSAEWOULDBLOCK)
 		{
 			return false;
@@ -131,7 +131,7 @@ namespace Jwl
 		, localPort(-1)
 		, socketId(-1)
 	{
-		memset((char*)&address, 0, sizeof(sockaddr_in));
+		memset(&address, 0, sizeof(sockaddr_in));
 		memset(receiveBuffer, '\0', PACKET_LENGTH);
 	}
 	
@@ -163,7 +163,7 @@ namespace Jwl
 			socketId = -1;
 		}
 
-		memset((char*)&address, 0, sizeof(sockaddr_in));
+		memset(&address, 0, sizeof(sockaddr_in));
 		memset(receiveBuffer, '\0', PACKET_LENGTH);
 	}
 	
@@ -201,14 +201,13 @@ namespace Jwl
 		SOCKET TempSock = static_cast<SOCKET>(SOCKET_ERROR);
 	
 		TempSock = accept(socketId, NULL, NULL);
-	
 		if (TempSock == SOCKET_ERROR)
 		{
 			return false;
 		}
 		else
 		{
-			//accept() gave us the new socket object to use, that is connected to the other host
+			// accept() gave us the new socket object to use that is connected to the other host.
 			socketId = TempSock;
 			isConnected = true;
 			return true;
@@ -270,7 +269,7 @@ namespace Jwl
 	
 		int length = recv(socketId, receiveBuffer, PACKET_LENGTH, 0);
 	
-		//did we receive anything?
+		// Did we receive anything?
 		if (length == SOCKET_ERROR || WSAGetLastError() == WSAEWOULDBLOCK)
 		{
 			return false;
@@ -296,8 +295,8 @@ namespace Jwl
 		, remotePortUDP(-1)
 		, isConnected(false)
 	{
-		memset((char*)&TCPAddress, 0, sizeof(sockaddr_in));
-		memset((char*)&UDPAddress, 0, sizeof(sockaddr_in));
+		memset(&TCPAddress, 0, sizeof(sockaddr_in));
+		memset(&UDPAddress, 0, sizeof(sockaddr_in));
 		memset(receiveBuffer, '\0', PACKET_LENGTH);
 	}
 
@@ -329,13 +328,13 @@ namespace Jwl
 		address.sin_family = AF_INET;
 		address.sin_port = htons(static_cast<u_short>(localPortUDP));
 		address.sin_addr.S_un.S_addr = INADDR_ANY;
-		//bind to retrieve IP address
+		// Bind to retrieve IP address.
 		if (bind(UDPReceiveSocket, (sockaddr*)&address, sizeof(sockaddr)) == SOCKET_ERROR)
 		{
 			Destroy();
 			return false;
 		}
-		//Set as Non-Blocking
+		// Set as Non-Blocking.
 		u_long iMode = 1;
 		ioctlsocket(UDPReceiveSocket, FIONBIO, &iMode);
 
@@ -348,7 +347,7 @@ namespace Jwl
 		UDPAddress.sin_family = AF_INET;
 		UDPAddress.sin_port = htons(static_cast<u_short>(remotePortUDP));
 		UDPAddress.sin_addr.S_un.S_addr = inet_addr(remoteIP.c_str());
-		//Set as Non-Blocking
+		// Set as Non-Blocking.
 		iMode = 1;
 		ioctlsocket(UDPSendSocket, FIONBIO, &iMode);
 
@@ -364,8 +363,8 @@ namespace Jwl
 			TCPSocket = -1;
 		}
 
-		memset((char*)&TCPAddress, 0, sizeof(sockaddr_in));
-		memset((char*)&UDPAddress, 0, sizeof(sockaddr_in));
+		memset(&TCPAddress, 0, sizeof(sockaddr_in));
+		memset(&UDPAddress, 0, sizeof(sockaddr_in));
 		memset(receiveBuffer, '\0', PACKET_LENGTH);
 	}
 
@@ -399,11 +398,8 @@ namespace Jwl
 			u_long iMode = 1;
 			ioctlsocket(TCPSocket, FIONBIO, &iMode);
 
-			//send our UDP port information to the server
-			std::stringstream ss;
-			ss << localPortUDP;
-
-			if (!SendTCP(ss.str()))
+			// Send our UDP port information to the server.
+			if (!SendTCP(std::to_string(localPortUDP)))
 			{
 				return false;
 			}
@@ -426,7 +422,7 @@ namespace Jwl
 
 	bool NetworkClient::ReceiveUDP(std::string& out_packet)
 	{
-		//empty buffers
+		// Empty buffers.
 		out_packet.clear();
 		memset(receiveBuffer, '\0', PACKET_LENGTH);
 
@@ -434,7 +430,7 @@ namespace Jwl
 
 		if (length == SOCKET_ERROR || WSAGetLastError() == WSAEWOULDBLOCK)
 		{
-			//no error, we just didn't receive a packet
+			// No error, we just didn't receive a packet.
 			return false;
 		}
 		else
@@ -451,16 +447,16 @@ namespace Jwl
 
 	bool NetworkClient::ReceiveTCP(std::string& out_packet)
 	{
-		//empty buffers
+		// Empty buffers.
 		out_packet.clear();
 		memset(receiveBuffer, '\0', PACKET_LENGTH);
 
 		int length = recv(TCPSocket, receiveBuffer, PACKET_LENGTH, 0);
 	
-		//did we receive anything?
+		// Did we receive anything?
 		if (length == SOCKET_ERROR || WSAGetLastError() == WSAEWOULDBLOCK)
 		{
-			//no error, we just didn't receive a packet
+			// No error, we just didn't receive a packet.
 			return false;
 		}
 		else
@@ -484,8 +480,8 @@ namespace Jwl
 		, remotePortUDP(-1)
 		, idCounter(-1)
 	{
-		memset((char*)&TCPAddress, 0, sizeof(sockaddr_in));
-		memset((char*)&UDPAddress, 0, sizeof(sockaddr_in));
+		memset(&TCPAddress, 0, sizeof(sockaddr_in));
+		memset(&UDPAddress, 0, sizeof(sockaddr_in));
 		memset(receiveBuffer, '\0', PACKET_LENGTH);
 	}
 
@@ -513,13 +509,13 @@ namespace Jwl
 		address.sin_family = AF_INET;
 		address.sin_port = htons(static_cast<u_short>(localPortUDP));
 		address.sin_addr.S_un.S_addr = INADDR_ANY;
-		//bind to retrieve IP address
-		if (bind(UDPReceiveSocket, (sockaddr* )&address, sizeof(sockaddr)) == SOCKET_ERROR)
+		// Bind to retrieve IP address.
+		if (bind(UDPReceiveSocket, (sockaddr*)&address, sizeof(sockaddr)) == SOCKET_ERROR)
 		{
 			Destroy();
 			return false;
 		}
-		//Set as Non-Blocking
+		// Set as Non-Blocking.
 		u_long iMode = 1;
 		ioctlsocket(UDPReceiveSocket, FIONBIO, &iMode);
 
@@ -529,7 +525,7 @@ namespace Jwl
 			Destroy();
 			return false;
 		}
-		//Set as Non-Blocking
+		// Set as Non-Blocking.
 		iMode = 1;
 		ioctlsocket(UDPSendSocket, FIONBIO, &iMode);
 
@@ -545,8 +541,8 @@ namespace Jwl
 			TCPSocket = -1;
 		}
 
-		memset((char*)&TCPAddress, 0, sizeof(sockaddr_in));
-		memset((char*)&UDPAddress, 0, sizeof(sockaddr_in));
+		memset(&TCPAddress, 0, sizeof(sockaddr_in));
+		memset(&UDPAddress, 0, sizeof(sockaddr_in));
 		memset(receiveBuffer, '\0', PACKET_LENGTH);
 	}
 
@@ -576,7 +572,7 @@ namespace Jwl
 	int NetworkServer::CheckForConnectionRequests()
 	{
 		SOCKET tempSocket = static_cast<SOCKET>(SOCKET_ERROR);
-		_Client_ newClient;
+		Client newClient;
 
 		tempSocket = accept(TCPSocket, (sockaddr*)&newClient.TCPAddress, &newClient.TCPAddressSize);
 	
@@ -590,12 +586,7 @@ namespace Jwl
 			newClient.TCPSocket = tempSocket;
 			newClient.ID = ++idCounter;
 
-			//wait for message with client's port
-			std::stringstream ss;
-			std::string packet;
-			int port;
-			
-			//wait for packet
+			// Wait for message with client's port.
 			memset(receiveBuffer, '\0', PACKET_LENGTH);
 			int length = SOCKET_ERROR;
 			do
@@ -603,18 +594,12 @@ namespace Jwl
 				length = recv(newClient.TCPSocket, receiveBuffer, PACKET_LENGTH, 0);
 			} while (length == SOCKET_ERROR || WSAGetLastError() == WSAEWOULDBLOCK);
 
-			//capture packet
-			packet = receiveBuffer;
-			
-			//extract port from packet
-			ss.str(packet);
-			ss >> port;
+			int port = std::atoi(receiveBuffer);
 
-			//Set up address for sending data back with UDPs
+			// Set up address for sending data back with UDPs.
 			newClient.UDPAddress.sin_family = AF_INET;
 			newClient.UDPAddress.sin_port = htons(static_cast<u_short>(port));
 			newClient.UDPAddress.sin_addr.S_un.S_addr = newClient.TCPAddress.sin_addr.S_un.S_addr;
-			//add client to list
 			clients.push_back(newClient);
 
 			return newClient.ID;
@@ -655,7 +640,8 @@ namespace Jwl
 		bool okay = true;
 		for (unsigned i = 0; i < clients.size(); i++)
 		{
-			okay = okay && sendto(UDPSendSocket, packet.c_str(), packet.size(), 0, (sockaddr* )&clients[i].UDPAddress, clients[i].UDPAddressSize) != SOCKET_ERROR;
+			bool result = sendto(UDPSendSocket, packet.c_str(), packet.size(), 0, (sockaddr*)&clients[i].UDPAddress, clients[i].UDPAddressSize) != SOCKET_ERROR;
+			okay = okay && result;
 		}
 
 		return okay;
@@ -667,11 +653,10 @@ namespace Jwl
 		for (unsigned i = 0; i < clients.size(); i++)
 		{
 			if (clients[i].ID == excludedID)
-			{
 				continue;
-			}
 
-			okay = okay && sendto(UDPSendSocket, packet.c_str(), packet.size(), 0, (sockaddr*)&clients[i].UDPAddress, clients[i].UDPAddressSize) != SOCKET_ERROR;
+			bool result = sendto(UDPSendSocket, packet.c_str(), packet.size(), 0, (sockaddr*)&clients[i].UDPAddress, clients[i].UDPAddressSize) != SOCKET_ERROR;
+			okay = okay && result;
 		}
 
 		return okay;
@@ -679,7 +664,7 @@ namespace Jwl
 
 	int NetworkServer::ReceiveUDP(std::string& out_packet)
 	{
-		//empty buffers
+		// Empty buffers.
 		out_packet.clear();
 		memset(receiveBuffer, '\0', PACKET_LENGTH);
 
@@ -690,17 +675,17 @@ namespace Jwl
 
 		if (length == SOCKET_ERROR || WSAGetLastError() == WSAEWOULDBLOCK)
 		{
-			//no error, we just didn't receive a packet
+			// No error, we just didn't receive a packet.
 			return -1;
 		}
 		else
 		{
 			out_packet = receiveBuffer;
 
-			//identify the client
+			// Identify the client.
 			for (unsigned i = 0; i < clients.size(); i++)
 			{
-				//Clients are assumed to have unique IP addresses
+				// Clients are assumed to have unique IP addresses.
 				if (clients[i].UDPAddress.sin_addr.S_un.S_addr == addr.sin_addr.S_un.S_addr)
 				{
 					return clients[i].ID;
@@ -724,7 +709,8 @@ namespace Jwl
 		bool okay = true;
 		for (unsigned i = 0; i < clients.size(); i++)
 		{
-			okay = okay && send(clients[i].TCPSocket, packet.c_str(), packet.size(), 0) != SOCKET_ERROR;
+			bool result = send(clients[i].TCPSocket, packet.c_str(), packet.size(), 0) != SOCKET_ERROR;
+			okay = okay && result;
 		}
 
 		return okay;
@@ -736,11 +722,10 @@ namespace Jwl
 		for (unsigned i = 0; i < clients.size(); i++)
 		{
 			if (clients[i].ID == excludedID)
-			{
 				continue;
-			}
 
-			okay = okay && send(clients[i].TCPSocket, packet.c_str(), packet.size(), 0) != SOCKET_ERROR;
+			bool result = send(clients[i].TCPSocket, packet.c_str(), packet.size(), 0) != SOCKET_ERROR;
+			okay = okay && result;
 		}
 
 		return okay;
@@ -748,19 +733,19 @@ namespace Jwl
 
 	int NetworkServer::ReceiveTCP(std::string& out_packet)
 	{
-		//empty buffers
+		// Empty buffers.
 		out_packet.clear();
 		memset(receiveBuffer, '\0', PACKET_LENGTH);
 
-		//Look through all clients for packets
+		// Look through all clients for packets.
 		for (unsigned i = 0; i < clients.size(); i++)
 		{
 			int length = recv(clients[i].TCPSocket, receiveBuffer, PACKET_LENGTH, 0);
 	
-			//did we receive anything?
+			// Did we receive anything?
 			if (length == SOCKET_ERROR || WSAGetLastError() == WSAEWOULDBLOCK)
 			{
-				//no error, we just didn't receive a packet
+				// No error, we just didn't receive a packet.
 				continue;
 			}
 			else

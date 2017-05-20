@@ -85,11 +85,9 @@ namespace Jwl
 		// Mirror all components to the other entity.
 		for (auto comp : this->components)
 		{
+			// Material component has already been copied over.
 			if (comp == material)
-			{
-				// Material component has already been copied over.
 				continue;
-			}
 
 			comp->Copy(*newEntity);
 		}

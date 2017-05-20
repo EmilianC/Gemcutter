@@ -141,9 +141,7 @@ namespace Jwl
 		for (auto& source : All<SoundSource>())
 		{
 			if (!source.IsPlaying())
-			{
 				continue;
-			}
 
 			vec3 position = source.owner.GetWorldTransform().GetTranslation();
 
