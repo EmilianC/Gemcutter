@@ -61,7 +61,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>Jewel3D.lib;Xinput.lib;glew32s.lib;opengl32.lib;OpenAL32.lib;SOIL_ext.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Jewel3D.lib;Xinput.lib;glew32s.lib;opengl32.lib;OpenAL32.lib;SOIL_ext.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(Jewel3D_Path)Build\lib\;$(Jewel3D_Path)Build\lib\$(Configuration)_$(Platform)\;$(FrameworkSdkDir)Lib\winv6.3\um\x86\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <SubSystem>Windows</SubSystem>
     </Link>
@@ -87,7 +87,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>Jewel3D.lib;Xinput.lib;glew32s.lib;opengl32.lib;OpenAL32.lib;SOIL_ext.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Jewel3D.lib;Xinput.lib;glew32s.lib;opengl32.lib;OpenAL32.lib;SOIL_ext.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(Jewel3D_Path)Build\lib\;$(Jewel3D_Path)Build\lib\$(Configuration)_$(Platform)\;$(FrameworkSdkDir)Lib\winv6.3\um\x86\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <SubSystem>Windows</SubSystem>
     </Link>
