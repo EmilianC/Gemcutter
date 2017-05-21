@@ -54,7 +54,7 @@ namespace Jwl
 	{
 		if (ExtractFileExtension(InputFile) != ".wav")
 		{
-			Error("FontData: ( %s )\nAttempted to load unknown file type as a sound.", InputFile.c_str());
+			Error("Sound: ( %s )\nAttempted to load unknown file type as a sound.", InputFile.c_str());
 			return false;
 		}
 

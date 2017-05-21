@@ -169,7 +169,7 @@ namespace Jwl
 			glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLen);
 			ASSERT(infoLen > 0, "Could not retrieve shader compilation log");
 
-			infoLog = (char*)malloc(sizeof(char) * infoLen);
+			infoLog = static_cast<char*>(malloc(sizeof(char) * infoLen));
 			defer { free(infoLog); };
 
 			glGetShaderInfoLog(shader, sizeof(char) * infoLen, NULL, infoLog);
@@ -206,7 +206,7 @@ namespace Jwl
 			glGetProgramiv(program, GL_INFO_LOG_LENGTH, &infoLen);
 			ASSERT(infoLen > 0, "Could not retrieve program compilation log");
 
-			infoLog = (char*)malloc(sizeof(char) * infoLen);
+			infoLog = static_cast<char*>(malloc(sizeof(char) * infoLen));
 			defer { free(infoLog); };
 
 			glGetProgramInfoLog(program, sizeof(char) * infoLen, NULL, infoLog);
@@ -347,18 +347,18 @@ namespace Jwl
 			std::string source = LoadFileAsString(filePath);
 			if (source.empty())
 			{
-				Error("ShaderData: ( %s )\nUnable to open file.", filePath.c_str());
+				Error("Shader: ( %s )\nUnable to open file.", filePath.c_str());
 				return false;
 			}
 			else if (!LoadInternal(source))
 			{
-				Error("ShaderData: ( %s )", filePath.c_str());
+				Error("Shader: ( %s )", filePath.c_str());
 				return false;
 			}
 		}
 		else
 		{
-			Error("ShaderData: ( %s )\nAttempted to load unknown file type as shader.", filePath.c_str());
+			Error("Shader: ( %s )\nAttempted to load unknown file type as a shader.", filePath.c_str());
 			return false;
 		}
 
@@ -371,7 +371,7 @@ namespace Jwl
 
 		if (!LoadInternal(source))
 		{
-			Error("ShaderData: ( From Source )");
+			Error("Shader: ( From Source )");
 			return false;
 		}
 
@@ -384,7 +384,7 @@ namespace Jwl
 
 		if (!LoadInternal(passThroughProgram))
 		{
-			Error("ShaderData: ( PassThrough )");
+			Error("Shader: ( PassThrough )");
 			return false;
 		}
 
@@ -1226,7 +1226,7 @@ namespace Jwl
 
 	void Shader::Bind(const ShaderVariantControl& definitions)
 	{
-		ASSERT(IsLoaded(), "ShaderData must have a shader loaded to call this function.");
+		ASSERT(IsLoaded(), "Must have a shader loaded to call this function.");
 
 		auto itr = variants.find(definitions);
 		if (itr == variants.end())

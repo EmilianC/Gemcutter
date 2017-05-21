@@ -18,7 +18,7 @@ namespace Jwl
 	{
 		if (!CompareLowercase(ExtractFileExtension(InputFile), ".model"))
 		{
-			Error("Model: ( %s )\nAttempted to load unknown file type as mesh.", InputFile.c_str());
+			Error("Model: ( %s )\nAttempted to load unknown file type as a mesh.", InputFile.c_str());
 			return false;
 		}
 

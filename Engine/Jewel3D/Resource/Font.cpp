@@ -94,14 +94,14 @@ namespace Jwl
 		/* Load Font from file */
 		if (!CompareLowercase(ExtractFileExtension(filePath), ".font"))
 		{
-			Error("FontData: ( %s )\nAttempted to load unknown file type as font.", filePath.c_str());
+			Error("Font: ( %s )\nAttempted to load unknown file type as a font.", filePath.c_str());
 			return false;
 		}
 
 		FILE* fontFile = fopen(filePath.c_str(), "rb");
 		if (fontFile == nullptr)
 		{
-			Error("FontData: ( %s )\nUnable to open file.", filePath.c_str());
+			Error("Font: ( %s )\nUnable to open file.", filePath.c_str());
 			return false;
 		}
 
