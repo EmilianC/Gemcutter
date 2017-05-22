@@ -97,6 +97,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="Settings.cfg" />
+    <None Include="Workspace\Shaders\Default\FlatColor.shader" />
     <None Include="Workspace\Shaders\Default\Font.shader" />
     <None Include="Workspace\Shaders\Default\Lambert.shader" />
     <None Include="Workspace\Shaders\Default\ParticleBillBoard.shader" />

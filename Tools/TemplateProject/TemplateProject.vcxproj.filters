@@ -25,6 +25,9 @@
     <None Include="Workspace\Shaders\Default\Sprite.shader">
       <Filter>Shaders\Default</Filter>
     </None>
+    <None Include="Workspace\Shaders\Default\FlatColor.shader">
+      <Filter>Shaders\Default</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Game.cpp">
