@@ -34,6 +34,7 @@ namespace Jwl
 
 		float Length() const;
 		float LengthSquared() const;
+		void ClampLength(float length);
 		void Normalize();
 		vec2 GetNormalized() const;
 
@@ -78,6 +79,7 @@ namespace Jwl
 
 		float Length() const;
 		float LengthSquared() const;
+		void ClampLength(float length);
 		void Normalize();
 		vec3 GetNormalized() const;
 		vec2 ToVec2() const;
@@ -127,6 +129,7 @@ namespace Jwl
 
 		float Length() const;
 		float LengthSquared() const;
+		void ClampLength(float length);
 		void Normalize();
 		vec4 GetNormalized() const;
 		vec3 ToVec3() const;

@@ -142,6 +142,17 @@ namespace Jwl
 		return x * x + y * y;
 	}
 
+	void vec2::ClampLength(float length)
+	{
+		ASSERT(length >= 0.0f, "'length' must be positive.");
+
+		float magnitude = Length();
+		if (magnitude > length)
+		{
+			*this *= (length / magnitude);
+		}
+	}
+
 	void vec2::Normalize()
 	{
 		float invLength = 1.0f / Length();
@@ -309,6 +320,17 @@ namespace Jwl
 	float vec3::LengthSquared() const
 	{
 		return x * x + y * y + z * z;
+	}
+
+	void vec3::ClampLength(float length)
+	{
+		ASSERT(length >= 0.0f, "'length' must be positive.");
+
+		float magnitude = Length();
+		if (magnitude > length)
+		{
+			*this *= (length / magnitude);
+		}
 	}
 
 	void vec3::Normalize()
@@ -502,6 +524,17 @@ namespace Jwl
 	float vec4::LengthSquared() const
 	{
 		return x * x + y * y + z * z + w * w;
+	}
+
+	void vec4::ClampLength(float length)
+	{
+		ASSERT(length >= 0.0f, "'length' must be positive.");
+
+		float magnitude = Length();
+		if (magnitude > length)
+		{
+			*this *= (length / magnitude);
+		}
 	}
 
 	void vec4::Normalize()
