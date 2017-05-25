@@ -1,6 +1,7 @@
 // Copyright (c) 2017 Emilian Cioca
 #include "Jewel3D/Precompiled.h"
 #include "Random.h"
+#include "Jewel3D/Math/Vector.h"
 
 #include <stdlib.h>
 #include <time.h>
@@ -25,6 +26,14 @@ namespace Jwl
 	int RandomRangei(int min, int max)
 	{
 		return rand() % (max + 1 - min) + min;
+	}
+	
+	vec3 RandomDirection()
+	{
+		return vec3(
+			RandomRangef(-1.0f, 1.0f),
+			RandomRangef(-1.0f, 1.0f),
+			RandomRangef(-1.0f, 1.0f)).GetNormalized();
 	}
 
 	RandomRange::RandomRange(float _value, float _deviation)
