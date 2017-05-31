@@ -102,6 +102,8 @@ namespace Jwl
 		bool Load(const std::string& filePath);
 		bool LoadFromSource(const std::string& source);
 		bool LoadPassThrough();
+		static Shader::Ptr MakeNewPassThrough();
+		
 		//- Unloads all GPU-side memory and cleans the object.
 		void Unload();
 

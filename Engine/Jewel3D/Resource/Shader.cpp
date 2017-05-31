@@ -391,6 +391,14 @@ namespace Jwl
 		return true;
 	}
 
+	Shader::Ptr Shader::MakeNewPassThrough()
+	{
+		auto shader = MakeNew();
+		shader->LoadPassThrough();
+
+		return shader;
+	}
+
 	bool Shader::LoadInternal(std::string source)
 	{
 		ASSERT(!IsLoaded(), "A Shader is already loaded. Call ShaderData::Unload() first.");
