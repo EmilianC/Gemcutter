@@ -69,6 +69,15 @@ namespace Jwl
 			w * other.w - x * other.x - y * other.y - z * other.z);
 	}
 
+	vec3 quat::operator*(const vec3& v) const
+	{
+		vec3 q = vec3(x, y, z);
+
+		return 2.0f * Dot(q, v) * q
+			+ (w * w - Dot(q, q)) * v
+			+ 2.0f * w * Cross(q, v);
+	}
+
 	quat& quat::operator*=(const quat& other)
 	{
 		*this = (*this) * other;
@@ -127,6 +136,21 @@ namespace Jwl
 		return quat(x / length, y / length, z / length, w / length);
 	}
 
+	vec3 quat::GetRight() const
+	{
+		return *this * vec3::X;
+	}
+
+	vec3 quat::GetUp() const
+	{
+		return *this * vec3::Y;
+	}
+
+	vec3 quat::GetForward() const
+	{
+		return *this * vec3::Z;
+	}
+
 	void quat::Rotate(const vec3& axis, float degrees)
 	{
 		float radians = ToRadian(degrees) / 2.0f;
@@ -164,12 +188,12 @@ namespace Jwl
 		*this = quat(0.0f, 0.0f, sin(radians), cos(radians)) * (*this);
 	}
 
-	float quat::Dot(const quat& p0, const quat& p1)
+	float Dot(const quat& p0, const quat& p1)
 	{
 		return p0.x * p1.x + p0.y * p1.y + p0.z * p1.z + p0.w * p1.w;
 	}
 
-	quat quat::Slerp(const quat& p0, const quat& p1, float percent)
+	quat Slerp(const quat& p0, const quat& p1, float percent)
 	{
 		float dot = Dot(p0, p1);
 		if (dot < 0.0f)
