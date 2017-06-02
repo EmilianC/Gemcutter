@@ -307,9 +307,14 @@ namespace Jwl
 
 	std::string FileReader::GetContents()
 	{
-		if (!buffer.empty())
-		{// Buffer mode
-			// bounds check
+		if (buffer.empty())
+		{
+			// Buffer mode
+			return std::string(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
+		}
+		else
+		{
+			// Stream mode
 			if (currentPos >= buffer.size())
 			{
 				return std::string();
@@ -317,61 +322,56 @@ namespace Jwl
 
 			return buffer.substr(currentPos);
 		}
-		else
-		{// Stream mode
-			return std::string(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
-		}
 	}
 
 	std::string FileReader::GetLine()
 	{
-		if (!buffer.empty())
-		{// Buffer mode
-			// bounds check
-			if (currentPos >= buffer.size())
-			{
-				return std::string();
-			}
-
-			std::string line = buffer.substr(currentPos, buffer.find('\n', currentPos) - currentPos);
-			currentPos += line.size() + 1; //+ 1 for '\n'
-			return line;
+		std::string result;
+		if (buffer.empty())
+		{
+			std::getline(file, result);
 		}
 		else
-		{// Stream mode
-			std::string result;
-			std::getline(file, result);
-			return result;
+		{
+			if (currentPos < buffer.size())
+			{
+				result = buffer.substr(currentPos, buffer.find('\n', currentPos) - currentPos);
+				currentPos += result.size() + 1; //+ 1 for '\n'
+			}
 		}
+		
+		return result;
 	}
 
 	std::string FileReader::GetWord()
 	{
-		if (!buffer.empty())
-		{// Buffer mode
-			// bounds check
-			if (currentPos >= buffer.size())
-			{
-				return std::string();
-			}
-
-			std::string word = buffer.substr(currentPos, buffer.find_first_of(" \n", currentPos) - currentPos);
-			currentPos += word.size();
-			return word;
+		std::string result;
+		if (buffer.empty())
+		{
+			file >> result;
 		}
 		else
-		{// Stream mode
-			std::string result;
-			file >> result;
-			return result;
+		{
+			if (currentPos < buffer.size())
+			{
+				result = buffer.substr(currentPos, buffer.find_first_of(" \n", currentPos) - currentPos);
+				currentPos += result.size();
+			}
 		}
+
+		return result;
 	}
 
 	float FileReader::GetFloat()
 	{
-		if (!buffer.empty())
-		{// Buffer mode
-			// bounds check
+		if (buffer.empty())
+		{
+			float result;
+			file >> result;
+			return result;
+		}
+		else
+		{
 			if (currentPos >= buffer.size())
 			{
 				return 0.0f;
@@ -379,19 +379,18 @@ namespace Jwl
 
 			return std::stof(&buffer[currentPos], &currentPos);
 		}
-		else
-		{// Stream mode
-			float result;
-			file >> result;
-			return result;
-		}
 	}
 
 	int FileReader::GetInt()
 	{
-		if (!buffer.empty())
-		{// Buffer mode
-			// bounds check
+		if (buffer.empty())
+		{
+			int result;
+			file >> result;
+			return result;
+		}
+		else
+		{
 			if (currentPos >= buffer.size())
 			{
 				return 0;
@@ -399,19 +398,16 @@ namespace Jwl
 
 			return std::stoi(&buffer[currentPos], &currentPos);
 		}
-		else
-		{// Stream mode
-			int result;
-			file >> result;
-			return result;
-		}
 	}
 
 	char FileReader::GetChar()
 	{
-		if (!buffer.empty())
-		{// Buffer mode
-			// Bounds check.
+		if (buffer.empty())
+		{
+			return (char)file.get();
+		}
+		else
+		{
 			if (currentPos >= buffer.size())
 			{
 				return 0;
@@ -419,21 +415,17 @@ namespace Jwl
 
 			return buffer[currentPos++];
 		}
-		else
-		{// Stream mode
-			return (char)file.get();
-		}
 	}
 
 	bool FileReader::IsEOF() const
 	{
-		if (!buffer.empty())
-		{// Buffer mode
-			return currentPos >= buffer.size();
-		}
-		else
-		{// Stream mode
+		if (buffer.empty())
+		{
 			return file.eof();
+		}
+		else 
+		{
+			return currentPos >= buffer.size();
 		}
 	}
 
