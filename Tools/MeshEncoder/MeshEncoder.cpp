@@ -27,9 +27,9 @@ struct MeshFace
 		normals[0] = n1; normals[1] = n2; normals[2] = n3;
 	}
 
-	unsigned vertices[3] = { 0 };
-	unsigned textures[3] = { 0 };
-	unsigned normals[3] = { 0 };
+	unsigned vertices[3];
+	unsigned textures[3];
+	unsigned normals[3];
 };
 
 MeshEncoder::MeshEncoder()
@@ -89,7 +89,7 @@ bool MeshEncoder::Convert(const std::string& source, const std::string& destinat
 	const bool packNormals = metadata.GetBool("normals");
 	const float scale = metadata.GetFloat("scale");
 
-	// load ASCII file.
+	// Load ASCII file.
 	std::ifstream input;
 	input.open(source);
 	if (!input)
@@ -98,7 +98,9 @@ bool MeshEncoder::Convert(const std::string& source, const std::string& destinat
 		return false;
 	}
 
-	char inputString[CHAR_BUFFER_SIZE];
+	char inputString[CHAR_BUFFER_SIZE] = { '\0' };
+	bool hasUvs = false;
+	bool hasNormals = false;
 
 	// Unique data.
 	std::vector<Jwl::vec3> vertexData;
@@ -108,18 +110,15 @@ bool MeshEncoder::Convert(const std::string& source, const std::string& destinat
 	std::vector<MeshFace> faceData;
 	// OpenGL ready data.
 	std::vector<float> unPackedData;
-	bool hasUvs = false;
-	bool hasNormals = false;
 
 	while (!input.eof())
 	{
 		input.getline(inputString, CHAR_BUFFER_SIZE);
 
-		if (std::strstr(inputString, "#") != nullptr)
-		{
+		if (std::strchr(inputString, '#') != nullptr)
 			continue;
-		}
-		else if (std::strstr(inputString, "vt") == inputString)
+
+		if (std::strstr(inputString, "vt") == inputString)
 		{
 			hasUvs = true;
 
@@ -137,14 +136,14 @@ bool MeshEncoder::Convert(const std::string& source, const std::string& destinat
 			std::sscanf(inputString, "vn %f %f %f", &temp.x, &temp.y, &temp.z);
 			normalData.push_back(temp);
 		}
-		else if (std::strstr(inputString, "v") == inputString)
+		else if (std::strchr(inputString, 'v') == inputString)
 		{
 			// Load vertices.
 			Jwl::vec3 temp;
 			std::sscanf(inputString, "v %f %f %f", &temp.x, &temp.y, &temp.z);
 			vertexData.push_back(temp * scale);
 		}
-		else if (std::strstr(inputString, "f") == inputString)
+		else if (std::strchr(inputString, 'f') == inputString)
 		{
 			// load face indices.
 			MeshFace temp;
@@ -185,7 +184,7 @@ bool MeshEncoder::Convert(const std::string& source, const std::string& destinat
 	input.close();
 
 	bool useUvs = packUvs && hasUvs;
-	bool useNormals = packUvs && hasNormals;
+	bool useNormals = packNormals && hasNormals;
 
 	// Unpack the data.
 	for (unsigned i = 0; i < faceData.size(); i++)
@@ -242,7 +241,7 @@ bool MeshEncoder::Convert(const std::string& source, const std::string& destinat
 			Jwl::Warning("Output of uvs was enabled but no uvs were found in the mesh.");
 		}
 		
-		if (packUvs && !hasNormals)
+		if (packNormals && !hasNormals)
 		{
 			Jwl::Warning("Output of normals was enabled but no normals were found in the mesh.");
 		}
