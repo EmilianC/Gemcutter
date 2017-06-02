@@ -24,6 +24,6 @@ ECHO Done!
 ECHO.
 
 ECHO -----------------------------------------------------------------------------------------
-ECHO     * A restart cycle of your computer might be required to register these chagnes *
+ECHO     * A restart cycle of your computer might be required to register these changes *
 ECHO -----------------------------------------------------------------------------------------
 Pause

@@ -51,16 +51,19 @@ namespace AssetManager
 
 			LoadEncoders();
 
+			string inputRoot = Directory.GetCurrentDirectory();
+
 			bool result = false;
 			try
 			{
 				foreach (var file in GetWorkspaceFiles().Where(file =>
 					encoders.Any(x => file.EndsWith(x.Key, StringComparison.InvariantCultureIgnoreCase))))
 				{
-					Log($"Checking [{Path.GetFileName(file)}]");
+					string logName = file.Substring(inputRoot.Length + 1);
+					Log($"Checking [{logName}]");
 
 					if (!encoders[Path.GetExtension(file).Substring(1)].Update(file))
-						throw new Exception($"Failed to update [{Path.GetFileName(file)}]");
+						throw new Exception($"Failed to update [{logName}]");
 				}
 
 				Log(">>>>>> Finished Updating <<<<<<", ConsoleColor.Green);
@@ -115,19 +118,20 @@ namespace AssetManager
 				foreach (string file in workspaceFiles.Where(file =>
 					encoders.Any(x => file.EndsWith(x.Key, StringComparison.InvariantCultureIgnoreCase))))
 				{
-					Log($"Encoding [{Path.GetFileName(file)}]");
+					string logName = file.Substring(inputRoot.Length + 1);
+					Log($"Encoding [{logName}]");
 
 					var outDir = Path.GetDirectoryName(file.Replace(inputRoot, outputRoot)) + Path.DirectorySeparatorChar;
 
 					if (!encoders[Path.GetExtension(file).Substring(1)].Convert(file, outDir))
-						throw new Exception($"Failed to encode [{Path.GetFileName(file)}]");
+						throw new Exception($"Failed to encode [{logName}]");
 				}
 
 				// Copy all the remaining files.
 				foreach (string file in workspaceFiles.Where(file =>
 					!encoders.Any(x => file.EndsWith(x.Key, StringComparison.InvariantCultureIgnoreCase))))
 				{
-					Log($"Copying  [{Path.GetFileName(file)}]");
+					Log($"Copying  [{file.Substring(inputRoot.Length + 1)}]");
 
 					var outFile = file.Replace(inputRoot, outputRoot);
 					File.Copy(file, outFile);
