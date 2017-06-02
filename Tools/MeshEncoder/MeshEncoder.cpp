@@ -108,8 +108,6 @@ bool MeshEncoder::Convert(const std::string& source, const std::string& destinat
 	std::vector<Jwl::vec3> normalData;
 	// Indexing data.
 	std::vector<MeshFace> faceData;
-	// OpenGL ready data.
-	std::vector<float> unPackedData;
 
 	while (!input.eof())
 	{
@@ -186,26 +184,35 @@ bool MeshEncoder::Convert(const std::string& source, const std::string& destinat
 	bool useUvs = packUvs && hasUvs;
 	bool useNormals = packNormals && hasNormals;
 
+	const unsigned numVertices = faceData.size() * 3;
+	unsigned bufferSize = numVertices * 3;
+	if (useUvs) bufferSize += numVertices * 2;
+	if (useNormals) bufferSize += numVertices * 3;
+
+	float* data = static_cast<float*>(malloc(sizeof(float) * bufferSize));
+	defer{ free(data); };
+
 	// Unpack the data.
+	unsigned pen = 0;
 	for (unsigned i = 0; i < faceData.size(); i++)
 	{
 		for (unsigned j = 0; j < 3; j++)
 		{
-			unPackedData.push_back(vertexData[faceData[i].vertices[j] - 1].x);
-			unPackedData.push_back(vertexData[faceData[i].vertices[j] - 1].y);
-			unPackedData.push_back(vertexData[faceData[i].vertices[j] - 1].z);
+			data[pen++] = vertexData[faceData[i].vertices[j] - 1].x;
+			data[pen++] = vertexData[faceData[i].vertices[j] - 1].y;
+			data[pen++] = vertexData[faceData[i].vertices[j] - 1].z;
 
 			if (useUvs)
 			{
-				unPackedData.push_back(textureData[faceData[i].textures[j] - 1].x);
-				unPackedData.push_back(textureData[faceData[i].textures[j] - 1].y);
+				data[pen++] = textureData[faceData[i].textures[j] - 1].x;
+				data[pen++] = textureData[faceData[i].textures[j] - 1].y;
 			}
 
 			if (useNormals)
 			{
-				unPackedData.push_back(normalData[faceData[i].normals[j] - 1].x);
-				unPackedData.push_back(normalData[faceData[i].normals[j] - 1].y);
-				unPackedData.push_back(normalData[faceData[i].normals[j] - 1].z);
+				data[pen++] = normalData[faceData[i].normals[j] - 1].x;
+				data[pen++] = normalData[faceData[i].normals[j] - 1].y;
+				data[pen++] = normalData[faceData[i].normals[j] - 1].z;
 			}
 		}
 	}
@@ -225,7 +232,7 @@ bool MeshEncoder::Convert(const std::string& source, const std::string& destinat
 	fwrite(&useNormals, sizeof(bool), 1, modelFile);
 
 	// Write Data.
-	fwrite(unPackedData.data(), sizeof(float), unPackedData.size(), modelFile);
+	fwrite(data, sizeof(float), bufferSize, modelFile);
 	auto result = fclose(modelFile);
 
 	// Report results.
