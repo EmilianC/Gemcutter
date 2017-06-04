@@ -57,6 +57,7 @@ namespace Jwl
 	template <class derived>
 	class Event : public EventBase
 	{
+		friend Listener<derived>;
 	public:
 		virtual ~Event() = default;
 
@@ -90,21 +91,19 @@ namespace Jwl
 			return !listeners.empty();
 		}
 
-		//- For internal use.
+	private:
 		//- Subscribes a listener to receive callbacks from this type of event.
 		static void Subscribe(Listener<derived>& listener)
 		{
 			listeners.push_back(&listener);
 		}
 
-		//- For internal use.
 		//- Stops a listener from receiving callbacks from this type of event.
 		static void Unsubscribe(Listener<derived>& listener)
 		{
 			listeners.erase(std::find(listeners.begin(), listeners.end(), &listener));
 		}
 
-	private:
 		//- All Listeners of the derived class event.
 		static std::vector<Listener<derived>*> listeners;
 	};
