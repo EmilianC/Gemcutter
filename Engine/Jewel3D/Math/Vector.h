@@ -40,8 +40,8 @@ namespace Jwl
 
 		static const vec2 Zero;
 		static const vec2 One;
-		static const vec2 X;
-		static const vec2 Y;
+		static const vec2 Right;
+		static const vec2 Up;
 
 		float x = 0.0f;
 		float y = 0.0f;
@@ -86,9 +86,9 @@ namespace Jwl
 
 		static const vec3 Zero;
 		static const vec3 One;
-		static const vec3 X;
-		static const vec3 Y;
-		static const vec3 Z;
+		static const vec3 Right;
+		static const vec3 Up;
+		static const vec3 Forward;
 
 		float x = 0.0f;
 		float y = 0.0f;
@@ -136,10 +136,9 @@ namespace Jwl
 
 		static const vec4 Zero;
 		static const vec4 One;
-		static const vec4 X;
-		static const vec4 Y;
-		static const vec4 Z;
-		static const vec4 W;
+		static const vec4 Right;
+		static const vec4 Up;
+		static const vec4 Forward;
 
 		float x = 0.0f;
 		float y = 0.0f;

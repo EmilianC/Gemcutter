@@ -14,7 +14,7 @@ namespace Jwl
 		Transform(const vec3& position, const quat& rotation);
 		Transform(const vec3& position, const quat& rotation, const vec3& scale);
 
-		void LookAt(const vec3& pos, const vec3& target, const vec3& up = vec3::Y);
+		void LookAt(const vec3& pos, const vec3& target, const vec3& up = vec3::Up);
 		void Rotate(const vec3& axis, float degrees);
 		void RotateX(float degrees);
 		void RotateY(float degrees);

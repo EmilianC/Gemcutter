@@ -178,10 +178,10 @@ namespace Jwl
 		mat4 GetWorldTransform() const;
 
 		//- Positions the Entity at 'pos' looking towards the 'target' in local space.
-		void LookAt(const vec3& pos, const vec3& target, const vec3& up = vec3::Y);
+		void LookAt(const vec3& pos, const vec3& target, const vec3& up = vec3::Up);
 
 		//- Orients the Entity to face the target, with respect to hierarchy.
-		void LookAt(const Entity& target, const vec3& up = vec3::Y);
+		void LookAt(const Entity& target, const vec3& up = vec3::Up);
 
 	private:
 		void Tag(unsigned tagId);

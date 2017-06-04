@@ -138,17 +138,17 @@ namespace Jwl
 
 	vec3 quat::GetRight() const
 	{
-		return *this * vec3::X;
+		return *this * vec3::Right;
 	}
 
 	vec3 quat::GetUp() const
 	{
-		return *this * vec3::Y;
+		return *this * vec3::Up;
 	}
 
 	vec3 quat::GetForward() const
 	{
-		return *this * vec3::Z;
+		return *this * vec3::Forward;
 	}
 
 	void quat::Rotate(const vec3& axis, float degrees)

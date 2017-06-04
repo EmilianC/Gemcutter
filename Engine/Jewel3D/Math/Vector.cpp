@@ -11,8 +11,8 @@ namespace Jwl
 
 	const vec2 vec2::Zero = vec2(0.0f, 0.0f);
 	const vec2 vec2::One = vec2(1.0f, 1.0f);
-	const vec2 vec2::X = vec2(1.0f, 0.0f);
-	const vec2 vec2::Y = vec2(0.0f, 1.0f);
+	const vec2 vec2::Right = vec2(1.0f, 0.0f);
+	const vec2 vec2::Up = vec2(0.0f, 1.0f);
 
 	vec2::vec2(float x, float y)
 		: x(x), y(y)
@@ -178,9 +178,9 @@ namespace Jwl
 
 	const vec3 vec3::Zero = vec3(0.0f, 0.0f, 0.0f);
 	const vec3 vec3::One = vec3(1.0f, 1.0f, 1.0f);
-	const vec3 vec3::X = vec3(1.0f, 0.0f, 0.0f);
-	const vec3 vec3::Y = vec3(0.0f, 1.0f, 0.0f);
-	const vec3 vec3::Z = vec3(0.0f, 0.0f, 1.0f);
+	const vec3 vec3::Right = vec3(1.0f, 0.0f, 0.0f);
+	const vec3 vec3::Up = vec3(0.0f, 1.0f, 0.0f);
+	const vec3 vec3::Forward = vec3(0.0f, 0.0f, 1.0f);
 
 	vec3::vec3(const vec2 &xy, float z)
 		: x(xy[0]), y(xy[1]), z(z)
@@ -364,10 +364,9 @@ namespace Jwl
 
 	const vec4 vec4::Zero = vec4(0.0f, 0.0f, 0.0f, 0.0f);
 	const vec4 vec4::One = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	const vec4 vec4::X = vec4(1.0f, 0.0f, 0.0f, 0.0f);
-	const vec4 vec4::Y = vec4(0.0f, 1.0f, 0.0f, 0.0f);
-	const vec4 vec4::Z = vec4(0.0f, 0.0f, 1.0f, 0.0f);
-	const vec4 vec4::W = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	const vec4 vec4::Right = vec4(1.0f, 0.0f, 0.0f, 0.0f);
+	const vec4 vec4::Up = vec4(0.0f, 1.0f, 0.0f, 0.0f);
+	const vec4 vec4::Forward = vec4(0.0f, 0.0f, 1.0f, 0.0f);
 
 	vec4::vec4(const vec2 &xy, float z, float w)
 		: x(xy[0]), y(xy[1]), z(z), w(w)
