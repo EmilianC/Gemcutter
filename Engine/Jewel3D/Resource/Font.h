@@ -17,7 +17,7 @@ namespace Jwl
 		~Font();
 
 		//- Loads pre-packed *.font resources.
-		bool Load(const std::string& filePath);
+		bool Load(std::string filePath);
 		void Unload();
 
 		//- Returns the real world unit width of the string.

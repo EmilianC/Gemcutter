@@ -24,7 +24,7 @@ namespace Jwl
 			unsigned numSamples = 1);
 
 		// Loads packed *.texture resources, as well as *.png, *.jpg, *.tga, *.bmp.
-		bool Load(const std::string& filePath);
+		bool Load(std::string filePath);
 		void Unload();
 
 		void Bind(unsigned slot);

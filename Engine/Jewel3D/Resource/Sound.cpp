@@ -5,6 +5,7 @@
 #include "Jewel3D/Math/Vector.h"
 #include "Jewel3D/Sound/SoundSystem.h"
 #include "Jewel3D/Utilities/ScopeGuard.h"
+#include "Jewel3D/Utilities/String.h"
 
 #include <OpenAL_Soft/al.h>
 #include <OpenAL_Soft/alc.h>
@@ -50,18 +51,23 @@ namespace Jwl
 		Unload();
 	}
 
-	bool Sound::Load(const std::string& InputFile)
+	bool Sound::Load(std::string filePath)
 	{
-		if (ExtractFileExtension(InputFile) != ".wav")
+		auto ext = ExtractFileExtension(filePath);
+		if (ext.empty())
 		{
-			Error("Sound: ( %s )\nAttempted to load unknown file type as a sound.", InputFile.c_str());
+			filePath += ".wav";
+		}
+		else if (!CompareLowercase(ext, ".wav"))
+		{
+			Error("Sound: ( %s )\nAttempted to load unknown file type as a sound.", filePath.c_str());
 			return false;
 		}
 
-		FILE* file = fopen(InputFile.c_str(), "rb");
+		FILE* file = fopen(filePath.c_str(), "rb");
 		if (file == nullptr)
 		{
-			Error("Sound: ( %s )\nUnable to open file.", InputFile.c_str());
+			Error("Sound: ( %s )\nUnable to open file.", filePath.c_str());
 			return false;
 		}
 		defer { fclose(file); };
@@ -77,7 +83,7 @@ namespace Jwl
 		fread(chunkID, sizeof(char), 4, file);
 		if (strcmp(chunkID, "RIFF"))
 		{
-			Error("Sound: ( %s )\nIncorrect file type.", InputFile.c_str());
+			Error("Sound: ( %s )\nIncorrect file type.", filePath.c_str());
 			return false;
 		}
 
@@ -85,14 +91,14 @@ namespace Jwl
 		fread(chunkID, sizeof(char), 4, file);
 		if (strcmp(chunkID, "WAVE"))
 		{
-			Error("Sound: ( %s )\nIncorrect file type.", InputFile.c_str());
+			Error("Sound: ( %s )\nIncorrect file type.", filePath.c_str());
 			return false;
 		}
 
 		fread(chunkID, sizeof(char), 4, file);
 		if (strcmp(chunkID, "fmt "))
 		{
-			Error("Sound: ( %s )\nIncorrect file type.", InputFile.c_str());
+			Error("Sound: ( %s )\nIncorrect file type.", filePath.c_str());
 			return false;
 		}
 
@@ -139,7 +145,7 @@ namespace Jwl
 		if (soundData == nullptr)
 		{
 			// We didn't find any data to load.
-			Error("Sound: ( %s )\nNo data found in file.", InputFile.c_str());
+			Error("Sound: ( %s )\nNo data found in file.", filePath.c_str());
 			return false;
 		}
 
@@ -170,7 +176,7 @@ namespace Jwl
 
 		if (format == AL_NONE)
 		{
-			Error("Sound: ( %s )\nUnsupported audio format.", InputFile.c_str());
+			Error("Sound: ( %s )\nUnsupported audio format.", filePath.c_str());
 			return false;
 		}
 
@@ -180,7 +186,7 @@ namespace Jwl
 		if (error != AL_NO_ERROR)
 		{
 			Unload();
-			Error("Sound: ( %s )\n%s", InputFile.c_str(), alGetString(error));
+			Error("Sound: ( %s )\n%s", filePath.c_str(), alGetString(error));
 			return false;
 		}
 
@@ -190,7 +196,7 @@ namespace Jwl
 		if (error != AL_NO_ERROR)
 		{
 			Unload();
-			Error("Sound: ( %s )\n%s", InputFile.c_str(), alGetString(error));
+			Error("Sound: ( %s )\n%s", filePath.c_str(), alGetString(error));
 			return false;
 		}
 

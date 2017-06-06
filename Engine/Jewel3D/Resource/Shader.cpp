@@ -338,27 +338,31 @@ namespace Jwl
 		Unload();
 	}
 
-	bool Shader::Load(const std::string& filePath)
+	bool Shader::Load(std::string filePath)
 	{
 		ASSERT(!IsLoaded(), "ShaderData already has a Shader loaded.");
 
-		if (ExtractFileExtension(filePath) == ".shader")
+		auto ext = ExtractFileExtension(filePath);
+		if (ext.empty())
 		{
-			std::string source = LoadFileAsString(filePath);
-			if (source.empty())
-			{
-				Error("Shader: ( %s )\nUnable to open file.", filePath.c_str());
-				return false;
-			}
-			else if (!LoadInternal(source))
-			{
-				Error("Shader: ( %s )", filePath.c_str());
-				return false;
-			}
+			filePath += ".shader";
 		}
-		else
+		else if (!CompareLowercase(ext, ".shader"))
 		{
 			Error("Shader: ( %s )\nAttempted to load unknown file type as a shader.", filePath.c_str());
+			return false;
+		}
+
+		std::string source = LoadFileAsString(filePath);
+		if (source.empty())
+		{
+			Error("Shader: ( %s )\nUnable to open file.", filePath.c_str());
+			return false;
+		}
+		
+		if (!LoadInternal(source))
+		{
+			Error("Shader: ( %s )", filePath.c_str());
 			return false;
 		}
 

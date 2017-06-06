@@ -10,7 +10,7 @@ namespace Jwl
 		~Model();
 
 		//- Loads pre-packed *.model resources.
-		bool Load(const std::string& filePath);
+		bool Load(std::string filePath);
 		void Unload();
 
 		unsigned GetVAO() const;

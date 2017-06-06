@@ -64,12 +64,18 @@ namespace Jwl
 		glBindTexture(target, GL_NONE);
 	}
 
-	bool Texture::Load(const std::string& filePath)
+	bool Texture::Load(std::string filePath)
 	{
 		ASSERT(hTex == 0, "Texture already has a texture loaded.");
 
-		if (CompareLowercase(ExtractFileExtension(filePath), ".texture"))
+		auto ext = ExtractFileExtension(filePath);
+		if (ext.empty() || CompareLowercase(ext, ".texture"))
 		{
+			if (ext.empty())
+			{
+				filePath += ".texture";
+			}
+
 			FILE* fontFile = fopen(filePath.c_str(), "rb");
 			if (fontFile == nullptr)
 			{
@@ -187,7 +193,7 @@ namespace Jwl
 			auto image = Image::Load(filePath);
 			if (image.data == nullptr)
 				return false;
-			
+
 			width = image.width;
 			height = image.height;
 			format = image.format;

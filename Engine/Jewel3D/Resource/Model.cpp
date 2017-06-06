@@ -14,19 +14,24 @@ namespace Jwl
 		Unload();
 	}
 
-	bool Model::Load(const std::string& InputFile)
+	bool Model::Load(std::string filePath)
 	{
-		if (!CompareLowercase(ExtractFileExtension(InputFile), ".model"))
+		auto ext = ExtractFileExtension(filePath);
+		if (ext.empty())
 		{
-			Error("Model: ( %s )\nAttempted to load unknown file type as a mesh.", InputFile.c_str());
+			filePath += ".model";
+		}
+		else if (!CompareLowercase(ext, ".model"))
+		{
+			Error("Model: ( %s )\nAttempted to load unknown file type as a mesh.", filePath.c_str());
 			return false;
 		}
 
 		// Load binary file.
-		FILE* binaryFile = fopen(InputFile.c_str(), "rb");
+		FILE* binaryFile = fopen(filePath.c_str(), "rb");
 		if (binaryFile == nullptr)
 		{
-			Error("Model: ( %s )\nUnable to open file.", InputFile.c_str());
+			Error("Model: ( %s )\nUnable to open file.", filePath.c_str());
 			return false;
 		}
 		defer { fclose(binaryFile); };

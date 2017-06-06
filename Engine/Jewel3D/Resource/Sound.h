@@ -10,7 +10,7 @@ namespace Jwl
 		~Sound();
 
 		//- Loads .wav (must be 8-bit unsigned PCM).
-		bool Load(const std::string& filePath);
+		bool Load(std::string filePath);
 		void Unload();
 
 		unsigned GetBufferHandle() const;

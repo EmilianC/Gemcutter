@@ -31,7 +31,7 @@ namespace Jwl
 		Unload();
 	}
 
-	bool Font::Load(const std::string& filePath)
+	bool Font::Load(std::string filePath)
 	{
 		if (VAO == GL_NONE)
 		{
@@ -92,7 +92,12 @@ namespace Jwl
 		}
 
 		/* Load Font from file */
-		if (!CompareLowercase(ExtractFileExtension(filePath), ".font"))
+		auto ext = ExtractFileExtension(filePath);
+		if (ext.empty())
+		{
+			filePath += ".font";
+		}
+		else if (!CompareLowercase(ExtractFileExtension(filePath), ".font"))
 		{
 			Error("Font: ( %s )\nAttempted to load unknown file type as a font.", filePath.c_str());
 			return false;

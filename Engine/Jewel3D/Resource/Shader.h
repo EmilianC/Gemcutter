@@ -99,7 +99,7 @@ namespace Jwl
 		Shader(const Shader&) = delete;
 		~Shader();
 
-		bool Load(const std::string& filePath);
+		bool Load(std::string filePath);
 		bool LoadFromSource(const std::string& source);
 		bool LoadPassThrough();
 		static Shader::Ptr MakeNewPassThrough();
