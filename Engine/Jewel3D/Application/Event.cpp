@@ -5,43 +5,42 @@
 
 namespace Jwl
 {
-	void EventQueue::Push(std::unique_ptr<EventBase> theEvent)
+	void EventQueue::Push(std::unique_ptr<EventBase> e)
 	{
-		#ifdef _DEBUG
-			ASSERT(!inDispatch,
-				"It is dangerous to add a new event to the queue while currently inside a global Dispatch().\n"
-				"Consider using Dispatch(const EventBase&) instead.");
-		#endif
+#ifdef _DEBUG
+		ASSERT(!inDispatch,
+			"It is dangerous to add a new event to the queue while currently inside a global Dispatch().\n"
+			"Consider using Dispatch(const EventBase&) instead.");
+#endif
 
-		if (theEvent->HasListeners())
+		if (e->HasListeners())
 		{
-			eventQueue.push_back(std::move(theEvent));
+			eventQueue.push(std::move(e));
 		}
 	}
 
-	void EventQueue::Dispatch(const EventBase& theEvent) const
+	void EventQueue::Dispatch(const EventBase& e) const
 	{
-		theEvent.Raise();
+		e.Raise();
 	}
 
 	void EventQueue::Dispatch()
 	{
 		// Events should not be posted during this call.
-		#ifdef _DEBUG
-			inDispatch = true;
-		#endif
+#ifdef _DEBUG
+		inDispatch = true;
+#endif
 
 		// Sequence through all events.
-		for (unsigned i = 0; i < eventQueue.size(); i++)
+		while (!eventQueue.empty())
 		{
-			eventQueue[i]->Raise();
+			eventQueue.front()->Raise();
+			eventQueue.pop();
 		}
 
 		// Events can be posted again.
-		#ifdef _DEBUG
-			inDispatch = false;
-		#endif
-
-		eventQueue.clear();
+#ifdef _DEBUG
+		inDispatch = false;
+#endif
 	}
 }

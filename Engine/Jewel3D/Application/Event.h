@@ -2,19 +2,23 @@
 #pragma once
 #include "Jewel3D/Utilities/Singleton.h"
 
-#include <vector>
-#include <memory>
 #include <functional>
+#include <memory>
+#include <queue>
+#include <vector>
 
 namespace Jwl
 {
 	//- The base class for event objects.
 	class EventBase
 	{
+		friend class EventQueue;
 	public:
 		virtual ~EventBase() = default;
 		//- Returns true if at least one listener responds to this event.
 		virtual bool HasListeners() const = 0;
+
+	private:
 		//- Notifies all listeners of the derived class event by invoking their callback functions.
 		virtual void Raise() const = 0;
 	};
@@ -67,18 +71,6 @@ namespace Jwl
 			return HasListenersStatic();
 		}
 
-		//- Notifies all listeners of this event by invoking their callback functions.
-		virtual void Raise() const final override
-		{
-			for (unsigned i = 0; i < listeners.size(); i++)
-			{
-				if (listeners[i]->callback)
-				{
-					listeners[i]->callback(*static_cast<const derived*>(this));
-				}
-			}
-		}
-
 		//- Returns a vector of all objects currently listening for this type of event.
 		static const auto& GetListenersStatic()
 		{
@@ -92,6 +84,18 @@ namespace Jwl
 		}
 
 	private:
+		//- Notifies all listeners of this event by invoking their callback functions.
+		virtual void Raise() const final override
+		{
+			for (unsigned i = 0; i < listeners.size(); i++)
+			{
+				if (listeners[i]->callback)
+				{
+					listeners[i]->callback(*static_cast<const derived*>(this));
+				}
+			}
+		}
+
 		//- Subscribes a listener to receive callbacks from this type of event.
 		static void Subscribe(Listener<derived>& listener)
 		{
@@ -113,13 +117,12 @@ namespace Jwl
 	static class EventQueue : public Singleton<class EventQueue>
 	{
 	public:
-		//- Add a new event to the queue. The event will be distributed to all listeners of its type.
-		//-- theEvent: An unique instance of the event data.
-		void Push(std::unique_ptr<EventBase> theEvent);
+		//- Add a new event to the queue.
+		//- The event will be distributed to all listeners of its type when Dispatch() is called.
+		void Push(std::unique_ptr<EventBase> e);
 
 		//- Instantly distributes an event across listeners. It is not added to the queue.
-		//-- theEvent: An instance of the event data.
-		void Dispatch(const EventBase& theEvent) const;
+		void Dispatch(const EventBase& e) const;
 
 		//- Sequences through the queue of events and distributes them to all the listeners.
 		//- There will be no events in the queue when this function returns.
@@ -127,8 +130,7 @@ namespace Jwl
 		void Dispatch();
 
 	private:
-		//- Events waiting to be dispatched.
-		std::vector<std::unique_ptr<EventBase>> eventQueue;
+		std::queue<std::unique_ptr<EventBase>> eventQueue;
 
 #ifdef _DEBUG
 		//- Debug flag to stop events from being queued during a call to Dispatch().
