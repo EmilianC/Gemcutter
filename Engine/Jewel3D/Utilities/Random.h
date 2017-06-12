@@ -4,8 +4,6 @@
 
 namespace Jwl
 {
-	class vec3;
-
 	void SeedRandomNumberGenerator();
 	void SeedRandomNumberGenerator(unsigned seed);
 

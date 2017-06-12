@@ -1,6 +1,7 @@
 ﻿// Copyright (c) 2017 Emilian Cioca
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -100,11 +101,24 @@ namespace AssetManager
 			string commonRoot = inputRoot.Remove(inputRoot.LastIndexOf(Path.DirectorySeparatorChar));
 			string outputRoot = commonRoot + Path.DirectorySeparatorChar + "Assets";
 
-			// Clear and duplicate the directory structure in the output folder.
-			if (Directory.Exists(outputRoot))
-				Directory.Delete(outputRoot, true);
+            // Clear and duplicate the directory structure in the output folder.
+            if (Directory.Exists(outputRoot))
+            {
+                Directory.Delete(outputRoot, true);
 
-			Directory.CreateDirectory(outputRoot);
+                // Wait for deletion.
+                var watch = new Stopwatch();
+                watch.Start();
+                while (Directory.Exists(outputRoot) && watch.Elapsed < TimeSpan.FromSeconds(2));
+
+                if (Directory.Exists(outputRoot))
+                {
+                    Log($"ERROR:   Failed to delete output folder.", ConsoleColor.Red);
+                    return false;
+                }
+            }
+
+            Directory.CreateDirectory(outputRoot);
 
 			foreach (var path in Directory.GetDirectories(inputRoot, "*", SearchOption.AllDirectories))
 				Directory.CreateDirectory(path.Replace(inputRoot, outputRoot));
