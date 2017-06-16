@@ -37,12 +37,9 @@
 			this.buttonAssetOpen = new System.Windows.Forms.Button();
 			this.label1 = new System.Windows.Forms.Label();
 			this.Output = new System.Windows.Forms.RichTextBox();
-			this.ButtonUpdate = new System.Windows.Forms.Button();
 			this.panel1 = new System.Windows.Forms.Panel();
-			this.label2 = new System.Windows.Forms.Label();
 			this.textBox1 = new System.Windows.Forms.TextBox();
-			this.textBox2 = new System.Windows.Forms.TextBox();
-			this.label3 = new System.Windows.Forms.Label();
+			this.label2 = new System.Windows.Forms.Label();
 			this.buttonCollapse = new System.Windows.Forms.Button();
 			this.buttonExpand = new System.Windows.Forms.Button();
 			this.ButtonSettings = new System.Windows.Forms.Button();
@@ -132,25 +129,21 @@
 			this.Output.TabIndex = 19;
 			this.Output.Text = "";
 			// 
-			// ButtonUpdate
-			// 
-			this.ButtonUpdate.Location = new System.Drawing.Point(754, 12);
-			this.ButtonUpdate.Name = "ButtonUpdate";
-			this.ButtonUpdate.Size = new System.Drawing.Size(105, 24);
-			this.ButtonUpdate.TabIndex = 24;
-			this.ButtonUpdate.Text = "Update";
-			this.ButtonUpdate.UseVisualStyleBackColor = true;
-			// 
 			// panel1
 			// 
-			this.panel1.Controls.Add(this.textBox2);
-			this.panel1.Controls.Add(this.label3);
 			this.panel1.Controls.Add(this.textBox1);
 			this.panel1.Controls.Add(this.label2);
 			this.panel1.Location = new System.Drawing.Point(282, 38);
 			this.panel1.Name = "panel1";
 			this.panel1.Size = new System.Drawing.Size(245, 588);
 			this.panel1.TabIndex = 25;
+			// 
+			// textBox1
+			// 
+			this.textBox1.Location = new System.Drawing.Point(90, 4);
+			this.textBox1.Name = "textBox1";
+			this.textBox1.Size = new System.Drawing.Size(152, 23);
+			this.textBox1.TabIndex = 1;
 			// 
 			// label2
 			// 
@@ -160,29 +153,6 @@
 			this.label2.Size = new System.Drawing.Size(38, 15);
 			this.label2.TabIndex = 0;
 			this.label2.Text = "label2";
-			// 
-			// textBox1
-			// 
-			this.textBox1.Location = new System.Drawing.Point(90, 4);
-			this.textBox1.Name = "textBox1";
-			this.textBox1.Size = new System.Drawing.Size(152, 23);
-			this.textBox1.TabIndex = 1;
-			// 
-			// textBox2
-			// 
-			this.textBox2.Location = new System.Drawing.Point(90, 33);
-			this.textBox2.Name = "textBox2";
-			this.textBox2.Size = new System.Drawing.Size(152, 23);
-			this.textBox2.TabIndex = 3;
-			// 
-			// label3
-			// 
-			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(3, 36);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(38, 15);
-			this.label3.TabIndex = 2;
-			this.label3.Text = "label3";
 			// 
 			// buttonCollapse
 			// 
@@ -210,7 +180,7 @@
 			// 
 			this.ButtonSettings.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("ButtonSettings.BackgroundImage")));
 			this.ButtonSettings.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-			this.ButtonSettings.Location = new System.Drawing.Point(79, 12);
+			this.ButtonSettings.Location = new System.Drawing.Point(835, 12);
 			this.ButtonSettings.Name = "ButtonSettings";
 			this.ButtonSettings.Size = new System.Drawing.Size(24, 24);
 			this.ButtonSettings.TabIndex = 23;
@@ -226,7 +196,6 @@
 			this.Controls.Add(this.buttonExpand);
 			this.Controls.Add(this.treeViewAssets);
 			this.Controls.Add(this.panel1);
-			this.Controls.Add(this.ButtonUpdate);
 			this.Controls.Add(this.ButtonSettings);
 			this.Controls.Add(this.Output);
 			this.Controls.Add(this.label1);
@@ -258,10 +227,7 @@
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.RichTextBox Output;
 		private System.Windows.Forms.Button ButtonSettings;
-		private System.Windows.Forms.Button ButtonUpdate;
         private System.Windows.Forms.Panel panel1;
-		private System.Windows.Forms.TextBox textBox2;
-		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.TextBox textBox1;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Button buttonExpand;

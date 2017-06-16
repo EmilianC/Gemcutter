@@ -79,12 +79,10 @@ namespace AssetManager
 
 		//- Starts the updating process.
 		//- Any assets without a .meta file will have one added.
+		//- Any existing .meta files will be updated to the newest versions.
 		public bool UpdateWorkspace()
 		{
 			Log(">>>>>> Started Updating <<<<<<");
-
-			ButtonPack.Enabled = false;
-			ButtonUpdate.Enabled = false;
 
 			LoadEncoders();
 
@@ -111,15 +109,9 @@ namespace AssetManager
 				Log($"ERROR:   {e.Message}", ConsoleColor.Red);
 				result = false;
 			}
-			finally
-			{
-				ButtonPack.Enabled = true;
-				ButtonUpdate.Enabled = true;
-			}
 
 			return result;
 		}
-
 		//- Starts the packing process. Rebuilds the target Asset directory from scratch.
 		//- Convertible files are put through the appropriate binary converter. Other files are copied as-is.
 		public bool PackWorkspace()
@@ -127,7 +119,6 @@ namespace AssetManager
 			Log(">>>>>> Started Packing <<<<<<");
 
 			ButtonPack.Enabled = false;
-			ButtonUpdate.Enabled = false;
 
 			LoadEncoders();
 
@@ -195,7 +186,6 @@ namespace AssetManager
 			finally
 			{
 				ButtonPack.Enabled = true;
-				ButtonUpdate.Enabled = true;
 			}
 
 			return result;
@@ -353,7 +343,6 @@ namespace AssetManager
 		private void buttonSettings_Click(object sender, EventArgs e)
 		{
 			ButtonPack.Enabled = false;
-			ButtonUpdate.Enabled = false;
 			ButtonSettings.Enabled = false;
 
 			var settingsForm = new Settings();
@@ -362,7 +351,6 @@ namespace AssetManager
 			settingsForm.FormClosed += delegate 
 			{
 				ButtonPack.Enabled = true;
-				ButtonUpdate.Enabled = true;
 				ButtonSettings.Enabled = true;
 
 				// Refresh settings.
