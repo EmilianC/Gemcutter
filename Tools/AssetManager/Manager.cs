@@ -249,14 +249,15 @@ namespace AssetManager
 				string name = Path.GetFileName(folder);
 
 				// Append the new node.
-				var folderNode = nodes.Add(name);
+				var folderNode = nodes.Add(name, name);
 
 				var fileCount = 0;
 				foreach (var file in Directory.GetFiles(folder).Where(x =>
 					Path.GetExtension(x) != ".meta" && 
 					!config.ExcludedExtensions.Split(';').Contains(Path.GetExtension(x).Substring(1))))
 				{
-					folderNode.Nodes.Add(Path.GetFileName(file));
+					string fileName = Path.GetFileName(file);
+					folderNode.Nodes.Add(fileName, fileName);
 					fileCount++;
 				}
 
@@ -335,7 +336,7 @@ namespace AssetManager
 			if (node == null)
 				return;
 
-			var file = string.Join("\\", GetNodePath(node));
+			var file = string.Join(Path.DirectorySeparatorChar.ToString(), GetNodePath(node));
 			if (!File.Exists(file))
 				return;
 
@@ -384,11 +385,6 @@ namespace AssetManager
 
 			if (path.Length != 0)
 				Process.Start("explorer.exe", string.Join("\\", path));
-		}
-
-		private void ButtonUpdate_Click(object sender, EventArgs e)
-		{
-			UpdateWorkspace();
 		}
 
 		private void ButtonPack_Click(object sender, EventArgs e)
