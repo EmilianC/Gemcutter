@@ -12,6 +12,7 @@ namespace AssetManager
 	{
 		// Automatically refresh the asset directory if there are any changes.
 		FileSystemWatcher watcher;
+		WorkspaceConfig config = WorkspaceConfig.Load();
 		// The actual native-code encoders.
 		Dictionary<string, Encoder> encoders = new Dictionary<string, Encoder>();
 
@@ -131,8 +132,7 @@ namespace AssetManager
 			LoadEncoders();
 
 			string inputRoot = Directory.GetCurrentDirectory();
-			string commonRoot = inputRoot.Remove(inputRoot.LastIndexOf(Path.DirectorySeparatorChar));
-			string outputRoot = commonRoot + Path.DirectorySeparatorChar + "Assets";
+			string outputRoot = Path.GetFullPath(inputRoot + Path.DirectorySeparatorChar + config.OutputDirectory);
 
 			// Clear and duplicate the directory structure in the output folder.
 			if (Directory.Exists(outputRoot))
@@ -246,23 +246,25 @@ namespace AssetManager
 
 			foreach (string folder in directories)
 			{
-				string name = folder.Split('\\').Last();
+				string name = Path.GetFileName(folder);
 
 				// Append the new node.
-				var node = nodes.Add(name, name);
+				var folderNode = nodes.Add(name);
 
 				var fileCount = 0;
-				foreach (var file in Directory.GetFiles(folder).Where(x => Path.GetExtension(x) != ".meta"))
+				foreach (var file in Directory.GetFiles(folder).Where(x =>
+					Path.GetExtension(x) != ".meta" && 
+					!config.ExcludedExtensions.Split(';').Contains(Path.GetExtension(x).Substring(1))))
 				{
-					node.Nodes.Add(Path.GetFileName(file), Path.GetFileName(file));
+					folderNode.Nodes.Add(Path.GetFileName(file));
 					fileCount++;
 				}
 
 				// Build the name of the node including the file count.
-				node.Text = $"{name} [{fileCount}]";
+				folderNode.Text = $"{name} [{fileCount}]";
 
 				// Recurse.
-				ParseDirectory(folder, node);
+				ParseDirectory(folder, folderNode);
 			}
 		}
 
@@ -351,6 +353,7 @@ namespace AssetManager
 		{
 			ButtonPack.Enabled = false;
 			ButtonUpdate.Enabled = false;
+			ButtonSettings.Enabled = false;
 
 			var settingsForm = new Settings();
 			settingsForm.Show();
@@ -359,6 +362,12 @@ namespace AssetManager
 			{
 				ButtonPack.Enabled = true;
 				ButtonUpdate.Enabled = true;
+				ButtonSettings.Enabled = true;
+
+				// Refresh settings.
+				config = WorkspaceConfig.Load();
+
+				RefreshWorkspace();
 			};
 		}
 
