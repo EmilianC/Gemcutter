@@ -246,7 +246,7 @@ namespace AssetManager
 
 			foreach (string folder in directories)
 			{
-				string name = Path.GetFileName(folder);
+				var name = Path.GetFileName(folder);
 
 				// Append the new node.
 				var folderNode = nodes.Add(name, name);
@@ -256,7 +256,7 @@ namespace AssetManager
 					Path.GetExtension(x) != ".meta" && 
 					!config.ExcludedExtensions.Split(';').Contains(Path.GetExtension(x).Substring(1))))
 				{
-					string fileName = Path.GetFileName(file);
+					var fileName = Path.GetFileName(file);
 					folderNode.Nodes.Add(fileName, fileName);
 					fileCount++;
 				}
@@ -330,7 +330,7 @@ namespace AssetManager
 		}
 
 		// Opens the selected asset with the default associated program.
-		void OpenAsset()
+		private void OpenAsset()
 		{
 			var node = treeViewAssets.SelectedNode;
 			if (node == null)
@@ -390,6 +390,16 @@ namespace AssetManager
 		private void ButtonPack_Click(object sender, EventArgs e)
 		{
 			PackWorkspace();
+		}
+
+		private void buttonExpand_Click(object sender, EventArgs e)
+		{
+			treeViewAssets.ExpandAll();
+		}
+
+		private void buttonCollapse_Click(object sender, EventArgs e)
+		{
+			treeViewAssets.CollapseAll();
 		}
 	}
 }

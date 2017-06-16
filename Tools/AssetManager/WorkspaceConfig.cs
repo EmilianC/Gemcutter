@@ -11,6 +11,7 @@ namespace AssetManager
 		public string encoder;
 	}
 
+	// Manages the input and output of the workspace settings.
 	public class WorkspaceConfig
 	{
 		public string OutputDirectory;
