@@ -12,8 +12,6 @@ namespace AssetManager
 	{
 		// Automatically refresh the asset directory if there are any changes.
 		FileSystemWatcher watcher;
-		// The form responsible for editing the list of encoders.
-		EncoderList encoderForm = new EncoderList();
 		// The actual native-code encoders.
 		Dictionary<string, Encoder> encoders = new Dictionary<string, Encoder>();
 
@@ -21,32 +19,69 @@ namespace AssetManager
 		{
 			InitializeComponent();
 
-			treeViewAssets.AfterSelect += delegate { RefreshItemView(); };
-			listBoxAssets.MouseDoubleClick += delegate { OpenAsset(); };
 			treeViewAssets.AfterSelect += delegate { buttonAssetOpen.Enabled = true; };
-			encoderForm.FormClosing += delegate { LoadEncoders(); };
 
 			// Populate the workspace for the first time.
 			RefreshWorkspace();
+
+			treeViewAssets.DoubleClick += delegate { OpenAsset(); };
 
 			// Watch the directory for changes and auto-refresh when needed.
 			watcher = new FileSystemWatcher(Directory.GetCurrentDirectory());
 			watcher.IncludeSubdirectories = true;
 			watcher.EnableRaisingEvents = true;
 			watcher.NotifyFilter = NotifyFilters.FileName | NotifyFilters.DirectoryName;
-			watcher.Changed += delegate { RefreshWorkspaceDispatch(); };
-			watcher.Created += delegate { RefreshWorkspaceDispatch(); };
-			watcher.Deleted += delegate { RefreshWorkspaceDispatch(); };
+
+			watcher.Changed += (s, e) =>
+			{
+				RefreshWorkspaceDispatch();
+				LoadEncoders();
+
+				if (encoders.Any(x => e.FullPath.EndsWith(x.Key)))
+				{
+					//pack
+				}
+				else
+				{
+					// copy
+				}
+			};
+
+			watcher.Created += (s, e) =>
+			{
+				RefreshWorkspaceDispatch();
+				LoadEncoders();
+
+				if (encoders.Any(x => e.FullPath.EndsWith(x.Key)))
+				{
+					encoders[Path.GetExtension(e.FullPath).Substring(1)].Update(e.FullPath);
+
+					// Pack the file as well
+				}
+			};
+
+			watcher.Deleted += (s, e) =>
+			{
+				RefreshWorkspaceDispatch();
+				LoadEncoders();
+
+				if (encoders.Any(x => e.FullPath.EndsWith(x.Key)) && File.Exists(e.FullPath + ".meta"))
+				{
+					File.Delete(e.FullPath + ".meta");
+				}
+			};
+
+			//var cm = new ContextMenu();
+			//cm.MenuItems.Add("Clear Console", new EventHandler(buttonClear_Click));
+			//Output.ContextMenu = cm;
 		}
 
 		//- Starts the updating process.
 		//- Any assets without a .meta file will have one added.
-		//- Assets with an existing .meta file will 
 		public bool UpdateWorkspace()
 		{
 			Log(">>>>>> Started Updating <<<<<<");
 
-			buttonClear.Enabled = false;
 			ButtonPack.Enabled = false;
 			ButtonUpdate.Enabled = false;
 
@@ -77,7 +112,6 @@ namespace AssetManager
 			}
 			finally
 			{
-				buttonClear.Enabled = true;
 				ButtonPack.Enabled = true;
 				ButtonUpdate.Enabled = true;
 			}
@@ -91,7 +125,6 @@ namespace AssetManager
 		{
 			Log(">>>>>> Started Packing <<<<<<");
 
-			buttonClear.Enabled = false;
 			ButtonPack.Enabled = false;
 			ButtonUpdate.Enabled = false;
 
@@ -101,24 +134,24 @@ namespace AssetManager
 			string commonRoot = inputRoot.Remove(inputRoot.LastIndexOf(Path.DirectorySeparatorChar));
 			string outputRoot = commonRoot + Path.DirectorySeparatorChar + "Assets";
 
-            // Clear and duplicate the directory structure in the output folder.
-            if (Directory.Exists(outputRoot))
-            {
-                Directory.Delete(outputRoot, true);
+			// Clear and duplicate the directory structure in the output folder.
+			if (Directory.Exists(outputRoot))
+			{
+				Directory.Delete(outputRoot, true);
 
-                // Wait for deletion.
-                var watch = new Stopwatch();
-                watch.Start();
-                while (Directory.Exists(outputRoot) && watch.Elapsed < TimeSpan.FromSeconds(2));
+				// Wait for deletion.
+				var watch = new Stopwatch();
+				watch.Start();
+				while (Directory.Exists(outputRoot) && watch.Elapsed < TimeSpan.FromSeconds(2)) ;
 
-                if (Directory.Exists(outputRoot))
-                {
-                    Log($"ERROR:   Failed to delete output folder.", ConsoleColor.Red);
-                    return false;
-                }
-            }
+				if (Directory.Exists(outputRoot))
+				{
+					Log($"ERROR:   Failed to delete output folder.", ConsoleColor.Red);
+					return false;
+				}
+			}
 
-            Directory.CreateDirectory(outputRoot);
+			Directory.CreateDirectory(outputRoot);
 
 			foreach (var path in Directory.GetDirectories(inputRoot, "*", SearchOption.AllDirectories))
 				Directory.CreateDirectory(path.Replace(inputRoot, outputRoot));
@@ -161,24 +194,11 @@ namespace AssetManager
 			}
 			finally
 			{
-				buttonClear.Enabled = true;
 				ButtonPack.Enabled = true;
 				ButtonUpdate.Enabled = true;
 			}
 
 			return result;
-		}
-
-		void RefreshItemView()
-		{
-			listBoxAssets.Items.Clear();
-
-			var node = treeViewAssets.SelectedNode;
-			if (node == null)
-				return;
-
-			foreach (string file in Directory.GetFiles(string.Join("\\", GetNodePath(node))))
-				listBoxAssets.Items.Add(Path.GetFileName(file));
 		}
 
 		void RefreshWorkspace()
@@ -189,11 +209,11 @@ namespace AssetManager
 			ParseDirectory(Directory.GetCurrentDirectory());
 
 			// Reselect the old folder, if it still exists.
-			if (previousSelection.Count != 0)
+			if (previousSelection.Length != 0)
 			{
 				var node = treeViewAssets.Nodes.Find(previousSelection[0], false).FirstOrDefault();
 
-				for (int i = 1; i < previousSelection.Count; ++i)
+				for (int i = 1; i < previousSelection.Length; ++i)
 				{
 					if (node == null)
 						break;
@@ -205,7 +225,6 @@ namespace AssetManager
 			}
 
 			treeViewAssets.ExpandAll();
-			RefreshItemView();
 		}
 
 		delegate void RefreshWorkspaceDelegate();
@@ -223,16 +242,24 @@ namespace AssetManager
 			var directories = Directory.GetDirectories(rootFolder);
 			Array.Sort(directories);
 
+			var nodes = root?.Nodes ?? treeViewAssets.Nodes;
+
 			foreach (string folder in directories)
 			{
-				// Add the file count to the name.
-				var fileCount = Directory.GetFiles(folder).Where(x => Path.GetExtension(x) != ".meta").Count();
 				string name = folder.Split('\\').Last();
-				string text = fileCount == 0 ? name : name + " [" + fileCount.ToString() + "]";
 
 				// Append the new node.
-				var nodes = root?.Nodes ?? treeViewAssets.Nodes;
-				var node = nodes.Add(name, text);
+				var node = nodes.Add(name, name);
+
+				var fileCount = 0;
+				foreach (var file in Directory.GetFiles(folder).Where(x => Path.GetExtension(x) != ".meta"))
+				{
+					node.Nodes.Add(Path.GetFileName(file), Path.GetFileName(file));
+					fileCount++;
+				}
+
+				// Build the name of the node including the file count.
+				node.Text = $"{name} [{fileCount}]";
 
 				// Recurse.
 				ParseDirectory(folder, node);
@@ -254,7 +281,7 @@ namespace AssetManager
 		}
 
 		// Build the full folder path from the folder tree.
-		List<string> GetNodePath(TreeNode node)
+		string[] GetNodePath(TreeNode node)
 		{
 			var path = new List<string>();
 			while (node != null)
@@ -264,7 +291,7 @@ namespace AssetManager
 			}
 			path.Reverse();
 
-			return path;
+			return path.ToArray();
 		}
 
 		public RichTextBox GetOutput()
@@ -274,18 +301,18 @@ namespace AssetManager
 
 		private void LoadEncoders()
 		{
-			encoders.Clear();
-
-			try
-			{
-				foreach (var dll in encoderForm.GetEncoders())
-					encoders.Add(dll.Key, new Encoder(dll.Value));
-			}
-			catch (ArgumentException e)
-			{
-				Log(e.Message, ConsoleColor.Red);
-				encoders.Clear();
-			}
+			//encoders.Clear();
+			//
+			//try
+			//{
+			//	foreach (var dll in encoderForm.GetEncoders())
+			//		encoders.Add(dll.Key, new Encoder(dll.Value));
+			//}
+			//catch (ArgumentException e)
+			//{
+			//	Log(e.Message, ConsoleColor.Red);
+			//	encoders.Clear();
+			//}
 		}
 
 		private void Log(string text, ConsoleColor color = ConsoleColor.Gray)
@@ -302,19 +329,17 @@ namespace AssetManager
 		// Opens the selected asset with the default associated program.
 		void OpenAsset()
 		{
-			var selection = listBoxAssets.SelectedItem;
-			if (selection == null)
-				return;
-
 			var node = treeViewAssets.SelectedNode;
 			if (node == null)
 				return;
 
-			var file = string.Join("\\", GetNodePath(node)) + "\\" + listBoxAssets.GetItemText(selection);
+			var file = string.Join("\\", GetNodePath(node));
+			if (!File.Exists(file))
+				return;
 
 			try
 			{
-				System.Diagnostics.Process.Start(file);
+				Process.Start(file);
 			}
 			catch (System.ComponentModel.Win32Exception)
 			{
@@ -324,14 +349,23 @@ namespace AssetManager
 
 		private void buttonSettings_Click(object sender, EventArgs e)
 		{
-			encoderForm.Show();
-			encoderForm.BringToFront();
+			ButtonPack.Enabled = false;
+			ButtonUpdate.Enabled = false;
+
+			var settingsForm = new Settings();
+			settingsForm.Show();
+			settingsForm.BringToFront();
+			settingsForm.FormClosed += delegate 
+			{
+				ButtonPack.Enabled = true;
+				ButtonUpdate.Enabled = true;
+			};
 		}
 
 		// Browses to the root workspace directory.
 		private void buttonWorkspaceOpen_Click(object sender, EventArgs e)
 		{
-			System.Diagnostics.Process.Start("explorer.exe", Directory.GetCurrentDirectory());
+			Process.Start("explorer.exe", Directory.GetCurrentDirectory());
 		}
 
 		// Browses to the selected folder directory.
@@ -339,13 +373,8 @@ namespace AssetManager
 		{
 			var path = GetNodePath(treeViewAssets.SelectedNode);
 
-			if (path.Count != 0)
-				System.Diagnostics.Process.Start("explorer.exe", string.Join("\\", path));
-		}
-
-		private void buttonClear_Click(object sender, EventArgs e)
-		{
-			Output.Clear();
+			if (path.Length != 0)
+				Process.Start("explorer.exe", string.Join("\\", path));
 		}
 
 		private void ButtonUpdate_Click(object sender, EventArgs e)
