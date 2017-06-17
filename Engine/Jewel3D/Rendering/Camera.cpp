@@ -181,7 +181,8 @@ namespace Jwl
 	{
 		isPerspective = true;
 
-		projection = mat4::PerspectiveProjection(fovyDegrees, aspectRatio, zNear, zFar, invProjection);
+		projection = mat4::PerspectiveProjection(fovyDegrees, aspectRatio, zNear, zFar);
+		invProjection = mat4::InversePerspectiveProjection(fovyDegrees, aspectRatio, zNear, zFar);
 
 		uniformProj.Set(projection);
 		uniformInvProj.Set(invProjection);
@@ -195,7 +196,8 @@ namespace Jwl
 		zNear = _zNear;
 		zFar = _zFar;
 
-		projection = mat4::PerspectiveProjection(fovyDegrees, aspectRatio, zNear, zFar, invProjection);
+		projection = mat4::PerspectiveProjection(fovyDegrees, aspectRatio, zNear, zFar);
+		invProjection = mat4::InversePerspectiveProjection(fovyDegrees, aspectRatio, zNear, zFar);
 
 		uniformProj.Set(projection);
 		uniformInvProj.Set(invProjection);
@@ -205,7 +207,8 @@ namespace Jwl
 	{
 		isPerspective = false;
 
-		projection = mat4::OrthographicProjection(left, right, top, bottom, zNear, zFar, invProjection);
+		projection = mat4::OrthographicProjection(left, right, top, bottom, zNear, zFar);
+		invProjection = mat4::InverseOrthographicProjection(left, right, top, bottom, zNear, zFar);
 
 		uniformProj.Set(projection);
 		uniformInvProj.Set(invProjection);
@@ -221,7 +224,8 @@ namespace Jwl
 		zNear = _zNear;
 		zFar = _zFar;
 
-		projection = mat4::OrthographicProjection(left, right, top, bottom, zNear, zFar, invProjection);
+		projection = mat4::OrthographicProjection(left, right, top, bottom, zNear, zFar);
+		invProjection = mat4::InverseOrthographicProjection(left, right, top, bottom, zNear, zFar);
 
 		uniformProj.Set(projection);
 		uniformInvProj.Set(invProjection);
@@ -237,7 +241,8 @@ namespace Jwl
 		zNear = _zNear;
 		zFar = _zFar;
 
-		projection = mat4::OrthographicProjection(left, right, top, bottom, zNear, zFar, invProjection);
+		projection = mat4::OrthographicProjection(left, right, top, bottom, zNear, zFar);
+		invProjection = mat4::InverseOrthographicProjection(left, right, top, bottom, zNear, zFar);
 
 		uniformProj.Set(projection);
 		uniformInvProj.Set(invProjection);
@@ -258,7 +263,8 @@ namespace Jwl
 		ASSERT(isPerspective, "Camera must be perspective to call this function.");
 
 		fovyDegrees = _fovyDegrees;
-		projection = mat4::PerspectiveProjection(fovyDegrees, aspectRatio, zNear, zFar, invProjection);
+		projection = mat4::PerspectiveProjection(fovyDegrees, aspectRatio, zNear, zFar);
+		invProjection = mat4::InversePerspectiveProjection(fovyDegrees, aspectRatio, zNear, zFar);
 
 		uniformProj.Set(projection);
 		uniformInvProj.Set(invProjection);
@@ -269,7 +275,8 @@ namespace Jwl
 		ASSERT(isPerspective, "Camera must be perspective to call this function.");
 
 		aspectRatio = _aspectRatio;
-		projection = mat4::PerspectiveProjection(fovyDegrees, aspectRatio, zNear, zFar, invProjection);
+		projection = mat4::PerspectiveProjection(fovyDegrees, aspectRatio, zNear, zFar);
+		invProjection = mat4::InversePerspectiveProjection(fovyDegrees, aspectRatio, zNear, zFar);
 
 		uniformProj.Set(projection);
 		uniformInvProj.Set(invProjection);
@@ -281,11 +288,13 @@ namespace Jwl
 
 		if (isPerspective)
 		{
-			projection = mat4::PerspectiveProjection(fovyDegrees, aspectRatio, zNear, zFar, invProjection);
+			projection = mat4::PerspectiveProjection(fovyDegrees, aspectRatio, zNear, zFar);
+			invProjection = mat4::InversePerspectiveProjection(fovyDegrees, aspectRatio, zNear, zFar);
 		}
 		else
 		{
-			projection = mat4::OrthographicProjection(left, right, top, bottom, zNear, zFar, invProjection);
+			projection = mat4::OrthographicProjection(left, right, top, bottom, zNear, zFar);
+			invProjection = mat4::InverseOrthographicProjection(left, right, top, bottom, zNear, zFar);
 		}
 
 		uniformProj.Set(projection);
@@ -298,11 +307,13 @@ namespace Jwl
 
 		if (isPerspective)
 		{
-			projection = mat4::PerspectiveProjection(fovyDegrees, aspectRatio, zNear, zFar, invProjection);
+			projection = mat4::PerspectiveProjection(fovyDegrees, aspectRatio, zNear, zFar);
+			invProjection = mat4::InversePerspectiveProjection(fovyDegrees, aspectRatio, zNear, zFar);
 		}
 		else
 		{
-			projection = mat4::OrthographicProjection(left, right, top, bottom, zNear, zFar, invProjection);
+			projection = mat4::OrthographicProjection(left, right, top, bottom, zNear, zFar);
+			invProjection = mat4::InverseOrthographicProjection(left, right, top, bottom, zNear, zFar);
 		}
 
 		uniformProj.Set(projection);
@@ -316,11 +327,13 @@ namespace Jwl
 
 		if (isPerspective)
 		{
-			projection = mat4::PerspectiveProjection(fovyDegrees, aspectRatio, zNear, zFar, invProjection);
+			projection = mat4::PerspectiveProjection(fovyDegrees, aspectRatio, zNear, zFar);
+			invProjection = mat4::InversePerspectiveProjection(fovyDegrees, aspectRatio, zNear, zFar);
 		}
 		else
 		{
-			projection = mat4::OrthographicProjection(left, right, top, bottom, zNear, zFar, invProjection);
+			projection = mat4::OrthographicProjection(left, right, top, bottom, zNear, zFar);
+			invProjection = mat4::InverseOrthographicProjection(left, right, top, bottom, zNear, zFar);
 		}
 
 		uniformProj.Set(projection);
@@ -332,7 +345,8 @@ namespace Jwl
 		ASSERT(!isPerspective, "Camera must be orthographic to call this function.");
 
 		left = leftBound;
-		projection = mat4::OrthographicProjection(left, right, top, bottom, zNear, zFar, invProjection);
+		projection = mat4::OrthographicProjection(left, right, top, bottom, zNear, zFar);
+		invProjection = mat4::InverseOrthographicProjection(left, right, top, bottom, zNear, zFar);
 
 		uniformProj.Set(projection);
 		uniformInvProj.Set(invProjection);
@@ -343,7 +357,8 @@ namespace Jwl
 		ASSERT(!isPerspective, "Camera must be orthographic to call this function.");
 
 		right = rightBound;
-		projection = mat4::OrthographicProjection(left, right, top, bottom, zNear, zFar, invProjection);
+		projection = mat4::OrthographicProjection(left, right, top, bottom, zNear, zFar);
+		invProjection = mat4::InverseOrthographicProjection(left, right, top, bottom, zNear, zFar);
 
 		uniformProj.Set(projection);
 		uniformInvProj.Set(invProjection);
@@ -354,7 +369,8 @@ namespace Jwl
 		ASSERT(!isPerspective, "Camera must be orthographic to call this function.");
 
 		top = topBound;
-		projection = mat4::OrthographicProjection(left, right, top, bottom, zNear, zFar, invProjection);
+		projection = mat4::OrthographicProjection(left, right, top, bottom, zNear, zFar);
+		invProjection = mat4::InverseOrthographicProjection(left, right, top, bottom, zNear, zFar);
 
 		uniformProj.Set(projection);
 		uniformInvProj.Set(invProjection);
@@ -365,7 +381,8 @@ namespace Jwl
 		ASSERT(!isPerspective, "Camera must be orthographic to call this function.");
 
 		bottom = bottomBound;
-		projection = mat4::OrthographicProjection(left, right, top, bottom, zNear, zFar, invProjection);
+		projection = mat4::OrthographicProjection(left, right, top, bottom, zNear, zFar);
+		invProjection = mat4::InverseOrthographicProjection(left, right, top, bottom, zNear, zFar);
 
 		uniformProj.Set(projection);
 		uniformInvProj.Set(invProjection);

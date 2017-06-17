@@ -525,9 +525,10 @@ namespace Jwl
 
 	float mat3::GetDeterminant() const
 	{
-		return	data[0] * (data[4] * data[8] - data[7] * data[5]) -
-				data[3] * (data[1] * data[8] - data[7] * data[2]) +
-				data[6] * (data[1] * data[5] - data[4] * data[2]);
+		return
+			data[0] * (data[4] * data[8] - data[7] * data[5]) -
+			data[3] * (data[1] * data[8] - data[7] * data[2]) +
+			data[6] * (data[1] * data[5] - data[4] * data[2]);
 	}
 
 	void mat3::Scale(const vec3& V)
@@ -1007,7 +1008,6 @@ namespace Jwl
 	void mat4::Inverse()
 	{
 		float inv[16];
-		float det = 0.0f;
 
 		inv[0] = data[5] * data[10] * data[15] -
 			data[5]  * data[11] * data[14] -
@@ -1037,13 +1037,11 @@ namespace Jwl
 			data[12] * data[5] * data[10] +
 			data[12] * data[6] * data[9];
 
-		det = data[0] * inv[0] + data[1] * inv[4] + data[2] * inv[8] + data[3] * inv[12];
-
+		float det = data[0] * inv[0] + data[1] * inv[4] + data[2] * inv[8] + data[3] * inv[12];
+		
+		// Avoid divide by zero error.
 		if (det == 0.0f)
-		{
-			// Avoid divide by zero error.
 			return;
-		}
 
 		inv[1] = -data[1] * data[10] * data[15] + 
 			data[1]  * data[11] * data[14] +
@@ -1130,7 +1128,6 @@ namespace Jwl
 			data[8] * data[2] * data[5];
 
 		det = 1.0f / det;
-
 		for (unsigned i = 0; i < 16u; i++)
 		{
 			data[i] = inv[i] * det;
@@ -1300,8 +1297,7 @@ namespace Jwl
 	mat4 mat4::PerspectiveProjection(float fovyDegrees, float aspect, float zNear, float zFar)
 	{
 		mat4 result;
-
-		float temp = 1.0f / tan(ToRadian(fovyDegrees) / 2.0f);
+		float temp = 1.0f / tan(ToRadian(fovyDegrees) * 0.5f);
 
 		result.data[0] = temp / aspect;
 		result.data[1] = 0.0f;
@@ -1326,51 +1322,30 @@ namespace Jwl
 		return result;
 	}
 
-	mat4 mat4::PerspectiveProjection(float fovyDegrees, float aspect, float zNear, float zFar, mat4& outInverse)
+	mat4 mat4::InversePerspectiveProjection(float fovyDegrees, float aspect, float zNear, float zFar)
 	{
 		mat4 result;
+		float temp = 1.0f / tan(ToRadian(fovyDegrees) * 0.5f);
 
-		float temp = 1.0f / tan(ToRadian(fovyDegrees) / 2.0f);
-
-		result.data[0] = temp / aspect;
+		result.data[0] = aspect / temp;
 		result.data[1] = 0.0f;
 		result.data[2] = 0.0f;
 		result.data[3] = 0.0f;
 
 		result.data[4] = 0.0f;
-		result.data[5] = temp;
+		result.data[5] = 1.0f / temp;
 		result.data[6] = 0.0f;
 		result.data[7] = 0.0f;
 
 		result.data[8] = 0.0f;
 		result.data[9] = 0.0f;
-		result.data[10] = (zFar + zNear) / (zNear - zFar);
-		result.data[11] = -1.0f;
+		result.data[10] = 0.0f;
+		result.data[11] = (zNear - zFar) / (2.0f * zFar * zNear);
 
 		result.data[12] = 0.0f;
 		result.data[13] = 0.0f;
-		result.data[14] = (2.0f * zFar * zNear) / (zNear - zFar);
-		result.data[15] = 0.0f;
-
-		outInverse.data[0] = aspect / temp;
-		outInverse.data[1] = 0.0f;
-		outInverse.data[2] = 0.0f;
-		outInverse.data[3] = 0.0f;
-
-		outInverse.data[4] = 0.0f;
-		outInverse.data[5] = 1.0f / temp;
-		outInverse.data[6] = 0.0f;
-		outInverse.data[7] = 0.0f;
-
-		outInverse.data[8] = 0.0f;
-		outInverse.data[9] = 0.0f;
-		outInverse.data[10] = 0.0f;
-		outInverse.data[11] = (zNear - zFar) / (2.0f * zFar * zNear);
-
-		outInverse.data[12] = 0.0f;
-		outInverse.data[13] = 0.0f;
-		outInverse.data[14] = -1.0f;
-		outInverse.data[15] = 0.5f;
+		result.data[14] = -1.0f;
+		result.data[15] = 0.5f;
 
 		return result;
 	}
@@ -1402,49 +1377,29 @@ namespace Jwl
 		return result;
 	}
 
-	mat4 mat4::OrthographicProjection(float left, float right, float top, float bottom, float zNear, float zFar, mat4& outInverse)
+	mat4 mat4::InverseOrthographicProjection(float left, float right, float top, float bottom, float zNear, float zFar)
 	{
 		mat4 result;
 
-		result.data[0] = 2.0f / (right - left);
+		result.data[0] = (right - left) / 2.0f;
 		result.data[1] = 0.0f;
 		result.data[2] = 0.0f;
 		result.data[3] = 0.0f;
 
 		result.data[4] = 0.0f;
-		result.data[5] = 2.0f / (top - bottom);
+		result.data[5] = (top - bottom) / 2.0f;
 		result.data[6] = 0.0f;
 		result.data[7] = 0.0f;
 
 		result.data[8] = 0.0f;
 		result.data[9] = 0.0f;
-		result.data[10] = -2.0f / (zFar - zNear);
-		result.data[11] = 0.0f; 
+		result.data[10] = (zFar - zNear) / -2.0f;
+		result.data[11] = 0.0f;
 
-		result.data[12] = -((right + left) / (right - left));
-		result.data[13] = -((top + bottom) / (top - bottom));
-		result.data[14] = -((zFar + zNear) / (zFar - zNear));
+		result.data[12] = (right + left) / 2.0f;
+		result.data[13] = (top + bottom) / 2.0f;
+		result.data[14] = (zFar + zNear) / -2.0f;
 		result.data[15] = 1.0f;
-
-		outInverse.data[0] = (right - left) / 2.0f;
-		outInverse.data[1] = 0.0f;
-		outInverse.data[2] = 0.0f;
-		outInverse.data[3] = 0.0f;
-
-		outInverse.data[4] = 0.0f;
-		outInverse.data[5] = (top - bottom) / 2.0f;
-		outInverse.data[6] = 0.0f;
-		outInverse.data[7] = 0.0f;
-
-		outInverse.data[8] = 0.0f;
-		outInverse.data[9] = 0.0f;
-		outInverse.data[10] = (zFar - zNear) / -2.0f;
-		outInverse.data[11] = 0.0f;
-
-		outInverse.data[12] = (right + left) / 2.0f;
-		outInverse.data[13] = (top + bottom) / 2.0f;
-		outInverse.data[14] = (zFar + zNear) / -2.0f;
-		outInverse.data[15] = 1.0f;
 
 		return result;
 	}

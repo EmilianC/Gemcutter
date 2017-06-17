@@ -198,10 +198,13 @@ namespace Jwl
 		vec3 GetTranslation() const;
 
 		static const mat4 Identity;
+		
 		static mat4 PerspectiveProjection(float fovyDegrees, float aspect, float zNear, float zFar);
-		static mat4 PerspectiveProjection(float fovyDegrees, float aspect, float zNear, float zFar, mat4& outInverse);
+		static mat4 InversePerspectiveProjection(float fovyDegrees, float aspect, float zNear, float zFar);
+		
 		static mat4 OrthographicProjection(float left, float right, float top, float bottom, float zNear, float zFar);
-		static mat4 OrthographicProjection(float left, float right, float top, float bottom, float zNear, float zFar, mat4& outInverse);
+		static mat4 InverseOrthographicProjection(float left, float right, float top, float bottom, float zNear, float zFar);
+
 		static mat4 LookAt(const vec3& position, const vec3& target, const vec3& upVector);
 
 		float data[16];
