@@ -619,47 +619,47 @@ namespace Jwl
 
 	vec2 Refract(const vec2& incident, const vec2& normal, float index)
 	{
+		vec2 result;
+
 		float dot = Dot(normal, incident);
 		float k = 1.0f - index * index * (1.0f - dot * dot);
 
-		if (k < 0.0f)
+		if (k >= 0.0f)
 		{
-			return vec2();
+			result = index * incident - (index * dot + sqrt(k)) * normal;
 		}
-		else
-		{
-			return index * incident - (index * dot + sqrt(k)) * normal;
-		}
+
+		return result;
 	}
 
 	vec3 Refract(const vec3& incident, const vec3& normal, float index)
 	{
+		vec3 result;
+
 		float dot = Dot(normal, incident);
 		float k = 1.0f - index * index * (1.0f - dot * dot);
 
-		if (k < 0.0f)
+		if (k >= 0.0f)
 		{
-			return vec3();
+			result = index * incident - (index * dot + sqrt(k)) * normal;
 		}
-		else
-		{
-			return index * incident - (index * dot + sqrt(k)) * normal;
-		}
+
+		return result;
 	}
 
 	vec4 Refract(const vec4& incident, const vec4& normal, float index)
 	{
+		vec4 result;
+
 		float dot = Dot(normal, incident);
 		float k = 1.0f - index * index * (1.0f - dot * dot);
 
-		if (k < 0.0f)
+		if (k >= 0.0f)
 		{
-			return vec4();
+			result = index * incident - (index * dot + sqrt(k)) * normal;
 		}
-		else
-		{
-			return index * incident - (index * dot + sqrt(k)) * normal;
-		}
+
+		return result;
 	}
 
 	vec2 Abs(const vec2& v)
