@@ -25,6 +25,8 @@ namespace AssetManager
 				if (!AttachConsole(ATTACH_PARENT_PROCESS))
 					throw new SystemException("Could not link output to the calling console window.");
 
+				builder.UpdateWorkspace();
+
 				if (Environment.GetCommandLineArgs().Contains("--pack", StringComparer.InvariantCultureIgnoreCase))
 				{
 					if (!builder.PackWorkspace())
