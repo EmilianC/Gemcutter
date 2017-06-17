@@ -14,8 +14,9 @@ namespace AssetManager
 	// Manages the input and output of the workspace settings.
 	public class WorkspaceConfig
 	{
-		public string OutputDirectory;
-		public string ExcludedExtensions;
+		public string outputDirectory;
+		public string excludedExtensions;
+
 		public List<EncoderLink> encoders = new List<EncoderLink>();
 
 		WorkspaceConfig()
@@ -27,19 +28,19 @@ namespace AssetManager
 			// Setup default encoders.
 			encoders.Add(new EncoderLink { extension="ttf", encoder="%JEWEL3D_PATH%\\Tools\\FontEncoder\\bin\\ReleaseWithExceptions_Win32\\FontEncoder.dll" });
 			encoders.Add(new EncoderLink { extension="obj", encoder="%JEWEL3D_PATH%\\Tools\\MeshEncoder\\bin\\ReleaseWithExceptions_Win32\\MeshEncoder.dll" });
-			encoders.Add(new EncoderLink { extension="png", encoder="%JEWEL3D_PATH%\\Tools\\TextureEncoder\\bin\\ReleaseWithExceptions_Win32\\TextureEncoder.dll"});
-			encoders.Add(new EncoderLink { extension="jpg", encoder="%JEWEL3D_PATH%\\Tools\\TextureEncoder\\bin\\ReleaseWithExceptions_Win32\\TextureEncoder.dll"});
-			encoders.Add(new EncoderLink { extension="tga", encoder="%JEWEL3D_PATH%\\Tools\\TextureEncoder\\bin\\ReleaseWithExceptions_Win32\\TextureEncoder.dll"});
+			encoders.Add(new EncoderLink { extension="png", encoder="%JEWEL3D_PATH%\\Tools\\TextureEncoder\\bin\\ReleaseWithExceptions_Win32\\TextureEncoder.dll" });
+			encoders.Add(new EncoderLink { extension="jpg", encoder="%JEWEL3D_PATH%\\Tools\\TextureEncoder\\bin\\ReleaseWithExceptions_Win32\\TextureEncoder.dll" });
+			encoders.Add(new EncoderLink { extension="tga", encoder="%JEWEL3D_PATH%\\Tools\\TextureEncoder\\bin\\ReleaseWithExceptions_Win32\\TextureEncoder.dll" });
 			encoders.Add(new EncoderLink { extension="bmp", encoder="%JEWEL3D_PATH%\\Tools\\TextureEncoder\\bin\\ReleaseWithExceptions_Win32\\TextureEncoder.dll" });
 
-			OutputDirectory = "../Assets";
-			ExcludedExtensions = "";
+			outputDirectory = "../Assets";
+			excludedExtensions = "";
 		}
 
 		static public WorkspaceConfig Load()
 		{
 			WorkspaceConfig config;
-			if (File.Exists("config.workspace"))
+			try
 			{
 				using (var myFileStream = File.OpenRead("config.workspace"))
 				{
@@ -47,7 +48,7 @@ namespace AssetManager
 					config = (WorkspaceConfig)mySerializer.Deserialize(myFileStream);
 				}
 			}
-			else
+			catch (System.Exception)
 			{
 				config = new WorkspaceConfig();
 				config.Reset();

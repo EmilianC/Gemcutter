@@ -17,8 +17,8 @@ namespace AssetManager
 			panel.AutoScroll = true;
 
 			config = WorkspaceConfig.Load();
-			TextBoxOutputDirectory.Text = config.OutputDirectory;
-			TextBoxExcludedExtensions.Text = config.ExcludedExtensions;
+			TextBoxOutputDirectory.Text = config.outputDirectory;
+			TextBoxExcludedExtensions.Text = config.excludedExtensions;
 			foreach (var link in config.encoders)
 				AddItem(link.extension, link.encoder);
 
@@ -70,12 +70,12 @@ namespace AssetManager
 
 		private void TextBoxOutputDirectory_TextChanged(object sender, EventArgs e)
 		{
-			config.OutputDirectory = TextBoxOutputDirectory.Text;
+			config.outputDirectory = TextBoxOutputDirectory.Text;
 		}
 
 		private void TextBoxExcludedExtensions_TextChanged(object sender, EventArgs e)
 		{
-			config.ExcludedExtensions = TextBoxExcludedExtensions.Text;
+			config.excludedExtensions = TextBoxExcludedExtensions.Text;
 		}
 	}
 }

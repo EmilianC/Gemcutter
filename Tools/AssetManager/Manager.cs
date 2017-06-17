@@ -82,7 +82,7 @@ namespace AssetManager
 		//- Any existing .meta files will be updated to the newest versions.
 		public bool UpdateWorkspace()
 		{
-			Log(">>>>>> Started Updating <<<<<<");
+			Log(">>>>>> Validating Workspace <<<<<<");
 
 			LoadEncoders();
 
@@ -101,7 +101,7 @@ namespace AssetManager
 						throw new Exception($"Failed to update [{logName}]");
 				}
 
-				Log(">>>>>> Finished Updating <<<<<<", ConsoleColor.Green);
+				Log(">>>>>> Finished Validating <<<<<<", ConsoleColor.Green);
 				result = true;
 			}
 			catch (Exception e)
@@ -112,18 +112,23 @@ namespace AssetManager
 
 			return result;
 		}
+
 		//- Starts the packing process. Rebuilds the target Asset directory from scratch.
 		//- Convertible files are put through the appropriate binary converter. Other files are copied as-is.
 		public bool PackWorkspace()
 		{
+			string inputRoot = Directory.GetCurrentDirectory();
+			string outputRoot = Path.GetFullPath(inputRoot + Path.DirectorySeparatorChar + config.outputDirectory);
+
 			Log(">>>>>> Started Packing <<<<<<");
+			Log($"Output Directory [{outputRoot}]");
 
 			ButtonPack.Enabled = false;
+			ButtonSettings.Enabled = false;
 
 			LoadEncoders();
 
-			string inputRoot = Directory.GetCurrentDirectory();
-			string outputRoot = Path.GetFullPath(inputRoot + Path.DirectorySeparatorChar + config.OutputDirectory);
+			
 
 			// Clear and duplicate the directory structure in the output folder.
 			if (Directory.Exists(outputRoot))
@@ -186,6 +191,7 @@ namespace AssetManager
 			finally
 			{
 				ButtonPack.Enabled = true;
+				ButtonSettings.Enabled = true;
 			}
 
 			return result;
@@ -237,21 +243,19 @@ namespace AssetManager
 			foreach (string folder in directories)
 			{
 				var name = Path.GetFileName(folder);
-
-				// Append the new node.
 				var folderNode = nodes.Add(name, name);
 
+				// Find and add all files in the folder.
 				var fileCount = 0;
 				foreach (var file in Directory.GetFiles(folder).Where(x =>
 					Path.GetExtension(x) != ".meta" && 
-					!config.ExcludedExtensions.Split(';').Contains(Path.GetExtension(x).Substring(1))))
+					!config.excludedExtensions.Split(';').Contains(Path.GetExtension(x).Substring(1))))
 				{
 					var fileName = Path.GetFileName(file);
 					folderNode.Nodes.Add(fileName, fileName);
 					fileCount++;
 				}
 
-				// Build the name of the node including the file count.
 				folderNode.Text = $"{name} [{fileCount}]";
 
 				// Recurse.
@@ -294,18 +298,18 @@ namespace AssetManager
 
 		private void LoadEncoders()
 		{
-			//encoders.Clear();
-			//
-			//try
-			//{
-			//	foreach (var dll in encoderForm.GetEncoders())
-			//		encoders.Add(dll.Key, new Encoder(dll.Value));
-			//}
-			//catch (ArgumentException e)
-			//{
-			//	Log(e.Message, ConsoleColor.Red);
-			//	encoders.Clear();
-			//}
+			encoders.Clear();
+			
+			try
+			{
+				foreach (var dll in config.encoders)
+					encoders.Add(dll.extension, new Encoder(Environment.ExpandEnvironmentVariables(dll.encoder)));
+			}
+			catch (ArgumentException e)
+			{
+				Log(e.Message, ConsoleColor.Red);
+				encoders.Clear();
+			}
 		}
 
 		private void Log(string text, ConsoleColor color = ConsoleColor.Gray)
