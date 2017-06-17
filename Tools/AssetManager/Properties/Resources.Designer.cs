@@ -61,6 +61,16 @@ namespace AssetManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon Building {
+            get {
+                object obj = ResourceManager.GetObject("Building", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap Collapse {
@@ -111,12 +121,32 @@ namespace AssetManager.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon JewelIcon {
+            get {
+                object obj = ResourceManager.GetObject("JewelIcon", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap Search {
             get {
                 object obj = ResourceManager.GetObject("Search", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon Settings {
+            get {
+                object obj = ResourceManager.GetObject("Settings", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
             }
         }
     }

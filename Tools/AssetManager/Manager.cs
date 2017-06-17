@@ -12,6 +12,7 @@ namespace AssetManager
 	{
 		// Automatically refresh the asset directory if there are any changes.
 		FileSystemWatcher watcher;
+		// 
 		WorkspaceConfig config = WorkspaceConfig.Load();
 		// The actual native-code encoders.
 		Dictionary<string, Encoder> encoders = new Dictionary<string, Encoder>();
@@ -71,10 +72,6 @@ namespace AssetManager
 					File.Delete(e.FullPath + ".meta");
 				}
 			};
-
-			//var cm = new ContextMenu();
-			//cm.MenuItems.Add("Clear Console", new EventHandler(buttonClear_Click));
-			//Output.ContextMenu = cm;
 		}
 
 		//- Starts the updating process.
@@ -82,6 +79,8 @@ namespace AssetManager
 		//- Any existing .meta files will be updated to the newest versions.
 		public bool UpdateWorkspace()
 		{
+			Icon = Properties.Resources.Building;
+
 			Log(">>>>>> Validating Workspace <<<<<<");
 
 			LoadEncoders();
@@ -109,6 +108,10 @@ namespace AssetManager
 				Log($"ERROR:   {e.Message}", ConsoleColor.Red);
 				result = false;
 			}
+			finally
+			{
+				Icon = Properties.Resources.JewelIcon;
+			}
 
 			return result;
 		}
@@ -117,6 +120,8 @@ namespace AssetManager
 		//- Convertible files are put through the appropriate binary converter. Other files are copied as-is.
 		public bool PackWorkspace()
 		{
+			Icon = Properties.Resources.Building;
+
 			string inputRoot = Directory.GetCurrentDirectory();
 			string outputRoot = Path.GetFullPath(inputRoot + Path.DirectorySeparatorChar + config.outputDirectory);
 
@@ -127,8 +132,6 @@ namespace AssetManager
 			ButtonSettings.Enabled = false;
 
 			LoadEncoders();
-
-			
 
 			// Clear and duplicate the directory structure in the output folder.
 			if (Directory.Exists(outputRoot))
@@ -192,6 +195,8 @@ namespace AssetManager
 			{
 				ButtonPack.Enabled = true;
 				ButtonSettings.Enabled = true;
+
+				Icon = Properties.Resources.JewelIcon;
 			}
 
 			return result;
