@@ -25,7 +25,7 @@ namespace Jwl
 		functors.clear();
 	}
 
-	RotationFunc::RotationFunc(float _rotationSpeed, RandomRange _initialRotation)
+	RotationFunc::RotationFunc(float _rotationSpeed, Range _initialRotation)
 		: rotationSpeed(_rotationSpeed)
 		, initialRotation(_initialRotation)
 	{
@@ -37,15 +37,16 @@ namespace Jwl
 
 		for (unsigned i = startIndex, end = startIndex + count; i < end; i++)
 		{
-			particles.rotations[i] = initialRotation.Rand();
+			particles.rotations[i] = initialRotation.Random();
 		}
 	}
 
 	void RotationFunc::Update(ParticleBuffer& particles, ParticleEmitter& emitter, float deltaTime)
 	{
+		float rotation = rotationSpeed * deltaTime;
 		for (unsigned i = 0; i < emitter.GetNumAliveParticles(); i++)
 		{
-			particles.rotations[i] += rotationSpeed * deltaTime;
+			particles.rotations[i] += rotation;
 		}
 	}
 

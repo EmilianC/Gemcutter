@@ -62,17 +62,18 @@ namespace Jwl
 
 	void ProbabilityMatrix::SetUniform()
 	{
-		// Accumulate sum for each row in order to normalize.
+		float value = 1.0f / numActions;
+
 		for (unsigned i = 0; i < numStates * numActions; i++)
 		{
-			data[i] = 1.0f / numActions;
+			data[i] = value;
 		}
 	}
 
 	int ProbabilityMatrix::QueryAction(unsigned state) const
 	{
 		// Because the probabilities are normalized we can use a range of [0 - 1].
-		float randomVal = RandomRangef(0.0f, 1.0f);
+		float randomVal = RandomRange(0.0f, 1.0f);
 
 		// Cascade through all the actions until our random value is larger.
 		// This effectively incorporates the weight of each option.

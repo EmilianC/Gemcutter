@@ -18,12 +18,12 @@ namespace Jwl
 		srand(seed);
 	}
 
-	float RandomRangef(float min, float max)
+	float RandomRange(float min, float max)
 	{
 		return min + ((max - min) * rand()) / (RAND_MAX + 1.0f);
 	}
 
-	int RandomRangei(int min, int max)
+	int RandomRange(int min, int max)
 	{
 		return rand() % (max + 1 - min) + min;
 	}
@@ -31,26 +31,36 @@ namespace Jwl
 	vec3 RandomDirection()
 	{
 		return vec3(
-			RandomRangef(-1.0f, 1.0f),
-			RandomRangef(-1.0f, 1.0f),
-			RandomRangef(-1.0f, 1.0f)).GetNormalized();
+			RandomRange(-1.0f, 1.0f),
+			RandomRange(-1.0f, 1.0f),
+			RandomRange(-1.0f, 1.0f)).GetNormalized();
 	}
 
-	RandomRange::RandomRange(float _value, float _deviation)
-		: value(_value)
-		, deviation(_deviation)
+	Range::Range(float _min, float _max)
 	{
+		Set(_min, _max);
 	}
 
-	float RandomRange::Rand() const
+	Range Range::Deviation(float value, float deviation)
 	{
-		float range = deviation * 0.5f;
-		return RandomRangef(value - range, value + range);
+		float halfRange = deviation * 0.5f;
+		return Range(value - halfRange, value + halfRange);
 	}
 
-	void RandomRange::Set(float _value, float _deviation)
+	float Range::Random() const
 	{
-		value = _value;
-		deviation = _deviation;
+		return RandomRange(min, max);
+	}
+
+	void Range::Set(float _min, float _max)
+	{
+		ASSERT(_min <= _max, "Invalid range.");
+		min = _min;
+		max = _max;
+	}
+
+	bool Range::Contains(float value) const
+	{
+		return value >= min && value <= max;
 	}
 }

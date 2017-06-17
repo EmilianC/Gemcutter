@@ -50,18 +50,18 @@ namespace Jwl
 
 		FunctorList functors;
 
-		RandomRange velocity{ 1.0f, 0.5f };
-		RandomRange lifetime{ 8.0f, 1.0f };
+		Range velocity{ 0.5f, 1.0f };
+		Range lifetime{ 5.0f, 10.0f };
 		Type spawnType = Omni;
 		float spawnPerSecond = 10.0f;
 
 		//- Used for box spawning.
-		RandomRange axisX{ 0.0f, 5.0f };
-		RandomRange axisY{ 0.0f, 5.0f };
-		RandomRange axisZ{ 0.0f, 5.0f };
+		Range axisX{ -1.0f, 1.0f };
+		Range axisY{ -1.0f, 1.0f };
+		Range axisZ{ -1.0f, 1.0f };
 
 		//- Used for Omni-directional spawning.
-		RandomRange radius{ 0.0f, 5.0f };
+		Range radius{ 0.0f, 1.0f };
 
 		//- When true, the emitter will cease to update, but will still be rendered.
 		bool isPaused = false;

@@ -60,7 +60,7 @@ namespace Jwl
 	{
 		friend ShareableAlloc;
 		RotationFunc() = default;
-		RotationFunc(float rotationSpeed, RandomRange initialRotation = RandomRange(180.0f, 180.0f));
+		RotationFunc(float rotationSpeed, Range initialRotation = Range(0.0f, 360.0f));
 
 	public:
 		virtual void Init(ParticleBuffer& particles, ParticleEmitter& emitter, unsigned startIndex, unsigned count) override;
@@ -69,6 +69,6 @@ namespace Jwl
 		virtual ParticleBuffers GetRequirements() const final override;
 
 		float rotationSpeed = 5.0f;
-		RandomRange initialRotation{ 180.0f, 180.0f };
+		Range initialRotation{ 0.0f, 360.0f };
 	};
 }

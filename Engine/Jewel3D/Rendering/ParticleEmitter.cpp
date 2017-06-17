@@ -85,9 +85,7 @@ namespace Jwl
 	void ParticleEmitter::Update()
 	{
 		if (isPaused)
-		{
 			return;
-		}
 
 		UpdateInternal(Application.GetDeltaTime());
 
@@ -146,9 +144,7 @@ namespace Jwl
 	void ParticleEmitter::SetLocalSpace(bool isLocal)
 	{
 		if (localSpace == isLocal)
-		{
 			return;
-		}
 
 		owner.Get<Material>().variantDefinitions.Switch("JWL_PARTICLE_LOCAL_SPACE", isLocal);
 
@@ -286,23 +282,20 @@ namespace Jwl
 		{
 			if (spawnType == Omni)
 			{
-				data.positions[numCurrentParticles] = vec3(RandomRangef(-1.0f, 1.0f), RandomRangef(-1.0f, 1.0f), RandomRangef(-1.0f, 1.0f)).GetNormalized();
-				data.positions[numCurrentParticles] *= radius.Rand();
+				data.positions[numCurrentParticles] = RandomDirection() * radius.Random();
 			}
 			else
 			{
-				data.positions[numCurrentParticles] = vec3(axisX.Rand(), axisY.Rand(), axisZ.Rand());
+				data.positions[numCurrentParticles] = vec3(axisX.Random(), axisY.Random(), axisZ.Random());
 			}
 
 			// Distribute lifetime between frames.
-			data.ages[numCurrentParticles] = RandomRangef(0.0f, deltaTime);
-			data.lifetimes[numCurrentParticles] = lifetime.Rand();
+			data.ages[numCurrentParticles] = RandomRange(0.0f, deltaTime);
+			data.lifetimes[numCurrentParticles] = lifetime.Random();
 
 			// Send the particle in a random direction, with a velocity between our range.
-			data.velocities[numCurrentParticles] = vec3(RandomRangef(-1.0f, 1.0f), RandomRangef(-1.0f, 1.0f), RandomRangef(-1.0f, 1.0f)).GetNormalized();
-			data.velocities[numCurrentParticles] *= velocity.Rand();
+			data.velocities[numCurrentParticles] = RandomDirection() * velocity.Random();
 
-			// Counters...
 			numCurrentParticles++;
 			numToSpawn -= 1.0f;
 		}
