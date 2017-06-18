@@ -424,4 +424,13 @@ namespace Jwl
 
 		return result;
 	}
+
+	//- Returns the raw vector container of the specified Component.
+	//- This can be useful in special cases when you need custom iterator logic.
+	template<class Component>
+	std::vector<ComponentBase*>& GetComponentIndex()
+	{
+		using namespace detail;
+		return componentIndex[Component::GetComponentId()];
+	}
 }
