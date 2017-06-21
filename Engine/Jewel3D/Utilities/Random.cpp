@@ -36,6 +36,14 @@ namespace Jwl
 			RandomRange(-1.0f, 1.0f)).GetNormalized();
 	}
 
+	vec3 RandomColor()
+	{
+		return vec3(
+			RandomRange(0.0f, 1.0f),
+			RandomRange(0.0f, 1.0f),
+			RandomRange(0.0f, 1.0f));
+	}
+
 	Range::Range(float _min, float _max)
 	{
 		Set(_min, _max);

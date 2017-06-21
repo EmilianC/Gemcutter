@@ -10,7 +10,11 @@ namespace Jwl
 
 	float RandomRange(float min, float max);
 	int RandomRange(int min, int max);
+
+	// Returns a random unit-length vector.
 	vec3 RandomDirection();
+	// Returns a random color with [0, 1] RGB values.
+	vec3 RandomColor();
 
 	class Range
 	{
