@@ -24,6 +24,6 @@ All assets with an associated Encoder will be converted using the DLL and saved 
 The output folder is populated with the same folder structure as the workspace.
 
 # Folder Structure
-When assets are packing, the asset directory is re-created from scratch. This directory should be completely driven
-by the AssetManager. For this reason, persistent game data should be kept outside the Asset directory during development. This also means
-that the Asset directory should be ignored from source control.
+When assets are packing, the output directory is re-created from scratch. This directory should be completely driven
+by the AssetManager. For this reason, persistent game data should be kept outside this directory during development. This also means
+that the output directory should be ignored from source control.
