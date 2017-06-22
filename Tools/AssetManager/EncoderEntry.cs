@@ -1,22 +1,12 @@
 ﻿// Copyright (c) 2017 Emilian Cioca
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using System.Xml.Serialization;
 
 namespace AssetManager
 {
-	public class EntryData
-	{
-		[XmlAttribute]
-		public string extension;
-		[XmlAttribute]
-		public string encoder;
-	}
-
 	public class EncoderEntry
 	{
 		// Called when the delete button is clicked and the entry should be removed.

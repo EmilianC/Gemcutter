@@ -25,22 +25,12 @@ namespace AssetManager
 				if (!AttachConsole(ATTACH_PARENT_PROCESS))
 					throw new SystemException("Could not link output to the calling console window.");
 
-				if (Environment.GetCommandLineArgs().Contains("--update", StringComparer.InvariantCultureIgnoreCase))
-				{
-					if (!builder.UpdateWorkspace())
-					{
-						Environment.ExitCode = 1;
-						return;
-					}
-				}
+				builder.UpdateWorkspace();
 
 				if (Environment.GetCommandLineArgs().Contains("--pack", StringComparer.InvariantCultureIgnoreCase))
 				{
 					if (!builder.PackWorkspace())
-					{
 						Environment.ExitCode = 1;
-						return;
-					}
 				}
 
 				return;
@@ -49,6 +39,8 @@ namespace AssetManager
 			{
 				// Otherwise we can start the UI normally and route output to the visual textBox.
 				Console.SetOut(new RichTextBoxStreamWriter(builder.GetOutput()));
+
+				builder.UpdateWorkspace();
 				Application.Run(builder);
 			}
 		}

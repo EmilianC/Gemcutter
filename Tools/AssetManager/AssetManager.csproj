@@ -49,11 +49,11 @@
   <ItemGroup>
     <Compile Include="Encoder.cs" />
     <Compile Include="EncoderEntry.cs" />
-    <Compile Include="EncoderList.cs">
+    <Compile Include="Settings.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="EncoderList.Designer.cs">
-      <DependentUpon>EncoderList.cs</DependentUpon>
+    <Compile Include="Settings.Designer.cs">
+      <DependentUpon>Settings.cs</DependentUpon>
     </Compile>
     <Compile Include="Manager.cs">
       <SubType>Form</SubType>
@@ -64,8 +64,9 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RichTextBoxStreamWriter.cs" />
-    <EmbeddedResource Include="EncoderList.resx">
-      <DependentUpon>EncoderList.cs</DependentUpon>
+    <Compile Include="WorkspaceConfig.cs" />
+    <EmbeddedResource Include="Settings.resx">
+      <DependentUpon>Settings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Manager.resx">
       <DependentUpon>Manager.cs</DependentUpon>
@@ -104,6 +105,21 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Search.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Expand.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Collapse.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Building.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Settings.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\JewelIcon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
