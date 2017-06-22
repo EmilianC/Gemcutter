@@ -12,19 +12,16 @@ In the AssetManager, each Encoder is associated with a specific file extension. 
 Custom Encoders can be created for game-specific assets (levels, items, dialog-trees etc.), allowing you to easily pack game data.
 
 # Metadata
-Every asset with an associated encoder has metaData created for it. Metadata is saved adjacent to the asset (```asset.extension.meta```) as plain text.
+Every asset with an associated encoder has metaData created for it. Metadata is saved adjacent to the asset (```assetName.extension.meta```) as plain text.
 The content of the metaData file depends on the encoder. These are the properties used when packing the asset into a binary format.
 For instance, .ttf.meta files for fonts specify the output resolution of the generated textures.
 
-# Building Assets
-The AssetManager provides two functions, Updating and Packing. Updating your workspace will ensure that all
-assets have up-to-date metaData associated with them. If an asset doesn't have metaData, Updating the workspace
-will use the Encoder associated with that asset to generate a default metaData file. If an asset already has
-metaData, the Encoder will be used to validate the integrity of the metadata. For now, metaData is edited manually with a text editor.
+Metadata files are automatically updated and added to the workspace while the AssetManager is running.
 
-Packing the workspace will prepare all assets for use by the game. An ```Assets``` folder will be created adjacent to the Workspace.
-All assets with an associated Encoder will be converted using the DLL and saved to the Assets folder. Any remaining assets are
-copied 1:1 to the folder.
+# Building Assets
+Packing the workspace will prepare all assets for use by the game. By default, an output folder called ```Assets``` will be created adjacent to the Workspace.
+All assets with an associated Encoder will be converted using the DLL and saved to the Assets folder. Any remaining assets are copied 1:1 to the folder.
+The output folder is populated with the same folder structure as the workspace.
 
 # Folder Structure
 When assets are packing, the asset directory is re-created from scratch. This directory should be completely driven

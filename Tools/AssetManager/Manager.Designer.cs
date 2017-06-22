@@ -57,7 +57,7 @@
 			this.treeViewAssets.Location = new System.Drawing.Point(14, 38);
 			this.treeViewAssets.Margin = new System.Windows.Forms.Padding(5, 3, 5, 3);
 			this.treeViewAssets.Name = "treeViewAssets";
-			this.treeViewAssets.Size = new System.Drawing.Size(423, 589);
+			this.treeViewAssets.Size = new System.Drawing.Size(354, 589);
 			this.treeViewAssets.TabIndex = 7;
 			// 
 			// labelWorkspace
@@ -83,7 +83,7 @@
 			// 
 			this.label1.AutoSize = true;
 			this.label1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label1.Location = new System.Drawing.Point(444, 20);
+			this.label1.Location = new System.Drawing.Point(375, 20);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(45, 15);
 			this.label1.TabIndex = 16;
@@ -92,15 +92,14 @@
 			// Output
 			// 
 			this.Output.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
-			this.Output.BorderStyle = System.Windows.Forms.BorderStyle.None;
 			this.Output.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.Output.ForeColor = System.Drawing.Color.LightGray;
-			this.Output.Location = new System.Drawing.Point(447, 38);
+			this.Output.Location = new System.Drawing.Point(378, 38);
 			this.Output.Margin = new System.Windows.Forms.Padding(5, 3, 5, 3);
 			this.Output.Name = "Output";
 			this.Output.ReadOnly = true;
 			this.Output.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-			this.Output.Size = new System.Drawing.Size(423, 589);
+			this.Output.Size = new System.Drawing.Size(492, 589);
 			this.Output.TabIndex = 19;
 			this.Output.Text = "";
 			// 
@@ -140,7 +139,7 @@
 			// buttonEditMetadata
 			// 
 			this.buttonEditMetadata.Enabled = false;
-			this.buttonEditMetadata.Location = new System.Drawing.Point(327, 12);
+			this.buttonEditMetadata.Location = new System.Drawing.Point(258, 12);
 			this.buttonEditMetadata.Name = "buttonEditMetadata";
 			this.buttonEditMetadata.Size = new System.Drawing.Size(110, 24);
 			this.buttonEditMetadata.TabIndex = 28;
