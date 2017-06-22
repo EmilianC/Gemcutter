@@ -10,10 +10,10 @@ namespace AssetManager
 {
 	public partial class Manager : Form
 	{
+		WorkspaceConfig config = WorkspaceConfig.Load();
+
 		// Automatically refresh the asset directory if there are any changes.
 		FileSystemWatcher watcher;
-		// 
-		WorkspaceConfig config = WorkspaceConfig.Load();
 		// The actual native-code encoders.
 		Dictionary<string, Encoder> encoders = new Dictionary<string, Encoder>();
 
@@ -21,12 +21,19 @@ namespace AssetManager
 		{
 			InitializeComponent();
 
-			treeViewAssets.AfterSelect += delegate { buttonAssetOpen.Enabled = true; };
+			buttonEditMetadata.Click += delegate { OpenFile(GetSelectedItem() + ".meta"); };
 
-			// Populate the workspace for the first time.
-			RefreshWorkspace();
+			treeViewAssets.DoubleClick += delegate 
+			{
+				var path = GetSelectedItem();
+				if (File.Exists(path))
+					OpenFile(path);
+			};
 
-			treeViewAssets.DoubleClick += delegate { OpenAsset(); };
+			treeViewAssets.AfterSelect += delegate
+			{
+				buttonEditMetadata.Enabled = File.Exists(GetSelectedItem() + ".meta");
+			};
 
 			// Watch the directory for changes and auto-refresh when needed.
 			watcher = new FileSystemWatcher(Directory.GetCurrentDirectory());
@@ -34,44 +41,54 @@ namespace AssetManager
 			watcher.EnableRaisingEvents = true;
 			watcher.NotifyFilter = NotifyFilters.FileName | NotifyFilters.DirectoryName;
 
-			watcher.Changed += (s, e) =>
+			watcher.Renamed += (s, e) =>
 			{
 				RefreshWorkspaceDispatch();
-				LoadEncoders();
 
-				if (encoders.Any(x => e.FullPath.EndsWith(x.Key)))
+				if (File.Exists(e.OldFullPath + ".meta"))
 				{
-					//pack
-				}
-				else
-				{
-					// copy
-				}
-			};
-
-			watcher.Created += (s, e) =>
-			{
-				RefreshWorkspaceDispatch();
-				LoadEncoders();
-
-				if (encoders.Any(x => e.FullPath.EndsWith(x.Key)))
-				{
-					encoders[Path.GetExtension(e.FullPath).Substring(1)].Update(e.FullPath);
-
-					// Pack the file as well
+					File.Move(e.OldFullPath + ".meta", e.FullPath + ".meta");
 				}
 			};
 
 			watcher.Deleted += (s, e) =>
 			{
-				RefreshWorkspaceDispatch();
-				LoadEncoders();
+				if (e.Name.EndsWith(".meta"))
+					return;
 
-				if (encoders.Any(x => e.FullPath.EndsWith(x.Key)) && File.Exists(e.FullPath + ".meta"))
+				RefreshWorkspaceDispatch();
+
+				var metadataFile = e.FullPath + ".meta";
+				if (File.Exists(metadataFile))
 				{
-					File.Delete(e.FullPath + ".meta");
+					File.Delete(metadataFile);
 				}
 			};
+
+			watcher.Created += (s, e) =>
+			{
+				if (e.Name.EndsWith(".meta"))
+					return;
+
+				RefreshWorkspaceDispatch();
+
+				if (config.encoders.Any(x => e.FullPath.EndsWith(x.extension)))
+				{
+					LoadEncoders();
+
+					try
+					{
+						encoders[Path.GetExtension(e.FullPath).Substring(1)].Update(e.FullPath);
+					}
+					catch (Exception ex)
+					{
+						Log($"ERROR:   {ex.Message}", ConsoleColor.Red);
+					}
+				}
+			};
+
+			// Populate the workspace for the first time.
+			RefreshWorkspace();
 		}
 
 		//- Starts the updating process.
@@ -328,17 +345,20 @@ namespace AssetManager
 			RichTextBoxStreamWriter.ForegroundColor = ConsoleColor.Gray;
 		}
 
-		// Opens the selected asset with the default associated program.
-		private void OpenAsset()
+		private string GetSelectedItem()
 		{
 			var node = treeViewAssets.SelectedNode;
 			if (node == null)
-				return;
+				return null;
 
 			var file = string.Join(Path.DirectorySeparatorChar.ToString(), GetNodePath(node));
-			if (!File.Exists(file))
-				return;
 
+			return file;
+		}
+
+		// Opens the selected asset with the default associated program.
+		private void OpenFile(string file)
+		{
 			try
 			{
 				Process.Start(file);
