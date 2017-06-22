@@ -57,12 +57,6 @@ namespace AssetManager
 					return;
 
 				RefreshWorkspaceDispatch();
-
-				var metadataFile = e.FullPath + ".meta";
-				if (File.Exists(metadataFile))
-				{
-					File.Delete(metadataFile);
-				}
 			};
 
 			watcher.Created += (s, e) =>
