@@ -89,7 +89,7 @@ namespace Jwl
 		//- The name of the sampler in the shader.
 		const std::string name;
 		//- The unit connecting this texture sampler to a TextureSlot of the same unit.
-		unsigned unit;
+		const unsigned unit;
 	};
 
 	class Shader : public Resource<Shader>
@@ -118,8 +118,6 @@ namespace Jwl
 		TextureList textures;
 		//- These buffers will be bound whenever the shader is used in rendering.
 		BufferList buffers;
-
-		void SetTextureBinding(const std::string& name, unsigned unit);
 
 		//- Creates a new UniformBuffer from the specified buffer slot.
 		//- The slot must be marked as 'template' in the shader.

@@ -320,7 +320,7 @@ namespace Jwl
 		std::sort(defines.begin(), defines.end());
 
 		std::hash<std::string> str_hash;
-		hash = 0u;
+		hash = 0;
 
 		for (auto& define : defines)
 		{
@@ -875,7 +875,7 @@ namespace Jwl
 
 			std::vector<uniformMember> uniforms;
 
-			// Find all uniforms and parse their information
+			// Find all uniforms and parse their information.
 			for (unsigned i = 0; i < rawStruct.size(); i++)
 			{
 				if (!std::isspace(rawStruct[i]))
@@ -892,7 +892,7 @@ namespace Jwl
 
 					std::string line = rawStruct.substr(i, (semicolon - i) - 1);
 					
-					// resolve type
+					// Resolve type.
 					#define IfFound(str, t, s) if (line.find((str)) != std::string::npos) { uniforms.back().type = (t); uniforms.back().size = (s); }
 
 					IfFound("float", GL_FLOAT, sizeof(float))
@@ -1134,14 +1134,7 @@ namespace Jwl
 				#undef SET_UNIFORM
 			}
 
-			if (makeTemplate)
-			{
-				bufferBindings.push_back(BufferBinding(name, Id, buffer));
-			}
-			else
-			{
-				bufferBindings.push_back(BufferBinding(name, Id, nullptr));
-			}
+			bufferBindings.emplace_back(name, Id, makeTemplate ? buffer : nullptr);
 
 			if (makeStatic)
 			{
@@ -1159,7 +1152,7 @@ namespace Jwl
 				return false;
 			}
 
-			bufferBindings.push_back(BufferBinding(name, Id, nullptr));
+			bufferBindings.emplace_back(name, Id, nullptr);
 		}
 
 		uniformBuffers += uniformStruct;
@@ -1187,7 +1180,7 @@ namespace Jwl
 					return false;
 				}
 
-				textureBindings.push_back(TextureBinding(name, Id));
+				textureBindings.emplace_back(name, Id);
 
 				// Add OpenGL correct entry into _Samplers string.
 				samplers += "uniform " + std::string(type) + ' ' + std::string(name) + ";\n";
@@ -1244,9 +1237,9 @@ namespace Jwl
 		if (itr == variants.end())
 		{
 			// This shader variant is new and needs to be created.
-			auto& newShader = variants.emplace(definitions, ShaderVariant()).first->second;
+			auto& variant = variants.emplace(definitions, ShaderVariant()).first->second;
 
-			if (!newShader.Load(
+			if (!variant.Load(
 				version + header + definitions.GetString() + uniformBuffers + samplers,
 				attributes + vertexSource,
 				geometrySource,
@@ -1258,7 +1251,7 @@ namespace Jwl
 				}
 
 				// Instead of doing nothing, we load a hard-coded pink shader on failure.
-				if (!newShader.Load(
+				if (!variant.Load(
 					version + builtInBuffers,
 					"layout(location = 0) in vec4 a_vert;\n"
 					"void main()\n{\n"
@@ -1276,26 +1269,26 @@ namespace Jwl
 			else
 			{
 				// Make sure the samplers are all set to the correct bindings.
-				for (unsigned i = 0; i < textureBindings.size(); i++)
+				for (auto& binding : textureBindings)
 				{
-					unsigned location = glGetUniformLocation(newShader.hProgram, textureBindings[i].name.c_str());
+					unsigned location = glGetUniformLocation(variant.hProgram, binding.name.c_str());
 					ASSERT(location != GL_INVALID_INDEX, "Sampler location for shader variant could not be found.");
 
-					glProgramUniform1i(newShader.hProgram, location, textureBindings[i].unit);
+					glProgramUniform1i(variant.hProgram, location, binding.unit);
 				}
 
 				// Make sure the UniformBuffers are all set to the correct bindings.
-				for (unsigned i = 0; i < bufferBindings.size(); i++)
+				for (auto& binding : bufferBindings)
 				{
-					unsigned block = glGetUniformBlockIndex(newShader.hProgram, ("Jwl_User_" + bufferBindings[i].name).c_str());
+					unsigned block = glGetUniformBlockIndex(variant.hProgram, ("Jwl_User_" + binding.name).c_str());
 					ASSERT(block != GL_INVALID_INDEX, "Block index for shader variant could not be found.");
 
 					// We offset the binding unit to make room for the engine defined binding points.
-					glUniformBlockBinding(newShader.hProgram, block, bufferBindings[i].unit);
+					glUniformBlockBinding(variant.hProgram, block, binding.unit);
 				}
 			}
 
-			newShader.Bind();
+			variant.Bind();
 		}
 		else
 		{
@@ -1315,40 +1308,17 @@ namespace Jwl
 		buffers.UnBind();
 	}
 
-	void Shader::SetTextureBinding(const std::string& name, unsigned unit)
-	{
-		ASSERT(!textureBindings.empty(), "Shader doesn't have any Texture Bindings to set.");
-
-		for (unsigned i = 0; i < textureBindings.size(); i++)
-		{
-			if (textureBindings[i].name == name)
-			{
-				textureBindings[i].unit = unit;
-
-				// Update all shaders with the change.
-				for (auto shader : variants)
-				{
-					glProgramUniform1i(shader.second.hProgram, glGetUniformLocation(shader.second.hProgram, name.c_str()), unit);
-				}
-
-				return;
-			}
-		}
-
-		ASSERT(false, "Sampler ( %s ) not found.", name.c_str());
-	}
-
 	UniformBuffer::Ptr Shader::CreateBufferFromTemplate(unsigned unit) const
 	{
 		auto newBuf = UniformBuffer::MakeNew();
 
-		for (unsigned i = 0; i < bufferBindings.size(); i++)
+		for (auto& binding : bufferBindings)
 		{
-			if (bufferBindings[i].unit == unit)
+			if (binding.unit == unit)
 			{
-				ASSERT(bufferBindings[i].templateBuff, "Specified binding unit is not marked as 'template' in the shader.");
+				ASSERT(binding.templateBuff, "Specified binding unit is not marked as 'template' in the shader.");
 
-				newBuf->Copy(*bufferBindings[i].templateBuff);
+				newBuf->Copy(*binding.templateBuff);
 
 				return newBuf;
 			}
