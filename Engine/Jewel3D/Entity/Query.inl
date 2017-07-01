@@ -301,17 +301,10 @@ namespace Jwl
 		};
 
 		//- Template deduction assisted construction.
-		template<class RootIterator>
-		auto BuildRange(RootIterator& beginRange, RootIterator& endRange)
+		template<class Iterator>
+		auto BuildLogicalIterator(SafeIterator&& set1, Iterator&& set2)
 		{
-			return Range<RootIterator>(beginRange, endRange);
-		}
-
-		//- Template deduction assisted construction.
-		template<class Operation, class Iterator>
-		auto BuildLogicalIterator(SafeIterator& set1, Iterator& set2)
-		{
-			return LogicalIterator<Iterator, Operation>(set1, set2);
+			return LogicalIterator<Iterator, Intersection>(set1, set2);
 		}
 
 		//- Constructs a logical iterator representing the start of the sequence.
@@ -321,9 +314,8 @@ namespace Jwl
 			auto& index = entityIndex[Arg1::GetComponentId()];
 			auto rawBegin = index.begin();
 			auto rawEnd = index.end();
-			SafeIterator safeBegin(rawBegin, rawEnd);
 
-			return BuildLogicalIterator<Intersection>(safeBegin, BuildRootBegin<Arg2, Args...>());
+			return BuildLogicalIterator(SafeIterator(rawBegin, rawEnd), BuildRootBegin<Arg2, Args...>());
 		}
 
 		//- BuildRootBegin() base case.
@@ -333,9 +325,8 @@ namespace Jwl
 			auto& index = entityIndex[Arg::GetComponentId()];
 			auto rawBegin = index.begin();
 			auto rawEnd = index.end();
-			SafeIterator safeBegin(rawBegin, rawEnd);
 
-			return safeBegin;
+			return SafeIterator(rawBegin, rawEnd);
 		}
 
 		//- Constructs a logical iterator representing the end of the sequence.
@@ -343,9 +334,8 @@ namespace Jwl
 		auto BuildRootEnd()
 		{
 			auto rawEnd = entityIndex[Arg1::GetComponentId()].end();
-			SafeIterator safeEnd(rawEnd, rawEnd);
 
-			return BuildLogicalIterator<Intersection>(safeEnd, BuildRootEnd<Arg2, Args...>());
+			return BuildLogicalIterator(SafeIterator(rawEnd, rawEnd), BuildRootEnd<Arg2, Args...>());
 		}
 
 		//- BuildRootEnd() base case.
@@ -353,9 +343,8 @@ namespace Jwl
 		SafeIterator BuildRootEnd()
 		{
 			auto rawEnd = entityIndex[Arg::GetComponentId()].end();
-			SafeIterator safeEnd(rawEnd, rawEnd);
 
-			return safeEnd;
+			return SafeIterator(rawEnd, rawEnd);
 		}
 	}
 
@@ -382,7 +371,7 @@ namespace Jwl
 		auto begin = ComponentIterator<Component>(index.begin());
 		auto end = ComponentIterator<Component>(index.end());
 
-		return BuildRange(begin, end);
+		return detail::Range<decltype(begin)>(begin, end);
 	}
 
 	//- Returns an enumerable range of all Entities which have an active instance of each specified Component/Tag.
@@ -402,7 +391,10 @@ namespace Jwl
 			"Only a direct inheritor from Component<> can be used in a query.");
 
 		using namespace detail;
-		return BuildRange(BuildRootBegin<Args...>(), BuildRootEnd<Args...>());
+		auto begin = BuildRootBegin<Args...>();
+		auto end = BuildRootEnd<Args...>();
+
+		return detail::Range<decltype(begin)>(begin, end);
 	}
 
 	//- Returns all Entities which have an active instance of each specified Component/Tag.
