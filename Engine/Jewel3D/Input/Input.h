@@ -1,6 +1,7 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
 #include "Jewel3D/Application/Event.h"
+#include "Jewel3D/Application/Types.h"
 #include "Jewel3D/Math/Vector.h"
 #include "Jewel3D/Utilities/Singleton.h"
 
@@ -53,16 +54,16 @@ namespace Jwl
 		bool IsDown(Key key) const;
 		bool IsUp(Key key) const;
 
-		int GetMouseX() const;
-		int GetMouseY() const;
+		s32 GetMouseX() const;
+		s32 GetMouseY() const;
 		vec2 GetMousePos() const;
 
 	private:
 		bool Update(const MSG& msg);
 
-		bool keys[static_cast<unsigned>(Key::NUM_KEYS)] = { false };
-		int x = 0;
-		int y = 0;
+		bool keys[static_cast<u32>(Key::NUM_KEYS)] = { false };
+		s32 x = 0;
+		s32 y = 0;
 	} &Input = Singleton<class Input>::instanceRef;
 
 	//- An event distributed by the engine when the mouse position has changed from the previous frame.
@@ -79,10 +80,10 @@ namespace Jwl
 	//- An event distributed by the engine when the mouse wheel is moved.
 	struct MouseScrolled : public Event<MouseScrolled>
 	{
-		MouseScrolled(int scroll);
+		MouseScrolled(s32 scroll);
 
 		//- Each positive integer indicates a single roll away from the user, and vice-versa.
-		const int scroll;
+		const s32 scroll;
 	};
 
 	//- An event distributed by the engine when a key is first pressed.

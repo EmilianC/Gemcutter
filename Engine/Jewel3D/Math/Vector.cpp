@@ -14,12 +14,12 @@ namespace Jwl
 	const vec2 vec2::Right = vec2(1.0f, 0.0f);
 	const vec2 vec2::Up = vec2(0.0f, 1.0f);
 
-	vec2::vec2(float x, float y)
+	vec2::vec2(f32 x, f32 y)
 		: x(x), y(y)
 	{
 	}
 
-	vec2::vec2(float val)
+	vec2::vec2(f32 val)
 		: x(val), y(val)
 	{
 	}
@@ -69,16 +69,16 @@ namespace Jwl
 		return *this;
 	}
 
-	vec2& vec2::operator*=(float scalar)
+	vec2& vec2::operator*=(f32 scalar)
 	{
 		this->x *= scalar;
 		this->y *= scalar;
 		return *this;
 	}
 
-	vec2& vec2::operator/=(float divisor)
+	vec2& vec2::operator/=(f32 divisor)
 	{
-		float inverse = 1.0f / divisor;
+		f32 inverse = 1.0f / divisor;
 		this->x *= inverse;
 		this->y *= inverse;
 		return *this;
@@ -109,44 +109,44 @@ namespace Jwl
 		return vec2(x / RHS.x, y / RHS.y);
 	}
 
-	vec2 vec2::operator*(float scalar) const
+	vec2 vec2::operator*(f32 scalar) const
 	{
 		return vec2(x * scalar, y * scalar);
 	}
 
-	vec2 vec2::operator/(float divisor) const
+	vec2 vec2::operator/(f32 divisor) const
 	{
-		float inverse = 1.0f / divisor;
+		f32 inverse = 1.0f / divisor;
 		return vec2(x * inverse, y * inverse);
 	}
 
-	float vec2::operator[](unsigned index) const
+	f32 vec2::operator[](u32 index) const
 	{
 		ASSERT(index >= 0 && index < 2, "'index' must be in the range of [0, 1].");
 		return *(&x + index);
 	}
 
-	float &vec2::operator[](unsigned index)
+	f32 &vec2::operator[](u32 index)
 	{
 		ASSERT(index >= 0 && index < 2, "'index' must be in the range of [0, 1].");
 		return *(&x + index);
 	}
 
-	float vec2::Length() const
+	f32 vec2::Length() const
 	{
 		return sqrt(x * x + y * y);
 	}
 
-	float vec2::LengthSquared() const
+	f32 vec2::LengthSquared() const
 	{
 		return x * x + y * y;
 	}
 
-	void vec2::ClampLength(float length)
+	void vec2::ClampLength(f32 length)
 	{
 		ASSERT(length >= 0.0f, "'length' must be positive.");
 
-		float magnitude = Length();
+		f32 magnitude = Length();
 		if (magnitude > length)
 		{
 			*this *= (length / magnitude);
@@ -155,7 +155,7 @@ namespace Jwl
 
 	void vec2::Normalize()
 	{
-		float invLength = 1.0f / Length();
+		f32 invLength = 1.0f / Length();
 
 		ASSERT(!std::isinf(invLength), "Zero length vector cannot be normalized.");
 
@@ -165,7 +165,7 @@ namespace Jwl
 
 	vec2 vec2::GetNormalized() const
 	{
-		float invLength = 1.0f / Length();
+		f32 invLength = 1.0f / Length();
 
 		ASSERT(!std::isinf(invLength), "Zero length vector cannot be normalized.");
 
@@ -182,17 +182,17 @@ namespace Jwl
 	const vec3 vec3::Up = vec3(0.0f, 1.0f, 0.0f);
 	const vec3 vec3::Forward = vec3(0.0f, 0.0f, 1.0f);
 
-	vec3::vec3(const vec2 &xy, float z)
+	vec3::vec3(const vec2 &xy, f32 z)
 		: x(xy[0]), y(xy[1]), z(z)
 	{
 	}
 
-	vec3::vec3(float x, float y, float z)
+	vec3::vec3(f32 x, f32 y, f32 z)
 		: x(x), y(y), z(z)
 	{
 	}
 
-	vec3::vec3(float val)
+	vec3::vec3(f32 val)
 		: x(val), y(val), z(val)
 	{
 	}
@@ -247,7 +247,7 @@ namespace Jwl
 		return *this;
 	}
 
-	vec3& vec3::operator*=(float scalar)
+	vec3& vec3::operator*=(f32 scalar)
 	{
 		this->x *= scalar;
 		this->y *= scalar;
@@ -255,9 +255,9 @@ namespace Jwl
 		return *this;
 	}
 
-	vec3& vec3::operator/=(float divisor)
+	vec3& vec3::operator/=(f32 divisor)
 	{
-		float inverse = 1.0f / divisor;
+		f32 inverse = 1.0f / divisor;
 		this->x *= inverse;
 		this->y *= inverse;
 		this->z *= inverse;
@@ -289,44 +289,44 @@ namespace Jwl
 		return vec3(x / RHS.x, y / RHS.y, z / RHS.z);
 	}
 
-	vec3 vec3::operator*(float scalar) const
+	vec3 vec3::operator*(f32 scalar) const
 	{
 		return vec3(x * scalar, y * scalar, z * scalar);
 	}
 
-	vec3 vec3::operator/(float divisor) const
+	vec3 vec3::operator/(f32 divisor) const
 	{
-		float inverse = 1.0f / divisor;
+		f32 inverse = 1.0f / divisor;
 		return vec3(x * inverse, y * inverse, z * inverse);
 	}
 
-	float vec3::operator[](unsigned index) const
+	f32 vec3::operator[](u32 index) const
 	{
 		ASSERT(index >= 0 && index < 3, "'index' must be in the range of [0, 2].");
 		return *(&x + index);
 	}
 
-	float &vec3::operator[](unsigned index)
+	f32 &vec3::operator[](u32 index)
 	{
 		ASSERT(index >= 0 && index < 3, "'index' must be in the range of [0, 2].");
 		return *(&x + index);
 	}
 
-	float vec3::Length() const
+	f32 vec3::Length() const
 	{
 		return sqrt(x * x + y * y + z * z);
 	}
 
-	float vec3::LengthSquared() const
+	f32 vec3::LengthSquared() const
 	{
 		return x * x + y * y + z * z;
 	}
 
-	void vec3::ClampLength(float length)
+	void vec3::ClampLength(f32 length)
 	{
 		ASSERT(length >= 0.0f, "'length' must be positive.");
 
-		float magnitude = Length();
+		f32 magnitude = Length();
 		if (magnitude > length)
 		{
 			*this *= (length / magnitude);
@@ -335,7 +335,7 @@ namespace Jwl
 
 	void vec3::Normalize()
 	{
-		float invLength = 1.0f / Length();
+		f32 invLength = 1.0f / Length();
 
 		ASSERT(!std::isinf(invLength), "Zero length vector cannot be normalized.");
 
@@ -346,7 +346,7 @@ namespace Jwl
 
 	vec3 vec3::GetNormalized() const
 	{
-		float invLength = 1.0f / Length();
+		f32 invLength = 1.0f / Length();
 
 		ASSERT(!std::isinf(invLength), "Zero length vector cannot be normalized.");
 
@@ -368,7 +368,7 @@ namespace Jwl
 	const vec4 vec4::Up = vec4(0.0f, 1.0f, 0.0f, 0.0f);
 	const vec4 vec4::Forward = vec4(0.0f, 0.0f, 1.0f, 0.0f);
 
-	vec4::vec4(const vec2 &xy, float z, float w)
+	vec4::vec4(const vec2 &xy, f32 z, f32 w)
 		: x(xy[0]), y(xy[1]), z(z), w(w)
 	{
 	}
@@ -378,17 +378,17 @@ namespace Jwl
 	{
 	}
 
-	vec4::vec4(const vec3 &xyz, float w)
+	vec4::vec4(const vec3 &xyz, f32 w)
 		: x(xyz[0]), y(xyz[1]), z(xyz[2]), w(w)
 	{
 	}
 
-	vec4::vec4(float x, float y, float z, float w)
+	vec4::vec4(f32 x, f32 y, f32 z, f32 w)
 		: x(x), y(y), z(z), w(w)
 	{
 	}
 
-	vec4::vec4(float val)
+	vec4::vec4(f32 val)
 		: x(val), y(val), z(val), w(val)
 	{
 	}
@@ -448,7 +448,7 @@ namespace Jwl
 		return *this;
 	}
 
-	vec4& vec4::operator*=(float scalar)
+	vec4& vec4::operator*=(f32 scalar)
 	{
 		this->x *= scalar;
 		this->y *= scalar;
@@ -457,9 +457,9 @@ namespace Jwl
 		return *this;
 	}
 
-	vec4& vec4::operator/=(float divisor)
+	vec4& vec4::operator/=(f32 divisor)
 	{
-		float inverse = 1.0f / divisor;
+		f32 inverse = 1.0f / divisor;
 		this->x *= inverse;
 		this->y *= inverse;
 		this->z *= inverse;
@@ -492,44 +492,44 @@ namespace Jwl
 		return vec4(x / RHS.x, y / RHS.y, z / RHS.z, w / RHS.w);
 	}
 
-	vec4 vec4::operator*(float scalar) const
+	vec4 vec4::operator*(f32 scalar) const
 	{
 		return vec4(x * scalar, y * scalar, z * scalar, w * scalar);
 	}
 
-	vec4 vec4::operator/(float divisor) const
+	vec4 vec4::operator/(f32 divisor) const
 	{
-		float inverse = 1.0f / divisor;
+		f32 inverse = 1.0f / divisor;
 		return vec4(x * inverse, y * inverse, z * inverse, w * inverse);
 	}
 
-	float vec4::operator[](unsigned index) const
+	f32 vec4::operator[](u32 index) const
 	{
 		ASSERT(index >= 0 && index < 4, "'index' must be in the range of [0, 3].");
 		return *(&x + index);
 	}
 
-	float &vec4::operator[](unsigned index)
+	f32 &vec4::operator[](u32 index)
 	{
 		ASSERT(index >= 0 && index < 4, "'index' must be in the range of [0, 3].");
 		return *(&x + index);
 	}
 
-	float vec4::Length() const
+	f32 vec4::Length() const
 	{
 		return sqrt(x * x + y * y + z * z + w * w);
 	}
 
-	float vec4::LengthSquared() const
+	f32 vec4::LengthSquared() const
 	{
 		return x * x + y * y + z * z + w * w;
 	}
 
-	void vec4::ClampLength(float length)
+	void vec4::ClampLength(f32 length)
 	{
 		ASSERT(length >= 0.0f, "'length' must be positive.");
 
-		float magnitude = Length();
+		f32 magnitude = Length();
 		if (magnitude > length)
 		{
 			*this *= (length / magnitude);
@@ -538,7 +538,7 @@ namespace Jwl
 
 	void vec4::Normalize()
 	{
-		float invLength = 1.0f / Length();
+		f32 invLength = 1.0f / Length();
 
 		ASSERT(!std::isinf(invLength), "Zero length vector cannot be normalized.");
 
@@ -550,7 +550,7 @@ namespace Jwl
 
 	vec4 vec4::GetNormalized() const
 	{
-		float invLength = 1.0f / Length();
+		f32 invLength = 1.0f / Length();
 
 		ASSERT(!std::isinf(invLength), "Zero length vector cannot be normalized.");
 
@@ -564,32 +564,32 @@ namespace Jwl
 
 #pragma endregion
 
-	float Distance(const vec2 &v1, const vec2 &v2)
+	f32 Distance(const vec2 &v1, const vec2 &v2)
 	{
 		return (v1 - v2).Length();
 	}
 
-	float Distance(const vec3 &v1, const vec3 &v2)
+	f32 Distance(const vec3 &v1, const vec3 &v2)
 	{
 		return (v1 - v2).Length();
 	}
 
-	float Distance(const vec4 &v1, const vec4 &v2)
+	f32 Distance(const vec4 &v1, const vec4 &v2)
 	{
 		return (v1 - v2).Length();
 	}
 
-	float Dot(const vec2 &v1, const vec2 &v2)
+	f32 Dot(const vec2 &v1, const vec2 &v2)
 	{
 		return (v1.x * v2.x) + (v1.y * v2.y);
 	}
 
-	float Dot(const vec3 &v1, const vec3 &v2)
+	f32 Dot(const vec3 &v1, const vec3 &v2)
 	{
 		return (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z);
 	}
 
-	float Dot(const vec4 &v1, const vec4 &v2)
+	f32 Dot(const vec4 &v1, const vec4 &v2)
 	{
 		return (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z) + (v1.w * v2.w);
 	}
@@ -617,12 +617,12 @@ namespace Jwl
 		return incident - 2.0f * Dot(normal, incident) * normal;
 	}
 
-	vec2 Refract(const vec2& incident, const vec2& normal, float index)
+	vec2 Refract(const vec2& incident, const vec2& normal, f32 index)
 	{
 		vec2 result;
 
-		float dot = Dot(normal, incident);
-		float k = 1.0f - index * index * (1.0f - dot * dot);
+		f32 dot = Dot(normal, incident);
+		f32 k = 1.0f - index * index * (1.0f - dot * dot);
 
 		if (k >= 0.0f)
 		{
@@ -632,12 +632,12 @@ namespace Jwl
 		return result;
 	}
 
-	vec3 Refract(const vec3& incident, const vec3& normal, float index)
+	vec3 Refract(const vec3& incident, const vec3& normal, f32 index)
 	{
 		vec3 result;
 
-		float dot = Dot(normal, incident);
-		float k = 1.0f - index * index * (1.0f - dot * dot);
+		f32 dot = Dot(normal, incident);
+		f32 k = 1.0f - index * index * (1.0f - dot * dot);
 
 		if (k >= 0.0f)
 		{
@@ -647,12 +647,12 @@ namespace Jwl
 		return result;
 	}
 
-	vec4 Refract(const vec4& incident, const vec4& normal, float index)
+	vec4 Refract(const vec4& incident, const vec4& normal, f32 index)
 	{
 		vec4 result;
 
-		float dot = Dot(normal, incident);
-		float k = 1.0f - index * index * (1.0f - dot * dot);
+		f32 dot = Dot(normal, incident);
+		f32 k = 1.0f - index * index * (1.0f - dot * dot);
 
 		if (k >= 0.0f)
 		{
@@ -749,36 +749,36 @@ namespace Jwl
 			Clamp(vec.w, min.w, max.w));
 	}
 
-	vec2 operator*(float scalar, const vec2& vec)
+	vec2 operator*(f32 scalar, const vec2& vec)
 	{
 		return vec2(vec.x * scalar, vec.y * scalar);
 	}
 
-	vec2 operator/(float divisor, const vec2& vec)
+	vec2 operator/(f32 divisor, const vec2& vec)
 	{
-		float inverse = 1.0f / divisor;
+		f32 inverse = 1.0f / divisor;
 		return vec2(vec.x * inverse, vec.y * inverse);
 	}
 	
-	vec3 operator*(float scalar, const vec3& vec)
+	vec3 operator*(f32 scalar, const vec3& vec)
 	{
 		return vec3(vec.x * scalar, vec.y * scalar, vec.z * scalar);
 	}
 
-	vec3 operator/(float divisor, const vec3& vec)
+	vec3 operator/(f32 divisor, const vec3& vec)
 	{
-		float inverse = 1.0f / divisor;
+		f32 inverse = 1.0f / divisor;
 		return vec3(vec.x * inverse, vec.y * inverse, vec.z * inverse);
 	}
 
-	vec4 operator*(float scalar, const vec4& vec)
+	vec4 operator*(f32 scalar, const vec4& vec)
 	{
 		return vec4(vec.x * scalar, vec.y * scalar, vec.z * scalar, vec.w * scalar);
 	}
 
-	vec4 operator/(float divisor, const vec4& vec)
+	vec4 operator/(f32 divisor, const vec4& vec)
 	{
-		float inverse = 1.0f / divisor;
+		f32 inverse = 1.0f / divisor;
 		return vec4(vec.x * inverse, vec.y * inverse, vec.z * inverse, vec.w * inverse);
 	}
 }

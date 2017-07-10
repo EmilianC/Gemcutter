@@ -30,7 +30,7 @@ namespace Jwl
 
 		XboxGamePad() = delete;
 		//- Initialize with a game-pad ID to read input from. [0,1,2,3]
-		XboxGamePad(unsigned gamepadID = 0);
+		XboxGamePad(u32 gamepadID = 0);
 
 		//- Returns true if the controller is connected and ready to use. Implicitly updates.
 		bool IsConnected();
@@ -39,15 +39,15 @@ namespace Jwl
 		void Update();
 
 		//- Set the level of vibration. [0,1]
-		void SetVibration(float left, float right);
+		void SetVibration(f32 left, f32 right);
 
 		//- Returns the state of a given button.
 		bool GetButton(Buttons button) const;
 
 		//- Returns the state of the left trigger. [0,1]
-		float GetLeftTrigger() const;
+		f32 GetLeftTrigger() const;
 		//- Returns the state of the right trigger. [0,1]
-		float GetRightTrigger() const;
+		f32 GetRightTrigger() const;
 
 		//- Returns x,y state of the left thumb stick. [-1,1]
 		vec2 GetLeftThumbStick() const;
@@ -55,17 +55,17 @@ namespace Jwl
 		vec2 GetRightThumbStick() const;
 
 		//- Returns the distance of the left thumb stick from the origin. [0,1]
-		float GetLeftThumbStickMagnitude() const;
+		f32 GetLeftThumbStickMagnitude() const;
 		//- Returns the distance of the right thumb stick from the origin. [0,1]
-		float GetRightThumbStickMagnitude() const;
+		f32 GetRightThumbStickMagnitude() const;
 
 	private:
 		vec2 leftThumbStick;
 		vec2 rightThumbStick;
-		float leftThumbStickMagnitude = 0.0f;
-		float rightThumbStickMagnitude = 0.0f;
+		f32 leftThumbStickMagnitude = 0.0f;
+		f32 rightThumbStickMagnitude = 0.0f;
 
 		XINPUT_STATE controllerState;
-		unsigned gamepadID = 0;
+		u32 gamepadID = 0;
 	};
 }

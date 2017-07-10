@@ -29,32 +29,32 @@ namespace Jwl
 		bool isLooping() const;
 
 		//- Sets the min/max range for attenuation. Should be [0, ...] for both. Default is 1.0f for both.
-		void SetDistance(float min, float max);
-		float GetMinDistance() const;
-		float GetMaxDistance() const;
+		void SetDistance(f32 min, f32 max);
+		f32 GetMinDistance() const;
+		f32 GetMaxDistance() const;
 
 		//- Volume should be [0, ...]. Default is 1.0f.
-		void SetVolume(float volume);
-		float GetVolume() const;
+		void SetVolume(f32 volume);
+		f32 GetVolume() const;
 
 		//- Minimum volume this source can reach. Should be [0, 1]. Default is 0.0f.
-		void SetMinVolume(float min);
-		float GetMinVolume() const;
+		void SetMinVolume(f32 min);
+		f32 GetMinVolume() const;
 
 		//- Maximum volume this source can reach. Should be [0, 1]. Default is 1.0f.
-		void SetMaxVolume(float max);
-		float GetMaxVolume() const;
+		void SetMaxVolume(f32 max);
+		f32 GetMaxVolume() const;
 
 		//- Pitch should be [0, ...]. Default is 1.0f.
-		void SetPitch(float pitch);
-		float GetPitch() const;
+		void SetPitch(f32 pitch);
+		f32 GetPitch() const;
 
 		//- Roll-off should be [0, ...]. Default is 1.0f. Values > 1 increase intensity of roll-off.
-		void SetRolloffFactor(float rollOff);
-		float GetRolloffFactor() const;
+		void SetRolloffFactor(f32 rollOff);
+		f32 GetRolloffFactor() const;
 
 		//- Returns the OpenAL sound handle. Used internally.
-		unsigned GetHandle() const;
+		u32 GetHandle() const;
 
 	private:
 		//- Stops any playing sound when disabled.
@@ -63,15 +63,15 @@ namespace Jwl
 		Sound::Ptr data;
 
 		//- An OpenAL sound handle.
-		unsigned hSound = 0;
+		u32 hSound = 0;
 
 		bool loop = false;
-		float distanceMin = 1.0f;
-		float distanceMax = 1.0f;
-		float volume = 1.0f;
-		float volumeMin = 0.0f;
-		float volumeMax = 1.0f;
-		float pitch = 1.0f;
-		float rollOff = 1.0f;
+		f32 distanceMin = 1.0f;
+		f32 distanceMax = 1.0f;
+		f32 volume = 1.0f;
+		f32 volumeMin = 0.0f;
+		f32 volumeMax = 1.0f;
+		f32 pitch = 1.0f;
+		f32 rollOff = 1.0f;
 	};
 }

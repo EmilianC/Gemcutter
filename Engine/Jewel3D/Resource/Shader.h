@@ -37,7 +37,7 @@ namespace Jwl
 		std::string GetString() const;
 
 		//- Returns a hash value generated from all internal defines.
-		unsigned GetHash() const;
+		u32 GetHash() const;
 
 		bool operator==(const ShaderVariantControl&) const;
 		bool operator!=(const ShaderVariantControl&) const;
@@ -46,7 +46,7 @@ namespace Jwl
 		void UpdateHash();
 
 		std::vector<std::string> defines;
-		unsigned hash = 0;
+		u32 hash = 0;
 	};
 }
 
@@ -68,13 +68,13 @@ namespace Jwl
 	//- Used internally to expose Uniform buffers from the shader to BufferSlots.
 	struct BufferBinding
 	{
-		BufferBinding(const std::string& name, unsigned unit, UniformBuffer::Ptr buff)
+		BufferBinding(const std::string& name, u32 unit, UniformBuffer::Ptr buff)
 			: name(name), unit(unit), templateBuff(buff) {}
 
 		//- The name of the uniform buffer in the shader.
 		const std::string name;
 		//- The unit connecting this buffer to a BufferSlot of the same unit.
-		const unsigned unit;
+		const u32 unit;
 		//- Holds a template buffer that can be duplicated.
 		//- Created only for buffers that are defined with the "template" keyword in the shader.
 		const UniformBuffer::Ptr templateBuff;
@@ -83,13 +83,13 @@ namespace Jwl
 	//- Used internally to expose Samplers from the shader to TextureSlots.
 	struct TextureBinding
 	{
-		TextureBinding(const std::string& name, unsigned unit)
+		TextureBinding(const std::string& name, u32 unit)
 			: name(name), unit(unit) {}
 
 		//- The name of the sampler in the shader.
 		const std::string name;
 		//- The unit connecting this texture sampler to a TextureSlot of the same unit.
-		const unsigned unit;
+		const u32 unit;
 	};
 
 	class Shader : public Resource<Shader>
@@ -121,7 +121,7 @@ namespace Jwl
 
 		//- Creates a new UniformBuffer from the specified buffer slot.
 		//- The slot must be marked as 'template' in the shader.
-		UniformBuffer::Ptr CreateBufferFromTemplate(unsigned unit) const;
+		UniformBuffer::Ptr CreateBufferFromTemplate(u32 unit) const;
 
 		const std::vector<BufferBinding>& GetBufferBindings() const;
 
@@ -135,14 +135,14 @@ namespace Jwl
 			void Unload();
 			void Bind() const;
 
-			unsigned hProgram	 = 0;
-			unsigned hVertShader = 0;
-			unsigned hFragShader = 0;
-			unsigned hGeomShader = 0;
+			u32 hProgram	 = 0;
+			u32 hVertShader = 0;
+			u32 hFragShader = 0;
+			u32 hGeomShader = 0;
 		};
 
 		//- Used to identify the content of a Program block.
-		enum class BlockType : unsigned
+		enum class BlockType : u32
 		{
 			Attributes	= 1,
 			Uniforms	= 2,
@@ -168,7 +168,7 @@ namespace Jwl
 		bool ParseAttributes(const Block& block);
 		bool ParseShader(const Block& block);
 		bool ParseUniforms(const Block& block);
-		bool ParseUniformBlock(const Block& block, const char* name, unsigned Id, bool makeTemplate, bool makeStatic);
+		bool ParseUniformBlock(const Block& block, const char* name, u32 Id, bool makeTemplate, bool makeStatic);
 		bool ParseSamplers(const Block& block);
 
 		bool loaded = false;

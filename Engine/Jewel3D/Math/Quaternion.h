@@ -10,7 +10,7 @@ namespace Jwl
 	{
 	public:
 		quat() = default;
-		quat(float X, float Y, float Z, float W);
+		quat(f32 X, f32 Y, f32 Z, f32 W);
 		quat(const vec3& right, const vec3& up, const vec3& forward);
 		quat(const mat3& rotation);
 		
@@ -18,8 +18,8 @@ namespace Jwl
 		vec3 operator*(const vec3&) const;
 		quat& operator*=(const quat&);
 
-		float operator[](unsigned index) const;
-		float& operator[](unsigned index);
+		f32 operator[](u32 index) const;
+		f32& operator[](u32 index);
 
 		void SetIdentity();
 		void Conjugate();
@@ -31,20 +31,20 @@ namespace Jwl
 		vec3 GetUp() const;
 		vec3 GetForward() const;
 
-		void Rotate(const vec3& axis, float degrees);
-		void Rotate(float X, float Y, float Z, float degrees);
-		void RotateX(float degrees);
-		void RotateY(float degrees);
-		void RotateZ(float degrees);
+		void Rotate(const vec3& axis, f32 degrees);
+		void Rotate(f32 X, f32 Y, f32 Z, f32 degrees);
+		void RotateX(f32 degrees);
+		void RotateY(f32 degrees);
+		void RotateZ(f32 degrees);
 		
 		static const quat Identity;
 
-		float x = 0.0f;
-		float y = 0.0f;
-		float z = 0.0f;
-		float w = 1.0f;
+		f32 x = 0.0f;
+		f32 y = 0.0f;
+		f32 z = 0.0f;
+		f32 w = 1.0f;
 	};
 
-	float Dot(const quat& p0, const quat& p1);
-	quat Slerp(const quat& p0, const quat& p1, float percent);
+	f32 Dot(const quat& p0, const quat& p1);
+	quat Slerp(const quat& p0, const quat& p1, f32 percent);
 }

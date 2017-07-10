@@ -10,20 +10,20 @@ namespace Jwl
 {
 	void SeedRandomNumberGenerator()
 	{
-		srand(static_cast<unsigned>(time(NULL)));
+		srand(static_cast<u32>(time(NULL)));
 	}
 
-	void SeedRandomNumberGenerator(unsigned seed)
+	void SeedRandomNumberGenerator(u32 seed)
 	{
 		srand(seed);
 	}
 
-	float RandomRange(float min, float max)
+	f32 RandomRange(f32 min, f32 max)
 	{
 		return min + ((max - min) * rand()) / (RAND_MAX + 1.0f);
 	}
 
-	int RandomRange(int min, int max)
+	s32 RandomRange(s32 min, s32 max)
 	{
 		return rand() % (max + 1 - min) + min;
 	}
@@ -44,30 +44,30 @@ namespace Jwl
 			RandomRange(0.0f, 1.0f));
 	}
 
-	Range::Range(float _min, float _max)
+	Range::Range(f32 _min, f32 _max)
 	{
 		Set(_min, _max);
 	}
 
-	Range Range::Deviation(float value, float deviation)
+	Range Range::Deviation(f32 value, f32 deviation)
 	{
-		float halfRange = deviation * 0.5f;
+		f32 halfRange = deviation * 0.5f;
 		return Range(value - halfRange, value + halfRange);
 	}
 
-	float Range::Random() const
+	f32 Range::Random() const
 	{
 		return RandomRange(min, max);
 	}
 
-	void Range::Set(float _min, float _max)
+	void Range::Set(f32 _min, f32 _max)
 	{
 		ASSERT(_min <= _max, "Invalid range.");
 		min = _min;
 		max = _max;
 	}
 
-	bool Range::Contains(float value) const
+	bool Range::Contains(f32 value) const
 	{
 		return value >= min && value <= max;
 	}

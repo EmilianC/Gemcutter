@@ -19,12 +19,12 @@ namespace
 		return 0;
 	}
 
-	static const __int64 ticksPerSecond = GetTimerResolution();
-	static const __int64 ticksPerMS = ticksPerSecond / 1000;
+	const __int64 ticksPerSecond = GetTimerResolution();
+	const __int64 ticksPerMS = ticksPerSecond / 1000;
 
 	//- Casted ahead of time for a performance boost in GetElapsedMS() and GetElapsedSeconds().
-	static const double d_ticksPerSecond = static_cast<double>(ticksPerSecond);
-	static const double d_ticksPerMS = static_cast<double>(ticksPerMS);
+	const Jwl::f64 d_ticksPerSecond = static_cast<Jwl::f64 > (ticksPerSecond);
+	const Jwl::f64 d_ticksPerMS = static_cast<Jwl::f64>(ticksPerMS);
 }
 
 namespace Jwl
@@ -39,17 +39,17 @@ namespace Jwl
 		return ticksPerSecond > 0;
 	}
 
-	__int64 Timer::GetTicksPerMS()
+	s64 Timer::GetTicksPerMS()
 	{
 		return ticksPerMS;
 	}
 
-	__int64 Timer::GetTicksPerSecond()
+	s64 Timer::GetTicksPerSecond()
 	{
 		return ticksPerSecond;
 	}
 
-	__int64 Timer::GetCurrentTick()
+	s64 Timer::GetCurrentTick()
 	{
 		LARGE_INTEGER currentTime;
 		QueryPerformanceCounter(&currentTime);
@@ -62,45 +62,45 @@ namespace Jwl
 		startTime = GetCurrentTick();
 	}
 
-	double Timer::GetElapsedMS() const
+	f64 Timer::GetElapsedMS() const
 	{
 		return (GetCurrentTick() - startTime) / d_ticksPerMS;
 	}
 
-	double Timer::GetElapsedSeconds() const
+	f64 Timer::GetElapsedSeconds() const
 	{
 		return (GetCurrentTick() - startTime) / d_ticksPerSecond;
 	}
 
-	bool Timer::IsElapsedMS(double ms) const
+	bool Timer::IsElapsedMS(f64 ms) const
 	{
 		return ms >= GetElapsedMS();
 	}
 
-	bool Timer::IsElapsedSeconds(double seconds) const
+	bool Timer::IsElapsedSeconds(f64 seconds) const
 	{
 		return seconds >= GetElapsedSeconds();
 	}
 
-	void Timer::SubtractTimeMS(double ms)
+	void Timer::SubtractTimeMS(f64 ms)
 	{
 		// Moving the start time forward effectively removes time.
 		startTime += static_cast<__int64>(ms) / ticksPerMS;
 	}
 
-	void Timer::SubtractTimeSeconds(double seconds)
+	void Timer::SubtractTimeSeconds(f64 seconds)
 	{
 		// Moving the start time forward effectively removes time.
 		startTime += static_cast<__int64>(seconds) / ticksPerSecond;
 	}
 
-	void Timer::AddTimeMS(double ms)
+	void Timer::AddTimeMS(f64 ms)
 	{
 		// Moving the start time back effective adds more time.
 		startTime -= static_cast<__int64>(ms) / ticksPerMS;
 	}
 
-	void Timer::AddTimeSeconds(double seconds)
+	void Timer::AddTimeSeconds(f64 seconds)
 	{
 		// Moving the start time back effective adds more time.
 		startTime -= static_cast<__int64>(seconds) / ticksPerSecond;

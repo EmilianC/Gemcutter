@@ -14,21 +14,21 @@ namespace Jwl
 	class ParticleEmitter : public Component<ParticleEmitter>
 	{
 	public:
-		ParticleEmitter(Entity& owner, unsigned maxParticles = 100);
+		ParticleEmitter(Entity& owner, u32 maxParticles = 100);
 		ParticleEmitter& operator=(const ParticleEmitter&);
 
-		enum Type : unsigned
+		enum Type : u32
 		{
 			Omni,
 			Box
 		};
 
-		void Warmup(float time);
+		void Warmup(f32 time);
 		void Update();
 
-		unsigned GetNumAliveParticles() const;
-		unsigned GetNumMaxParticles() const;
-		unsigned GetVAO() const;
+		u32 GetNumAliveParticles() const;
+		u32 GetNumMaxParticles() const;
+		u32 GetVAO() const;
 
 		//- Sets the Size behaviour of particles if no functors manipulate size.
 		void SetSizeStartEnd(const vec2& start, const vec2& end);
@@ -37,8 +37,8 @@ namespace Jwl
 		void SetColorStartEnd(const vec3& start, const vec3& end);
 		void SetColorStartEnd(const vec3& constant);
 		//- Sets the alpha behaviour of particles if no functors manipulate alpha.
-		void SetAlphaStartEnd(float start, float end);
-		void SetAlphaStartEnd(float constant);
+		void SetAlphaStartEnd(f32 start, f32 end);
+		void SetAlphaStartEnd(f32 constant);
 
 		//- Sets the simulation space of the particle system.
 		//- When local, the particles will translate and move with the entity.
@@ -53,7 +53,7 @@ namespace Jwl
 		Range velocity{ 0.5f, 1.0f };
 		Range lifetime{ 5.0f, 10.0f };
 		Type spawnType = Omni;
-		float spawnPerSecond = 10.0f;
+		f32 spawnPerSecond = 10.0f;
 
 		//- Used for box spawning.
 		Range axisX{ -1.0f, 1.0f };
@@ -67,15 +67,15 @@ namespace Jwl
 		bool isPaused = false;
 
 	private:
-		void UpdateInternal(float deltaTime);
+		void UpdateInternal(f32 deltaTime);
 
 		ParticleBuffer data;
 		
-		float numToSpawn		= 0.0f;
+		f32 numToSpawn		= 0.0f;
 		bool requiresAgeRatio	= false;
 		bool localSpace			= false;
-		unsigned maxParticles	= 0;
-		unsigned numCurrentParticles = 0;
+		u32 maxParticles	= 0;
+		u32 numCurrentParticles = 0;
 
 		UniformBuffer particleParameters;
 	};

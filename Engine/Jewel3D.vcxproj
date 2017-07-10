@@ -264,6 +264,7 @@
     <ClInclude Include="Jewel3D\Application\Logging.h" />
     <ClInclude Include="Jewel3D\Application\Threading.h" />
     <ClInclude Include="Jewel3D\Application\Timer.h" />
+    <ClInclude Include="Jewel3D\Application\Types.h" />
     <ClInclude Include="Jewel3D\Entity\Entity.h" />
     <ClInclude Include="Jewel3D\Entity\EntityGroup.h" />
     <ClInclude Include="Jewel3D\Entity\Name.h" />

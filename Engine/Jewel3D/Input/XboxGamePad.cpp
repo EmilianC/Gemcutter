@@ -7,7 +7,7 @@
 
 namespace Jwl
 {
-	XboxGamePad::XboxGamePad(unsigned gamepadID)
+	XboxGamePad::XboxGamePad(u32 gamepadID)
 		: gamepadID(gamepadID)
 	{
 		ASSERT(gamepadID < 4, "XboxGamePad can only get input from up to four game-pads.");
@@ -27,16 +27,16 @@ namespace Jwl
 		memset(&controllerState, 0, sizeof(XINPUT_STATE));
 		XInputGetState(gamepadID, &controllerState);
 
-		leftThumbStick.x = static_cast<float>(controllerState.Gamepad.sThumbLX);
-		leftThumbStick.y = static_cast<float>(controllerState.Gamepad.sThumbLY);
+		leftThumbStick.x = static_cast<f32>(controllerState.Gamepad.sThumbLX);
+		leftThumbStick.y = static_cast<f32>(controllerState.Gamepad.sThumbLY);
 		leftThumbStickMagnitude = leftThumbStick.Length();
 
-		rightThumbStick.x = static_cast<float>(controllerState.Gamepad.sThumbRX);
-		rightThumbStick.y = static_cast<float>(controllerState.Gamepad.sThumbRY);
+		rightThumbStick.x = static_cast<f32>(controllerState.Gamepad.sThumbRX);
+		rightThumbStick.y = static_cast<f32>(controllerState.Gamepad.sThumbRY);
 		rightThumbStickMagnitude = rightThumbStick.Length();
 	}
 
-	void XboxGamePad::SetVibration(float left, float right)
+	void XboxGamePad::SetVibration(f32 left, f32 right)
 	{
 		ASSERT(left >= 0.0f && left <= 1.0f, "XboxGamePad: 'left' vibration value must be in range of [0, 1].");
 		ASSERT(right >= 0.0f && right <= 1.0f, "XboxGamePad: 'right' vibration value must be in range of [0, 1].");
@@ -55,11 +55,11 @@ namespace Jwl
 		return (controllerState.Gamepad.wButtons & static_cast<WORD>(button)) != 0;
 	}
 
-	float XboxGamePad::GetLeftTrigger() const
+	f32 XboxGamePad::GetLeftTrigger() const
 	{
 		if (controllerState.Gamepad.bLeftTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD)
 		{
-			return static_cast<float>(controllerState.Gamepad.bLeftTrigger) / 255.0f;
+			return static_cast<f32>(controllerState.Gamepad.bLeftTrigger) / 255.0f;
 		}
 		else
 		{
@@ -67,11 +67,11 @@ namespace Jwl
 		}
 	}
 
-	float XboxGamePad::GetRightTrigger() const
+	f32 XboxGamePad::GetRightTrigger() const
 	{
 		if (controllerState.Gamepad.bRightTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD)
 		{
-			return static_cast<float>(controllerState.Gamepad.bRightTrigger) / 255.0f;
+			return static_cast<f32>(controllerState.Gamepad.bRightTrigger) / 255.0f;
 		}
 		else
 		{
@@ -103,7 +103,7 @@ namespace Jwl
 		}
 	}
 
-	float XboxGamePad::GetLeftThumbStickMagnitude() const
+	f32 XboxGamePad::GetLeftThumbStickMagnitude() const
 	{
 		if (leftThumbStickMagnitude > XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE)
 		{
@@ -115,7 +115,7 @@ namespace Jwl
 		}
 	}
 
-	float XboxGamePad::GetRightThumbStickMagnitude() const
+	f32 XboxGamePad::GetRightThumbStickMagnitude() const
 	{
 		if (rightThumbStickMagnitude > XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE)
 		{

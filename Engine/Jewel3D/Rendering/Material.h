@@ -34,7 +34,7 @@ namespace Jwl
 
 		//- Mirror the current shader's UniformBuffer bound to the specified index.
 		//- The specified buffer must be marked as a 'template'.
-		void CreateUniformBuffer(unsigned unit);
+		void CreateUniformBuffer(u32 unit);
 		//- Enumerates and mirrors all the current shader's 'template' UniformBuffers.
 		void CreateUniformBuffers();
 

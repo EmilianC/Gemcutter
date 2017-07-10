@@ -11,11 +11,11 @@ namespace Jwl
 {
 	namespace detail
 	{
-		std::unordered_map<unsigned, std::vector<Entity*>> entityIndex;
-		std::unordered_map<unsigned, std::vector<ComponentBase*>> componentIndex;
+		std::unordered_map<u32, std::vector<Entity*>> entityIndex;
+		std::unordered_map<u32, std::vector<ComponentBase*>> componentIndex;
 	}
 
-	ComponentBase::ComponentBase(Entity& _owner, unsigned _componentId)
+	ComponentBase::ComponentBase(Entity& _owner, u32 _componentId)
 		: owner(_owner)
 		, componentId(_componentId)
 	{
@@ -38,9 +38,9 @@ namespace Jwl
 		return isEnabled;
 	}
 
-	unsigned ComponentBase::GenerateID()
+	u32 ComponentBase::GenerateID()
 	{
-		static unsigned counter = 1;
+		static u32 counter = 1;
 		return counter++;
 	}
 
@@ -107,7 +107,7 @@ namespace Jwl
 
 	void Entity::RemoveAllComponents()
 	{
-		unsigned i = components.size();
+		u32 i = components.size();
 
 		// This loop safely removes all components even if they remove others during destruction.
 		while (i-- != 0)
@@ -205,7 +205,7 @@ namespace Jwl
 		return child;
 	}
 
-	void Entity::Tag(unsigned tagId)
+	void Entity::Tag(u32 tagId)
 	{
 		if (IsEnabled())
 		{
@@ -215,7 +215,7 @@ namespace Jwl
 		tags.push_back(tagId);
 	}
 
-	void Entity::RemoveTag(unsigned tagId)
+	void Entity::RemoveTag(u32 tagId)
 	{
 		if (IsEnabled())
 		{
@@ -225,14 +225,14 @@ namespace Jwl
 		tags.erase(std::find(tags.begin(), tags.end(), tagId));
 	}
 
-	void Entity::IndexTag(unsigned tagId)
+	void Entity::IndexTag(u32 tagId)
 	{
 		// Adjust [id, entity] index.
 		auto& table = detail::entityIndex[tagId];
 		table.insert(std::lower_bound(table.begin(), table.end(), this), this);
 	}
 
-	void Entity::UnindexTag(unsigned tagId)
+	void Entity::UnindexTag(u32 tagId)
 	{
 		// Adjust [id, entity] index.
 		auto& table = detail::entityIndex[tagId];

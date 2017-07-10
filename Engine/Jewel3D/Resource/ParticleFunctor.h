@@ -17,9 +17,9 @@ namespace Jwl
 		virtual ~ParticleFunctor() = default;
 		//- Called to, optionally, initialize newly spawned particles.
 		//- New particles will be in the specified index range.
-		virtual void Init(ParticleBuffer& particles, ParticleEmitter& emitter, unsigned startIndex, unsigned count) {};
+		virtual void Init(ParticleBuffer& particles, ParticleEmitter& emitter, u32 startIndex, u32 count) {};
 		//- Main update call for the functor.
-		virtual void Update(ParticleBuffer& particles, ParticleEmitter& emitter, float deltaTime) = 0;
+		virtual void Update(ParticleBuffer& particles, ParticleEmitter& emitter, f32 deltaTime) = 0;
 		//- Specifies the required data buffers for this functor to update.
 		virtual ParticleBuffers GetRequirements() const { return ParticleBuffers::None; };
 	};
@@ -60,15 +60,15 @@ namespace Jwl
 	{
 		friend ShareableAlloc;
 		RotationFunc() = default;
-		RotationFunc(float rotationSpeed, Range initialRotation = Range(0.0f, 360.0f));
+		RotationFunc(f32 rotationSpeed, Range initialRotation = Range(0.0f, 360.0f));
 
 	public:
-		virtual void Init(ParticleBuffer& particles, ParticleEmitter& emitter, unsigned startIndex, unsigned count) override;
-		virtual void Update(ParticleBuffer& particles, ParticleEmitter& emitter, float deltaTime) override;
+		virtual void Init(ParticleBuffer& particles, ParticleEmitter& emitter, u32 startIndex, u32 count) override;
+		virtual void Update(ParticleBuffer& particles, ParticleEmitter& emitter, f32 deltaTime) override;
 
 		virtual ParticleBuffers GetRequirements() const final override;
 
-		float rotationSpeed = 5.0f;
+		f32 rotationSpeed = 5.0f;
 		Range initialRotation{ 0.0f, 360.0f };
 	};
 }

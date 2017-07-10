@@ -13,38 +13,38 @@ namespace Jwl
 		static bool IsSupported();
 
 		//- Returns the resolution of the timer in ticks-per-millisecond.
-		static __int64 GetTicksPerMS();
+		static s64 GetTicksPerMS();
 		//- Returns the resolution of the timer in ticks-per-second.
-		static __int64 GetTicksPerSecond();
+		static s64 GetTicksPerSecond();
 
 		//- Returns the current global tick count. Can be subtracted from a previous call
 		// in order to calculate the amount of time that has passed.
-		static __int64 GetCurrentTick();
+		static s64 GetCurrentTick();
 
 		//- Sets the reference time for any other functions called in the future.
 		void Reset();
 
 		//- Returns the amount of time passed since the last Reset() in milliseconds.
-		double GetElapsedMS() const;
+		f64 GetElapsedMS() const;
 		//- Returns the amount of time passed since the last Reset() in seconds.
-		double GetElapsedSeconds() const;
+		f64 GetElapsedSeconds() const;
 
 		//- Returns true if the specified amount of milliseconds have elapsed since the last Reset().
-		bool IsElapsedMS(double ms) const;
+		bool IsElapsedMS(f64 ms) const;
 		//- Returns true if the specified amount of seconds have elapsed since the last Reset().
-		bool IsElapsedSeconds(double seconds) const;
+		bool IsElapsedSeconds(f64 seconds) const;
 
 		//- Removes milliseconds from the running internal clock.
-		void SubtractTimeMS(double ms);
+		void SubtractTimeMS(f64 ms);
 		//- Removes seconds from the running internal clock.
-		void SubtractTimeSeconds(double seconds);
+		void SubtractTimeSeconds(f64 seconds);
 
 		//- Adds milliseconds to the running internal clock.
-		void AddTimeMS(double ms);
+		void AddTimeMS(f64 ms);
 		//- Adds seconds to the running internal clock.
-		void AddTimeSeconds(double seconds);
+		void AddTimeSeconds(f64 seconds);
 
 	private:
-		__int64 startTime;
+		s64 startTime;
 	};
 }

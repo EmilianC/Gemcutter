@@ -8,7 +8,7 @@ namespace Jwl
 {
 	class vec4;
 
-	enum class UniformBufferSlot : unsigned
+	enum class UniformBufferSlot : u32
 	{
 		Camera = 10,
 		Model = 11,
@@ -104,30 +104,30 @@ namespace Jwl
 		Adaptive = -1
 	};
 
-	int ResolveFilterMagMode(TextureFilterMode filter);
-	int ResolveFilterMinMode(TextureFilterMode filter);
+	s32 ResolveFilterMagMode(TextureFilterMode filter);
+	s32 ResolveFilterMinMode(TextureFilterMode filter);
 	bool ResolveMipMapping(TextureFilterMode filter);
-	int ResolveWrapMode(TextureWrapMode wrapMode);
-	unsigned ResolveFormat(TextureFormat format);
+	s32 ResolveWrapMode(TextureWrapMode wrapMode);
+	u32 ResolveFormat(TextureFormat format);
 
 	TextureFilterMode StringToFilterMode(const std::string&);
 	TextureWrapMode StringToWrapMode(const std::string&);
 
-	unsigned CountMipLevels(unsigned width, unsigned height, TextureFilterMode filter);
-	unsigned CountChannels(TextureFormat format);
+	u32 CountMipLevels(u32 width, u32 height, TextureFilterMode filter);
+	u32 CountChannels(TextureFormat format);
 
 	void ClearBackBuffer();
 	void ClearBackBufferDepth();
 	void ClearBackBufferColor();
 
-	void SetActiveTextureUnit(unsigned unit);
+	void SetActiveTextureUnit(u32 unit);
 	void SetClearColor(const vec4& color);
-	void SetClearColor(float r, float g, float b, float a);
+	void SetClearColor(f32 r, f32 g, f32 b, f32 a);
 	void SetWireframe(bool enabled);
 	void SetCullFunc(CullFunc func);
 	void SetBlendFunc(BlendFunc func);
 	void SetDepthFunc(DepthFunc func);
-	void SetViewport(unsigned x, unsigned y, unsigned width, unsigned height);
+	void SetViewport(u32 x, u32 y, u32 width, u32 height);
 	bool SetVSync(VSyncMode mode);
 
 	static class GPUInfo : public Singleton<class GPUInfo>
@@ -137,15 +137,15 @@ namespace Jwl
 		//- Called by Application on window creation.
 		void ScanDevice();
 
-		unsigned GetMaxTextureSlots() const;
-		unsigned GetMaxUniformBufferSlots() const;
-		unsigned GetMaxRenderTargetAttachments() const;
-		unsigned GetMaxDrawBuffers() const;
+		u32 GetMaxTextureSlots() const;
+		u32 GetMaxUniformBufferSlots() const;
+		u32 GetMaxRenderTargetAttachments() const;
+		u32 GetMaxDrawBuffers() const;
 
 	private:
-		unsigned MaxTextureSlots = 0;
-		unsigned MaxUniformBufferSlots = 0;
-		unsigned MaxRenderTargetAttachments = 0;
-		unsigned MaxDrawBuffers = 0;
+		u32 MaxTextureSlots = 0;
+		u32 MaxUniformBufferSlots = 0;
+		u32 MaxRenderTargetAttachments = 0;
+		u32 MaxDrawBuffers = 0;
 	} &GPUInfo = Singleton<class GPUInfo>::instanceRef;
 }

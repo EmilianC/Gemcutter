@@ -11,14 +11,14 @@
 
 namespace
 {
-	static const int filterMinMode_Resolve[] = {
+	static const GLint filterMinMode_Resolve[] = {
 		GL_NEAREST,
 		GL_LINEAR,
 		GL_LINEAR_MIPMAP_NEAREST,
 		GL_LINEAR_MIPMAP_LINEAR
 	};
 
-	static const int wrapMode_Resolve[] = {
+	static const GLint wrapMode_Resolve[] = {
 		GL_CLAMP_TO_EDGE,
 		GL_CLAMP_TO_BORDER,
 		GL_REPEAT,
@@ -26,7 +26,7 @@ namespace
 		GL_MIRROR_CLAMP_TO_EDGE
 	};
 
-	static const unsigned format_Resolve[] = {
+	static const GLuint format_Resolve[] = {
 		GL_RGB8,
 		GL_RGB16,
 		GL_RGB16F,
@@ -53,7 +53,7 @@ namespace Jwl
 	{
 	}
 
-	int ResolveFilterMagMode(TextureFilterMode filter)
+	s32 ResolveFilterMagMode(TextureFilterMode filter)
 	{
 		if (filter == TextureFilterMode::Point)
 		{
@@ -65,9 +65,9 @@ namespace Jwl
 		}
 	}
 
-	int ResolveFilterMinMode(TextureFilterMode filter)
+	s32 ResolveFilterMinMode(TextureFilterMode filter)
 	{
-		return filterMinMode_Resolve[static_cast<unsigned>(filter)];
+		return filterMinMode_Resolve[static_cast<u32>(filter)];
 	}
 
 	bool ResolveMipMapping(TextureFilterMode filter)
@@ -75,14 +75,14 @@ namespace Jwl
 		return filter == TextureFilterMode::Trilinear || filter == TextureFilterMode::Bilinear;
 	}
 
-	int ResolveWrapMode(TextureWrapMode wrapMode)
+	s32 ResolveWrapMode(TextureWrapMode wrapMode)
 	{
-		return wrapMode_Resolve[static_cast<unsigned>(wrapMode)];
+		return wrapMode_Resolve[static_cast<u32>(wrapMode)];
 	}
 
-	unsigned ResolveFormat(TextureFormat format)
+	u32 ResolveFormat(TextureFormat format)
 	{
-		return format_Resolve[static_cast<unsigned>(format)];
+		return format_Resolve[static_cast<u32>(format)];
 	}
 
 	TextureFilterMode StringToFilterMode(const std::string& str)
@@ -111,19 +111,19 @@ namespace Jwl
 			return TextureWrapMode::Clamp;
 	}
 
-	unsigned CountMipLevels(unsigned width, unsigned height, TextureFilterMode filter)
+	u32 CountMipLevels(u32 width, u32 height, TextureFilterMode filter)
 	{
-		unsigned numLevels = 1;
+		u32 numLevels = 1;
 		if (ResolveMipMapping(filter))
 		{
-			float max = static_cast<float>(Max(width, height));
-			numLevels = static_cast<unsigned>(std::floor(std::log2(max))) + 1;
+			f32 max = static_cast<f32>(Max(width, height));
+			numLevels = static_cast<u32>(std::floor(std::log2(max))) + 1;
 		}
 
 		return numLevels;
 	}
 
-	unsigned CountChannels(TextureFormat format)
+	u32 CountChannels(TextureFormat format)
 	{
 		switch (format)
 		{
@@ -166,7 +166,7 @@ namespace Jwl
 		glClear(GL_COLOR_BUFFER_BIT);
 	}
 
-	void SetActiveTextureUnit(unsigned unit)
+	void SetActiveTextureUnit(u32 unit)
 	{
 		glActiveTexture(GL_TEXTURE0 + unit);
 	}
@@ -176,7 +176,7 @@ namespace Jwl
 		glClearColor(color.x, color.y, color.z, color.w);
 	}
 
-	void SetClearColor(float r, float g, float b, float a)
+	void SetClearColor(f32 r, f32 g, f32 b, f32 a)
 	{
 		glClearColor(r, g, b, a);
 	}
@@ -267,7 +267,7 @@ namespace Jwl
 		}
 	}
 
-	void SetViewport(unsigned x, unsigned y, unsigned width, unsigned height)
+	void SetViewport(u32 x, u32 y, u32 width, u32 height)
 	{
 		glViewport(x, y, width, height);
 	}
@@ -280,7 +280,7 @@ namespace Jwl
 			return false;
 		}
 
-		typedef bool (APIENTRY *FUNC)(int);
+		typedef bool (APIENTRY *FUNC)(s32);
 		FUNC wglSwapIntervalEXT = (FUNC)wglGetProcAddress("wglSwapIntervalEXT");
 		if (!wglSwapIntervalEXT)
 		{
@@ -294,7 +294,7 @@ namespace Jwl
 			return false;
 		}
 
-		bool result = wglSwapIntervalEXT(static_cast<int>(mode));
+		bool result = wglSwapIntervalEXT(static_cast<s32>(mode));
 		if (!result)
 		{
 			Error("Failed to change VSync mode.");
@@ -305,28 +305,28 @@ namespace Jwl
 
 	void GPUInfo::ScanDevice()
 	{
-		glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, reinterpret_cast<int*>(&MaxTextureSlots));
-		glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, reinterpret_cast<int*>(&MaxUniformBufferSlots));
-		glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS, reinterpret_cast<int*>(&MaxRenderTargetAttachments));
-		glGetIntegerv(GL_MAX_DRAW_BUFFERS, reinterpret_cast<int*>(&MaxDrawBuffers));
+		glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, reinterpret_cast<s32*>(&MaxTextureSlots));
+		glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, reinterpret_cast<s32*>(&MaxUniformBufferSlots));
+		glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS, reinterpret_cast<s32*>(&MaxRenderTargetAttachments));
+		glGetIntegerv(GL_MAX_DRAW_BUFFERS, reinterpret_cast<s32*>(&MaxDrawBuffers));
 	}
 
-	unsigned GPUInfo::GetMaxTextureSlots() const
+	u32 GPUInfo::GetMaxTextureSlots() const
 	{
 		return MaxTextureSlots;
 	}
 
-	unsigned GPUInfo::GetMaxUniformBufferSlots() const
+	u32 GPUInfo::GetMaxUniformBufferSlots() const
 	{
 		return MaxUniformBufferSlots;
 	}
 
-	unsigned GPUInfo::GetMaxRenderTargetAttachments() const
+	u32 GPUInfo::GetMaxRenderTargetAttachments() const
 	{
 		return MaxRenderTargetAttachments;
 	}
 
-	unsigned GPUInfo::GetMaxDrawBuffers() const
+	u32 GPUInfo::GetMaxDrawBuffers() const
 	{
 		return MaxDrawBuffers;
 	}

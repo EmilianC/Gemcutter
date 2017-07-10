@@ -20,9 +20,9 @@ namespace Jwl
 		NetworkUDP();
 
 		//- Init socket for receiving.
-		bool Init(int localPortNum);
+		bool Init(s32 localPortNum);
 		//- Init socket for sending.
-		bool Init(const std::string& remoteIP, int remotePortNum);
+		bool Init(const std::string& remoteIP, s32 remotePortNum);
 
 		void Destroy();
 
@@ -33,12 +33,12 @@ namespace Jwl
 		sockaddr_in localAddress;
 		sockaddr_in remoteAddress;
 
-		int remotePort;
-		int localPort;
+		s32 remotePort;
+		s32 localPort;
 		std::string remoteIp;
 
-		int inputSocket;
-		int outputSocket;
+		s32 inputSocket;
+		s32 outputSocket;
 
 		char receiveBuffer[PACKET_LENGTH];
 	};
@@ -52,12 +52,12 @@ namespace Jwl
 		void Destroy();
 	
 		//- Allow other hosts to request a TCP connection with us.
-		bool OpenToConnectionRequests(int localPortNum);
+		bool OpenToConnectionRequests(s32 localPortNum);
 		//- Check for pending connection requests.
 		bool CheckForConnectionRequests();
 	
 		//- Send a connection request to IP/Port.
-		bool SendConnectionRequest(const std::string& remoteIP, int remotePortNum);
+		bool SendConnectionRequest(const std::string& remoteIP, s32 remotePortNum);
 		//- Returns true if a TCP connection is established.
 		bool IsConnected() const;
 	
@@ -68,11 +68,11 @@ namespace Jwl
 		bool isConnected;
 
 		sockaddr_in address;
-		int remotePort;
-		int localPort;
+		s32 remotePort;
+		s32 localPort;
 		std::string remoteIp;
 
-		int socketId;
+		s32 socketId;
 
 		char receiveBuffer[PACKET_LENGTH];
 	};
@@ -82,7 +82,7 @@ namespace Jwl
 	public:
 		NetworkClient();
 	
-		bool Init(int localPortNumTCP, int localPortNumUDP, const std::string& remoteIP, int remotePortNumTCP, int remotePortNumUDP);
+		bool Init(s32 localPortNumTCP, s32 localPortNumUDP, const std::string& remoteIP, s32 remotePortNumTCP, s32 remotePortNumUDP);
 		void Destroy();
 	
 		//- Send a connection request to IP/Port.
@@ -99,13 +99,13 @@ namespace Jwl
 	private:
 		sockaddr_in TCPAddress;
 		sockaddr_in UDPAddress;
-		int TCPSocket;
-		int UDPSendSocket;
-		int UDPReceiveSocket;
-		int localPortTCP;
-		int localPortUDP;
-		int remotePortTCP;
-		int remotePortUDP;
+		s32 TCPSocket;
+		s32 UDPSendSocket;
+		s32 UDPReceiveSocket;
+		s32 localPortTCP;
+		s32 localPortUDP;
+		s32 remotePortTCP;
+		s32 remotePortUDP;
 		std::string remoteIp;
 		bool isConnected;
 
@@ -117,32 +117,32 @@ namespace Jwl
 	public:
 		NetworkServer();
 	
-		bool Init(int localPortNumTCP, int localPortNumUDP);
+		bool Init(s32 localPortNumTCP, s32 localPortNumUDP);
 		void Destroy();
 	
 		//- Allow other hosts to request a connection with us.
 		bool OpenToConnectionRequests();
 		//- Check for pending connection requests.
 		//- Returns Unique ID.
-		int CheckForConnectionRequests();
+		s32 CheckForConnectionRequests();
 		//- Returns true if the ID is valid.
-		bool IsConnected(int ID) const;
+		bool IsConnected(s32 ID) const;
 
-		unsigned GetNumClients() const;
+		u32 GetNumClients() const;
 
-		void RemoveClient(int ID);
+		void RemoveClient(s32 ID);
 		
-		bool SendUDP(const std::string& packet, int ID);
+		bool SendUDP(const std::string& packet, s32 ID);
 		//- Sends the message to all clients.
 		bool SendUDP(const std::string& packet);
-		bool SendToAllButOneUDP(const std::string& packet, int excludedID);
-		int ReceiveUDP(std::string& out_packet);
+		bool SendToAllButOneUDP(const std::string& packet, s32 excludedID);
+		s32 ReceiveUDP(std::string& out_packet);
 
-		bool SendTCP(const std::string& packet, int ID);
+		bool SendTCP(const std::string& packet, s32 ID);
 		//- Sends the message to all clients
 		bool SendTCP(const std::string& packet);
-		bool SendToAllButOneTCP(const std::string& packet, int excludedID);
-		int ReceiveTCP(std::string& out_packet);
+		bool SendToAllButOneTCP(const std::string& packet, s32 excludedID);
+		s32 ReceiveTCP(std::string& out_packet);
 	
 	private:
 		struct Client
@@ -155,22 +155,22 @@ namespace Jwl
 
 			sockaddr_in TCPAddress;
 			sockaddr_in UDPAddress;
-			int TCPAddressSize = sizeof(sockaddr);
-			int UDPAddressSize = sizeof(sockaddr);
-			int TCPSocket = -1;
-			int ID = -1;
+			s32 TCPAddressSize = sizeof(sockaddr);
+			s32 UDPAddressSize = sizeof(sockaddr);
+			s32 TCPSocket = -1;
+			s32 ID = -1;
 		};
 
 		sockaddr_in TCPAddress;
 		sockaddr_in UDPAddress;
-		int TCPSocket;
-		int UDPSendSocket;
-		int UDPReceiveSocket;
-		int localPortTCP;
-		int localPortUDP;
-		int remotePortTCP;
-		int remotePortUDP;
-		int idCounter;
+		s32 TCPSocket;
+		s32 UDPSendSocket;
+		s32 UDPReceiveSocket;
+		s32 localPortTCP;
+		s32 localPortUDP;
+		s32 remotePortTCP;
+		s32 remotePortUDP;
+		s32 idCounter;
 
 		char receiveBuffer[PACKET_LENGTH];
 
@@ -178,6 +178,6 @@ namespace Jwl
 
 		//- Returns the array index of the client with ID.
 		//- Returns -1 if no client exists with ID.
-		unsigned GetClientIndex(int ID) const;
+		u32 GetClientIndex(s32 ID) const;
 	};
 }

@@ -14,7 +14,7 @@ namespace
 	{
 		WPARAM new_vk = vk;
 		UINT scancode = (lParam & 0x00ff0000) >> 16;
-		int extended = (lParam & 0x01000000) != 0;
+		Jwl::s32 extended = (lParam & 0x01000000) != 0;
 
 		switch (vk)
 		{
@@ -39,7 +39,7 @@ namespace Jwl
 {
 	bool Input::IsDown(Key key) const
 	{
-		return keys[static_cast<unsigned>(key)];
+		return keys[static_cast<u32>(key)];
 	}
 
 	bool Input::IsUp(Key key) const
@@ -47,19 +47,19 @@ namespace Jwl
 		return !IsDown(key);
 	}
 
-	int Input::GetMouseX() const
+	s32 Input::GetMouseX() const
 	{
 		return x;
 	}
 
-	int Input::GetMouseY() const
+	s32 Input::GetMouseY() const
 	{
 		return y;
 	}
 
 	vec2 Input::GetMousePos() const
 	{
-		return vec2(static_cast<float>(x), static_cast<float>(y));
+		return vec2(static_cast<f32>(x), static_cast<f32>(y));
 	}
 
 	bool Input::Update(const MSG& msg)
@@ -70,11 +70,11 @@ namespace Jwl
 			{
 				auto lastX = x;
 				auto lastY = y;
-				vec2 lastPos(static_cast<float>(lastX), static_cast<float>(lastY));
+				vec2 lastPos(static_cast<f32>(lastX), static_cast<f32>(lastY));
 
 				x = GET_X_LPARAM(msg.lParam);
-				y = -(static_cast<int>(GET_Y_LPARAM(msg.lParam)) - Application.GetScreenHeight());
-				vec2 pos(static_cast<float>(x), static_cast<float>(y));
+				y = -(static_cast<s32>(GET_Y_LPARAM(msg.lParam)) - Application.GetScreenHeight());
+				vec2 pos(static_cast<f32>(x), static_cast<f32>(y));
 
 				EventQueue.Push(std::make_unique<MouseMoved>(pos, pos - lastPos));
 				break;
@@ -102,37 +102,37 @@ namespace Jwl
 			}
 
 		case WM_LBUTTONDOWN:
-			keys[static_cast<unsigned>(Key::MouseLeft)] = true;
+			keys[static_cast<u32>(Key::MouseLeft)] = true;
 			EventQueue.Push(std::make_unique<KeyPressed>(Key::MouseLeft));
 			break;
 
 		case WM_LBUTTONUP:
-			keys[static_cast<unsigned>(Key::MouseLeft)] = false;
+			keys[static_cast<u32>(Key::MouseLeft)] = false;
 			EventQueue.Push(std::make_unique<KeyReleased>(Key::MouseLeft));
 			break;
 
 		case WM_RBUTTONDOWN:
-			keys[static_cast<unsigned>(Key::MouseRight)] = true;
+			keys[static_cast<u32>(Key::MouseRight)] = true;
 			EventQueue.Push(std::make_unique<KeyPressed>(Key::MouseRight));
 			break;
 
 		case WM_RBUTTONUP:
-			keys[static_cast<unsigned>(Key::MouseRight)] = false;
+			keys[static_cast<u32>(Key::MouseRight)] = false;
 			EventQueue.Push(std::make_unique<KeyReleased>(Key::MouseRight));
 			break;
 
 		case WM_MBUTTONDOWN:
-			keys[static_cast<unsigned>(Key::MouseMiddle)] = true;
+			keys[static_cast<u32>(Key::MouseMiddle)] = true;
 			EventQueue.Push(std::make_unique<KeyPressed>(Key::MouseMiddle));
 			break;
 
 		case WM_MBUTTONUP:
-			keys[static_cast<unsigned>(Key::MouseMiddle)] = false;
+			keys[static_cast<u32>(Key::MouseMiddle)] = false;
 			EventQueue.Push(std::make_unique<KeyReleased>(Key::MouseMiddle));
 			break;
 
 		case WM_MOUSEWHEEL:
-			EventQueue.Push(std::make_unique<MouseScrolled>(static_cast<int>(GET_WHEEL_DELTA_WPARAM(msg.wParam) / WHEEL_DELTA)));
+			EventQueue.Push(std::make_unique<MouseScrolled>(static_cast<s32>(GET_WHEEL_DELTA_WPARAM(msg.wParam) / WHEEL_DELTA)));
 			break;
 
 		default:
@@ -149,7 +149,7 @@ namespace Jwl
 	{
 	}
 
-	MouseScrolled::MouseScrolled(int _scroll)
+	MouseScrolled::MouseScrolled(s32 _scroll)
 		: scroll(_scroll)
 	{
 	}

@@ -16,7 +16,7 @@ namespace Jwl
 		Unload();
 	}
 
-	void RenderTarget::Init(unsigned pixelWidth, unsigned pixelHeight, unsigned numColorTextures, bool hasDepth, unsigned samples)
+	void RenderTarget::Init(u32 pixelWidth, u32 pixelHeight, u32 numColorTextures, bool hasDepth, u32 samples)
 	{
 		ASSERT(FBO == GL_NONE, "RenderTarget is already initialized. Must call Unload() before initializing it again.");
 		ASSERT(pixelWidth != 0, "'pixelWidth' must be greater than 0.");
@@ -61,7 +61,7 @@ namespace Jwl
 
 			// Enable all color attachments as write-able targets.
 			GLenum* bufs = reinterpret_cast<GLenum*>(malloc(sizeof(GLenum) * numColorAttachments));
-			for (unsigned i = 0; i < numColorAttachments; i++)
+			for (u32 i = 0; i < numColorAttachments; i++)
 			{
 				bufs[i] = GL_COLOR_ATTACHMENT0 + i;
 				colorAttachments[i] = Texture::MakeNew();
@@ -88,7 +88,7 @@ namespace Jwl
 		Init(multisampleBuffer.width, multisampleBuffer.height, multisampleBuffer.numColorAttachments, multisampleBuffer.HasDepth());
 
 		// Mirror all color attachments, but with just one sample.
-		for (unsigned i = 0; i < multisampleBuffer.numColorAttachments; i++)
+		for (u32 i = 0; i < multisampleBuffer.numColorAttachments; i++)
 		{
 			CreateAttachment(i, multisampleBuffer.GetColorTexture(i)->GetTextureFormat(), filter);
 		}
@@ -96,7 +96,7 @@ namespace Jwl
 		return Validate();
 	}
 
-	void RenderTarget::CreateAttachment(unsigned index, TextureFormat format, TextureFilterMode filter)
+	void RenderTarget::CreateAttachment(u32 index, TextureFormat format, TextureFilterMode filter)
 	{
 		ASSERT(FBO != GL_NONE, "Must call Init() or InitAsResolve() before the RenderTarget can be used.");
 		ASSERT(numColorAttachments > 0, "RenderTarget does not have any color attachments.");
@@ -201,7 +201,7 @@ namespace Jwl
 		glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
 	}
 
-	void RenderTarget::ClearDepth(float depth) const
+	void RenderTarget::ClearDepth(f32 depth) const
 	{
 		ASSERT(FBO != GL_NONE, "RenderTarget must be initialized before use.");
 		ASSERT(depth >= 0.0f && depth <= 1.0f, "'depth' must be in the range of [0, 1].");
@@ -220,36 +220,36 @@ namespace Jwl
 		glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
 	}
 
-	void RenderTarget::ClearColor(unsigned index) const
+	void RenderTarget::ClearColor(u32 index) const
 	{
 		ASSERT(FBO != GL_NONE, "RenderTarget must be initialized before use.");
 		ASSERT(numColorAttachments > 0 , "RenderTarget does not have a color attachment to clear.");
 		ASSERT(index < numColorAttachments, "'index' must specify a valid color attachment.");
 
 		// Use the current clear color.
-		float color[4];
+		f32 color[4];
 		glGetFloatv(GL_COLOR_CLEAR_VALUE, color);
 
 		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
-		glClearBufferfv(GL_COLOR, static_cast<int>(index), color);
+		glClearBufferfv(GL_COLOR, static_cast<s32>(index), color);
 		glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
 	}
 
-	void RenderTarget::ClearColor(unsigned index, const vec4& color) const
+	void RenderTarget::ClearColor(u32 index, const vec4& color) const
 	{
 		ClearColor(index, color.x, color.y, color.z, color.w);
 	}
 
-	void RenderTarget::ClearColor(unsigned index, float red, float green, float blue, float alpha) const
+	void RenderTarget::ClearColor(u32 index, f32 red, f32 green, f32 blue, f32 alpha) const
 	{
 		ASSERT(FBO != GL_NONE, "RenderTarget must be initialized before use.");
 		ASSERT(numColorAttachments > 0, "RenderTarget does not have a color attachment to clear");
 		ASSERT(index < numColorAttachments, "'index' must specify a valid color attachment.");
 
-		float color[4] = { red, green, blue, alpha };
+		f32 color[4] = { red, green, blue, alpha };
 		
 		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
-		glClearBufferfv(GL_COLOR, static_cast<int>(index), color);
+		glClearBufferfv(GL_COLOR, static_cast<s32>(index), color);
 		glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
 	}
 
@@ -265,7 +265,7 @@ namespace Jwl
 		glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
 	}
 
-	bool RenderTarget::Resize(unsigned pixelWidth, unsigned pixelHeight)
+	bool RenderTarget::Resize(u32 pixelWidth, u32 pixelHeight)
 	{
 		ASSERT(FBO != GL_NONE, "RenderTarget must be initialized before use.");
 		ASSERT(pixelWidth > 0, "'width' must be greater than 0.");
@@ -277,8 +277,8 @@ namespace Jwl
 		}
 
 		// Save information to recreate textures.
-		unsigned numColorTextures = numColorAttachments;
-		unsigned samples = numSamples;
+		u32 numColorTextures = numColorAttachments;
+		u32 samples = numSamples;
 		bool hasDepth = HasDepth();
 		TextureFormat* formats = nullptr;
 		defer {
@@ -289,7 +289,7 @@ namespace Jwl
 		{
 			formats = new TextureFormat[numColorTextures];
 
-			for (unsigned i = 0; i < numColorTextures; i++)
+			for (u32 i = 0; i < numColorTextures; i++)
 			{
 				formats[i] = colorAttachments[i]->GetTextureFormat();
 			}
@@ -298,7 +298,7 @@ namespace Jwl
 		Unload();
 
 		Init(pixelWidth, pixelHeight, numColorTextures, hasDepth, samples);
-		for (unsigned i = 0; i < numColorTextures; i++)
+		for (u32 i = 0; i < numColorTextures; i++)
 		{
 			CreateAttachment(i, formats[i], TextureFilterMode::Point);
 		}
@@ -325,7 +325,7 @@ namespace Jwl
 			glBlitFramebuffer(0, 0, width, height, 0, 0, target.width, target.height, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
 		}
 
-		for (unsigned i = 0; i < numColorAttachments; i++)
+		for (u32 i = 0; i < numColorAttachments; i++)
 		{
 			glReadBuffer(GL_COLOR_ATTACHMENT0 + i);
 			glDrawBuffer(GL_COLOR_ATTACHMENT0 + i);
@@ -353,7 +353,7 @@ namespace Jwl
 		glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
 	}
 
-	void RenderTarget::CopyColor(const RenderTarget& target, unsigned index) const
+	void RenderTarget::CopyColor(const RenderTarget& target, u32 index) const
 	{
 		ASSERT(FBO != GL_NONE, "RenderTarget must be initialized before use.");
 		ASSERT(target.FBO != GL_NONE, "'target' is not an initialized RenderTarget.");
@@ -379,7 +379,7 @@ namespace Jwl
 	{
 		ASSERT(FBO != GL_NONE, "RenderTarget must be initialized before use.");
 		ASSERT(HasDepth(), "RenderTarget does not have a depth texture to copy.");
-		ASSERT(width == (unsigned)Application.GetScreenWidth() && height == (unsigned)Application.GetScreenHeight(), "RenderTarget and Backbuffer must have the same dimensions.");
+		ASSERT(width == (u32)Application.GetScreenWidth() && height == (u32)Application.GetScreenHeight(), "RenderTarget and Backbuffer must have the same dimensions.");
 
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, FBO);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, GL_NONE);
@@ -389,13 +389,13 @@ namespace Jwl
 		glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
 	}
 
-	void RenderTarget::CopyColorToBackBuffer(unsigned index) const
+	void RenderTarget::CopyColorToBackBuffer(u32 index) const
 	{
 		ASSERT(FBO != GL_NONE, "RenderTarget must be initialized before use.");
 		ASSERT(numColorAttachments > 0, "RenderTarget does not have a color attachment to copy.");
 		ASSERT(index < numColorAttachments, "'index' must specify a valid color attachment.");
 
-		GLenum filter = (width == static_cast<unsigned>(Application.GetScreenWidth())) && (height == static_cast<unsigned>(Application.GetScreenHeight())) ? GL_NEAREST : GL_LINEAR;
+		GLenum filter = (width == static_cast<u32>(Application.GetScreenWidth())) && (height == static_cast<u32>(Application.GetScreenHeight())) ? GL_NEAREST : GL_LINEAR;
 
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, FBO);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, GL_NONE);
@@ -406,7 +406,7 @@ namespace Jwl
 		glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
 	}
 
-	vec4 RenderTarget::ReadPixel(unsigned index, const vec2& position) const
+	vec4 RenderTarget::ReadPixel(u32 index, const vec2& position) const
 	{
 		ASSERT(FBO != GL_NONE, "RenderTarget must be initialized before use.");
 		ASSERT(index < numColorAttachments, "'index' must specify a valid color attachment.");
@@ -415,7 +415,7 @@ namespace Jwl
 		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
 		glReadBuffer(GL_COLOR_ATTACHMENT0 + index);
 
-		unsigned format = 0;
+		u32 format = 0;
 		switch (CountChannels(colorAttachments[index]->GetTextureFormat()))
 		{
 		case 4: format = GL_RGBA;
@@ -432,39 +432,39 @@ namespace Jwl
 		case TextureFormat::RGB_8:
 		case TextureFormat::RGBA_8:
 			{
-				unsigned char pixel[4] = { 0 };
-				glReadPixels(static_cast<int>(position.x), static_cast<int>(position.y), 1, 1, format, GL_UNSIGNED_BYTE, pixel);
+				u8 pixel[4] = { 0 };
+				glReadPixels(static_cast<s32>(position.x), static_cast<s32>(position.y), 1, 1, format, GL_UNSIGNED_BYTE, pixel);
 				// Normalize color range to [0, 1].
-				result = vec4(pixel[0], pixel[1], pixel[2], pixel[3]) / static_cast<float>(UCHAR_MAX);
+				result = vec4(pixel[0], pixel[1], pixel[2], pixel[3]) / static_cast<f32>(UCHAR_MAX);
 			} break;
 
 		case TextureFormat::RGB_16:
 		case TextureFormat::RGBA_16:
 			{
-				unsigned short pixel[4] = { 0 };
-				glReadPixels(static_cast<int>(position.x), static_cast<int>(position.y), 1, 1, format, GL_UNSIGNED_SHORT, pixel);
+				u16 pixel[4] = { 0 };
+				glReadPixels(static_cast<s32>(position.x), static_cast<s32>(position.y), 1, 1, format, GL_UNSIGNED_SHORT, pixel);
 				// Normalize color range to [0, 1].
-				result = vec4(pixel[0], pixel[1], pixel[2], pixel[3]) / static_cast<float>(USHRT_MAX);
+				result = vec4(pixel[0], pixel[1], pixel[2], pixel[3]) / static_cast<f32>(USHRT_MAX);
 			} break;
 
 		case TextureFormat::RGB_32:
 		case TextureFormat::RGBA_32:
 			{
-				unsigned pixel[4] = { 0 };
-				glReadPixels(static_cast<int>(position.x), static_cast<int>(position.y), 1, 1, format, GL_UNSIGNED_INT, pixel);
+				u32 pixel[4] = { 0 };
+				glReadPixels(static_cast<s32>(position.x), static_cast<s32>(position.y), 1, 1, format, GL_UNSIGNED_INT, pixel);
 				// Normalize color range to [0, 1].
 				result = vec4(
-					static_cast<float>(pixel[0]),
-					static_cast<float>(pixel[1]),
-					static_cast<float>(pixel[2]),
-					static_cast<float>(pixel[3])) / static_cast<float>(UINT_MAX);
+					static_cast<f32>(pixel[0]),
+					static_cast<f32>(pixel[1]),
+					static_cast<f32>(pixel[2]),
+					static_cast<f32>(pixel[3])) / static_cast<f32>(UINT_MAX);
 			} break;
 
 		case TextureFormat::RGB_16F:
 		case TextureFormat::RGBA_16F:
 		case TextureFormat::RGBA_32F:
 		case TextureFormat::RGB_32F:
-			glReadPixels(static_cast<int>(position.x), static_cast<int>(position.y), 1, 1, format, GL_FLOAT, &result.x);
+			glReadPixels(static_cast<s32>(position.x), static_cast<s32>(position.y), 1, 1, format, GL_FLOAT, &result.x);
 			break;
 
 		default:
@@ -486,12 +486,12 @@ namespace Jwl
 		return numSamples != 1;
 	}
 
-	unsigned RenderTarget::GetNumColorAttachments() const
+	u32 RenderTarget::GetNumColorAttachments() const
 	{
 		return numColorAttachments;
 	}
 
-	unsigned RenderTarget::GetNumSamples() const
+	u32 RenderTarget::GetNumSamples() const
 	{
 		return numSamples;
 	}
@@ -501,7 +501,7 @@ namespace Jwl
 		return depthAttachment;
 	}
 
-	Texture::Ptr RenderTarget::GetColorTexture(unsigned index) const
+	Texture::Ptr RenderTarget::GetColorTexture(u32 index) const
 	{
 		ASSERT(numColorAttachments > 0, "RenderTarget does not have any color attachments.");
 		ASSERT(index < numColorAttachments, "'index' must specify a valid color attachment.");
@@ -514,12 +514,12 @@ namespace Jwl
 		return Viewport(0, 0, width, height);
 	}
 
-	unsigned RenderTarget::GetWidth() const
+	u32 RenderTarget::GetWidth() const
 	{
 		return width;
 	}
 
-	unsigned RenderTarget::GetHeight() const
+	u32 RenderTarget::GetHeight() const
 	{
 		return height;
 	}

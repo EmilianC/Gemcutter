@@ -69,7 +69,7 @@ namespace Jwl
 		return settings.find(setting) != settings.end();
 	}
 
-	unsigned ConfigTable::GetSize() const
+	u32 ConfigTable::GetSize() const
 	{
 		return settings.size();
 	}
@@ -85,12 +85,12 @@ namespace Jwl
 		return result;
 	}
 
-	float ConfigTable::GetFloat(const std::string& setting) const
+	f32 ConfigTable::GetFloat(const std::string& setting) const
 	{
 		return HasSetting(setting) ? std::stof(settings.at(setting)) : 0.0f;
 	}
 
-	int ConfigTable::GetInt(const std::string& setting) const
+	s32 ConfigTable::GetInt(const std::string& setting) const
 	{
 		return HasSetting(setting) ? std::stoi(settings.at(setting)) : 0;
 	}
@@ -122,12 +122,12 @@ namespace Jwl
 		settings[setting] = value;
 	}
 
-	void ConfigTable::SetValue(const std::string& setting, float value)
+	void ConfigTable::SetValue(const std::string& setting, f32 value)
 	{
 		settings[setting] = std::to_string(value);
 	}
 
-	void ConfigTable::SetValue(const std::string& setting, int value)
+	void ConfigTable::SetValue(const std::string& setting, s32 value)
 	{
 		settings[setting] = std::to_string(value);
 	}
@@ -153,7 +153,7 @@ namespace Jwl
 		}
 	}
 
-	void ConfigTable::SetDefaultValue(const std::string& setting, float value)
+	void ConfigTable::SetDefaultValue(const std::string& setting, f32 value)
 	{
 		if (!HasSetting(setting))
 		{
@@ -161,7 +161,7 @@ namespace Jwl
 		}
 	}
 
-	void ConfigTable::SetDefaultValue(const std::string& setting, int value)
+	void ConfigTable::SetDefaultValue(const std::string& setting, s32 value)
 	{
 		if (!HasSetting(setting))
 		{

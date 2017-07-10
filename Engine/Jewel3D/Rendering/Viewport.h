@@ -1,20 +1,22 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
 
+#include "Jewel3D/Application/Types.h"
+
 namespace Jwl
 {
 	class Viewport
 	{
 	public:
 		Viewport() = default;
-		Viewport(unsigned x, unsigned y, unsigned width, unsigned height);
+		Viewport(u32 x, u32 y, u32 width, u32 height);
 
 		void bind() const;
-		float GetAspectRatio() const;
+		f32 GetAspectRatio() const;
 
-		unsigned x = 0;
-		unsigned y = 0;
-		unsigned width = 1;
-		unsigned height = 1;
+		u32 x = 0;
+		u32 y = 0;
+		u32 width = 1;
+		u32 height = 1;
 	};
 }

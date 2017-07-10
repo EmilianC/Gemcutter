@@ -343,6 +343,9 @@
     <ClInclude Include="Jewel3D\Rendering\ParticleEmitter.h">
       <Filter>Rendering</Filter>
     </ClInclude>
+    <ClInclude Include="Jewel3D\Application\Types.h">
+      <Filter>Application</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Jewel3D\Utilities\Hierarchy.inl">

@@ -7,7 +7,7 @@ namespace Jwl
 	class ProbabilityMatrix
 	{
 	public:
-		ProbabilityMatrix(unsigned numStates, unsigned numActions);
+		ProbabilityMatrix(u32 numStates, u32 numActions);
 		ProbabilityMatrix(const ProbabilityMatrix&);
 		ProbabilityMatrix(ProbabilityMatrix&&);
 		~ProbabilityMatrix();
@@ -18,23 +18,23 @@ namespace Jwl
 		void SetUniform();
 
 		//- Based on the given state, returns a random action with respect to the probabilities.
-		int QueryAction(unsigned state) const;
+		s32 QueryAction(u32 state) const;
 
 		//- Reinforces (positively or negatively) an action by the scalar, percentage.
-		void ReinforceScale(unsigned state, unsigned action, float percentage);
+		void ReinforceScale(u32 state, u32 action, f32 percentage);
 
 		//- Reinforces (positively or negatively) an action by the additive, value.
-		void ReinforceLinear(unsigned state, unsigned action, float value);
+		void ReinforceLinear(u32 state, u32 action, f32 value);
 
-		float GetValue(unsigned state, unsigned action) const;
-		int GetNumStates() const;
-		int GetNumActions() const;
+		f32 GetValue(u32 state, u32 action) const;
+		s32 GetNumStates() const;
+		s32 GetNumActions() const;
 
 	private:
-		unsigned numStates	= 0;
-		unsigned numActions	= 0;
-		float* data			= nullptr;
+		u32 numStates	= 0;
+		u32 numActions	= 0;
+		f32* data			= nullptr;
 
-		void SetValue(unsigned state, unsigned action, float value);
+		void SetValue(u32 state, u32 action, f32 value);
 	};
 }

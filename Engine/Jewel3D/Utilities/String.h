@@ -13,7 +13,7 @@ namespace Jwl
 	void RemoveWhitespace(std::string& str);
 
 	//- Removes duplicate or unnecessary whitespace from a string based on standard programming syntax rules.
-	//- For Example "int   myVar,   temp,  *ptr ;" would become "int myVar, temp, *ptr;".
+	//- For Example "s32   myVar,   temp,  *ptr ;" would become "s32 myVar, temp, *ptr;".
 	void RemoveRedundantWhitespace(std::string& str);
 	
 	//- Performs standard vsnprintf formating on the argument list, up to 1024 characters.

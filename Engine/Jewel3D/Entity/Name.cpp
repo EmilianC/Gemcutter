@@ -4,7 +4,7 @@
 
 namespace Jwl
 {
-	void LogSceneGraphRecursive(const Entity& entity, unsigned tabLevel)
+	void LogSceneGraphRecursive(const Entity& entity, u32 tabLevel)
 	{
 		std::string output;
 		output.append(tabLevel * 2, ' ');

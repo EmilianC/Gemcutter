@@ -2,6 +2,7 @@
 #include "Jewel3D/Precompiled.h"
 #include "Sound.h"
 #include "Jewel3D/Application/Logging.h"
+#include "Jewel3D/Application/Types.h"
 #include "Jewel3D/Math/Vector.h"
 #include "Jewel3D/Sound/SoundSystem.h"
 #include "Jewel3D/Utilities/ScopeGuard.h"
@@ -22,10 +23,10 @@
 	#define AL_DEBUG_CHECK()
 #endif
 
-enum class WaveFormat: unsigned short
+enum class WaveFormat: Jwl::u16
 {
 	WAVE_FORMAT_PCM			= 0x0001,	// PCM
-	WAVE_FORMAT_IEEE_FLOAT	= 0x0003,	// IEEE float
+	WAVE_FORMAT_IEEE_FLOAT	= 0x0003,	// IEEE f32
 	WAVE_FORMAT_ALAW		= 0x0006,	// 8 - bit ITU - T G.711 A - law
 	WAVE_FORMAT_MULAW		= 0x0007,	// 8 - bit ITU - T G.711 µ - law
 	WAVE_FORMAT_EXTENSIBLE	= 0xFFFE,	// Determined by SubFormat
@@ -34,14 +35,14 @@ enum class WaveFormat: unsigned short
 struct WaveHeader
 {
 	WaveFormat FormatTag				= WaveFormat::WAVE_FORMAT_PCM;
-	unsigned short Channels				= 0;
-	unsigned SamplesPerSec				= 0;
-	unsigned AvgBytesPerSec				= 0;
-	unsigned short BlockAlign			= 0;
-	unsigned short BitsPerSample		= 0;
-	unsigned short ExtensionSize		= 0;
-	unsigned short ValidBitsPerSample	= 0;
-	unsigned ChannelMask				= 0;
+	Jwl::u16 Channels			= 0;
+	Jwl::u32 SamplesPerSec		= 0;
+	Jwl::u32 AvgBytesPerSec		= 0;
+	Jwl::u16 BlockAlign			= 0;
+	Jwl::u16 BitsPerSample		= 0;
+	Jwl::u16 ExtensionSize		= 0;
+	Jwl::u16 ValidBitsPerSample	= 0;
+	Jwl::u32 ChannelMask			= 0;
 };
 
 namespace Jwl
@@ -74,9 +75,9 @@ namespace Jwl
 
 		// Variables to store info about the WAVE file.
 		char chunkID[5] = { '\0' };
-		unsigned chunkSize;
+		u32 chunkSize;
 		WaveHeader header;
-		unsigned char* soundData = nullptr;
+		u8* soundData = nullptr;
 		defer { free(soundData); };
 		
 		// Check that the WAVE file is OK.
@@ -87,7 +88,7 @@ namespace Jwl
 			return false;
 		}
 
-		fread(&chunkSize, sizeof(unsigned), 1, file);
+		fread(&chunkSize, sizeof(u32), 1, file);
 		fread(chunkID, sizeof(char), 4, file);
 		if (strcmp(chunkID, "WAVE"))
 		{
@@ -103,11 +104,11 @@ namespace Jwl
 		}
 
 		// Read sound format.
-		fread(&chunkSize, sizeof(unsigned), 1, file);
+		fread(&chunkSize, sizeof(u32), 1, file);
 		fread(&header.FormatTag, sizeof(short), 1, file);
 		fread(&header.Channels, sizeof(short), 1, file);
-		fread(&header.SamplesPerSec, sizeof(unsigned), 1, file);
-		fread(&header.AvgBytesPerSec, sizeof(unsigned), 1, file);
+		fread(&header.SamplesPerSec, sizeof(u32), 1, file);
+		fread(&header.AvgBytesPerSec, sizeof(u32), 1, file);
 		fread(&header.BlockAlign, sizeof(short), 1, file);
 		fread(&header.BitsPerSample, sizeof(short), 1, file);
 
@@ -127,17 +128,17 @@ namespace Jwl
 			if (strcmp(chunkID, "data") == 0)
 			{
 				// Read data.
-				fread(&chunkSize, sizeof(unsigned), 1, file);
-				soundData = static_cast<unsigned char*>(malloc(chunkSize * sizeof(unsigned char)));
-				fread(soundData, sizeof(unsigned char), chunkSize, file);
+				fread(&chunkSize, sizeof(u32), 1, file);
+				soundData = static_cast<u8*>(malloc(chunkSize * sizeof(u8)));
+				fread(soundData, sizeof(u8), chunkSize, file);
 
 				break;
 			}
 			else
 			{
 				// Skip chunk.
-				int size;
-				fread(&size, sizeof(int), 1, file);
+				s32 size;
+				fread(&size, sizeof(s32), 1, file);
 				fseek(file, size, SEEK_CUR);
 			}
 		}
@@ -213,7 +214,7 @@ namespace Jwl
 		}
 	}
 
-	unsigned Sound::GetBufferHandle() const
+	u32 Sound::GetBufferHandle() const
 	{
 		return hBuffer;
 	}

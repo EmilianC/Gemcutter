@@ -15,10 +15,10 @@ namespace Jwl
 		Transform(const vec3& position, const quat& rotation, const vec3& scale);
 
 		void LookAt(const vec3& pos, const vec3& target, const vec3& up = vec3::Up);
-		void Rotate(const vec3& axis, float degrees);
-		void RotateX(float degrees);
-		void RotateY(float degrees);
-		void RotateZ(float degrees);
+		void Rotate(const vec3& axis, f32 degrees);
+		void RotateX(f32 degrees);
+		void RotateY(f32 degrees);
+		void RotateZ(f32 degrees);
 
 		vec3 position;
 		quat rotation;

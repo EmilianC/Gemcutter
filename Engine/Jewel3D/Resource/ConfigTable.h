@@ -3,6 +3,8 @@
 #include <string>
 #include <map>
 
+#include "Jewel3D/Application/Types.h"
+
 namespace Jwl
 {
 	class ConfigTable
@@ -17,25 +19,25 @@ namespace Jwl
 		//- Returns true if the setting has a value in the table.
 		bool HasSetting(const std::string& setting) const;
 		//- Returns the number of entries in the table.
-		unsigned GetSize() const;
+		u32 GetSize() const;
 
 		std::string GetString(const std::string& setting) const;
-		float GetFloat(const std::string& setting) const;
-		int GetInt(const std::string& setting) const;
+		f32 GetFloat(const std::string& setting) const;
+		s32 GetInt(const std::string& setting) const;
 		bool GetBool(const std::string& setting) const;
 
 		//- Creates or overwrites an existing setting.
 		void SetValue(const std::string& setting, const std::string& value);
 		void SetValue(const std::string& setting, const char* value);
-		void SetValue(const std::string& setting, float value);
-		void SetValue(const std::string& setting, int value);
+		void SetValue(const std::string& setting, f32 value);
+		void SetValue(const std::string& setting, s32 value);
 		void SetValue(const std::string& setting, bool value);
 
 		//- Does not overwrite an existing setting, but creates it if it doesn't exist.
 		void SetDefaultValue(const std::string& setting, const std::string& value);
 		void SetDefaultValue(const std::string& setting, const char* value);
-		void SetDefaultValue(const std::string& setting, float value);
-		void SetDefaultValue(const std::string& setting, int value);
+		void SetDefaultValue(const std::string& setting, f32 value);
+		void SetDefaultValue(const std::string& setting, s32 value);
 		void SetDefaultValue(const std::string& setting, bool value);
 
 	private:

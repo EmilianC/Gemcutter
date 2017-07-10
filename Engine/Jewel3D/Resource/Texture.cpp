@@ -17,14 +17,14 @@ namespace Jwl
 		Unload();
 	}
 
-	void Texture::CreateTexture(unsigned _width, unsigned _height, TextureFormat _format, TextureFilterMode _filter, TextureWrapModes _wrapModes, float _anisotropicLevel, unsigned _numSamples)
+	void Texture::CreateTexture(u32 _width, u32 _height, TextureFormat _format, TextureFilterMode _filter, TextureWrapModes _wrapModes, f32 _anisotropicLevel, u32 _numSamples)
 	{
 		ASSERT(hTex == 0, "Texture already has a texture loaded.");
 		ASSERT(_anisotropicLevel >= 1.0f && _anisotropicLevel <= 16.0f, "'anisotropicLevel' must be in the range of [1, 16].");
 		ASSERT(_numSamples == 1 || _numSamples == 2 || _numSamples == 4 || _numSamples == 8 || _numSamples == 16, "'numSamples' must be a power of 2 between 1 and 16.");
 
-		width = static_cast<int>(_width);
-		height = static_cast<int>(_height);
+		width = static_cast<s32>(_width);
+		height = static_cast<s32>(_height);
 		format = _format;
 		filter = _filter;
 		wrapModes = _wrapModes;
@@ -43,7 +43,7 @@ namespace Jwl
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, ResolveWrapMode(wrapModes.y));
 			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, anisotropicLevel);
 
-			unsigned numLevels = CountMipLevels(width, height, filter);
+			u32 numLevels = CountMipLevels(width, height, filter);
 			glTexStorage2D(GL_TEXTURE_2D, numLevels, ResolveFormat(format), width, height);
 
 			if (numLevels > 1)
@@ -87,15 +87,15 @@ namespace Jwl
 			// Read header.
 			bool isCubeMap = false;
 			fread(&isCubeMap, sizeof(bool), 1, fontFile);
-			fread(&width, sizeof(unsigned), 1, fontFile);
-			fread(&height, sizeof(unsigned), 1, fontFile);
+			fread(&width, sizeof(u32), 1, fontFile);
+			fread(&height, sizeof(u32), 1, fontFile);
 			fread(&format, sizeof(TextureFormat), 1, fontFile);
 			fread(&filter, sizeof(TextureFilterMode), 1, fontFile);
 			fread(&wrapModes.x, sizeof(TextureWrapMode), 1, fontFile);
 			fread(&wrapModes.y, sizeof(TextureWrapMode), 1, fontFile);
-			fread(&anisotropicLevel, sizeof(float), 1, fontFile);
+			fread(&anisotropicLevel, sizeof(f32), 1, fontFile);
 
-			unsigned textureSize = width * height;
+			u32 textureSize = width * height;
 			if (format == TextureFormat::RGB_8)
 			{
 				textureSize *= 3;
@@ -112,10 +112,10 @@ namespace Jwl
 
 			if (isCubeMap)
 			{
-				unsigned char* image = static_cast<unsigned char*>(malloc(sizeof(unsigned char) * textureSize * 6));
+				u8* image = static_cast<u8*>(malloc(sizeof(u8) * textureSize * 6));
 				defer{ free(image); };
 
-				fread(image, sizeof(unsigned char), textureSize * 6, fontFile);
+				fread(image, sizeof(u8), textureSize * 6, fontFile);
 
 				glGenTextures(1, &hTex);
 				glBindTexture(GL_TEXTURE_CUBE_MAP, hTex);
@@ -126,12 +126,12 @@ namespace Jwl
 				glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 				glTexParameterf(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAX_ANISOTROPY_EXT, anisotropicLevel);
 
-				unsigned numLevels = CountMipLevels(width, height, filter);
+				u32 numLevels = CountMipLevels(width, height, filter);
 				if (CountChannels(format) == 3)
 				{
 					glTexStorage2D(GL_TEXTURE_CUBE_MAP, numLevels, GL_RGB8, width, height);
 
-					for (unsigned i = 0; i < 6; i++)
+					for (u32 i = 0; i < 6; i++)
 					{
 						glTexSubImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, 0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, image + (textureSize * i));
 					}
@@ -140,7 +140,7 @@ namespace Jwl
 				{
 					glTexStorage2D(GL_TEXTURE_CUBE_MAP, numLevels, GL_RGBA8, width, height);
 
-					for (unsigned i = 0; i < 6; i++)
+					for (u32 i = 0; i < 6; i++)
 					{
 						glTexSubImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, image + (textureSize * i));
 					}
@@ -155,10 +155,10 @@ namespace Jwl
 			}
 			else
 			{
-				unsigned char* image = static_cast<unsigned char*>(malloc(sizeof(unsigned char) * textureSize));
+				u8* image = static_cast<u8*>(malloc(sizeof(u8) * textureSize));
 				defer{ free(image); };
 
-				fread(image, sizeof(unsigned char), textureSize, fontFile);
+				fread(image, sizeof(u8), textureSize, fontFile);
 
 				glGenTextures(1, &hTex);
 				glBindTexture(GL_TEXTURE_2D, hTex);
@@ -168,7 +168,7 @@ namespace Jwl
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, ResolveWrapMode(wrapModes.y));
 				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, anisotropicLevel);
 
-				unsigned numLevels = CountMipLevels(width, height, filter);
+				u32 numLevels = CountMipLevels(width, height, filter);
 				if (CountChannels(format) == 3)
 				{
 					glTexStorage2D(GL_TEXTURE_2D, numLevels, GL_RGB8, width, height);
@@ -206,7 +206,7 @@ namespace Jwl
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, ResolveWrapMode(wrapModes.y));
 			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, anisotropicLevel);
 
-			unsigned numLevels = CountMipLevels(width, height, filter);
+			u32 numLevels = CountMipLevels(width, height, filter);
 			if (CountChannels(format) == 3)
 			{
 				glTexStorage2D(GL_TEXTURE_2D, numLevels, GL_RGB8, width, height);
@@ -257,7 +257,7 @@ namespace Jwl
 		wrapModes = _wrapModes;
 	}
 
-	void Texture::SetAnisotropicLevel(float level)
+	void Texture::SetAnisotropicLevel(f32 level)
 	{
 		ASSERT(hTex != 0, "A texture must be loaded to call this function.");
 		ASSERT(level >= 1.0f && level <= 16.0f, "'level' must be in the range of [1, 16].");
@@ -280,7 +280,7 @@ namespace Jwl
 		}
 	}
 
-	void Texture::Bind(unsigned slot)
+	void Texture::Bind(u32 slot)
 	{
 		ASSERT(hTex != 0, "A texture must be loaded to call this function.");
 
@@ -288,39 +288,39 @@ namespace Jwl
 		glBindTexture(target, hTex);
 	}
 
-	void Texture::UnBind(unsigned slot)
+	void Texture::UnBind(u32 slot)
 	{
 		glActiveTexture(GL_TEXTURE0 + slot);
 		glBindTexture(target, GL_NONE);
 	}
 
-	unsigned Texture::GetHandle() const
+	u32 Texture::GetHandle() const
 	{
 		return hTex;
 	}
 
-	unsigned Texture::GetNumSamples() const
+	u32 Texture::GetNumSamples() const
 	{
 		ASSERT(hTex != 0, "A texture must be loaded to call this function.");
 
 		return numSamples;
 	}
 
-	unsigned Texture::GetBindingTarget() const
+	u32 Texture::GetBindingTarget() const
 	{
 		ASSERT(hTex != 0, "A texture must be loaded to call this function.");
 
 		return target;
 	}
 
-	unsigned Texture::GetWidth() const
+	u32 Texture::GetWidth() const
 	{
 		ASSERT(hTex != 0, "A texture must be loaded to call this function.");
 
 		return width;
 	}
 
-	unsigned Texture::GetHeight() const
+	u32 Texture::GetHeight() const
 	{
 		ASSERT(hTex != 0, "A texture must be loaded to call this function.");
 
@@ -344,7 +344,7 @@ namespace Jwl
 		return wrapModes;
 	}
 
-	float Texture::GetAnisotropicLevel() const
+	f32 Texture::GetAnisotropicLevel() const
 	{
 		return anisotropicLevel;
 	}
@@ -368,7 +368,7 @@ namespace Jwl
 
 	//-----------------------------------------------------------------------------------------------------
 
-	TextureSlot::TextureSlot(Texture::Ptr tex, unsigned unit)
+	TextureSlot::TextureSlot(Texture::Ptr tex, u32 unit)
 		: tex(tex), unit(unit)
 	{
 	}
@@ -401,14 +401,14 @@ namespace Jwl
 		}
 	}
 
-	void TextureList::Add(Texture::Ptr tex, unsigned unit)
+	void TextureList::Add(Texture::Ptr tex, u32 unit)
 	{
 		Remove(unit);
 
 		textureSlots.push_back(TextureSlot(tex, unit));
 	}
 
-	void TextureList::Remove(unsigned unit)
+	void TextureList::Remove(u32 unit)
 	{
 		for (auto itr = textureSlots.begin(); itr < textureSlots.end(); itr++)
 		{
@@ -425,7 +425,7 @@ namespace Jwl
 		textureSlots.clear();
 	}
 
-	Texture::Ptr& TextureList::operator[](unsigned unit)
+	Texture::Ptr& TextureList::operator[](u32 unit)
 	{
 		auto textureSlot = std::find_if(textureSlots.begin(), textureSlots.end(), [unit](TextureSlot& slot) {
 			return slot.unit == unit;
@@ -437,7 +437,7 @@ namespace Jwl
 
 	//-----------------------------------------------------------------------------------------------------
 	
-	Image::Image(int _width, int _height, TextureFormat _format, unsigned char* _data)
+	Image::Image(s32 _width, s32 _height, TextureFormat _format, u8* _data)
 		: width(_width)
 		, height(_height)
 		, format(_format)
@@ -447,16 +447,16 @@ namespace Jwl
 
 	Image::~Image()
 	{
-		free(const_cast<unsigned char*>(data));
+		free(const_cast<u8*>(data));
 	}
 
 	Image Image::Load(const std::string& file, bool flipY)
 	{
-		int width = 0;
-		int height = 0;
-		int numChannels = 0;
+		s32 width = 0;
+		s32 height = 0;
+		s32 numChannels = 0;
 
-		unsigned char* data = SOIL_load_image(file.c_str(), &width, &height, &numChannels, SOIL_LOAD_AUTO);
+		u8* data = SOIL_load_image(file.c_str(), &width, &height, &numChannels, SOIL_LOAD_AUTO);
 		if (data == nullptr)
 		{
 			Jwl::Error("Texture: ( %s )\n%s", file.c_str(), SOIL_last_result());
@@ -466,12 +466,12 @@ namespace Jwl
 		// Invert the Y axis for OpenGL texture addressing.
 		if (flipY)
 		{
-			const int totalWidth = width * numChannels;
-			for (int j = 0; j * 2 < height; ++j)
+			const s32 totalWidth = width * numChannels;
+			for (s32 j = 0; j * 2 < height; ++j)
 			{
-				int index1 = j * totalWidth;
-				int index2 = (height - 1 - j) * totalWidth;
-				for (int i = totalWidth; i > 0; --i)
+				s32 index1 = j * totalWidth;
+				s32 index2 = (height - 1 - j) * totalWidth;
+				for (s32 i = totalWidth; i > 0; --i)
 				{
 					std::swap(data[index1++], data[index2++]);
 				}

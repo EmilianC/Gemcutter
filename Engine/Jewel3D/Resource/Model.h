@@ -13,21 +13,21 @@ namespace Jwl
 		bool Load(std::string filePath);
 		void Unload();
 
-		unsigned GetVAO() const;
+		u32 GetVAO() const;
 		bool HasUVs() const;
 		bool HasNormals() const;
-		unsigned GetNumFaces() const;
-		unsigned GetNumVerticies() const;
+		u32 GetNumFaces() const;
+		u32 GetNumVerticies() const;
 
 	private:
 		/* OpenGL buffers */
-		unsigned VBO = 0;
-		unsigned VAO = 0;
+		u32 VBO = 0;
+		u32 VAO = 0;
 
 		bool hasUvs		= false;
 		bool hasNormals	= false;
 
-		unsigned numFaces	 = 0;
-		unsigned numVertices = 0;
+		u32 numFaces	 = 0;
+		u32 numVertices = 0;
 	};
 }

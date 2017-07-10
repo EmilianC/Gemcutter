@@ -9,13 +9,13 @@ namespace Jwl
 	public:
 		~Sound();
 
-		//- Loads .wav (must be 8-bit unsigned PCM).
+		//- Loads .wav (must be 8-bit u32 PCM).
 		bool Load(std::string filePath);
 		void Unload();
 
-		unsigned GetBufferHandle() const;
+		u32 GetBufferHandle() const;
 
 	private:
-		unsigned hBuffer = 0;
+		u32 hBuffer = 0;
 	};
 }

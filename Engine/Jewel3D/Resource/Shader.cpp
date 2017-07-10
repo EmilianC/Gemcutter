@@ -93,17 +93,17 @@ namespace
 		"\n";
 
 	static constexpr char builtInLightingFunctions[] =
-		"vec3 JWL_COMPUTE_POINT_LIGHT(vec3 normal, vec3 surfacePos, vec3 color, vec3 lightPos, float attenConstant, float attenLinear, float attenQuadratic)\n"
+		"vec3 JWL_COMPUTE_POINT_LIGHT(vec3 normal, vec3 surfacePos, vec3 color, vec3 lightPos, f32 attenConstant, f32 attenLinear, f32 attenQuadratic)\n"
 		"{\n"
 		"	lightPos = (Jwl_View * vec4(lightPos, 1.0)).xyz;\n"
 		"	vec3 lightDir = lightPos - surfacePos;\n"
-		"	float dist = length(lightDir);\n"
+		"	f32 dist = length(lightDir);\n"
 		"	lightDir /= dist;\n"
-		"	float NdotL = dot(normal, lightDir);\n"
+		"	f32 NdotL = dot(normal, lightDir);\n"
 		""
 		"	if (NdotL > 0.0)\n"
 		"	{\n"
-		"		float attenuation = 1.0 / (attenConstant + attenLinear * dist + attenQuadratic * dist * dist);\n"
+		"		f32 attenuation = 1.0 / (attenConstant + attenLinear * dist + attenQuadratic * dist * dist);\n"
 		"		return color * NdotL * attenuation;\n"
 		"	}\n"
 		"	else\n"
@@ -115,27 +115,27 @@ namespace
 		"vec3 JWL_COMPUTE_DIRECTIONAL_LIGHT(vec3 normal, vec3 color, vec3 direction)\n"
 		"{\n"
 		"	vec3 lightDir = mat3(Jwl_View) * -direction;\n"
-		"	float NdotL = dot(normal, lightDir);\n"
+		"	f32 NdotL = dot(normal, lightDir);\n"
 		""
 		"	return color * max(NdotL, 0.0);\n"
 		"}\n"
 		""
-		"vec3 JWL_COMPUTE_SPOT_LIGHT(vec3 normal, vec3 surfacePos, vec3 color, vec3 lightPos, vec3 direction, float attenConstant, float attenLinear, float attenQuadratic, float angle)\n"
+		"vec3 JWL_COMPUTE_SPOT_LIGHT(vec3 normal, vec3 surfacePos, vec3 color, vec3 lightPos, vec3 direction, f32 attenConstant, f32 attenLinear, f32 attenQuadratic, f32 angle)\n"
 		"{\n"
 		"	lightPos = (Jwl_View * vec4(lightPos, 1.0)).xyz;\n"
 		"	vec3 lightDir = lightPos - surfacePos;\n"
-		"	float dist = length(lightDir);\n"
+		"	f32 dist = length(lightDir);\n"
 		"	lightDir /= dist;\n"
-		"	float NdotL = dot(normal, lightDir);\n"
+		"	f32 NdotL = dot(normal, lightDir);\n"
 		""
 		"	if (NdotL > 0.0)\n"
 		"	{\n"
-		"		float attenuation = 1.0 / (attenConstant + attenLinear * dist + attenQuadratic * dist * dist);\n"
+		"		f32 attenuation = 1.0 / (attenConstant + attenLinear * dist + attenQuadratic * dist * dist);\n"
 		"		vec3 coneDir = mat3(Jwl_View) * -direction;\n"
-		"		float coneCos = dot(lightDir, coneDir);\n"
+		"		f32 coneCos = dot(lightDir, coneDir);\n"
 		"		if (coneCos > angle)\n"
 		"		{\n"
-		"			float coneFactor = (coneCos - angle) / (1.0 - angle);\n"
+		"			f32 coneFactor = (coneCos - angle) / (1.0 - angle);\n"
 		"			return color * NdotL * attenuation * min(coneFactor, 1.0);\n"
 		"		}\n"
 		"	}\n"
@@ -154,7 +154,7 @@ namespace
 
 namespace Jwl
 {
-	static bool CompileShader(unsigned& shader)
+	static bool CompileShader(u32& shader)
 	{
 		GLint success;
 		glCompileShader(shader);
@@ -191,7 +191,7 @@ namespace Jwl
 		return true;
 	}
 
-	static bool LinkProgram(unsigned program)
+	static bool LinkProgram(u32 program)
 	{
 		GLint success;
 		glLinkProgram(program);
@@ -270,7 +270,7 @@ namespace Jwl
 
 	void ShaderVariantControl::Undefine(const std::string& name)
 	{
-		for (unsigned i = 0; i < defines.size(); i++)
+		for (u32 i = 0; i < defines.size(); i++)
 		{
 			if (defines[i] == name)
 			{
@@ -299,7 +299,7 @@ namespace Jwl
 		return result;
 	}
 
-	unsigned ShaderVariantControl::GetHash() const
+	u32 ShaderVariantControl::GetHash() const
 	{
 		return hash;
 	}
@@ -410,8 +410,8 @@ namespace Jwl
 		// Build version identifier from the current openGL version.
 		if (version.empty())
 		{
-			int major = 0;
-			int minor = 0;
+			s32 major = 0;
+			s32 minor = 0;
 			glGetIntegerv(GL_MAJOR_VERSION, &major);
 			glGetIntegerv(GL_MINOR_VERSION, &minor);
 
@@ -494,7 +494,7 @@ namespace Jwl
 				block.start = pos;
 
 				// Find the end of the block.
-				int indentStack = 1;
+				s32 indentStack = 1;
 				while (pos < source.size())
 				{
 					if (source[pos] == '{')
@@ -617,7 +617,7 @@ namespace Jwl
 
 		char type[16] = { '\0' };
 		char name[128] = { '\0' };
-		unsigned Id = 0;
+		u32 Id = 0;
 
 		while (pos < block.end)
 		{
@@ -715,7 +715,7 @@ namespace Jwl
 		char modifer1[128] = { '\0' };
 		char modifer2[128] = { '\0' };
 		char name[128] = { '\0' };
-		unsigned Id = 0;
+		u32 Id = 0;
 
 		while (pos < block.end)
 		{
@@ -764,10 +764,10 @@ namespace Jwl
 					}
 				}
 
-				if (Id == static_cast<unsigned>(UniformBufferSlot::Camera) ||
-					Id == static_cast<unsigned>(UniformBufferSlot::Engine) ||
-					Id == static_cast<unsigned>(UniformBufferSlot::Model) ||
-					Id == static_cast<unsigned>(UniformBufferSlot::Time))
+				if (Id == static_cast<u32>(UniformBufferSlot::Camera) ||
+					Id == static_cast<u32>(UniformBufferSlot::Engine) ||
+					Id == static_cast<u32>(UniformBufferSlot::Model) ||
+					Id == static_cast<u32>(UniformBufferSlot::Time))
 				{
 					Error("Buffer \"%s\" uses a reserved slot binding.", name);
 					return false;
@@ -820,7 +820,7 @@ namespace Jwl
 		return true;
 	}
 
-	bool Shader::ParseUniformBlock(const Block& block, const char* name, unsigned Id, bool makeTemplate, bool makeStatic)
+	bool Shader::ParseUniformBlock(const Block& block, const char* name, u32 Id, bool makeTemplate, bool makeStatic)
 	{
 		ASSERT(block.type == BlockType::Uniforms, "Expected a Uniform block type.");
 		ASSERT(name != nullptr, "Must provide name.");
@@ -870,13 +870,13 @@ namespace Jwl
 				std::string name;
 				std::string value;
 				GLenum type;
-				unsigned size;
+				u32 size;
 			};
 
 			std::vector<uniformMember> uniforms;
 
 			// Find all uniforms and parse their information.
-			for (unsigned i = 0; i < rawStruct.size(); i++)
+			for (u32 i = 0; i < rawStruct.size(); i++)
 			{
 				if (!std::isspace(rawStruct[i]))
 				{
@@ -895,44 +895,44 @@ namespace Jwl
 					// Resolve type.
 					#define IfFound(str, t, s) if (line.find((str)) != std::string::npos) { uniforms.back().type = (t); uniforms.back().size = (s); }
 
-					IfFound("float", GL_FLOAT, sizeof(float))
+					IfFound("f32", GL_FLOAT, sizeof(f32))
 					else IfFound("vec2", GL_FLOAT_VEC2, sizeof(vec2))
 					else IfFound("vec3", GL_FLOAT_VEC3, sizeof(vec3))
 					else IfFound("vec4", GL_FLOAT_VEC4, sizeof(vec4))
-					else IfFound("double", GL_DOUBLE, sizeof(double))
-					else IfFound("dvec2", GL_DOUBLE_VEC2, sizeof(double) * 2)
-					else IfFound("dvec3", GL_DOUBLE_VEC3, sizeof(double) * 3)
-					else IfFound("dvec4", GL_DOUBLE_VEC4, sizeof(double) * 4)
-					else IfFound("int", GL_INT, sizeof(int))
+					else IfFound("f64", GL_DOUBLE, sizeof(f64))
+					else IfFound("dvec2", GL_DOUBLE_VEC2, sizeof(f64) * 2)
+					else IfFound("dvec3", GL_DOUBLE_VEC3, sizeof(f64) * 3)
+					else IfFound("dvec4", GL_DOUBLE_VEC4, sizeof(f64) * 4)
+					else IfFound("s32", GL_INT, sizeof(s32))
 					else IfFound("ivec2", GL_INT_VEC2, sizeof(vec2))
 					else IfFound("ivec3", GL_INT_VEC3, sizeof(vec3))
 					else IfFound("ivec4", GL_INT_VEC4, sizeof(vec4))
-					else IfFound("unsigned", GL_UNSIGNED_INT, sizeof(unsigned))
+					else IfFound("u32", GL_UNSIGNED_INT, sizeof(u32))
 					else IfFound("uvec2", GL_UNSIGNED_INT_VEC2, sizeof(vec2))
 					else IfFound("uvec3", GL_UNSIGNED_INT_VEC3, sizeof(vec3))
 					else IfFound("uvec4", GL_UNSIGNED_INT_VEC4, sizeof(vec4))
-					else IfFound("bool", GL_BOOL, sizeof(int))
+					else IfFound("bool", GL_BOOL, sizeof(s32))
 					else IfFound("bvec2", GL_BOOL_VEC2, sizeof(vec2))
 					else IfFound("bvec3", GL_BOOL_VEC3, sizeof(vec3))
 					else IfFound("bvec4", GL_BOOL_VEC4, sizeof(vec4))
-					else IfFound("mat2", GL_FLOAT_MAT2, sizeof(float) * 4)
-					else IfFound("mat3", GL_FLOAT_MAT3, sizeof(float) * 9)
-					else IfFound("mat4", GL_FLOAT_MAT4, sizeof(float) * 16)
-					else IfFound("mat2x3", GL_FLOAT_MAT2x3, sizeof(float) * 2 * 3)
-					else IfFound("mat2x4", GL_FLOAT_MAT2x4, sizeof(float) * 2 * 4)
-					else IfFound("mat3x2", GL_FLOAT_MAT3x2, sizeof(float) * 3 * 2)
-					else IfFound("mat3x4", GL_FLOAT_MAT3x4, sizeof(float) * 3 * 4)
-					else IfFound("mat4x2", GL_FLOAT_MAT4x2, sizeof(float) * 4 * 2)
-					else IfFound("mat4x3", GL_FLOAT_MAT4x3, sizeof(float) * 4 * 3)
-					else IfFound("dmat2", GL_DOUBLE_MAT2, sizeof(double) * 4)
-					else IfFound("dmat3", GL_DOUBLE_MAT3, sizeof(double) * 9)
-					else IfFound("dmat4", GL_DOUBLE_MAT4, sizeof(double) * 16)
-					else IfFound("dmat2x3", GL_DOUBLE_MAT2x3, sizeof(double) * 2 * 3)
-					else IfFound("dmat2x4", GL_DOUBLE_MAT2x4, sizeof(double) * 2 * 4)
-					else IfFound("dmat3x2", GL_DOUBLE_MAT3x2, sizeof(double) * 3 * 2)
-					else IfFound("dmat3x4", GL_DOUBLE_MAT3x4, sizeof(double) * 3 * 4)
-					else IfFound("dmat4x2", GL_DOUBLE_MAT4x2, sizeof(double) * 4 * 2)
-					else IfFound("dmat4x3", GL_DOUBLE_MAT4x3, sizeof(double) * 4 * 3)
+					else IfFound("mat2", GL_FLOAT_MAT2, sizeof(f32) * 4)
+					else IfFound("mat3", GL_FLOAT_MAT3, sizeof(f32) * 9)
+					else IfFound("mat4", GL_FLOAT_MAT4, sizeof(f32) * 16)
+					else IfFound("mat2x3", GL_FLOAT_MAT2x3, sizeof(f32) * 2 * 3)
+					else IfFound("mat2x4", GL_FLOAT_MAT2x4, sizeof(f32) * 2 * 4)
+					else IfFound("mat3x2", GL_FLOAT_MAT3x2, sizeof(f32) * 3 * 2)
+					else IfFound("mat3x4", GL_FLOAT_MAT3x4, sizeof(f32) * 3 * 4)
+					else IfFound("mat4x2", GL_FLOAT_MAT4x2, sizeof(f32) * 4 * 2)
+					else IfFound("mat4x3", GL_FLOAT_MAT4x3, sizeof(f32) * 4 * 3)
+					else IfFound("dmat2", GL_DOUBLE_MAT2, sizeof(f64) * 4)
+					else IfFound("dmat3", GL_DOUBLE_MAT3, sizeof(f64) * 9)
+					else IfFound("dmat4", GL_DOUBLE_MAT4, sizeof(f64) * 16)
+					else IfFound("dmat2x3", GL_DOUBLE_MAT2x3, sizeof(f64) * 2 * 3)
+					else IfFound("dmat2x4", GL_DOUBLE_MAT2x4, sizeof(f64) * 2 * 4)
+					else IfFound("dmat3x2", GL_DOUBLE_MAT3x2, sizeof(f64) * 3 * 2)
+					else IfFound("dmat3x4", GL_DOUBLE_MAT3x4, sizeof(f64) * 3 * 4)
+					else IfFound("dmat4x2", GL_DOUBLE_MAT4x2, sizeof(f64) * 4 * 2)
+					else IfFound("dmat4x3", GL_DOUBLE_MAT4x3, sizeof(f64) * 4 * 3)
 					else
 					{
 						Error("Uniform member is of unknown type.");
@@ -980,7 +980,7 @@ namespace Jwl
 			}
 
 			// Add all members to the buffer.
-			for (unsigned i = 0; i < uniforms.size(); i++)
+			for (u32 i = 0; i < uniforms.size(); i++)
 			{
 				buffer->AddUniform(uniforms[i].name, uniforms[i].size);
 			}
@@ -988,7 +988,7 @@ namespace Jwl
 			buffer->InitBuffer();
 
 			/* Resolve Default set values */
-			for (unsigned i = 0; i < uniforms.size(); i++)
+			for (u32 i = 0; i < uniforms.size(); i++)
 			{
 				if (uniforms[i].value.empty())
 					continue;
@@ -1010,7 +1010,7 @@ namespace Jwl
 				{
 				case GL_FLOAT:
 				{
-					float val;
+					f32 val;
 					if (sscanf(uniforms[i].value.c_str(), "%f", &val) != 1)
 					{
 						EXIT();
@@ -1020,7 +1020,7 @@ namespace Jwl
 				} break;
 				case GL_FLOAT_VEC2:
 				{
-					float val1, val2;
+					f32 val1, val2;
 					if (sscanf(uniforms[i].value.c_str(), "(%f,%f)", &val1, &val2) != 2)
 					{
 						EXIT();
@@ -1030,7 +1030,7 @@ namespace Jwl
 				} break;
 				case GL_FLOAT_VEC3:
 				{
-					float val1, val2, val3;
+					f32 val1, val2, val3;
 					if (sscanf(uniforms[i].value.c_str(), "(%f,%f,%f)", &val1, &val2, &val3) != 3)
 					{
 						EXIT();
@@ -1040,7 +1040,7 @@ namespace Jwl
 				} break;
 				case GL_FLOAT_VEC4:
 				{
-					float val1, val2, val3, val4;
+					f32 val1, val2, val3, val4;
 					if (sscanf(uniforms[i].value.c_str(), "(%f,%f,%f,%f)", &val1, &val2, &val3, &val4) != 4)
 					{
 						EXIT();
@@ -1050,7 +1050,7 @@ namespace Jwl
 				} break;
 				case GL_INT:
 				{
-					int val;
+					s32 val;
 					if (sscanf(uniforms[i].value.c_str(), "%i", &val) != 1)
 					{
 						EXIT();
@@ -1060,7 +1060,7 @@ namespace Jwl
 				} break;
 				case GL_UNSIGNED_INT:
 				{
-					unsigned val;
+					u32 val;
 					if (sscanf(uniforms[i].value.c_str(), "%u", &val) != 1)
 					{
 						EXIT();
@@ -1070,7 +1070,7 @@ namespace Jwl
 				} break;
 				case GL_BOOL:
 				{
-					unsigned val = 0;
+					u32 val = 0;
 					if (uniforms[i].value == "true")
 					{
 						val = 1;
@@ -1168,7 +1168,7 @@ namespace Jwl
 
 		char type[32] = { '\0' };
 		char name[128] = { '\0' };
-		unsigned Id = 0;
+		u32 Id = 0;
 
 		while (pos < block.end)
 		{
@@ -1271,7 +1271,7 @@ namespace Jwl
 				// Make sure the samplers are all set to the correct bindings.
 				for (auto& binding : textureBindings)
 				{
-					unsigned location = glGetUniformLocation(variant.hProgram, binding.name.c_str());
+					u32 location = glGetUniformLocation(variant.hProgram, binding.name.c_str());
 					ASSERT(location != GL_INVALID_INDEX, "Sampler location for shader variant could not be found.");
 
 					glProgramUniform1i(variant.hProgram, location, binding.unit);
@@ -1280,7 +1280,7 @@ namespace Jwl
 				// Make sure the UniformBuffers are all set to the correct bindings.
 				for (auto& binding : bufferBindings)
 				{
-					unsigned block = glGetUniformBlockIndex(variant.hProgram, ("Jwl_User_" + binding.name).c_str());
+					u32 block = glGetUniformBlockIndex(variant.hProgram, ("Jwl_User_" + binding.name).c_str());
 					ASSERT(block != GL_INVALID_INDEX, "Block index for shader variant could not be found.");
 
 					// We offset the binding unit to make room for the engine defined binding points.
@@ -1308,7 +1308,7 @@ namespace Jwl
 		buffers.UnBind();
 	}
 
-	UniformBuffer::Ptr Shader::CreateBufferFromTemplate(unsigned unit) const
+	UniformBuffer::Ptr Shader::CreateBufferFromTemplate(u32 unit) const
 	{
 		auto newBuf = UniformBuffer::MakeNew();
 
@@ -1410,20 +1410,20 @@ namespace Jwl
 		}
 
 		/* Initialize built-in uniform blocks */
-		unsigned cameraBlock = glGetUniformBlockIndex(hProgram, "Jwl_Camera_Uniforms");
-		unsigned modelBlock = glGetUniformBlockIndex(hProgram, "Jwl_Model_Uniforms");
-		unsigned engineBlock = glGetUniformBlockIndex(hProgram, "Jwl_Engine_Uniforms");
-		unsigned timeBlock = glGetUniformBlockIndex(hProgram, "Jwl_Time_Uniforms");
+		u32 cameraBlock = glGetUniformBlockIndex(hProgram, "Jwl_Camera_Uniforms");
+		u32 modelBlock = glGetUniformBlockIndex(hProgram, "Jwl_Model_Uniforms");
+		u32 engineBlock = glGetUniformBlockIndex(hProgram, "Jwl_Engine_Uniforms");
+		u32 timeBlock = glGetUniformBlockIndex(hProgram, "Jwl_Time_Uniforms");
 
 		ASSERT(cameraBlock != GL_INVALID_INDEX, "Camera-Block could not be created.");
 		ASSERT(modelBlock != GL_INVALID_INDEX, "Model-Block could not be created.");
 		ASSERT(engineBlock != GL_INVALID_INDEX, "Engine-Block could not be created.");
 		ASSERT(timeBlock != GL_INVALID_INDEX, "Time-Block could not be created.");
 
-		glUniformBlockBinding(hProgram, cameraBlock, static_cast<unsigned>(UniformBufferSlot::Camera));
-		glUniformBlockBinding(hProgram, modelBlock, static_cast<unsigned>(UniformBufferSlot::Model));
-		glUniformBlockBinding(hProgram, engineBlock, static_cast<unsigned>(UniformBufferSlot::Engine));
-		glUniformBlockBinding(hProgram, timeBlock, static_cast<unsigned>(UniformBufferSlot::Time));
+		glUniformBlockBinding(hProgram, cameraBlock, static_cast<u32>(UniformBufferSlot::Camera));
+		glUniformBlockBinding(hProgram, modelBlock, static_cast<u32>(UniformBufferSlot::Model));
+		glUniformBlockBinding(hProgram, engineBlock, static_cast<u32>(UniformBufferSlot::Engine));
+		glUniformBlockBinding(hProgram, timeBlock, static_cast<u32>(UniformBufferSlot::Time));
 
 		return true;
 	}

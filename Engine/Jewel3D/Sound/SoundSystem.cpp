@@ -86,7 +86,7 @@ namespace Jwl
 		AL_DEBUG_CHECK();
 	}
 
-	void SoundSystem::SetGlobalVolume(float volume)
+	void SoundSystem::SetGlobalVolume(f32 volume)
 	{
 		ASSERT(IsLoaded(), "SoundSystem must be initialized to call this function.");
 		ASSERT(volume >= 0.0f, "'volume' must be non negative.");

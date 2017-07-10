@@ -31,7 +31,7 @@ namespace Jwl
 		data[UpY] = up.y;
 	}
 
-	mat2::mat2(float f0, float f2, float f1, float f3)
+	mat2::mat2(f32 f0, f32 f2, f32 f1, f32 f3)
 	{
 		data[0] = f0;
 		data[1] = f1;
@@ -42,7 +42,7 @@ namespace Jwl
 
 	mat2& mat2::operator=(const mat2& M)
 	{
-		memcpy(data, M.data, sizeof(float) * 4);
+		memcpy(data, M.data, sizeof(f32) * 4);
 		return *this;
 	}
 
@@ -51,7 +51,7 @@ namespace Jwl
 		return *this = (*this) * M;
 	}
 
-	mat2& mat2::operator*=(float scalar)
+	mat2& mat2::operator*=(f32 scalar)
 	{
 		data[0] *= scalar;
 		data[1] *= scalar;
@@ -62,9 +62,9 @@ namespace Jwl
 		return *this;
 	}
 
-	mat2& mat2::operator/=(float divisor)
+	mat2& mat2::operator/=(f32 divisor)
 	{
-		float inverse = 1.0f / divisor;
+		f32 inverse = 1.0f / divisor;
 
 		data[0] *= inverse;
 		data[1] *= inverse;
@@ -125,14 +125,14 @@ namespace Jwl
 			data[RightY] * V.x + data[UpY] * V.y);
 	}
 
-	mat2 mat2::operator*(float scalar) const
+	mat2 mat2::operator*(f32 scalar) const
 	{
 		return mat2(
 			data[0] * scalar, data[2] * scalar,
 			data[1] * scalar, data[3] * scalar);
 	}
 
-	mat2 mat2::operator/(float scalar) const
+	mat2 mat2::operator/(f32 scalar) const
 	{
 		return *this * (1.0f / scalar);
 	}
@@ -144,13 +144,13 @@ namespace Jwl
 			-data[1], -data[3]);
 	}
 
-	float mat2::operator[](unsigned index) const
+	f32 mat2::operator[](u32 index) const
 	{
 		ASSERT(index >= 0 && index < 9, "'index' must be in the range of [0, 8].");
 		return data[index];
 	}
 
-	float& mat2::operator[](unsigned index)
+	f32& mat2::operator[](u32 index)
 	{
 		ASSERT(index >= 0 && index < 9, "'index' must be in the range of [0, 8].");
 		return data[index];
@@ -164,7 +164,7 @@ namespace Jwl
 
 	void mat2::Inverse()
 	{
-		float det = GetDeterminant();
+		f32 det = GetDeterminant();
 
 		if (det == 0.0f)
 		{
@@ -193,7 +193,7 @@ namespace Jwl
 		return result;
 	}
 
-	float mat2::GetDeterminant() const
+	f32 mat2::GetDeterminant() const
 	{
 		return data[0] * data[3] - data[1] * data[2];
 	}
@@ -205,18 +205,18 @@ namespace Jwl
 			0.0f, V.y) * (*this);
 	}
 
-	void mat2::Scale(float scale)
+	void mat2::Scale(f32 scale)
 	{
 		*this = mat2(
 			scale, 0.0f,
 			0.0f, scale) * (*this);
 	}
 
-	void mat2::Rotate(float degrees)
+	void mat2::Rotate(f32 degrees)
 	{
-		float radians = ToRadian(degrees);
-		float cosValue = cos(radians);
-		float sinValue = sin(radians);
+		f32 radians = ToRadian(degrees);
+		f32 cosValue = cos(radians);
+		f32 sinValue = sin(radians);
 
 		*this = mat2(
 			cosValue, -sinValue,
@@ -311,7 +311,7 @@ namespace Jwl
 		data[ForwardZ] = forward.z;
 	}
 
-	mat3::mat3(float f0, float f3, float f6, float f1, float f4, float f7, float f2, float f5, float f8)
+	mat3::mat3(f32 f0, f32 f3, f32 f6, f32 f1, f32 f4, f32 f7, f32 f2, f32 f5, f32 f8)
 	{
 		data[0] = f0;
 		data[1] = f1;
@@ -328,7 +328,7 @@ namespace Jwl
 
 	mat3& mat3::operator=(const mat3& M)
 	{
-		memcpy(data, M.data, sizeof(float) * 9);
+		memcpy(data, M.data, sizeof(f32) * 9);
 		return *this;
 	}
 
@@ -337,7 +337,7 @@ namespace Jwl
 		return *this = (*this) * M;
 	}
 
-	mat3& mat3::operator*=(float scalar)
+	mat3& mat3::operator*=(f32 scalar)
 	{
 		data[0] *= scalar;
 		data[1] *= scalar;
@@ -354,9 +354,9 @@ namespace Jwl
 		return *this;
 	}
 
-	mat3& mat3::operator/=(float divisor)
+	mat3& mat3::operator/=(f32 divisor)
 	{
-		float inverse = 1.0f / divisor;
+		f32 inverse = 1.0f / divisor;
 
 		data[0] *= inverse;
 		data[1] *= inverse;
@@ -445,7 +445,7 @@ namespace Jwl
 			data[RightZ] * V.x + data[UpZ] * V.y + data[ForwardZ] * V.z);
 	}
 
-	mat3 mat3::operator*(float scalar) const
+	mat3 mat3::operator*(f32 scalar) const
 	{
 		return mat3(
 			data[0] * scalar, data[3] * scalar, data[6] * scalar,
@@ -453,7 +453,7 @@ namespace Jwl
 			data[2] * scalar, data[5] * scalar, data[8] * scalar);
 	}
 
-	mat3 mat3::operator/(float scalar) const
+	mat3 mat3::operator/(f32 scalar) const
 	{
 		return *this * (1.0f / scalar);
 	}
@@ -466,13 +466,13 @@ namespace Jwl
 			-data[2], -data[5], -data[8]);
 	}
 
-	float mat3::operator[](unsigned index) const
+	f32 mat3::operator[](u32 index) const
 	{
 		ASSERT(index >= 0 && index < 9, "'index' must be in the range of [0, 8].");
 		return data[index];
 	}
 
-	float& mat3::operator[](unsigned index)
+	f32& mat3::operator[](u32 index)
 	{
 		ASSERT(index >= 0 && index < 9, "'index' must be in the range of [0, 8].");
 		return data[index];
@@ -487,7 +487,7 @@ namespace Jwl
 
 	void mat3::Inverse()
 	{
-		float det = GetDeterminant();
+		f32 det = GetDeterminant();
 
 		if (det == 0.0f)
 		{
@@ -523,7 +523,7 @@ namespace Jwl
 		return result;
 	}
 
-	float mat3::GetDeterminant() const
+	f32 mat3::GetDeterminant() const
 	{
 		return
 			data[0] * (data[4] * data[8] - data[7] * data[5]) -
@@ -539,7 +539,7 @@ namespace Jwl
 			0.0f, 0.0f, V.z) * (*this);
 	}
 
-	void mat3::Scale(float scale)
+	void mat3::Scale(f32 scale)
 	{
 		*this = mat3(
 			scale, 0.0f, 0.0f,
@@ -547,12 +547,12 @@ namespace Jwl
 			0.0f, 0.0f, scale) * (*this);
 	}
 
-	void mat3::Rotate(const vec3& axis, float degrees)
+	void mat3::Rotate(const vec3& axis, f32 degrees)
 	{
-		float radians = ToRadian(degrees);
-		float sinValue = sin(radians);
-		float cosValue = cos(radians);
-		float oneMinusCosValue = 1.0f - cosValue;
+		f32 radians = ToRadian(degrees);
+		f32 sinValue = sin(radians);
+		f32 cosValue = cos(radians);
+		f32 oneMinusCosValue = 1.0f - cosValue;
 
 		*this = mat3(
 			axis.x * axis.x + cosValue * (1.0f - axis.x * axis.x),
@@ -566,11 +566,11 @@ namespace Jwl
 			axis.z * axis.z + cosValue * (1.0f - axis.z * axis.z)) * (*this);
 	}
 
-	void mat3::RotateX(float degrees)
+	void mat3::RotateX(f32 degrees)
 	{
-		float radians = ToRadian(degrees);
-		float cosValue = cos(radians);
-		float sinValue = sin(radians);
+		f32 radians = ToRadian(degrees);
+		f32 cosValue = cos(radians);
+		f32 sinValue = sin(radians);
 
 		*this = mat3(
 			1.0f, 0.0f, 0.0f,
@@ -578,11 +578,11 @@ namespace Jwl
 			0.0f, sinValue, cosValue) * (*this);
 	}
 
-	void mat3::RotateY(float degrees)
+	void mat3::RotateY(f32 degrees)
 	{
-		float radians = ToRadian(degrees);
-		float cosValue = cos(radians);
-		float sinValue = sin(radians);
+		f32 radians = ToRadian(degrees);
+		f32 cosValue = cos(radians);
+		f32 sinValue = sin(radians);
 
 		*this = mat3(
 			cosValue, 0.0f, sinValue,
@@ -590,11 +590,11 @@ namespace Jwl
 			-sinValue, 0.0f, cosValue) * (*this);
 	}
 
-	void mat3::RotateZ(float degrees)
+	void mat3::RotateZ(f32 degrees)
 	{
-		float radians = ToRadian(degrees);
-		float cosValue = cos(radians);
-		float sinValue = sin(radians);
+		f32 radians = ToRadian(degrees);
+		f32 cosValue = cos(radians);
+		f32 sinValue = sin(radians);
 
 		*this = mat3(
 			cosValue, -sinValue, 0.0f,
@@ -776,7 +776,7 @@ namespace Jwl
 		data[W3] = 1.0f;
 	}
 
-	mat4::mat4(float f0, float f4, float f8, float f12, float f1, float f5, float f9, float f13, float f2, float f6, float f10, float f14, float f3, float f7, float f11, float f15)
+	mat4::mat4(f32 f0, f32 f4, f32 f8, f32 f12, f32 f1, f32 f5, f32 f9, f32 f13, f32 f2, f32 f6, f32 f10, f32 f14, f32 f3, f32 f7, f32 f11, f32 f15)
 	{
 		data[0] = f0;
 		data[1] = f1;
@@ -801,7 +801,7 @@ namespace Jwl
 	
 	mat4& mat4::operator=(const mat4& M)
 	{
-		memcpy(data, M.data, sizeof(float) * 16);
+		memcpy(data, M.data, sizeof(f32) * 16);
 		return *this;
 	}
 
@@ -810,7 +810,7 @@ namespace Jwl
 		return *this = (*this) * M;
 	}
 
-	mat4& mat4::operator*=(float scalar)
+	mat4& mat4::operator*=(f32 scalar)
 	{
 		data[0] *= scalar;
 		data[1] *= scalar;
@@ -835,9 +835,9 @@ namespace Jwl
 		return *this;
 	}
 
-	mat4& mat4::operator/=(float divisor)
+	mat4& mat4::operator/=(f32 divisor)
 	{
-		float inverse = 1.0f / divisor;
+		f32 inverse = 1.0f / divisor;
 
 		data[0] *= inverse;
 		data[1] *= inverse;
@@ -960,7 +960,7 @@ namespace Jwl
 			data[3] * V.x + data[7] * V.y + data[11] * V.z + data[15] * V.w);
 	}
 
-	mat4 mat4::operator*(float scalar) const
+	mat4 mat4::operator*(f32 scalar) const
 	{
 		return mat4(
 			data[0] * scalar, data[4] * scalar, data[8] * scalar, data[12] * scalar,
@@ -969,7 +969,7 @@ namespace Jwl
 			data[3] * scalar, data[7] * scalar, data[11] * scalar, data[15] * scalar);
 	};
 
-	mat4 mat4::operator/(float scalar) const
+	mat4 mat4::operator/(f32 scalar) const
 	{
 		return *this * (1.0f / scalar);
 	}
@@ -983,13 +983,13 @@ namespace Jwl
 			-data[3], -data[7], -data[11], -data[15]);
 	}
 
-	float mat4::operator[](unsigned index) const
+	f32 mat4::operator[](u32 index) const
 	{
 		ASSERT(index >= 0 && index < 16, "'index' must be in the range of [0, 15].");
 		return data[index];
 	}
 
-	float& mat4::operator[](unsigned index)
+	f32& mat4::operator[](u32 index)
 	{
 		ASSERT(index >= 0 && index < 16, "'index' must be in the range of [0, 15].");
 		return data[index];
@@ -1007,7 +1007,7 @@ namespace Jwl
 
 	void mat4::Inverse()
 	{
-		float inv[16];
+		f32 inv[16];
 
 		inv[0] = data[5] * data[10] * data[15] -
 			data[5]  * data[11] * data[14] -
@@ -1037,7 +1037,7 @@ namespace Jwl
 			data[12] * data[5] * data[10] +
 			data[12] * data[6] * data[9];
 
-		float det = data[0] * inv[0] + data[1] * inv[4] + data[2] * inv[8] + data[3] * inv[12];
+		f32 det = data[0] * inv[0] + data[1] * inv[4] + data[2] * inv[8] + data[3] * inv[12];
 		
 		// Avoid divide by zero error.
 		if (det == 0.0f)
@@ -1128,7 +1128,7 @@ namespace Jwl
 			data[8] * data[2] * data[5];
 
 		det = 1.0f / det;
-		for (unsigned i = 0; i < 16u; i++)
+		for (u32 i = 0; i < 16u; i++)
 		{
 			data[i] = inv[i] * det;
 		}
@@ -1177,7 +1177,7 @@ namespace Jwl
 			0.0f, 0.0f, 0.0f, 1.0f) * (*this);
 	}
 
-	void mat4::Scale(float scale)
+	void mat4::Scale(f32 scale)
 	{
 		*this = mat4(
 			scale, 0.0f, 0.0f, 0.0f,
@@ -1186,12 +1186,12 @@ namespace Jwl
 			0.0f, 0.0f, 0.0f, 1.0f) * (*this);
 	}
 
-	void mat4::Rotate(const vec3& axis, float degrees)
+	void mat4::Rotate(const vec3& axis, f32 degrees)
 	{
-		float radians = ToRadian(degrees);
-		float sinValue = sin(radians);
-		float cosValue = cos(radians);
-		float oneMinusCosValue = 1.0f - cosValue;
+		f32 radians = ToRadian(degrees);
+		f32 sinValue = sin(radians);
+		f32 cosValue = cos(radians);
+		f32 oneMinusCosValue = 1.0f - cosValue;
 
 		*this = mat4(
 			axis.x * axis.x + cosValue * (1.0f - axis.x * axis.x),
@@ -1206,11 +1206,11 @@ namespace Jwl
 			0.0f, 0.0f, 0.0f, 1.0f) * (*this);
 	}
 
-	void mat4::RotateX(float degrees)
+	void mat4::RotateX(f32 degrees)
 	{
-		float radians = ToRadian(degrees);
-		float cosValue = cos(radians);
-		float sinValue = sin(radians);
+		f32 radians = ToRadian(degrees);
+		f32 cosValue = cos(radians);
+		f32 sinValue = sin(radians);
 
 		*this = mat4(
 			1.0f, 0.0f, 0.0f, 0.0f,
@@ -1219,11 +1219,11 @@ namespace Jwl
 			0.0f, 0.0f, 0.0f, 1.0f) * (*this);
 	}
 
-	void mat4::RotateY(float degrees)
+	void mat4::RotateY(f32 degrees)
 	{
-		float radians = ToRadian(degrees);
-		float cosValue = cos(radians);
-		float sinValue = sin(radians);
+		f32 radians = ToRadian(degrees);
+		f32 cosValue = cos(radians);
+		f32 sinValue = sin(radians);
 
 		*this = mat4(
 			cosValue, 0.0f, sinValue, 0.0f,
@@ -1232,11 +1232,11 @@ namespace Jwl
 			0.0f, 0.0f, 0.0f, 1.0f) * (*this);
 	}
 
-	void mat4::RotateZ(float degrees)
+	void mat4::RotateZ(f32 degrees)
 	{
-		float radians = ToRadian(degrees);
-		float cosValue = cos(radians);
-		float sinValue = sin(radians);
+		f32 radians = ToRadian(degrees);
+		f32 cosValue = cos(radians);
+		f32 sinValue = sin(radians);
 
 		*this = mat4(
 			cosValue, -sinValue, 0.0f, 0.0f,
@@ -1294,10 +1294,10 @@ namespace Jwl
 			0.0f, 0.0f, 0.0f, 1.0f) * (*this);
 	}
 
-	mat4 mat4::PerspectiveProjection(float fovyDegrees, float aspect, float zNear, float zFar)
+	mat4 mat4::PerspectiveProjection(f32 fovyDegrees, f32 aspect, f32 zNear, f32 zFar)
 	{
 		mat4 result;
-		float temp = 1.0f / tan(ToRadian(fovyDegrees) * 0.5f);
+		f32 temp = 1.0f / tan(ToRadian(fovyDegrees) * 0.5f);
 
 		result.data[0] = temp / aspect;
 		result.data[1] = 0.0f;
@@ -1322,10 +1322,10 @@ namespace Jwl
 		return result;
 	}
 
-	mat4 mat4::InversePerspectiveProjection(float fovyDegrees, float aspect, float zNear, float zFar)
+	mat4 mat4::InversePerspectiveProjection(f32 fovyDegrees, f32 aspect, f32 zNear, f32 zFar)
 	{
 		mat4 result;
-		float temp = 1.0f / tan(ToRadian(fovyDegrees) * 0.5f);
+		f32 temp = 1.0f / tan(ToRadian(fovyDegrees) * 0.5f);
 
 		result.data[0] = aspect / temp;
 		result.data[1] = 0.0f;
@@ -1350,7 +1350,7 @@ namespace Jwl
 		return result;
 	}
 
-	mat4 mat4::OrthographicProjection(float left, float right, float top, float bottom, float zNear, float zFar)
+	mat4 mat4::OrthographicProjection(f32 left, f32 right, f32 top, f32 bottom, f32 zNear, f32 zFar)
 	{
 		mat4 result;
 
@@ -1377,7 +1377,7 @@ namespace Jwl
 		return result;
 	}
 
-	mat4 mat4::InverseOrthographicProjection(float left, float right, float top, float bottom, float zNear, float zFar)
+	mat4 mat4::InverseOrthographicProjection(f32 left, f32 right, f32 top, f32 bottom, f32 zNear, f32 zFar)
 	{
 		mat4 result;
 
