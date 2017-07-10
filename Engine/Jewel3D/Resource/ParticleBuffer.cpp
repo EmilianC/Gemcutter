@@ -108,14 +108,14 @@ namespace Jwl
 		ageRatios	= nullptr;
 	}
 
-	void ParticleBuffer::SetBuffers(unsigned _numParticles, EnumFlags<ParticleBuffers> _buffers)
+	void ParticleBuffer::SetBuffers(u32 _numParticles, EnumFlags<ParticleBuffers> _buffers)
 	{
 		if (numParticles != _numParticles)
 		{
 			positions	= (vec3*)realloc(positions, sizeof(vec3) * _numParticles);
 			velocities	= (vec3*)realloc(velocities, sizeof(vec3) * _numParticles);
-			ages		= (float*)realloc(ages, sizeof(float) * _numParticles);
-			lifetimes	= (float*)realloc(lifetimes, sizeof(float) * _numParticles);
+			ages		= (f32*)realloc(ages, sizeof(f32) * _numParticles);
+			lifetimes	= (f32*)realloc(lifetimes, sizeof(f32) * _numParticles);
 		}
 
 		glBindVertexArray(VAO);
@@ -124,7 +124,7 @@ namespace Jwl
 		// Position buffer is always present.
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer((GLuint)0, 3, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<void*>(0));
-		unsigned bufferSize = sizeof(vec3);
+		u32 bufferSize = sizeof(vec3);
 
 		if (_buffers.Has(ParticleBuffers::Size))
 		{
@@ -173,16 +173,16 @@ namespace Jwl
 		if (_buffers.Has(ParticleBuffers::Alpha))
 		{
 			glVertexAttribPointer((GLuint)3, 1, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<void*>(bufferSize * _numParticles));
-			bufferSize += sizeof(float);
+			bufferSize += sizeof(f32);
 
 			if (alphas == nullptr)
 			{
 				glEnableVertexAttribArray(3);
-				alphas = (float*)malloc(sizeof(float) * _numParticles);
+				alphas = (f32*)malloc(sizeof(f32) * _numParticles);
 			}
 			else if (numParticles != _numParticles)
 			{
-				alphas = (float*)realloc(alphas, sizeof(float) * _numParticles);
+				alphas = (f32*)realloc(alphas, sizeof(f32) * _numParticles);
 			}
 		}
 		else
@@ -194,16 +194,16 @@ namespace Jwl
 		if (_buffers.Has(ParticleBuffers::Rotation))
 		{
 			glVertexAttribPointer((GLuint)4, 1, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<void*>(bufferSize * _numParticles));
-			bufferSize += sizeof(float);
+			bufferSize += sizeof(f32);
 
 			if (rotations == nullptr)
 			{
 				glEnableVertexAttribArray(4);
-				rotations = (float*)malloc(sizeof(float) * _numParticles);
+				rotations = (f32*)malloc(sizeof(f32) * _numParticles);
 			}
 			else if (numParticles != _numParticles)
 			{
-				rotations = (float*)realloc(rotations, sizeof(float) * _numParticles);
+				rotations = (f32*)realloc(rotations, sizeof(f32) * _numParticles);
 			}
 		}
 		else
@@ -214,16 +214,16 @@ namespace Jwl
 		if (_buffers.Has(ParticleBuffers::AgeRatio))
 		{
 			glVertexAttribPointer((GLuint)5, 1, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<void*>(bufferSize * _numParticles));
-			bufferSize += sizeof(float);
+			bufferSize += sizeof(f32);
 
 			if (ageRatios == nullptr)
 			{
 				glEnableVertexAttribArray(5);
-				ageRatios = (float*)malloc(sizeof(float) * _numParticles);
+				ageRatios = (f32*)malloc(sizeof(f32) * _numParticles);
 			}
 			else if (numParticles != _numParticles)
 			{
-				ageRatios = (float*)realloc(ageRatios, sizeof(float) * _numParticles);
+				ageRatios = (f32*)realloc(ageRatios, sizeof(f32) * _numParticles);
 			}
 		}
 		else
@@ -240,7 +240,7 @@ namespace Jwl
 		buffers = _buffers;
 	}
 
-	void ParticleBuffer::Update(unsigned _numParticles)
+	void ParticleBuffer::Update(u32 _numParticles)
 	{
 		if (_numParticles == 0)
 		{
@@ -267,26 +267,26 @@ namespace Jwl
 
 		if (buffers.Has(ParticleBuffers::Alpha))
 		{
-			memcpy(buffer, &alphas[0], sizeof(float) * _numParticles);
-			buffer = static_cast<float*>(buffer) + numParticles;
+			memcpy(buffer, &alphas[0], sizeof(f32) * _numParticles);
+			buffer = static_cast<f32*>(buffer) + numParticles;
 		}
 
 		if (buffers.Has(ParticleBuffers::Rotation))
 		{
-			memcpy(buffer, &rotations[0], sizeof(float) * _numParticles);
-			buffer = static_cast<float*>(buffer) + numParticles;
+			memcpy(buffer, &rotations[0], sizeof(f32) * _numParticles);
+			buffer = static_cast<f32*>(buffer) + numParticles;
 		}
 
 		if (buffers.Has(ParticleBuffers::AgeRatio))
 		{
-			memcpy(buffer, &ageRatios[0], sizeof(float) * _numParticles);
+			memcpy(buffer, &ageRatios[0], sizeof(f32) * _numParticles);
 		}
 
 		glUnmapBuffer(GL_ARRAY_BUFFER);
 		glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
 	}
 
-	void ParticleBuffer::Kill(unsigned index, unsigned last)
+	void ParticleBuffer::Kill(u32 index, u32 last)
 	{
 		ASSERT(index < numParticles, "Index out of bounds.");
 		ASSERT(last  < numParticles, "Index out of bounds.");
@@ -318,7 +318,7 @@ namespace Jwl
 		}
 	}
 
-	bool ParticleBuffer::IsAlive(unsigned index)
+	bool ParticleBuffer::IsAlive(u32 index)
 	{
 		ASSERT(index < numParticles, "Index out of bounds.");
 		return ages[index] < lifetimes[index];
@@ -329,12 +329,12 @@ namespace Jwl
 		return buffers;
 	}
 
-	unsigned ParticleBuffer::GetVAO() const
+	u32 ParticleBuffer::GetVAO() const
 	{
 		return VAO;
 	}
 
-	unsigned ParticleBuffer::GetNumParticles() const
+	u32 ParticleBuffer::GetNumParticles() const
 	{
 		return numParticles;
 	}

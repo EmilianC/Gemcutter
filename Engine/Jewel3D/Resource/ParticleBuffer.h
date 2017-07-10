@@ -5,14 +5,14 @@
 
 namespace Jwl
 {
-	enum class ParticleBuffers : unsigned
+	enum class ParticleBuffers : u32
 	{
 		None = 0,		// Empty buffer
 		Size = 1,		// vec2 size
 		Color = 2,		// vec3 color
-		Alpha = 4,		// float alpha
-		Rotation = 8,	// float rotation
-		AgeRatio = 16	// float ageRatio (age / lifetime)
+		Alpha = 4,		// f32 alpha
+		Rotation = 8,	// f32 rotation
+		AgeRatio = 16	// f32 ageRatio (age / lifetime)
 	};
 
 	class ParticleBuffer
@@ -24,32 +24,32 @@ namespace Jwl
 		ParticleBuffer& operator=(const ParticleBuffer&);
 		~ParticleBuffer();
 
-		void SetBuffers(unsigned numParticles, EnumFlags<ParticleBuffers> requirements);
+		void SetBuffers(u32 numParticles, EnumFlags<ParticleBuffers> requirements);
 		void Unload();
 		//- Uploads data to the GPU buffers.
-		void Update(unsigned numParticles);
+		void Update(u32 numParticles);
 
-		void Kill(unsigned index, unsigned last);
-		bool IsAlive(unsigned index);
+		void Kill(u32 index, u32 last);
+		bool IsAlive(u32 index);
 
 		EnumFlags<ParticleBuffers> GetBuffers() const;
-		unsigned GetVAO() const;
-		unsigned GetNumParticles() const;
+		u32 GetVAO() const;
+		u32 GetNumParticles() const;
 
 		vec3*	positions	= nullptr;
 		vec3*	velocities	= nullptr;
-		float*	ages		= nullptr;
-		float*	lifetimes	= nullptr;
+		f32*	ages		= nullptr;
+		f32*	lifetimes	= nullptr;
 		vec2*	sizes		= nullptr;
 		vec3*	colors		= nullptr;
-		float*	alphas		= nullptr;
-		float*	rotations	= nullptr;
-		float*	ageRatios	= nullptr;
+		f32*	alphas		= nullptr;
+		f32*	rotations	= nullptr;
+		f32*	ageRatios	= nullptr;
 
 	private:
 		EnumFlags<ParticleBuffers> buffers = ParticleBuffers::None;
-		unsigned numParticles = 0;
-		unsigned VAO = 0;
-		unsigned VBO = 0;
+		u32 numParticles = 0;
+		u32 VAO = 0;
+		u32 VBO = 0;
 	};
 }

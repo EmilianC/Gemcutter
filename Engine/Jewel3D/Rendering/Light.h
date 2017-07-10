@@ -26,13 +26,13 @@ namespace Jwl
 		//- Main color of the light.
 		UniformHandle<vec3> color;
 		//- Base attenuation factor.
-		UniformHandle<float> attenuationConstant;
+		UniformHandle<f32> attenuationConstant;
 		//- Linear attenuation factor.
-		UniformHandle<float> attenuationLinear;
+		UniformHandle<f32> attenuationLinear;
 		//- Exponential attenuation factor.
-		UniformHandle<float> attenuationQuadratic;
+		UniformHandle<f32> attenuationQuadratic;
 		//- Cone angle for spotlights, in degrees.
-		float angle = 25.0f;
+		f32 angle = 25.0f;
 
 		//- Keeps the internal buffer up to date with the light's transform.
 		void Update();
@@ -45,7 +45,7 @@ namespace Jwl
 
 		UniformHandle<vec3> position;
 		UniformHandle<vec3> direction;
-		UniformHandle<float> cosAngle;
+		UniformHandle<f32> cosAngle;
 		UniformBuffer::Ptr lightBuffer;
 	};
 }

@@ -101,10 +101,10 @@ namespace Jwl
 		lightBuffer->AddUniform("Color", sizeof(vec3));
 		lightBuffer->AddUniform("Position", sizeof(vec3));
 		lightBuffer->AddUniform("Direction", sizeof(vec3));
-		lightBuffer->AddUniform("AttenuationConstant", sizeof(float));
-		lightBuffer->AddUniform("AttenuationLinear", sizeof(float));
-		lightBuffer->AddUniform("AttenuationQuadratic", sizeof(float));
-		lightBuffer->AddUniform("Angle", sizeof(float));
+		lightBuffer->AddUniform("AttenuationConstant", sizeof(f32));
+		lightBuffer->AddUniform("AttenuationLinear", sizeof(f32));
+		lightBuffer->AddUniform("AttenuationQuadratic", sizeof(f32));
+		lightBuffer->AddUniform("Angle", sizeof(f32));
 		lightBuffer->InitBuffer();
 	}
 
@@ -113,10 +113,10 @@ namespace Jwl
 		ASSERT(lightBuffer, "Light Uniform Buffer is not initialized.");
 
 		color = lightBuffer->MakeHandle<vec3>("Color");
-		attenuationConstant = lightBuffer->MakeHandle<float>("AttenuationConstant");
-		attenuationLinear = lightBuffer->MakeHandle<float>("AttenuationLinear");
-		attenuationQuadratic = lightBuffer->MakeHandle<float>("AttenuationQuadratic");
-		cosAngle = lightBuffer->MakeHandle<float>("Angle");
+		attenuationConstant = lightBuffer->MakeHandle<f32>("AttenuationConstant");
+		attenuationLinear = lightBuffer->MakeHandle<f32>("AttenuationLinear");
+		attenuationQuadratic = lightBuffer->MakeHandle<f32>("AttenuationQuadratic");
+		cosAngle = lightBuffer->MakeHandle<f32>("Angle");
 		position = lightBuffer->MakeHandle<vec3>("Position");
 		direction = lightBuffer->MakeHandle<vec3>("Direction");
 	}

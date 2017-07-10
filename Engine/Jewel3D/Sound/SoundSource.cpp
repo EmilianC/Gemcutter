@@ -128,7 +128,7 @@ namespace Jwl
 		return loop;
 	}
 
-	void SoundSource::SetDistance(float min, float max)
+	void SoundSource::SetDistance(f32 min, f32 max)
 	{
 		ASSERT(min >= 0.0f, "'min' must be non negative.");
 		ASSERT(max >= 0.0f && max >= min, "'min' must be less than or equal to 'max' and 'max' must be non negative.");
@@ -142,17 +142,17 @@ namespace Jwl
 		AL_DEBUG_CHECK();
 	}
 
-	float SoundSource::GetMinDistance() const
+	f32 SoundSource::GetMinDistance() const
 	{
 		return distanceMin;
 	}
 
-	float SoundSource::GetMaxDistance() const
+	f32 SoundSource::GetMaxDistance() const
 	{
 		return distanceMax;
 	}
 
-	void SoundSource::SetVolume(float _volume)
+	void SoundSource::SetVolume(f32 _volume)
 	{
 		ASSERT(_volume >= 0.0f, "'volume' must be non negative.");
 
@@ -161,12 +161,12 @@ namespace Jwl
 		AL_DEBUG_CHECK();
 	}
 
-	float SoundSource::GetVolume() const
+	f32 SoundSource::GetVolume() const
 	{
 		return volume;
 	}
 
-	void SoundSource::SetMinVolume(float min)
+	void SoundSource::SetMinVolume(f32 min)
 	{
 		ASSERT(min >= 0.0f && min <= 1.0f, "'volume' must be in the range of [0, 1].");
 
@@ -175,12 +175,12 @@ namespace Jwl
 		AL_DEBUG_CHECK();
 	}
 
-	float SoundSource::GetMinVolume() const
+	f32 SoundSource::GetMinVolume() const
 	{
 		return volumeMin;
 	}
 
-	void SoundSource::SetMaxVolume(float max)
+	void SoundSource::SetMaxVolume(f32 max)
 	{
 		ASSERT(max >= 0.0f && max <= 1.0f, "'volume' must be in the range of [0, 1].");
 
@@ -189,12 +189,12 @@ namespace Jwl
 		AL_DEBUG_CHECK();
 	}
 
-	float SoundSource::GetMaxVolume() const
+	f32 SoundSource::GetMaxVolume() const
 	{
 		return volumeMax;
 	}
 
-	void SoundSource::SetPitch(float _pitch)
+	void SoundSource::SetPitch(f32 _pitch)
 	{
 		ASSERT(_pitch >= 0.0f, "'pitch' must be non negative.");
 
@@ -203,12 +203,12 @@ namespace Jwl
 		AL_DEBUG_CHECK();
 	}
 
-	float SoundSource::GetPitch() const
+	f32 SoundSource::GetPitch() const
 	{
 		return pitch;
 	}
 
-	void SoundSource::SetRolloffFactor(float _rollOff)
+	void SoundSource::SetRolloffFactor(f32 _rollOff)
 	{
 		ASSERT(_rollOff >= 0.0f, "'factor' must be non negative.");
 
@@ -217,12 +217,12 @@ namespace Jwl
 		AL_DEBUG_CHECK();
 	}
 
-	float SoundSource::GetRolloffFactor() const
+	f32 SoundSource::GetRolloffFactor() const
 	{
 		return rollOff;
 	}
 
-	unsigned SoundSource::GetHandle() const
+	u32 SoundSource::GetHandle() const
 	{
 		return hSound;
 	}

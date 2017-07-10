@@ -8,7 +8,7 @@ namespace Jwl { namespace Meta
 	// Executes the expression on each instance (if any) of a referenced parameter pack.
 	#define EXECUTE_PACK(expr) \
 		do {														\
-			int unused[] = { 0, ((expr), 0) ... }; (void)unused;	\
+			s32 unused[] = { 0, ((expr), 0) ... }; (void)unused;	\
 			__pragma(warning(suppress:4127))						\
 		} while (false)
 
@@ -48,7 +48,7 @@ namespace Jwl { namespace Meta
 	{
 		// Used for compile-time hashing of strings using HashCRC().
 
-		constexpr unsigned StrLen(const char* str)
+		constexpr u32 StrLen(const char* str)
 		{
 			return *str ? 1 + StrLen(str + 1) : 0;
 		}
@@ -56,8 +56,8 @@ namespace Jwl { namespace Meta
 		namespace detail
 		{
 			// Generate CRC lookup table.
-			template <unsigned c, int k = 8> struct f : f<((c & 1) ? 0xEDB88320 : 0) ^ (c >> 1), k - 1> {};
-			template <unsigned c> struct f<c, 0> { static constexpr unsigned value = c; };
+			template <u32 c, s32 k = 8> struct f : f<((c & 1) ? 0xEDB88320 : 0) ^ (c >> 1), k - 1> {};
+			template <u32 c> struct f<c, 0> { static constexpr u32 value = c; };
 
 			#define HASH_GEN_A(x) HASH_GEN_B(x) HASH_GEN_B(x + 128)
 			#define HASH_GEN_B(x) HASH_GEN_C(x) HASH_GEN_C(x + 64)
@@ -69,7 +69,7 @@ namespace Jwl { namespace Meta
 			#define HASH_GEN_H(x) HASH_GEN_I(x) HASH_GEN_I(x + 1)
 			#define HASH_GEN_I(x) f<x>::value ,
 
-			constexpr unsigned crcTable[] = { HASH_GEN_A(0) };
+			constexpr u32 crcTable[] = { HASH_GEN_A(0) };
 
 			#undef HASH_GEN_A
 			#undef HASH_GEN_B
@@ -81,20 +81,20 @@ namespace Jwl { namespace Meta
 			#undef HASH_GEN_H
 			#undef HASH_GEN_I
 
-			constexpr unsigned ComputeCRC(const char* p, unsigned len, unsigned crc)
+			constexpr u32 ComputeCRC(const char* p, u32 len, u32 crc)
 			{
 				return len ?
 					ComputeCRC(p + 1, len - 1, (crc >> 8) ^ crcTable[(crc & 0xFF) ^ *p])
 					: crc;
 			}
 
-			constexpr unsigned HashCRC(const char* str, unsigned length)
+			constexpr u32 HashCRC(const char* str, u32 length)
 			{
 				return ~detail::ComputeCRC(str, length, ~0u);
 			}
 		}
 
-		constexpr unsigned HashCRC(const char* str)
+		constexpr u32 HashCRC(const char* str)
 		{
 			return detail::HashCRC(str, StrLen(str));
 		}
@@ -112,15 +112,15 @@ namespace Jwl { namespace Meta
 		private:
 			static_assert(sizeof...(str) <= 128, "Maximum length of a Meta::string is 128.");
 
-			static constexpr unsigned len = sizeof...(str);
+			static constexpr u32 len = sizeof...(str);
 			static constexpr char buff[len + 1] = { str..., '\0' };
 
 		public:
 			//- The size of the string, null character not included.
-			static constexpr unsigned size() { return StrLen(buff); }
+			static constexpr u32 size() { return StrLen(buff); }
 
 			//- The length of the string, null character not included.
-			static constexpr unsigned length() { return StrLen(buff); }
+			static constexpr u32 length() { return StrLen(buff); }
 
 			//- Returns a pointer to the first character in the string.
 			static constexpr const char* data() { return buff; }
@@ -138,7 +138,7 @@ namespace Jwl { namespace Meta
 		namespace detail
 		{
 			/* Safely extract a single char from a cstring. */
-			template<unsigned index, unsigned size>
+			template<u32 index, u32 size>
 			constexpr char getChar(const char (&c)[size])
 			{
 				return c[index < size ? index : size - 1];

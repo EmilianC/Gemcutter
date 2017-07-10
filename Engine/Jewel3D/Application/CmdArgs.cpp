@@ -6,7 +6,7 @@
 
 namespace Jwl
 {
-	int GetArgc()
+	s32 GetArgc()
 	{
 		return __argc;
 	}
@@ -18,7 +18,7 @@ namespace Jwl
 
 	bool ArgumentExists(const char* name)
 	{
-		for (int i = 1; i < __argc; i++)
+		for (s32 i = 1; i < __argc; i++)
 		{
 			// Search for the string.
 			if (strcmp(__argv[i], name) == 0)
@@ -30,9 +30,9 @@ namespace Jwl
 		return false;
 	}
 
-	int FindCommandLineArgument(const char* name)
+	s32 FindCommandLineArgument(const char* name)
 	{
-		for (int i = 1; i < __argc; i++)
+		for (s32 i = 1; i < __argc; i++)
 		{
 			// Search for the string.
 			if (strcmp(__argv[i], name) == 0)
@@ -51,7 +51,7 @@ namespace Jwl
 
 	bool GetCommandLineArgument(const char* name, bool& val)
 	{
-		int index = FindCommandLineArgument(name) + 1;
+		s32 index = FindCommandLineArgument(name) + 1;
 
 		if (index > 0 && index < __argc)
 		{
@@ -62,9 +62,9 @@ namespace Jwl
 		return false;
 	}
 
-	bool GetCommandLineArgument(const char* name, double& val)
+	bool GetCommandLineArgument(const char* name, f64& val)
 	{
-		int index = FindCommandLineArgument(name) + 1;
+		s32 index = FindCommandLineArgument(name) + 1;
 
 		if (index > 0 && index < __argc)
 		{
@@ -75,22 +75,22 @@ namespace Jwl
 		return false;
 	}
 
-	bool GetCommandLineArgument(const char* name, float& val)
+	bool GetCommandLineArgument(const char* name, f32& val)
 	{
-		int index = FindCommandLineArgument(name) + 1;
+		s32 index = FindCommandLineArgument(name) + 1;
 
 		if (index > 0 && index < __argc)
 		{
-			val = static_cast<float>(atof(__argv[index]));
+			val = static_cast<f32>(atof(__argv[index]));
 			return true;
 		}
 
 		return false;
 	}
 
-	bool GetCommandLineArgument(const char* name, int& val)
+	bool GetCommandLineArgument(const char* name, s32& val)
 	{
-		int index = FindCommandLineArgument(name) + 1;
+		s32 index = FindCommandLineArgument(name) + 1;
 
 		if (index > 0 && index < __argc)
 		{
@@ -101,9 +101,9 @@ namespace Jwl
 		return false;
 	}
 
-	bool GetCommandLineArgument(const char* name, unsigned& val)
+	bool GetCommandLineArgument(const char* name, u32& val)
 	{
-		int index = FindCommandLineArgument(name) + 1;
+		s32 index = FindCommandLineArgument(name) + 1;
 
 		if (index > 0 && index < __argc)
 		{
@@ -116,7 +116,7 @@ namespace Jwl
 
 	bool GetCommandLineArgument(const char* name, char& val)
 	{
-		int index = FindCommandLineArgument(name) + 1;
+		s32 index = FindCommandLineArgument(name) + 1;
 
 		if (index > 0 && index < __argc)
 		{
@@ -129,7 +129,7 @@ namespace Jwl
 
 	bool GetCommandLineArgument(const char* name, std::string& val)
 	{
-		int index = FindCommandLineArgument(name) + 1;
+		s32 index = FindCommandLineArgument(name) + 1;
 
 		if (index > 0 && index < __argc)
 		{
@@ -140,7 +140,7 @@ namespace Jwl
 		return false;
 	}
 
-	bool GetCommandLineArgument(int index, bool& val)
+	bool GetCommandLineArgument(s32 index, bool& val)
 	{
 		if (index > 0 && index < __argc)
 		{
@@ -151,7 +151,7 @@ namespace Jwl
 		return false;
 	}
 
-	bool GetCommandLineArgument(int index, double& val)
+	bool GetCommandLineArgument(s32 index, f64& val)
 	{
 		if (index > 0 && index < __argc)
 		{
@@ -162,29 +162,18 @@ namespace Jwl
 		return false;
 	}
 
-	bool GetCommandLineArgument(int index, float& val)
+	bool GetCommandLineArgument(s32 index, f32& val)
 	{
 		if (index > 0 && index < __argc)
 		{
-			val = static_cast<float>(atof(__argv[index]));
+			val = static_cast<f32>(atof(__argv[index]));
 			return true;
 		}
 
 		return false;
 	}
 
-	bool GetCommandLineArgument(int index, int& val)
-	{
-		if (index > 0 && index < __argc)
-		{
-			val = atoi(__argv[index]);
-			return true;
-		}
-
-		return false;
-	}
-
-	bool GetCommandLineArgument(int index, unsigned& val)
+	bool GetCommandLineArgument(s32 index, s32& val)
 	{
 		if (index > 0 && index < __argc)
 		{
@@ -195,7 +184,18 @@ namespace Jwl
 		return false;
 	}
 
-	bool GetCommandLineArgument(int index, char& val)
+	bool GetCommandLineArgument(s32 index, u32& val)
+	{
+		if (index > 0 && index < __argc)
+		{
+			val = atoi(__argv[index]);
+			return true;
+		}
+
+		return false;
+	}
+
+	bool GetCommandLineArgument(s32 index, char& val)
 	{
 		if (index > 0 && index < __argc)
 		{
@@ -206,7 +206,7 @@ namespace Jwl
 		return false;
 	}
 
-	bool GetCommandLineArgument(int index, std::string& val)
+	bool GetCommandLineArgument(s32 index, std::string& val)
 	{
 		// Index 0 is valid here. The first argument is always a string.
 		if (index >= 0 && index < __argc)

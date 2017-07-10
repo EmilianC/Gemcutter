@@ -18,7 +18,7 @@ namespace Jwl
 		SetPerspective(fovyDegrees, aspectRatio, zNear, zFar);
 	}
 
-	Camera::Camera(Entity& _owner, float _fovyDegrees, float _aspectRatio, float _zNear, float _zFar)
+	Camera::Camera(Entity& _owner, f32 _fovyDegrees, f32 _aspectRatio, f32 _zNear, f32 _zFar)
 		: Component(_owner)
 	{
 		CreateUniformBuffer();
@@ -26,7 +26,7 @@ namespace Jwl
 		SetPerspective(_fovyDegrees, _aspectRatio, _zNear, _zFar);
 	}
 
-	Camera::Camera(Entity& _owner, float _left, float _right, float _top, float _bottom, float _zNear, float _zFar)
+	Camera::Camera(Entity& _owner, f32 _left, f32 _right, f32 _top, f32 _bottom, f32 _zNear, f32 _zFar)
 		: Component(_owner)
 	{
 		CreateUniformBuffer();
@@ -66,12 +66,12 @@ namespace Jwl
 		uniformViewProj.Set(projection * view);
 		uniformInvView.Set(InvView);
 
-		buffer.Bind(static_cast<unsigned>(UniformBufferSlot::Camera));
+		buffer.Bind(static_cast<u32>(UniformBufferSlot::Camera));
 	}
 
 	void Camera::UnBind()
 	{
-		UniformBuffer::UnBind(static_cast<unsigned>(UniformBufferSlot::Camera));
+		UniformBuffer::UnBind(static_cast<u32>(UniformBufferSlot::Camera));
 	}
 
 	mat4 Camera::GetViewMatrix() const
@@ -94,44 +94,44 @@ namespace Jwl
 		return invProjection;
 	}
 
-	float Camera::GetNearPlaneWidth() const
+	f32 Camera::GetNearPlaneWidth() const
 	{
 		// Get horizontal FOV.
-		float tanFovy_over2 = tan(ToRadian(fovyDegrees) / 2.0f);
-		float fovXRadians = 2.0f * atan(tanFovy_over2 * aspectRatio);
+		f32 tanFovy_over2 = tan(ToRadian(fovyDegrees) / 2.0f);
+		f32 fovXRadians = 2.0f * atan(tanFovy_over2 * aspectRatio);
 
-		float nearPlaneWidth = 2.0f * (zNear * tan(fovXRadians / 2.0f));
+		f32 nearPlaneWidth = 2.0f * (zNear * tan(fovXRadians / 2.0f));
 
 		return nearPlaneWidth;
 	}
 
-	float Camera::GetNearPlaneHeight() const
+	f32 Camera::GetNearPlaneHeight() const
 	{
 		// Get horizontal FOV.
-		float tanFovy_over2 = tan(ToRadian(fovyDegrees) / 2.0f);
+		f32 tanFovy_over2 = tan(ToRadian(fovyDegrees) / 2.0f);
 
-		float nearPlaneHeight = 2.0f * (zNear * tanFovy_over2);
+		f32 nearPlaneHeight = 2.0f * (zNear * tanFovy_over2);
 
 		return nearPlaneHeight;
 	}
 
-	float Camera::GetFarPlaneWidth() const
+	f32 Camera::GetFarPlaneWidth() const
 	{
 		// Get horizontal FOV.
-		float tanFovy_over2 = tan(ToRadian(fovyDegrees) / 2.0f);
-		float fovXRadians = 2.0f * atan(tanFovy_over2 * aspectRatio);
+		f32 tanFovy_over2 = tan(ToRadian(fovyDegrees) / 2.0f);
+		f32 fovXRadians = 2.0f * atan(tanFovy_over2 * aspectRatio);
 
-		float farPlaneWidth = 2.0f * (zFar * tan(fovXRadians / 2.0f));
+		f32 farPlaneWidth = 2.0f * (zFar * tan(fovXRadians / 2.0f));
 
 		return farPlaneWidth;
 	}
 
-	float Camera::GetFarPlaneHeight() const
+	f32 Camera::GetFarPlaneHeight() const
 	{
 		// Get horizontal FOV.
-		float tanFovy_over2 = tan(ToRadian(fovyDegrees) / 2.0f);
+		f32 tanFovy_over2 = tan(ToRadian(fovyDegrees) / 2.0f);
 
-		float farPlaneHeight = 2.0f * (zFar * tanFovy_over2);
+		f32 farPlaneHeight = 2.0f * (zFar * tanFovy_over2);
 
 		return farPlaneHeight;
 	}
@@ -139,11 +139,11 @@ namespace Jwl
 	void Camera::GetFarPlaneCorners(vec3& bottomLeft, vec3& bottomRight, vec3& topRight, vec3& topLeft) const
 	{
 		// Get horizontal FOV.
-		float tanFovy_over2 = tan(ToRadian(fovyDegrees) / 2.0f);
-		float fovXRadians = 2.0f * atan(tanFovy_over2 * aspectRatio);
+		f32 tanFovy_over2 = tan(ToRadian(fovyDegrees) / 2.0f);
+		f32 fovXRadians = 2.0f * atan(tanFovy_over2 * aspectRatio);
 
-		float farPlaneHalfWidth = zFar * tan(fovXRadians / 2.0f);
-		float farPlaneHalfHeight = zFar * tanFovy_over2;
+		f32 farPlaneHalfWidth = zFar * tan(fovXRadians / 2.0f);
+		f32 farPlaneHalfHeight = zFar * tanFovy_over2;
 
 		bottomLeft = vec3(-farPlaneHalfWidth, -farPlaneHalfHeight, -zFar);
 		bottomRight = vec3(farPlaneHalfWidth, -farPlaneHalfHeight, -zFar);
@@ -154,11 +154,11 @@ namespace Jwl
 	void Camera::GetNearPlaneCorners(vec3& bottomLeft, vec3& bottomRight, vec3& topRight, vec3& topLeft) const
 	{
 		// Get horizontal FOV.
-		float tanFovy_over2 = tan(ToRadian(fovyDegrees) / 2.0f);
-		float fovXRadians = 2.0f * atan(tanFovy_over2 * aspectRatio);
+		f32 tanFovy_over2 = tan(ToRadian(fovyDegrees) / 2.0f);
+		f32 fovXRadians = 2.0f * atan(tanFovy_over2 * aspectRatio);
 
-		float nearPlaneHalfWidth = zNear * tan(fovXRadians / 2.0f);
-		float nearPlaneHalfHeight = zNear * tanFovy_over2;
+		f32 nearPlaneHalfWidth = zNear * tan(fovXRadians / 2.0f);
+		f32 nearPlaneHalfHeight = zNear * tanFovy_over2;
 
 		bottomLeft = vec3(-nearPlaneHalfWidth, -nearPlaneHalfHeight, -zNear);
 		bottomRight = vec3(nearPlaneHalfWidth, -nearPlaneHalfHeight, -zNear);
@@ -188,7 +188,7 @@ namespace Jwl
 		uniformInvProj.Set(invProjection);
 	}
 
-	void Camera::SetPerspective(float _fovyDegrees, float _aspectRatio, float _zNear, float _zFar)
+	void Camera::SetPerspective(f32 _fovyDegrees, f32 _aspectRatio, f32 _zNear, f32 _zFar)
 	{
 		isPerspective = true;
 		fovyDegrees = _fovyDegrees;
@@ -214,7 +214,7 @@ namespace Jwl
 		uniformInvProj.Set(invProjection);
 	}
 
-	void Camera::SetOrthograpic(float _left, float _right, float _top, float _bottom, float _zNear, float _zFar)
+	void Camera::SetOrthograpic(f32 _left, f32 _right, f32 _top, f32 _bottom, f32 _zNear, f32 _zFar)
 	{
 		isPerspective = false;
 		left = _left;
@@ -231,13 +231,13 @@ namespace Jwl
 		uniformInvProj.Set(invProjection);
 	}
 
-	void Camera::SetOrthograpic(const Viewport& viewport, float _zNear, float _zFar)
+	void Camera::SetOrthograpic(const Viewport& viewport, f32 _zNear, f32 _zFar)
 	{
 		isPerspective = false;
-		left = static_cast<float>(viewport.x);
-		right = static_cast<float>(viewport.x + viewport.width);
-		top = static_cast<float>(viewport.y + viewport.height);
-		bottom = static_cast<float>(viewport.y);
+		left = static_cast<f32>(viewport.x);
+		right = static_cast<f32>(viewport.x + viewport.width);
+		top = static_cast<f32>(viewport.y + viewport.height);
+		bottom = static_cast<f32>(viewport.y);
 		zNear = _zNear;
 		zFar = _zFar;
 
@@ -258,7 +258,7 @@ namespace Jwl
 		return !isPerspective;
 	}
 
-	void Camera::SetFovy(float _fovyDegrees)
+	void Camera::SetFovy(f32 _fovyDegrees)
 	{
 		ASSERT(isPerspective, "Camera must be perspective to call this function.");
 
@@ -270,7 +270,7 @@ namespace Jwl
 		uniformInvProj.Set(invProjection);
 	}
 
-	void Camera::SetAspectRatio(float _aspectRatio)
+	void Camera::SetAspectRatio(f32 _aspectRatio)
 	{
 		ASSERT(isPerspective, "Camera must be perspective to call this function.");
 
@@ -282,7 +282,7 @@ namespace Jwl
 		uniformInvProj.Set(invProjection);
 	}
 
-	void Camera::SetNearPlane(float _zNear)
+	void Camera::SetNearPlane(f32 _zNear)
 	{
 		zNear = _zNear;
 
@@ -301,7 +301,7 @@ namespace Jwl
 		uniformInvProj.Set(invProjection);
 	}
 
-	void Camera::SetFarPlane(float _zFar)
+	void Camera::SetFarPlane(f32 _zFar)
 	{
 		zFar = _zFar;
 
@@ -320,7 +320,7 @@ namespace Jwl
 		uniformInvProj.Set(invProjection);
 	}
 
-	void Camera::SetPlanes(float _zNear, float _zFar)
+	void Camera::SetPlanes(f32 _zNear, f32 _zFar)
 	{
 		zNear = _zNear;
 		zFar = _zFar;
@@ -340,7 +340,7 @@ namespace Jwl
 		uniformInvProj.Set(invProjection);
 	}
 
-	void Camera::SetLeftBound(float leftBound)
+	void Camera::SetLeftBound(f32 leftBound)
 	{
 		ASSERT(!isPerspective, "Camera must be orthographic to call this function.");
 
@@ -352,7 +352,7 @@ namespace Jwl
 		uniformInvProj.Set(invProjection);
 	}
 
-	void Camera::SetRightBound(float rightBound)
+	void Camera::SetRightBound(f32 rightBound)
 	{
 		ASSERT(!isPerspective, "Camera must be orthographic to call this function.");
 
@@ -364,7 +364,7 @@ namespace Jwl
 		uniformInvProj.Set(invProjection);
 	}
 
-	void Camera::SetTopBound(float topBound)
+	void Camera::SetTopBound(f32 topBound)
 	{
 		ASSERT(!isPerspective, "Camera must be orthographic to call this function.");
 
@@ -376,7 +376,7 @@ namespace Jwl
 		uniformInvProj.Set(invProjection);
 	}
 
-	void Camera::SetBottomBound(float bottomBound)
+	void Camera::SetBottomBound(f32 bottomBound)
 	{
 		ASSERT(!isPerspective, "Camera must be orthographic to call this function.");
 
@@ -388,42 +388,42 @@ namespace Jwl
 		uniformInvProj.Set(invProjection);
 	}
 
-	float Camera::GetFovyDegrees() const
+	f32 Camera::GetFovyDegrees() const
 	{
 		return fovyDegrees;
 	}
 
-	float Camera::GetAspectRatio() const
+	f32 Camera::GetAspectRatio() const
 	{
 		return aspectRatio;
 	}
 
-	float Camera::GetNearPlane() const
+	f32 Camera::GetNearPlane() const
 	{
 		return zNear;
 	}
 
-	float Camera::GetFarPlane() const
+	f32 Camera::GetFarPlane() const
 	{
 		return zFar;
 	}
 
-	float Camera::GetLeftBound() const
+	f32 Camera::GetLeftBound() const
 	{
 		return left;
 	}
 
-	float Camera::GetRightBound() const
+	f32 Camera::GetRightBound() const
 	{
 		return right;
 	}
 
-	float Camera::GetTopBound() const
+	f32 Camera::GetTopBound() const
 	{
 		return top;
 	}
 
-	float Camera::GetBottomBound() const
+	f32 Camera::GetBottomBound() const
 	{
 		return bottom;
 	}

@@ -38,22 +38,22 @@ namespace Jwl
 		position = pos;
 	}
 
-	void Transform::Rotate(const vec3 &axis, float degrees)
+	void Transform::Rotate(const vec3 &axis, f32 degrees)
 	{
 		rotation.Rotate(axis, degrees);
 	}
 
-	void Transform::RotateX(float degrees)
+	void Transform::RotateX(f32 degrees)
 	{
 		rotation.RotateX(degrees);
 	}
 
-	void Transform::RotateY(float degrees)
+	void Transform::RotateY(f32 degrees)
 	{
 		rotation.RotateY(degrees);
 	}
 
-	void Transform::RotateZ(float degrees)
+	void Transform::RotateZ(f32 degrees)
 	{
 		rotation.RotateZ(degrees);
 	}

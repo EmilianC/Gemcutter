@@ -1,13 +1,14 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
+#include "Jewel3D/Application/Types.h"
 #include "Resource.h"
 
 namespace Jwl
 {
 	struct CharData
 	{
-		int x;
-		int y;
+		s32 x;
+		s32 y;
 	};
 
 	class Font : public Resource<Font>
@@ -22,22 +23,22 @@ namespace Jwl
 
 		//- Returns the real world unit width of the string.
 		//- If the string is multi-line, the length of the longest line is returned.
-		int GetStringWidth(const std::string& text) const;
-		int GetStringHeight() const;
+		s32 GetStringWidth(const std::string& text) const;
+		s32 GetStringHeight() const;
 
-		const unsigned* GetTextures() const;
+		const u32* GetTextures() const;
 		const CharData* GetDimensions() const;
 		const CharData* GetPositions() const;
 		const CharData* GetAdvances() const;
 		const bool* GetMasks() const;
-		unsigned GetFontWidth() const;
-		unsigned GetFontHeight() const;
+		u32 GetFontWidth() const;
+		u32 GetFontHeight() const;
 
-		static unsigned GetVAO();
-		static unsigned GetVBO();
+		static u32 GetVAO();
+		static u32 GetVBO();
 
 	private:
-		unsigned textures[94];
+		u32 textures[94];
 		//- Each character's dimensions.
 		CharData dimensions[94];
 		//- The position of each character.
@@ -46,10 +47,10 @@ namespace Jwl
 		CharData advances[94];
 		//- Whether the character is included in the font.
 		bool masks[94];
-		unsigned width  = 0;
-		unsigned height = 0;
+		u32 width  = 0;
+		u32 height = 0;
 
-		static unsigned VBO;
-		static unsigned VAO;
+		static u32 VBO;
+		static u32 VAO;
 	};
 }

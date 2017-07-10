@@ -1,6 +1,8 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
 
+#include "Jewel3D/Application/Types.h"
+
 namespace Jwl
 {
 	class vec2;
@@ -20,36 +22,36 @@ namespace Jwl
 
 		mat2();
 		mat2(const vec2& right, const vec2& up);
-		mat2(float f0, float f2,
-			float f1, float f3);
+		mat2(f32 f0, f32 f2,
+			f32 f1, f32 f3);
 
 		mat2& operator=(const mat2&);
 		mat2& operator*=(const mat2&);
-		mat2& operator*=(float scalar);
-		mat2& operator/=(float divisor);
+		mat2& operator*=(f32 scalar);
+		mat2& operator/=(f32 divisor);
 		mat2& operator+=(const mat2&);
 		mat2& operator-=(const mat2&);
 		mat2 operator*(const mat2&) const;
 		mat2 operator+(const mat2&) const;
 		mat2 operator-(const mat2&) const;
 		vec2 operator*(const vec2&) const;
-		mat2 operator*(float scalar) const;
-		mat2 operator/(float divisor) const;
+		mat2 operator*(f32 scalar) const;
+		mat2 operator/(f32 divisor) const;
 		mat2 operator-() const;
 
-		float operator[](unsigned index) const;
-		float& operator[](unsigned index);
+		f32 operator[](u32 index) const;
+		f32& operator[](u32 index);
 
 		void Transpose();
 		void Inverse();
 		mat2 GetTranspose() const;
 		mat2 GetInverse() const;
-		float GetDeterminant() const;
+		f32 GetDeterminant() const;
 
 		void Scale(const vec2& scale);
-		void Scale(float scale);
+		void Scale(f32 scale);
 
-		void Rotate(float degrees);
+		void Rotate(f32 degrees);
 
 		void SetRight(const vec2& V);
 		void SetUp(const vec2& V);
@@ -59,7 +61,7 @@ namespace Jwl
 
 		static const mat2 Identity;
 
-		float data[4];
+		f32 data[4];
 	};
 
 	class mat3
@@ -77,40 +79,40 @@ namespace Jwl
 		//- Extracts the rotational component from the 4x4 matrix.
 		explicit mat3(const mat4& mat);
 		mat3(const vec3& right, const vec3& up, const vec3& forward);
-		mat3(float f0, float f3, float f6,
-			float f1, float f4, float f7,
-			float f2, float f5, float f8);
+		mat3(f32 f0, f32 f3, f32 f6,
+			f32 f1, f32 f4, f32 f7,
+			f32 f2, f32 f5, f32 f8);
 
 		mat3& operator=(const mat3&);
 		mat3& operator*=(const mat3&);
-		mat3& operator*=(float scalar);
-		mat3& operator/=(float divisor);
+		mat3& operator*=(f32 scalar);
+		mat3& operator/=(f32 divisor);
 		mat3& operator+=(const mat3&);
 		mat3& operator-=(const mat3&);
 		mat3 operator*(const mat3&) const;
 		mat3 operator+(const mat3&) const;
 		mat3 operator-(const mat3&) const;
 		vec3 operator*(const vec3&) const;
-		mat3 operator*(float scalar) const;
-		mat3 operator/(float divisor) const;
+		mat3 operator*(f32 scalar) const;
+		mat3 operator/(f32 divisor) const;
 		mat3 operator-() const;
 
-		float operator[](unsigned index) const;
-		float& operator[](unsigned index);
+		f32 operator[](u32 index) const;
+		f32& operator[](u32 index);
 
 		void Transpose();
 		void Inverse();
 		mat3 GetTranspose() const;
 		mat3 GetInverse() const;
-		float GetDeterminant() const;
+		f32 GetDeterminant() const;
 
 		void Scale(const vec3& scale);
-		void Scale(float scale);
+		void Scale(f32 scale);
 
-		void Rotate(const vec3& axis, float degrees);
-		void RotateX(float degrees);
-		void RotateY(float degrees);
-		void RotateZ(float degrees);
+		void Rotate(const vec3& axis, f32 degrees);
+		void RotateX(f32 degrees);
+		void RotateY(f32 degrees);
+		void RotateZ(f32 degrees);
 
 		void SetRight(const vec3& V);
 		void SetUp(const vec3& V);
@@ -122,7 +124,7 @@ namespace Jwl
 
 		static const mat3 Identity;
 
-		float data[9];
+		f32 data[9];
 	};
 
 	class mat4
@@ -142,27 +144,27 @@ namespace Jwl
 		mat4(const quat& rotation, const vec3& translation);
 		mat4(const mat3& rotation, const vec3& translation);
 		mat4(const vec3& right, const vec3& up, const vec3& forward, const vec4& translation);
-		mat4(float f0, float f4, float f8, float f12,
-			float f1, float f5, float f9, float f13,
-			float f2, float f6, float f10, float f14,
-			float f3, float f7, float f11, float f15);
+		mat4(f32 f0, f32 f4, f32 f8, f32 f12,
+			f32 f1, f32 f5, f32 f9, f32 f13,
+			f32 f2, f32 f6, f32 f10, f32 f14,
+			f32 f3, f32 f7, f32 f11, f32 f15);
 
 		mat4& operator=(const mat4&);
 		mat4& operator*=(const mat4&);
-		mat4& operator*=(float scalar);
-		mat4& operator/=(float divisor);
+		mat4& operator*=(f32 scalar);
+		mat4& operator/=(f32 divisor);
 		mat4& operator+=(const mat4&);
 		mat4& operator-=(const mat4&);
 		mat4 operator*(const mat4&) const;
 		mat4 operator+(const mat4&) const;
 		mat4 operator-(const mat4&) const;
 		vec4 operator*(const vec4&) const;
-		mat4 operator*(float scalar) const;
-		mat4 operator/(float divisor) const;
+		mat4 operator*(f32 scalar) const;
+		mat4 operator/(f32 divisor) const;
 		mat4 operator-() const;
 
-		float operator[](unsigned index) const;
-		float& operator[](unsigned index);
+		f32 operator[](u32 index) const;
+		f32& operator[](u32 index);
 
 		void Transpose();
 		void Inverse();
@@ -178,12 +180,12 @@ namespace Jwl
 		mat4 GetFastInverse() const;
 
 		void Scale(const vec3& scale);
-		void Scale(float scale);
+		void Scale(f32 scale);
 
-		void Rotate(const vec3& axis, float degrees);
-		void RotateX(float degrees);
-		void RotateY(float degrees);
-		void RotateZ(float degrees);
+		void Rotate(const vec3& axis, f32 degrees);
+		void RotateX(f32 degrees);
+		void RotateY(f32 degrees);
+		void RotateZ(f32 degrees);
 
 		void Translate(const vec3& translation);
 
@@ -199,14 +201,14 @@ namespace Jwl
 
 		static const mat4 Identity;
 		
-		static mat4 PerspectiveProjection(float fovyDegrees, float aspect, float zNear, float zFar);
-		static mat4 InversePerspectiveProjection(float fovyDegrees, float aspect, float zNear, float zFar);
+		static mat4 PerspectiveProjection(f32 fovyDegrees, f32 aspect, f32 zNear, f32 zFar);
+		static mat4 InversePerspectiveProjection(f32 fovyDegrees, f32 aspect, f32 zNear, f32 zFar);
 		
-		static mat4 OrthographicProjection(float left, float right, float top, float bottom, float zNear, float zFar);
-		static mat4 InverseOrthographicProjection(float left, float right, float top, float bottom, float zNear, float zFar);
+		static mat4 OrthographicProjection(f32 left, f32 right, f32 top, f32 bottom, f32 zNear, f32 zFar);
+		static mat4 InverseOrthographicProjection(f32 left, f32 right, f32 top, f32 bottom, f32 zNear, f32 zFar);
 
 		static mat4 LookAt(const vec3& position, const vec3& target, const vec3& upVector);
 
-		float data[16];
+		f32 data[16];
 	};
 }

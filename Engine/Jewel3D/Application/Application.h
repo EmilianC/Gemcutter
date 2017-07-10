@@ -17,7 +17,7 @@ namespace Jwl
 		Application();
 		~Application();
 
-		bool CreateGameWindow(const std::string& title, unsigned glMajorVersion, unsigned glMinorVersion);
+		bool CreateGameWindow(const std::string& title, u32 glMajorVersion, u32 glMinorVersion);
 		void DestroyGameWindow();
 
 		void GameLoop(std::function<void()> update, std::function<void()> draw);
@@ -40,22 +40,22 @@ namespace Jwl
 		bool IsFullscreen();
 		bool IsBordered();
 		bool IsResizable();
-		int GetScreenWidth() const;
-		int GetScreenHeight() const;
-		float GetAspectRatio() const;
+		s32 GetScreenWidth() const;
+		s32 GetScreenHeight() const;
+		f32 GetAspectRatio() const;
 
 		//- The amount of time in seconds that the simulation step is currently calculating.
-		float GetDeltaTime() const;
+		f32 GetDeltaTime() const;
 
 		//- The current framerate. Updated once per second.
-		unsigned GetFPS() const;
+		u32 GetFPS() const;
 
 		//- Sets the maximum allowed framerate. 0 sets fps as uncapped.
-		void SetFPSCap(unsigned fps);
-		unsigned GetFPSCap() const;
+		void SetFPSCap(u32 fps);
+		u32 GetFPSCap() const;
 
-		void SetUpdatesPerSecond(unsigned ups);
-		unsigned GetUpdatesPerSecond() const;
+		void SetUpdatesPerSecond(u32 ups);
+		u32 GetUpdatesPerSecond() const;
 
 		const Viewport& GetScreenViewport() const;
 		std::string GetOpenGLVersionString() const;
@@ -63,7 +63,7 @@ namespace Jwl
 		bool SetFullscreen(bool state);
 		bool SetBordered(bool state);
 		bool SetResizable(bool state);
-		bool SetResolution(unsigned width, unsigned height);
+		bool SetResolution(u32 width, u32 height);
 
 	private:
 		//- Processes events from the OS.
@@ -83,14 +83,14 @@ namespace Jwl
 		bool bordered = true;
 		bool resizable = false;
 
-		unsigned glMajorVersion;
-		unsigned glMinorVersion;
-		unsigned updatesPerSecond = 60;
-		unsigned FPSCap = 0;
+		u32 glMajorVersion;
+		u32 glMinorVersion;
+		u32 updatesPerSecond = 60;
+		u32 FPSCap = 0;
 		Viewport screenViewport;
 
 		//- The number of frames render during the last second.
-		unsigned fps = 0;
+		u32 fps = 0;
 
 		//- Window handles.
 		HWND hwnd;
@@ -103,12 +103,12 @@ namespace Jwl
 	class Resize : public Event<Resize>
 	{
 	public:
-		Resize(unsigned width, unsigned height);
+		Resize(u32 width, u32 height);
 		//- Returns the new aspect ratio of the window, calculated as Width / Height.
-		float GetAspectRatio() const;
+		f32 GetAspectRatio() const;
 		//- The new Width of the window.
-		const unsigned width;
+		const u32 width;
 		//- The new Height of the window.
-		const unsigned height;
+		const u32 height;
 	};
 }

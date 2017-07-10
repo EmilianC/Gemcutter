@@ -10,20 +10,20 @@
 * every return case, you will leak memory. For example:
 *
 * void Load() {
-*	int* memory = new int[256];
+*	s32* memory = new s32[256];
 *	
 *	if (!okay) return; // Leaks memory!
 *	
 *	// Many more exit points...
 *	
-*	delete[] int; // Only here will the data be released.
+*	delete[] s32; // Only here will the data be released.
 * }
 * 
 * With the scope guard we improve readability, safety, and maintainability.
 * Write the cleanup code once, and it will run however the function exits.
 *
 * void Load() {
-*	int* memory = new int[256];
+*	s32* memory = new s32[256];
 *	defer { delete[] memory };
 *
 *	if (!okay) return; // defer block is called!

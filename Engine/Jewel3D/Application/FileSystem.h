@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+#include "Jewel3D/Application/Types.h"
+
 //Resolve name conflict with our functions
 #undef GetCurrentDirectory
 #undef SetCurrentDirectory
@@ -92,10 +94,10 @@ namespace Jwl
 		std::string GetLine();
 		//- Returns the next spaced word.
 		std::string GetWord();
-		//- Gets the next word as a float.
-		float GetFloat();
-		//- Gets the next word as an int.
-		int GetInt();
+		//- Gets the next word as a f32.
+		f32 GetFloat();
+		//- Gets the next word as an s32.
+		s32 GetInt();
 		//- Gets the next character.
 		char GetChar();
 		
@@ -103,13 +105,13 @@ namespace Jwl
 		bool IsEOF() const;
 
 		//- Returns the size of the file in bytes.
-		int GetSize() const;
+		s32 GetSize() const;
 
 	private:
 		std::ifstream file;
 		std::string buffer;
 
-		unsigned currentPos = 0;
-		unsigned length = 0;
+		u32 currentPos = 0;
+		u32 length = 0;
 	};
 }

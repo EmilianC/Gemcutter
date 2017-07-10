@@ -14,12 +14,12 @@
 
 namespace Jwl
 {
-	unsigned Font::VAO = 0;
-	unsigned Font::VBO = 0;
+	u32 Font::VAO = 0;
+	u32 Font::VBO = 0;
 
 	Font::Font()
 	{
-		memset(textures,	0, sizeof(unsigned) * 94);
+		memset(textures,	0, sizeof(u32) * 94);
 		memset(dimensions,	0, sizeof(CharData) * 94);
 		memset(positions,	0, sizeof(CharData) * 94);
 		memset(advances,	0, sizeof(CharData) * 94);
@@ -36,9 +36,9 @@ namespace Jwl
 		if (VAO == GL_NONE)
 		{
 			// Prepare VBO's and VAO.
-			unsigned verticesSize = sizeof(float) * 6 * 3;
-			unsigned texCoordsSize = sizeof(float) * 6 * 2;
-			unsigned normalsSize = sizeof(float) * 6 * 3;
+			u32 verticesSize = sizeof(f32) * 6 * 3;
+			u32 texCoordsSize = sizeof(f32) * 6 * 2;
+			u32 normalsSize = sizeof(f32) * 6 * 3;
 			GLfloat data[48] =
 			{
 				/* Vertices */
@@ -112,19 +112,19 @@ namespace Jwl
 
 		// Load bitmap data.
 		TextureFilterMode filter;
-		unsigned long int bitmapSize = 0;
-		unsigned char* bitmap = nullptr;
+		u32 bitmapSize = 0;
+		u8* bitmap = nullptr;
 		defer{ free(bitmap); };
 
 		// Read header.
-		fread(&bitmapSize, sizeof(unsigned long int), 1, fontFile);
-		fread(&width, sizeof(unsigned), 1, fontFile);
-		fread(&height, sizeof(unsigned), 1, fontFile);
+		fread(&bitmapSize, sizeof(u32), 1, fontFile);
+		fread(&width, sizeof(u32), 1, fontFile);
+		fread(&height, sizeof(u32), 1, fontFile);
 		fread(&filter, sizeof(TextureFilterMode), 1, fontFile);
 
 		// Load Data.
-		bitmap = static_cast<unsigned char*>(malloc(sizeof(unsigned char) * bitmapSize));
-		fread(bitmap, sizeof(unsigned char), bitmapSize, fontFile);
+		bitmap = static_cast<u8*>(malloc(sizeof(u8) * bitmapSize));
+		fread(bitmap, sizeof(u8), bitmapSize, fontFile);
 		fread(dimensions, sizeof(CharData), 94, fontFile);
 		fread(positions, sizeof(CharData), 94, fontFile);
 		fread(advances, sizeof(CharData), 94, fontFile);
@@ -136,8 +136,8 @@ namespace Jwl
 		glGenTextures(94, textures);
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-		unsigned char* bitmapItr = bitmap;
-		for (unsigned i = 0; i < 94; i++)
+		u8* bitmapItr = bitmap;
+		for (u32 i = 0; i < 94; i++)
 		{
 			if (!masks[i])
 				continue;
@@ -149,11 +149,11 @@ namespace Jwl
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 			// Send the texture data.
-			int numLevels = 1;
+			s32 numLevels = 1;
 			if (ResolveMipMapping(filter))
 			{
-				float max = static_cast<float>(Max(dimensions[i].x, dimensions[i].y));
-				numLevels = static_cast<int>(std::floor(std::log2(max))) + 1;
+				f32 max = static_cast<f32>(Max(dimensions[i].x, dimensions[i].y));
+				numLevels = static_cast<s32>(std::floor(std::log2(max))) + 1;
 			}
 
 			glTexStorage2D(GL_TEXTURE_2D, numLevels, GL_R8, dimensions[i].x, dimensions[i].y);
@@ -179,13 +179,13 @@ namespace Jwl
 	{
 		glDeleteTextures(94, textures);
 
-		memset(textures, GL_NONE, sizeof(unsigned) * 94);
+		memset(textures, GL_NONE, sizeof(u32) * 94);
 	}
 
-	int Font::GetStringWidth(const std::string& text) const
+	s32 Font::GetStringWidth(const std::string& text) const
 	{
-		int length = 0;
-		int largest = INT_MIN;
+		s32 length = 0;
+		s32 largest = INT_MIN;
 
 		for (char ch : text)
 		{
@@ -211,12 +211,12 @@ namespace Jwl
 		return Max(largest, length);
 	}
 
-	int Font::GetStringHeight() const
+	s32 Font::GetStringHeight() const
 	{
 		return dimensions['Z' - '!'].y;
 	}
 
-	const unsigned* Font::GetTextures() const
+	const u32* Font::GetTextures() const
 	{
 		return textures;
 	}
@@ -241,22 +241,22 @@ namespace Jwl
 		return masks;
 	}
 
-	unsigned Font::GetFontWidth() const
+	u32 Font::GetFontWidth() const
 	{
 		return width;
 	}
 
-	unsigned Font::GetFontHeight() const
+	u32 Font::GetFontHeight() const
 	{
 		return height;
 	}
 
-	unsigned Font::GetVAO()
+	u32 Font::GetVAO()
 	{
 		return VAO;
 	}
 
-	unsigned Font::GetVBO()
+	u32 Font::GetVBO()
 	{
 		return VBO;
 	}

@@ -5,7 +5,7 @@
 
 namespace Jwl
 {
-	Viewport::Viewport(unsigned _x, unsigned _y, unsigned _width, unsigned _height)
+	Viewport::Viewport(u32 _x, u32 _y, u32 _width, u32 _height)
 		: x(_x)
 		, y(_y)
 		, width(_width)
@@ -18,8 +18,8 @@ namespace Jwl
 		SetViewport(x, y, width, height);
 	}
 
-	float Viewport::GetAspectRatio() const
+	f32 Viewport::GetAspectRatio() const
 	{
-		return static_cast<float>(width) / static_cast<float>(height);
+		return static_cast<f32>(width) / static_cast<f32>(height);
 	}
 }

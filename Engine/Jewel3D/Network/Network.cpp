@@ -30,7 +30,7 @@ namespace Jwl
 		memset(receiveBuffer, '\0', PACKET_LENGTH);
 	}
 
-	bool NetworkUDP::Init(int localPortNum)
+	bool NetworkUDP::Init(s32 localPortNum)
 	{
 		localPort = localPortNum;
 
@@ -56,7 +56,7 @@ namespace Jwl
 		return true;
 	}
 
-	bool NetworkUDP::Init(const std::string& remoteIP, int remotePortNum)
+	bool NetworkUDP::Init(const std::string& remoteIP, s32 remotePortNum)
 	{
 		remoteIp = remoteIP;
 		remotePort = remotePortNum;
@@ -107,7 +107,7 @@ namespace Jwl
 		out_packet.clear();
 		memset(receiveBuffer, '\0', PACKET_LENGTH);
 
-		int length = recvfrom(inputSocket, receiveBuffer, PACKET_LENGTH, 0, nullptr, nullptr);
+		s32 length = recvfrom(inputSocket, receiveBuffer, PACKET_LENGTH, 0, nullptr, nullptr);
 
 		// Did we receive anything?
 		if (length == SOCKET_ERROR || WSAGetLastError() == WSAEWOULDBLOCK)
@@ -167,7 +167,7 @@ namespace Jwl
 		memset(receiveBuffer, '\0', PACKET_LENGTH);
 	}
 	
-	bool NetworkTCP::OpenToConnectionRequests(int localPortNum)
+	bool NetworkTCP::OpenToConnectionRequests(s32 localPortNum)
 	{
 		ASSERT(isConnected == false, "Network is already connected.");
 
@@ -214,7 +214,7 @@ namespace Jwl
 		}
 	}
 	
-	bool NetworkTCP::SendConnectionRequest(const std::string& remoteIP, int remotePortNum)
+	bool NetworkTCP::SendConnectionRequest(const std::string& remoteIP, s32 remotePortNum)
 	{
 		ASSERT(isConnected == false, "Network is already connected.");
 
@@ -267,7 +267,7 @@ namespace Jwl
 		out_packet.clear();
 		memset(receiveBuffer, '\0', PACKET_LENGTH);
 	
-		int length = recv(socketId, receiveBuffer, PACKET_LENGTH, 0);
+		s32 length = recv(socketId, receiveBuffer, PACKET_LENGTH, 0);
 	
 		// Did we receive anything?
 		if (length == SOCKET_ERROR || WSAGetLastError() == WSAEWOULDBLOCK)
@@ -300,7 +300,7 @@ namespace Jwl
 		memset(receiveBuffer, '\0', PACKET_LENGTH);
 	}
 
-	bool NetworkClient::Init(int localPortNumTCP, int localPortNumUDP, const std::string& remoteIP, int remotePortNumTCP, int remotePortNumUDP)
+	bool NetworkClient::Init(s32 localPortNumTCP, s32 localPortNumUDP, const std::string& remoteIP, s32 remotePortNumTCP, s32 remotePortNumUDP)
 	{
 		ASSERT(localPortNumTCP != localPortNumUDP, "Local TCP and UDP ports cannot be the same.");
 		ASSERT(remotePortNumTCP != remotePortNumUDP, "Remote TCP and UDP ports cannot be the same.");
@@ -380,7 +380,7 @@ namespace Jwl
 		TCPAddress.sin_port = htons(static_cast<u_short>(remotePortTCP));
 		TCPAddress.sin_addr.S_un.S_addr = inet_addr(remoteIp.c_str());
 
-		int result = connect(TCPSocket, (SOCKADDR*)(&TCPAddress), sizeof(sockaddr));
+		s32 result = connect(TCPSocket, (SOCKADDR*)(&TCPAddress), sizeof(sockaddr));
 		if (result != 0)
 		{
 			//allow the socket to be used again
@@ -426,7 +426,7 @@ namespace Jwl
 		out_packet.clear();
 		memset(receiveBuffer, '\0', PACKET_LENGTH);
 
-		int length = recvfrom(UDPReceiveSocket, receiveBuffer, PACKET_LENGTH, 0, NULL, NULL);
+		s32 length = recvfrom(UDPReceiveSocket, receiveBuffer, PACKET_LENGTH, 0, NULL, NULL);
 
 		if (length == SOCKET_ERROR || WSAGetLastError() == WSAEWOULDBLOCK)
 		{
@@ -451,7 +451,7 @@ namespace Jwl
 		out_packet.clear();
 		memset(receiveBuffer, '\0', PACKET_LENGTH);
 
-		int length = recv(TCPSocket, receiveBuffer, PACKET_LENGTH, 0);
+		s32 length = recv(TCPSocket, receiveBuffer, PACKET_LENGTH, 0);
 	
 		// Did we receive anything?
 		if (length == SOCKET_ERROR || WSAGetLastError() == WSAEWOULDBLOCK)
@@ -485,7 +485,7 @@ namespace Jwl
 		memset(receiveBuffer, '\0', PACKET_LENGTH);
 	}
 
-	bool NetworkServer::Init(int localPortNumTCP, int localPortNumUDP)
+	bool NetworkServer::Init(s32 localPortNumTCP, s32 localPortNumUDP)
 	{
 		ASSERT(localPortNumTCP != localPortNumUDP, "TCP and UDP ports must be different.");
 
@@ -569,7 +569,7 @@ namespace Jwl
 		return true;
 	}
 
-	int NetworkServer::CheckForConnectionRequests()
+	s32 NetworkServer::CheckForConnectionRequests()
 	{
 		SOCKET tempSocket = static_cast<SOCKET>(SOCKET_ERROR);
 		Client newClient;
@@ -588,13 +588,13 @@ namespace Jwl
 
 			// Wait for message with client's port.
 			memset(receiveBuffer, '\0', PACKET_LENGTH);
-			int length = SOCKET_ERROR;
+			s32 length = SOCKET_ERROR;
 			do
 			{
 				length = recv(newClient.TCPSocket, receiveBuffer, PACKET_LENGTH, 0);
 			} while (length == SOCKET_ERROR || WSAGetLastError() == WSAEWOULDBLOCK);
 
-			int port = std::atoi(receiveBuffer);
+			s32 port = std::atoi(receiveBuffer);
 
 			// Set up address for sending data back with UDPs.
 			newClient.UDPAddress.sin_family = AF_INET;
@@ -606,19 +606,19 @@ namespace Jwl
 		}
 	}
 
-	bool NetworkServer::IsConnected(int ID) const
+	bool NetworkServer::IsConnected(s32 ID) const
 	{
 		return GetClientIndex(ID) != -1;
 	}
 
-	unsigned NetworkServer::GetNumClients() const
+	u32 NetworkServer::GetNumClients() const
 	{
 		return clients.size();
 	}
 
-	void NetworkServer::RemoveClient(int ID)
+	void NetworkServer::RemoveClient(s32 ID)
 	{
-		unsigned i = GetClientIndex(ID);
+		u32 i = GetClientIndex(ID);
 		ASSERT(i != -1, "Client with ID %d could not be found.", ID);
 
 		shutdown(clients[i].TCPSocket, SD_BOTH);
@@ -627,9 +627,9 @@ namespace Jwl
 		clients.erase(clients.begin() + i);
 	}
 
-	bool NetworkServer::SendUDP(const std::string& packet, int ID)
+	bool NetworkServer::SendUDP(const std::string& packet, s32 ID)
 	{
-		unsigned i = GetClientIndex(ID);
+		u32 i = GetClientIndex(ID);
 		ASSERT(i != -1, "Client with ID %d could not be found.", ID);
 
 		return sendto(UDPSendSocket, packet.c_str(), packet.size(), 0, (sockaddr*)&clients[i].UDPAddress, clients[i].UDPAddressSize) != SOCKET_ERROR;
@@ -638,7 +638,7 @@ namespace Jwl
 	bool NetworkServer::SendUDP(const std::string& packet)
 	{
 		bool okay = true;
-		for (unsigned i = 0; i < clients.size(); i++)
+		for (u32 i = 0; i < clients.size(); i++)
 		{
 			bool result = sendto(UDPSendSocket, packet.c_str(), packet.size(), 0, (sockaddr*)&clients[i].UDPAddress, clients[i].UDPAddressSize) != SOCKET_ERROR;
 			okay = okay && result;
@@ -647,10 +647,10 @@ namespace Jwl
 		return okay;
 	}
 
-	bool NetworkServer::SendToAllButOneUDP(const std::string& packet, int excludedID)
+	bool NetworkServer::SendToAllButOneUDP(const std::string& packet, s32 excludedID)
 	{
 		bool okay = true;
-		for (unsigned i = 0; i < clients.size(); i++)
+		for (u32 i = 0; i < clients.size(); i++)
 		{
 			if (clients[i].ID == excludedID)
 				continue;
@@ -662,16 +662,16 @@ namespace Jwl
 		return okay;
 	}
 
-	int NetworkServer::ReceiveUDP(std::string& out_packet)
+	s32 NetworkServer::ReceiveUDP(std::string& out_packet)
 	{
 		// Empty buffers.
 		out_packet.clear();
 		memset(receiveBuffer, '\0', PACKET_LENGTH);
 
 		sockaddr_in addr;
-		int addrSize = sizeof(sockaddr);
+		s32 addrSize = sizeof(sockaddr);
 
-		int length = recvfrom(UDPReceiveSocket, receiveBuffer, PACKET_LENGTH, 0, (sockaddr*)&addr, &addrSize);
+		s32 length = recvfrom(UDPReceiveSocket, receiveBuffer, PACKET_LENGTH, 0, (sockaddr*)&addr, &addrSize);
 
 		if (length == SOCKET_ERROR || WSAGetLastError() == WSAEWOULDBLOCK)
 		{
@@ -683,7 +683,7 @@ namespace Jwl
 			out_packet = receiveBuffer;
 
 			// Identify the client.
-			for (unsigned i = 0; i < clients.size(); i++)
+			for (u32 i = 0; i < clients.size(); i++)
 			{
 				// Clients are assumed to have unique IP addresses.
 				if (clients[i].UDPAddress.sin_addr.S_un.S_addr == addr.sin_addr.S_un.S_addr)
@@ -696,9 +696,9 @@ namespace Jwl
 		return -1;
 	}
 
-	bool NetworkServer::SendTCP(const std::string& packet, int ID)
+	bool NetworkServer::SendTCP(const std::string& packet, s32 ID)
 	{
-		unsigned i = GetClientIndex(ID);
+		u32 i = GetClientIndex(ID);
 		ASSERT(i != -1, "Client with ID %d could not be found.", ID);
 
 		return send(clients[i].TCPSocket, packet.c_str(), packet.size(), 0) != SOCKET_ERROR;
@@ -707,7 +707,7 @@ namespace Jwl
 	bool NetworkServer::SendTCP(const std::string& packet)
 	{
 		bool okay = true;
-		for (unsigned i = 0; i < clients.size(); i++)
+		for (u32 i = 0; i < clients.size(); i++)
 		{
 			bool result = send(clients[i].TCPSocket, packet.c_str(), packet.size(), 0) != SOCKET_ERROR;
 			okay = okay && result;
@@ -716,10 +716,10 @@ namespace Jwl
 		return okay;
 	}
 
-	bool NetworkServer::SendToAllButOneTCP(const std::string& packet, int excludedID)
+	bool NetworkServer::SendToAllButOneTCP(const std::string& packet, s32 excludedID)
 	{
 		bool okay = true;
-		for (unsigned i = 0; i < clients.size(); i++)
+		for (u32 i = 0; i < clients.size(); i++)
 		{
 			if (clients[i].ID == excludedID)
 				continue;
@@ -731,16 +731,16 @@ namespace Jwl
 		return okay;
 	}
 
-	int NetworkServer::ReceiveTCP(std::string& out_packet)
+	s32 NetworkServer::ReceiveTCP(std::string& out_packet)
 	{
 		// Empty buffers.
 		out_packet.clear();
 		memset(receiveBuffer, '\0', PACKET_LENGTH);
 
 		// Look through all clients for packets.
-		for (unsigned i = 0; i < clients.size(); i++)
+		for (u32 i = 0; i < clients.size(); i++)
 		{
-			int length = recv(clients[i].TCPSocket, receiveBuffer, PACKET_LENGTH, 0);
+			s32 length = recv(clients[i].TCPSocket, receiveBuffer, PACKET_LENGTH, 0);
 	
 			// Did we receive anything?
 			if (length == SOCKET_ERROR || WSAGetLastError() == WSAEWOULDBLOCK)
@@ -758,9 +758,9 @@ namespace Jwl
 		return -1;
 	}
 
-	unsigned NetworkServer::GetClientIndex(int ID) const
+	u32 NetworkServer::GetClientIndex(s32 ID) const
 	{
-		for (unsigned i = 0; i < clients.size(); i++)
+		for (u32 i = 0; i < clients.size(); i++)
 		{
 			if (clients[i].ID == ID)
 			{

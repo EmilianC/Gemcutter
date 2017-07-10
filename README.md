@@ -47,7 +47,7 @@ Future highlight features include:
 	* Networking
 	* Seamless editor integration of user components
 
-# Dependancies
+# Dependencies
 All Dependencies used under their respective licenses. Copyright is held by their respective owners.
 * [GLEW 2.0.0](http://glew.sourceforge.net/)
 * [FreeType 2](https://www.freetype.org/)

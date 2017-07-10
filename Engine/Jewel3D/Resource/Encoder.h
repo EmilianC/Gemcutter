@@ -3,7 +3,9 @@
 #include "ConfigTable.h"
 #include "Jewel3D/Application/FileSystem.h"
 #include "Jewel3D/Application/Logging.h"
+#include "Jewel3D/Application/Types.h"
 #include "Jewel3D/Utilities/ScopeGuard.h"
+
 
 #include <memory>
 
@@ -14,7 +16,7 @@ namespace Jwl
 	class Encoder
 	{
 	public:
-		Encoder(unsigned version)
+		Encoder(u32 version)
 			: version(version)
 		{
 		}
@@ -54,7 +56,7 @@ namespace Jwl
 
 		bool UpgradeData(ConfigTable& metadata) const
 		{
-			auto currentVersion = static_cast<unsigned>(metadata.GetInt("version"));
+			auto currentVersion = static_cast<u32>(metadata.GetInt("version"));
 
 			if (currentVersion < version)
 			{
@@ -76,7 +78,7 @@ namespace Jwl
 					}
 
 					currentVersion++;
-					metadata.SetValue("version", static_cast<int>(currentVersion));
+					metadata.SetValue("version", static_cast<s32>(currentVersion));
 				}
 			}
 
@@ -104,15 +106,15 @@ namespace Jwl
 	protected:
 		//- The derived function should ensure that all fields are present and contain correct data.
 		//- Validation should be done based on the provided version.
-		virtual bool Validate(const ConfigTable& metadata, unsigned loadedVersion) const = 0;
+		virtual bool Validate(const ConfigTable& metadata, u32 loadedVersion) const = 0;
 
 		//- The derived function should update the provided data in order boost its version number by one.
 		//- Upgrading is a sequential process, meaning that you only need to provide code to upgrade from 1->2 and from 2->3, not 1->3.
-		virtual bool Upgrade(ConfigTable& metadata, unsigned loadedVersion) const { return true; };
+		virtual bool Upgrade(ConfigTable& metadata, u32 loadedVersion) const { return true; };
 
 	private:
 		// The newest version of the asset.
-		const unsigned version;
+		const u32 version;
 	};
 }
 

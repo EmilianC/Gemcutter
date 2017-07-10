@@ -6,10 +6,10 @@ namespace Jwl
 	class vec3;
 
 	void SeedRandomNumberGenerator();
-	void SeedRandomNumberGenerator(unsigned seed);
+	void SeedRandomNumberGenerator(u32 seed);
 
-	float RandomRange(float min, float max);
-	int RandomRange(int min, int max);
+	f32 RandomRange(f32 min, f32 max);
+	s32 RandomRange(s32 min, s32 max);
 
 	// Returns a random unit-length vector.
 	vec3 RandomDirection();
@@ -20,17 +20,17 @@ namespace Jwl
 	{
 	public:
 		Range() = default;
-		Range(float min, float max);
+		Range(f32 min, f32 max);
 
 		// Potential range is 'value' +- half the 'deviation'.
-		static Range Deviation(float value, float deviation);
+		static Range Deviation(f32 value, f32 deviation);
 
-		float Random() const;
-		void Set(float min, float max);
+		f32 Random() const;
+		void Set(f32 min, f32 max);
 
-		bool Contains(float value) const;
+		bool Contains(f32 value) const;
 
-		float min = 0.0f;
-		float max = 1.0f;
+		f32 min = 0.0f;
+		f32 max = 1.0f;
 	};
 }

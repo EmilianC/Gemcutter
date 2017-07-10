@@ -15,7 +15,7 @@ namespace Jwl
 
 	void EntityGroup::Remove(const Entity& ent)
 	{
-		for (unsigned i = 0; i < entities.size(); i++)
+		for (u32 i = 0; i < entities.size(); i++)
 		{
 			if (entities[i].get() == &ent)
 			{

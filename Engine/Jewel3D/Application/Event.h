@@ -87,7 +87,7 @@ namespace Jwl
 		//- Notifies all listeners of this event by invoking their callback functions.
 		virtual void Raise() const final override
 		{
-			for (unsigned i = 0; i < listeners.size(); i++)
+			for (u32 i = 0; i < listeners.size(); i++)
 			{
 				if (listeners[i]->callback)
 				{

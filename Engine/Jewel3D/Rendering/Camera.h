@@ -13,8 +13,8 @@ namespace Jwl
 	{
 	public:
 		Camera(Entity& owner);
-		Camera(Entity& owner, float fovyDegrees, float aspectRatio, float zNear, float zFar);
-		Camera(Entity& owner, float left, float right, float top, float bottom, float zNear, float zFar);
+		Camera(Entity& owner, f32 fovyDegrees, f32 aspectRatio, f32 zNear, f32 zFar);
+		Camera(Entity& owner, f32 left, f32 right, f32 top, f32 bottom, f32 zNear, f32 zFar);
 		Camera& operator=(const Camera&);
 
 		//- Uploads the camera's values to OpenGL.
@@ -27,10 +27,10 @@ namespace Jwl
 		mat4 GetProjMatrix() const;
 		mat4 GetInverseProjMatrix() const;
 
-		float GetNearPlaneWidth() const;
-		float GetNearPlaneHeight() const;
-		float GetFarPlaneWidth() const;
-		float GetFarPlaneHeight() const;
+		f32 GetNearPlaneWidth() const;
+		f32 GetNearPlaneHeight() const;
+		f32 GetFarPlaneWidth() const;
+		f32 GetFarPlaneHeight() const;
 
 		//- Computes the corners of the far plane in view-space.
 		void GetFarPlaneCorners(vec3& bottomLeft, vec3& bottomRight, vec3& topRight, vec3& topLeft) const;
@@ -42,43 +42,43 @@ namespace Jwl
 		//- Sets the camera to Perspective mode with the current settings.
 		void SetPerspective();
 		//- Sets the camera to Perspective mode, overriding the settings.
-		void SetPerspective(float fovyDegrees, float aspectRatio, float zNear, float zFar);
+		void SetPerspective(f32 fovyDegrees, f32 aspectRatio, f32 zNear, f32 zFar);
 
 		//- Sets the camera to Orthographic mode with the current settings.
 		void SetOrthograpic();
 		//- Sets the camera to Orthographic mode, overriding the settings.
-		void SetOrthograpic(float left, float right, float top, float bottom, float zNear, float zFar);
+		void SetOrthograpic(f32 left, f32 right, f32 top, f32 bottom, f32 zNear, f32 zFar);
 		//- Sets the camera to Orthographic mode, overriding the settings to match the viewport's dimensions.
-		void SetOrthograpic(const Viewport& viewport, float zNear, float zFar);
+		void SetOrthograpic(const Viewport& viewport, f32 zNear, f32 zFar);
 
 		bool IsPerspective() const;
 		bool IsOrthographic() const;
 
-		void SetNearPlane(float zNear);
-		void SetFarPlane(float zFar);
-		void SetPlanes(float zNear, float zFar);
+		void SetNearPlane(f32 zNear);
+		void SetFarPlane(f32 zFar);
+		void SetPlanes(f32 zNear, f32 zFar);
 
 		/* For perspective projections */
-		void SetFovy(float fovyDegrees);
-		void SetAspectRatio(float aspectRatio);
+		void SetFovy(f32 fovyDegrees);
+		void SetAspectRatio(f32 aspectRatio);
 
 		/* For orthographic projections */
-		void SetLeftBound(float leftBound);
-		void SetRightBound(float rightBound);
-		void SetTopBound(float topBound);
-		void SetBottomBound(float bottomBound);
+		void SetLeftBound(f32 leftBound);
+		void SetRightBound(f32 rightBound);
+		void SetTopBound(f32 topBound);
+		void SetBottomBound(f32 bottomBound);
 
 		/* For perspective projections */
-		float GetFovyDegrees() const;
-		float GetAspectRatio() const;
-		float GetNearPlane() const;
-		float GetFarPlane() const;
+		f32 GetFovyDegrees() const;
+		f32 GetAspectRatio() const;
+		f32 GetNearPlane() const;
+		f32 GetFarPlane() const;
 
 		/* For orthographic projections */
-		float GetLeftBound() const;
-		float GetRightBound() const;
-		float GetTopBound() const;
-		float GetBottomBound() const;
+		f32 GetLeftBound() const;
+		f32 GetRightBound() const;
+		f32 GetTopBound() const;
+		f32 GetBottomBound() const;
 
 	private:
 		void CreateUniformBuffer();
@@ -95,13 +95,13 @@ namespace Jwl
 		mutable UniformHandle<mat4> uniformInvProj;
 
 		bool isPerspective	= true;
-		float fovyDegrees	= 50.0f;
-		float aspectRatio	= 1.0f;
-		float zNear			= 1.0f;
-		float zFar			= 1000.0f;
-		float left			= -100.0f;
-		float right			= 100.0f;
-		float top			= 100.0f;
-		float bottom		= -100.0f;
+		f32 fovyDegrees	= 50.0f;
+		f32 aspectRatio	= 1.0f;
+		f32 zNear			= 1.0f;
+		f32 zFar			= 1000.0f;
+		f32 left			= -100.0f;
+		f32 right			= 100.0f;
+		f32 top			= 100.0f;
+		f32 bottom		= -100.0f;
 	};
 }

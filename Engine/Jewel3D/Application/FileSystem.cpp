@@ -260,7 +260,7 @@ namespace Jwl
 
 		// Get length of file.
 		file.seekg(0, file.end);
-		length = static_cast<unsigned>(file.tellg());
+		length = static_cast<u32>(file.tellg());
 		file.seekg(0, file.beg);
 
 		// Read data as a block.
@@ -288,7 +288,7 @@ namespace Jwl
 
 		// Get length of file.
 		file.seekg(0, file.end);
-		length = static_cast<unsigned>(file.tellg());
+		length = static_cast<u32>(file.tellg());
 		file.seekg(0, file.beg);
 
 		return true;
@@ -362,11 +362,11 @@ namespace Jwl
 		return result;
 	}
 
-	float FileReader::GetFloat()
+	f32 FileReader::GetFloat()
 	{
 		if (buffer.empty())
 		{
-			float result;
+			f32 result;
 			file >> result;
 			return result;
 		}
@@ -381,11 +381,11 @@ namespace Jwl
 		}
 	}
 
-	int FileReader::GetInt()
+	s32 FileReader::GetInt()
 	{
 		if (buffer.empty())
 		{
-			int result;
+			s32 result;
 			file >> result;
 			return result;
 		}
@@ -429,7 +429,7 @@ namespace Jwl
 		}
 	}
 
-	int FileReader::GetSize() const
+	s32 FileReader::GetSize() const
 	{
 		return length;
 	}

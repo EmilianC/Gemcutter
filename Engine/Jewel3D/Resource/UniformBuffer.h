@@ -19,23 +19,23 @@ namespace Jwl
 		UniformBuffer& operator=(const UniformBuffer&);
 		void Copy(const UniformBuffer& other);
 
-		void AddUniform(const std::string& name, unsigned bytes, unsigned count = 1);
+		void AddUniform(const std::string& name, u32 bytes, u32 count = 1);
 
 		void InitBuffer();
 		void UnLoad();
 
-		void Bind(unsigned slot) const;
-		static void UnBind(unsigned slot);
+		void Bind(u32 slot) const;
+		static void UnBind(u32 slot);
 
 		template<class T>
 		void SetUniform(const std::string& name, const T& data);
 		template<class T>
-		void SetUniformArray(const std::string& name, unsigned numElements, T* data);
+		void SetUniformArray(const std::string& name, u32 numElements, T* data);
 
 		template<class T>
 		UniformHandle<T> MakeHandle(const std::string& name);
 
-		int GetByteSize();
+		s32 GetByteSize();
 		bool IsUniform(const std::string& name);
 
 		//- Force the uniform buffer to re-upload it's data the next time it's bound. Used internally.
@@ -45,11 +45,11 @@ namespace Jwl
 		void* GetBufferLoc(const std::string& name) const;
 
 		mutable bool dirty	= true;
-		unsigned UBO		= 0;
+		u32 UBO		= 0;
 		void* buffer		= nullptr;
-		unsigned bufferSize = 0;
+		u32 bufferSize = 0;
 
-		std::unordered_map<std::string, int> table;
+		std::unordered_map<std::string, s32> table;
 	};
 
 	template<class T>
@@ -64,7 +64,7 @@ namespace Jwl
 	}
 
 	template<class T>
-	void UniformBuffer::SetUniformArray(const std::string& name, unsigned numElements, T* data)
+	void UniformBuffer::SetUniformArray(const std::string& name, u32 numElements, T* data)
 	{
 		ASSERT(data != nullptr, "Source data cannot be null.");
 
@@ -80,13 +80,13 @@ namespace Jwl
 	struct BufferSlot
 	{
 		BufferSlot() = default;
-		BufferSlot(UniformBuffer::Ptr buffer, unsigned unit);
+		BufferSlot(UniformBuffer::Ptr buffer, u32 unit);
 
 		void Bind() const;
 		void UnBind() const;
 
 		UniformBuffer::Ptr buffer;
-		unsigned unit = 0;
+		u32 unit = 0;
 	};
 
 	//- A group of UniformBuffers that are bound and unbound together.
@@ -96,13 +96,13 @@ namespace Jwl
 		void Bind() const;
 		void UnBind() const;
 
-		void Add(UniformBuffer::Ptr buffer, unsigned unit);
-		void Remove(unsigned unit);
+		void Add(UniformBuffer::Ptr buffer, u32 unit);
+		void Remove(u32 unit);
 		//- Removes all Buffers.
 		void Clear();
 
 		//- Returns the buffer bound at the specified unit.
-		UniformBuffer::Ptr& operator[](unsigned unit);
+		UniformBuffer::Ptr& operator[](u32 unit);
 
 		const auto& GetAll() const { return buffers; }
 

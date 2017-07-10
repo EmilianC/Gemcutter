@@ -39,14 +39,14 @@ namespace Jwl
 		Ptr GetParent() const;
 
 		//- Returns the number of children currently held by this node.
-		unsigned GetNumChildren() const;
+		u32 GetNumChildren() const;
 
 		//- Gets the list of children held by this node.
 		const auto& GetChildren() const { return children; }
 
 		//- Gets the depth of this node in the hierarchy. The root is always depth 0.
 		//	Direct children of the root are at depth 1, and so on.
-		unsigned GetDepth() const;
+		u32 GetDepth() const;
 
 		//- Returns true if this node doesn't have a parent.
 		bool IsRoot() const;

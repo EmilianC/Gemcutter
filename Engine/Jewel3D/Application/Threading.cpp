@@ -42,7 +42,7 @@ namespace Jwl
 		}
 	}
 
-	bool Thread::Start(unsigned (__stdcall *startFunc)(void* arg), void* argData)
+	bool Thread::Start(u32 (__stdcall *startFunc)(void* arg), void* argData)
 	{
 		threadHandle = CreateThread(
 			NULL,	// Default security
@@ -60,7 +60,7 @@ namespace Jwl
 		WaitForSingleObject(threadHandle, INFINITE);
 	}
 
-	bool Thread::GetReturnValue(unsigned* value)
+	bool Thread::GetReturnValue(u32* value)
 	{
 		bool result = GetExitCodeThread(threadHandle, reinterpret_cast<LPDWORD>(value)) != 0;
 		return result && reinterpret_cast<DWORD>(value) != STILL_ACTIVE;

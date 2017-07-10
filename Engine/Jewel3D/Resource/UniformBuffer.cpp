@@ -37,7 +37,7 @@ namespace Jwl
 		*this = other;
 	}
 
-	void UniformBuffer::AddUniform(const std::string& name, unsigned bytes, unsigned count)
+	void UniformBuffer::AddUniform(const std::string& name, u32 bytes, u32 count)
 	{
 		ASSERT(UBO == GL_NONE, "UniformBuffer has already been initialized and locked.");
 		ASSERT(count != 0, "Must add at least one element.");
@@ -70,7 +70,7 @@ namespace Jwl
 		}
 		else
 		{
-			unsigned alignment;
+			u32 alignment;
 			if (bytes == sizeof(vec3))
 			{
 				alignment = sizeof(vec4);
@@ -126,7 +126,7 @@ namespace Jwl
 		dirty = true;
 	}
 
-	void UniformBuffer::Bind(unsigned slot) const
+	void UniformBuffer::Bind(u32 slot) const
 	{
 		glBindBufferBase(GL_UNIFORM_BUFFER, slot, UBO);
 
@@ -137,12 +137,12 @@ namespace Jwl
 		}
 	}
 
-	void UniformBuffer::UnBind(unsigned slot)
+	void UniformBuffer::UnBind(u32 slot)
 	{
 		glBindBufferBase(GL_UNIFORM_BUFFER, slot, GL_NONE);
 	}
 
-	int UniformBuffer::GetByteSize()
+	s32 UniformBuffer::GetByteSize()
 	{
 		return bufferSize;
 	}
@@ -173,7 +173,7 @@ namespace Jwl
 
 	//-----------------------------------------------------------------------------------------------------
 
-	BufferSlot::BufferSlot(UniformBuffer::Ptr buffer, unsigned unit)
+	BufferSlot::BufferSlot(UniformBuffer::Ptr buffer, u32 unit)
 		: buffer(buffer), unit(unit)
 	{
 	}
@@ -206,14 +206,14 @@ namespace Jwl
 		}
 	}
 
-	void BufferList::Add(UniformBuffer::Ptr buffer, unsigned unit)
+	void BufferList::Add(UniformBuffer::Ptr buffer, u32 unit)
 	{
 		Remove(unit);
 
 		buffers.push_back(BufferSlot(buffer, unit));
 	}
 
-	void BufferList::Remove(unsigned unit)
+	void BufferList::Remove(u32 unit)
 	{
 		for (auto itr = buffers.begin(); itr < buffers.end(); itr++)
 		{
@@ -230,7 +230,7 @@ namespace Jwl
 		buffers.clear();
 	}
 
-	UniformBuffer::Ptr& BufferList::operator[](unsigned unit)
+	UniformBuffer::Ptr& BufferList::operator[](u32 unit)
 	{
 		auto bufferSlot = std::find_if(buffers.begin(), buffers.end(), [unit](BufferSlot& slot) {
 			return slot.unit == unit;

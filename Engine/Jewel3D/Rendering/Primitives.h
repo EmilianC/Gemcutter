@@ -31,7 +31,7 @@ namespace Jwl
 		void DrawRectangle(const vec3& p1, const vec3& p2, const vec3& p3, const vec3& p4, Texture& tex);
 		void DrawUnitRectangle();
 
-		void DrawGrid(const vec3& p1, const vec3& p2, const vec3& p3, const vec3& p4, const vec4& color, unsigned numDivisions);
+		void DrawGrid(const vec3& p1, const vec3& p2, const vec3& p3, const vec3& p4, const vec4& color, u32 numDivisions);
 
 		void DrawFullScreenQuad(Shader& program);
 		void DrawFullScreenQuad(Texture& tex);
@@ -51,12 +51,12 @@ namespace Jwl
 		Shader texturedRectangleProgram;
 		Shader texturedFullScreenQuadProgram;
 
-		unsigned fullScreenVAO = 0;
-		unsigned fullScreenVBO = 0;
-		unsigned quadVAO = 0;
-		unsigned quadVBO = 0;
-		unsigned skyboxVAO = 0;
-		unsigned skyboxVBO = 0;
-		unsigned primitivesVAO = 0;
+		u32 fullScreenVAO = 0;
+		u32 fullScreenVBO = 0;
+		u32 quadVAO = 0;
+		u32 quadVBO = 0;
+		u32 skyboxVAO = 0;
+		u32 skyboxVBO = 0;
+		u32 primitivesVAO = 0;
 	} &Primitives = Singleton<class Primitives>::instanceRef;
 }

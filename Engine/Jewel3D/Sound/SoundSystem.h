@@ -28,7 +28,7 @@ namespace Jwl
 		//- Sets the behaviour of volume falloff over distance.
 		void SetAttenuationMode(AttenuationMode mode);
 		//- Sets the global volume level. Should be [0, ...]. Default is 1.0f.
-		void SetGlobalVolume(float volume);
+		void SetGlobalVolume(f32 volume);
 
 		//- This must be called every frame in order to ensure that sounds play at the correct locations.
 		void Update();

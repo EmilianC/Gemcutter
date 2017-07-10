@@ -5,14 +5,14 @@
 #include <algorithm>
 #include <cctype>
 
-namespace
-{
-	static constexpr unsigned BUFFER_SIZE = 1024;
-	static char buffer[BUFFER_SIZE] = { '\0' };
-}
-
 namespace Jwl
 {
+	namespace
+	{
+		constexpr Jwl::u32 BUFFER_SIZE = 1024;
+		char buffer[BUFFER_SIZE] = { '\0' };
+	}
+
 	void RemoveWhitespace(std::string& str)
 	{
 		str.erase(std::remove_if(str.begin(), str.end(), [](char x) {
@@ -93,7 +93,7 @@ namespace Jwl
 			return false;
 		}
 
-		for (unsigned i = 0; i < a.size(); ++i)
+		for (u32 i = 0; i < a.size(); ++i)
 		{
 			if (std::tolower(a[i]) != std::tolower(b[i]))
 			{

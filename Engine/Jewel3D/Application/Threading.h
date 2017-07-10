@@ -31,13 +31,13 @@ namespace Jwl
 		Thread &operator=(const Thread&) = delete;
 
 		//- Start the thread on the specified function. Returns false if thread didn't start.
-		bool Start(unsigned (__stdcall *startFunc)(void* arg), void* argData = NULL);
+		bool Start(u32 (__stdcall *startFunc)(void* arg), void* argData = NULL);
 
 		//- Returns only once the internal thread has finished.
 		void Join();
 
 		//- Returns false if the function could not retrieve the return value of the thread.
-		bool GetReturnValue(unsigned* value);
+		bool GetReturnValue(u32* value);
 
 		//- Returns the thread ID.
 		DWORD GetID() const;

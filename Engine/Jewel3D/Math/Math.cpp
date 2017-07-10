@@ -4,17 +4,17 @@
 
 namespace Jwl
 {
-	float SnapToGrid(float value, float step)
+	f32 SnapToGrid(f32 value, f32 step)
 	{
 		return std::floorf((value + (step / 2.0f)) / step) * step;
 	}
 
-	float EaseIn(float percent)
+	f32 EaseIn(f32 percent)
 	{
 		return 1.0f - cosf(percent * (M_PI / 2.0f));
 	}
 
-	float EaseOut(float percent)
+	f32 EaseOut(f32 percent)
 	{
 		return cosf((percent - 1.0f) * (M_PI / 2.0f));
 	}

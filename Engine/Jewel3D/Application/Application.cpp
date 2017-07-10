@@ -51,7 +51,7 @@ namespace
 		}
 	}
 
-	static RECT GetWindowSize(LONG style, unsigned clientWidth, unsigned clientHeight)
+	static RECT GetWindowSize(LONG style, Jwl::u32 clientWidth, Jwl::u32 clientHeight)
 	{
 		RECT windowRect;
 		windowRect.left = 0;
@@ -67,7 +67,7 @@ namespace
 		return windowRect;
 	}
 
-	static bool ApplyFullscreen(HWND window, bool state, unsigned clientWidth, unsigned clientHeight)
+	static bool ApplyFullscreen(HWND window, bool state, Jwl::u32 clientWidth, Jwl::u32 clientHeight)
 	{
 		if (state)
 		{
@@ -110,7 +110,7 @@ namespace
 		return true;
 	}
 
-	static bool ApplyStyle(HWND window, LONG style, unsigned clientWidth, unsigned clientHeight)
+	static bool ApplyStyle(HWND window, LONG style, Jwl::u32 clientWidth, Jwl::u32 clientHeight)
 	{
 		RECT windowRect = GetWindowSize(style, clientWidth, clientHeight);
 
@@ -124,7 +124,7 @@ namespace
 		return true;
 	}
 
-	static bool ApplyResolution(HWND window, LONG style, unsigned clientWidth, unsigned clientHeight)
+	static bool ApplyResolution(HWND window, LONG style, Jwl::u32 clientWidth, Jwl::u32 clientHeight)
 	{
 		RECT windowRect = GetWindowSize(style, clientWidth, clientHeight);
 		if (SetWindowPos(window, 0, 0, 0, windowRect.right - windowRect.left, windowRect.bottom - windowRect.top, SWP_NOMOVE | SWP_NOZORDER | SWP_SHOWWINDOW) == ERROR)
@@ -272,7 +272,7 @@ namespace Jwl
 		}
 	}
 
-	bool Application::CreateGameWindow(const std::string& title, unsigned _glMajorVersion, unsigned _glMinorVersion)
+	bool Application::CreateGameWindow(const std::string& title, u32 _glMajorVersion, u32 _glMinorVersion)
 	{
 		ASSERT(hwnd == NULL, "A game window is already open.");
 		ASSERT(_glMajorVersion > 3 || (_glMajorVersion == 3 && _glMinorVersion == 3), "OpenGL version must be 3.3 or greater.");
@@ -381,8 +381,8 @@ namespace Jwl
 		}
 
 		//- Timing control variables.
-		constexpr unsigned MAX_CONCURRENT_UPDATES = 5;
-		unsigned fpsCounter = 0;
+		constexpr u32 MAX_CONCURRENT_UPDATES = 5;
+		u32 fpsCounter = 0;
 		__int64 lastUpdate = Timer::GetCurrentTick();
 		__int64 lastRender = lastUpdate;
 		__int64 lastFpsCapture = lastRender;
@@ -405,7 +405,7 @@ namespace Jwl
 			}
 
 			// Update to keep up with real time.
-			unsigned updateCount = 0;
+			u32 updateCount = 0;
 			while (currentTime - lastUpdate >= updateStep)
 			{
 				update();
@@ -490,32 +490,32 @@ namespace Jwl
 		return std::string(reinterpret_cast<const char*>(glGetString(GL_VERSION)));
 	}
 
-	int Application::GetScreenWidth() const
+	s32 Application::GetScreenWidth() const
 	{
 		return screenViewport.width;
 	}
 
-	int Application::GetScreenHeight() const
+	s32 Application::GetScreenHeight() const
 	{
 		return screenViewport.height;
 	}
 
-	float Application::GetAspectRatio() const
+	f32 Application::GetAspectRatio() const
 	{
 		return screenViewport.GetAspectRatio();
 	}
 
-	float Application::GetDeltaTime() const
+	f32 Application::GetDeltaTime() const
 	{
 		return 1.0f / updatesPerSecond;
 	}
 
-	unsigned Application::GetFPS() const
+	u32 Application::GetFPS() const
 	{
 		return fps;
 	}
 
-	void Application::SetFPSCap(unsigned _fps)
+	void Application::SetFPSCap(u32 _fps)
 	{
 		if (_fps == 0)
 		{
@@ -534,12 +534,12 @@ namespace Jwl
 		}
 	}
 	
-	unsigned Application::GetFPSCap() const
+	u32 Application::GetFPSCap() const
 	{
 		return FPSCap;
 	}
 
-	void Application::SetUpdatesPerSecond(unsigned ups)
+	void Application::SetUpdatesPerSecond(u32 ups)
 	{
 		ASSERT(ups > 0, "Invalid update rate.");
 
@@ -548,7 +548,7 @@ namespace Jwl
 		updatesPerSecond = ups;
 	}
 
-	unsigned Application::GetUpdatesPerSecond() const
+	u32 Application::GetUpdatesPerSecond() const
 	{
 		return updatesPerSecond;
 	}
@@ -645,7 +645,7 @@ namespace Jwl
 		return true;
 	}
 
-	bool Application::SetResolution(unsigned width, unsigned height)
+	bool Application::SetResolution(u32 width, u32 height)
 	{
 		ASSERT(width > 0, "'width' must be greater than 0.");
 		ASSERT(height > 0, "'height' must be greater than 0.");
@@ -745,12 +745,12 @@ namespace Jwl
 			pfd.cStencilBits	= STENCIL_BUFFER_BITS;
 			pfd.iLayerType		= PFD_MAIN_PLANE;
 
-			int pixelFormat = ChoosePixelFormat(app.deviceContext, &pfd);
+			s32 pixelFormat = ChoosePixelFormat(app.deviceContext, &pfd);
 			SetPixelFormat(app.deviceContext, pixelFormat, &pfd);
 
-			int attribs[] = {
-				WGL_CONTEXT_MAJOR_VERSION_ARB, static_cast<int>(app.glMajorVersion),
-				WGL_CONTEXT_MINOR_VERSION_ARB, static_cast<int>(app.glMinorVersion),
+			s32 attribs[] = {
+				WGL_CONTEXT_MAJOR_VERSION_ARB, static_cast<s32>(app.glMajorVersion),
+				WGL_CONTEXT_MINOR_VERSION_ARB, static_cast<s32>(app.glMinorVersion),
 				WGL_CONTEXT_PROFILE_MASK_ARB,
 				WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
 				WGL_CONTEXT_FLAGS_ARB,
@@ -849,14 +849,14 @@ namespace Jwl
 		return DefWindowProc(hWnd, uMsg, wParam, lParam);
 	}
 
-	Resize::Resize(unsigned _width, unsigned _height)
+	Resize::Resize(u32 _width, u32 _height)
 		: width(_width)
 		, height(_height)
 	{
 	}
 
-	float Resize::GetAspectRatio() const
+	f32 Resize::GetAspectRatio() const
 	{
-		return static_cast<float>(width) / static_cast<float>(height);
+		return static_cast<f32>(width) / static_cast<f32>(height);
 	}
 }

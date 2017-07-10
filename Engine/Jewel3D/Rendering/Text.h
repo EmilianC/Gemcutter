@@ -17,13 +17,13 @@ namespace Jwl
 
 		void SetFont(Font::Ptr font);
 		Font::Ptr GetFont() const;
-		unsigned GetNumLines() const;
-		float GetLineWidth(unsigned line) const;
+		u32 GetNumLines() const;
+		f32 GetLineWidth(u32 line) const;
 
 		std::string text;
 		bool centeredX = false;
 		bool centeredY = false;
-		float kernel = 1.0f;
+		f32 kernel = 1.0f;
 
 	private:
 		Font::Ptr data;

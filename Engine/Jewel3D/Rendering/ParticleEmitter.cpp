@@ -13,7 +13,7 @@
 
 namespace Jwl
 {
-	ParticleEmitter::ParticleEmitter(Entity& _owner, unsigned _maxParticles)
+	ParticleEmitter::ParticleEmitter(Entity& _owner, u32 _maxParticles)
 		: Component(_owner)
 		, maxParticles(_maxParticles)
 	{
@@ -23,8 +23,8 @@ namespace Jwl
 		particleParameters.AddUniform("EndSize", sizeof(vec2));
 		particleParameters.AddUniform("StartColor", sizeof(vec3));
 		particleParameters.AddUniform("EndColor", sizeof(vec3));
-		particleParameters.AddUniform("StartAlpha", sizeof(float));
-		particleParameters.AddUniform("EndAlpha", sizeof(float));
+		particleParameters.AddUniform("StartAlpha", sizeof(f32));
+		particleParameters.AddUniform("EndAlpha", sizeof(f32));
 		particleParameters.InitBuffer();
 
 		particleParameters.SetUniform("StartSize", vec2(1.0f));
@@ -60,11 +60,11 @@ namespace Jwl
 		return *this;
 	}
 
-	void ParticleEmitter::Warmup(float time)
+	void ParticleEmitter::Warmup(f32 time)
 	{
 		ASSERT(time > 0.0f, "Warmup time must be greater than 0.");
 
-		const float divisor = 0.5f;
+		const f32 divisor = 0.5f;
 
 		while (time > divisor)
 		{
@@ -93,17 +93,17 @@ namespace Jwl
 		data.Update(numCurrentParticles);
 	}
 
-	unsigned ParticleEmitter::GetNumAliveParticles() const
+	u32 ParticleEmitter::GetNumAliveParticles() const
 	{
 		return numCurrentParticles;
 	}
 
-	unsigned ParticleEmitter::GetNumMaxParticles() const
+	u32 ParticleEmitter::GetNumMaxParticles() const
 	{
 		return maxParticles;
 	}
 
-	unsigned ParticleEmitter::GetVAO() const
+	u32 ParticleEmitter::GetVAO() const
 	{
 		return data.GetVAO();
 	}
@@ -130,13 +130,13 @@ namespace Jwl
 		SetColorStartEnd(constant, constant);
 	}
 
-	void ParticleEmitter::SetAlphaStartEnd(float start, float end)
+	void ParticleEmitter::SetAlphaStartEnd(f32 start, f32 end)
 	{
 		particleParameters.SetUniform("StartAlpha", start);
 		particleParameters.SetUniform("EndAlpha", end);
 	}
 
-	void ParticleEmitter::SetAlphaStartEnd(float constant)
+	void ParticleEmitter::SetAlphaStartEnd(f32 constant)
 	{
 		SetAlphaStartEnd(constant, constant);
 	}
@@ -160,7 +160,7 @@ namespace Jwl
 			transform = owner.GetWorldTransform().GetTranslation();
 		}
 
-		for (unsigned i = 0; i < numCurrentParticles; i++)
+		for (u32 i = 0; i < numCurrentParticles; i++)
 		{
 			data.positions[i] += transform;
 		}
@@ -178,7 +178,7 @@ namespace Jwl
 		return particleParameters;
 	}
 
-	void ParticleEmitter::UpdateInternal(float deltaTime)
+	void ParticleEmitter::UpdateInternal(f32 deltaTime)
 	{
 		ASSERT(maxParticles != 0, "Expected max particle count to be greater than 0.");
 		ASSERT(spawnPerSecond >= 0.0f, "'spawnPerSecond' cannot be a negative value.");
@@ -250,7 +250,7 @@ namespace Jwl
 		}
 
 		/* Update existing particles */
-		for (unsigned i = 0; i < numCurrentParticles; i++)
+		for (u32 i = 0; i < numCurrentParticles; i++)
 		{
 			data.ages[i] += deltaTime;
 
@@ -272,7 +272,7 @@ namespace Jwl
 
 		/* Create new particles */
 		numToSpawn += spawnPerSecond * deltaTime;
-		unsigned initialCount = numCurrentParticles;
+		u32 initialCount = numCurrentParticles;
 
 		while (
 			// We have not reached the particle cap and...
@@ -305,7 +305,7 @@ namespace Jwl
 		{
 			vec3 transform = owner.GetWorldTransform().GetTranslation();
 		
-			for (unsigned i = initialCount; i < numCurrentParticles; i++)
+			for (u32 i = initialCount; i < numCurrentParticles; i++)
 			{
 				data.positions[i] += transform;
 			}
@@ -320,7 +320,7 @@ namespace Jwl
 		// Percentage of lifespan calculated here.
 		if (requiresAgeRatio)
 		{
-			for (unsigned i = 0; i < numCurrentParticles; i++)
+			for (u32 i = 0; i < numCurrentParticles; i++)
 			{
 				data.ageRatios[i] = data.ages[i] / data.lifetimes[i];
 			}

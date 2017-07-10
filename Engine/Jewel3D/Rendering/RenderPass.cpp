@@ -175,7 +175,7 @@ namespace Jwl
 		modelView.Set(mat4::Identity);
 		model.Set(mat4::Identity);
 		invModel.Set(mat4::Identity);
-		transformBuffer.Bind(static_cast<unsigned>(UniformBufferSlot::Model));
+		transformBuffer.Bind(static_cast<u32>(UniformBufferSlot::Model));
 
 		Primitives.DrawFullScreenQuad(*shader);
 
@@ -267,7 +267,7 @@ namespace Jwl
 
 		model.Set(worldTransform);
 		invModel.Set(worldTransform.GetFastInverse());
-		transformBuffer.Bind(static_cast<unsigned>(UniformBufferSlot::Model));
+		transformBuffer.Bind(static_cast<u32>(UniformBufferSlot::Model));
 
 #pragma region Render Model
 		if (mesh && mesh->IsComponentEnabled())
@@ -293,7 +293,7 @@ namespace Jwl
 			auto masks = font->GetMasks();
 
 			// We have to send the vertices of each character we render. We'll store them here.
-			float points[18] =
+			f32 points[18] =
 			{
 				0.0f, 0.0f, 0.0f,
 				0.0f, 0.0f, 0.0f,
@@ -308,7 +308,7 @@ namespace Jwl
 			const vec3 upDirection = text->owner.GetWorldTransform().GetUp();
 			const vec3 initialPosition = text->owner.position;
 			vec3 linePosition = text->owner.position;
-			unsigned currentLine = 1;
+			u32 currentLine = 1;
 
 			if (text->centeredX)
 			{
@@ -317,16 +317,16 @@ namespace Jwl
 
 			if (text->centeredY)
 			{
-				text->owner.position -= upDirection * ((font->GetStringHeight() * static_cast<float>(text->GetNumLines())) / 2.0f);
+				text->owner.position -= upDirection * ((font->GetStringHeight() * static_cast<f32>(text->GetNumLines())) / 2.0f);
 			}
 
 			glBindVertexArray(Font::GetVAO());
 			glBindBuffer(GL_ARRAY_BUFFER, Font::GetVBO());
 
-			for (unsigned i = 0; i < text->text.size(); i++)
+			for (u32 i = 0; i < text->text.size(); i++)
 			{
 				char character = text->text[i];
-				unsigned charIndex = static_cast<unsigned>(character) - '!';
+				u32 charIndex = static_cast<u32>(character) - '!';
 
 				// Handle whitespace.
 				if (character == ' ')
@@ -336,7 +336,7 @@ namespace Jwl
 				}
 				else if (character == '\n')
 				{
-					linePosition += -upDirection * static_cast<float>(font->GetStringHeight()) * 1.33f;
+					linePosition += -upDirection * static_cast<f32>(font->GetStringHeight()) * 1.33f;
 					text->owner.position = linePosition;
 					currentLine++;
 
@@ -362,20 +362,20 @@ namespace Jwl
 
 				/* Adjusts the node's position based on the character. */
 				vec3 characterPosition;
-				characterPosition += advanceDirection * static_cast<float>(positions[charIndex].x);
-				characterPosition += upDirection * static_cast<float>(positions[charIndex].y);
+				characterPosition += advanceDirection * static_cast<f32>(positions[charIndex].x);
+				characterPosition += upDirection * static_cast<f32>(positions[charIndex].y);
 				text->owner.position += characterPosition;
 
 				/* Construct a polygon based on the current character's dimensions. */
-				points[3] = static_cast<float>(dimensions[charIndex].x);
-				points[7] = static_cast<float>(dimensions[charIndex].y);
-				points[9] = static_cast<float>(dimensions[charIndex].x);
-				points[12] = static_cast<float>(dimensions[charIndex].x);
-				points[13] = static_cast<float>(dimensions[charIndex].y);
-				points[16] = static_cast<float>(dimensions[charIndex].y);
+				points[3] = static_cast<f32>(dimensions[charIndex].x);
+				points[7] = static_cast<f32>(dimensions[charIndex].y);
+				points[9] = static_cast<f32>(dimensions[charIndex].x);
+				points[12] = static_cast<f32>(dimensions[charIndex].x);
+				points[13] = static_cast<f32>(dimensions[charIndex].y);
+				points[16] = static_cast<f32>(dimensions[charIndex].y);
 
 				/* Update buffers with the new polygon. */
-				glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * 18, points);
+				glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(f32) * 18, points);
 
 				/* Render */
 				// TODO: these sends' are duplicated. get rid of them!
@@ -393,7 +393,7 @@ namespace Jwl
 				}
 				model.Set(text->owner.GetWorldTransform());
 				invModel.Set(text->owner.GetWorldTransform().GetFastInverse());
-				transformBuffer.Bind(static_cast<unsigned>(UniformBufferSlot::Model));
+				transformBuffer.Bind(static_cast<u32>(UniformBufferSlot::Model));
 
 				glBindTexture(GL_TEXTURE_2D, font->GetTextures()[charIndex]);
 				glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -414,7 +414,7 @@ namespace Jwl
 #pragma region Render Particles
 		if (emitter && emitter->IsComponentEnabled() && emitter->GetNumAliveParticles() > 0)
 		{
-			emitter->GetBuffer().Bind(static_cast<unsigned>(UniformBufferSlot::Particle));
+			emitter->GetBuffer().Bind(static_cast<u32>(UniformBufferSlot::Particle));
 
 			glBindVertexArray(emitter->GetVAO());
 			glDrawArrays(GL_POINTS, 0, emitter->GetNumAliveParticles());

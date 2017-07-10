@@ -382,9 +382,9 @@ namespace Jwl
 		glBindVertexArray(primitivesVAO);
 
 		// Set up full screen quad VAO containing vertices and textureCoords.
-		unsigned vertexSize = sizeof(float) * 6 * 3;
-		unsigned texCoordSize = sizeof(float) * 6 * 2;
-		float VBO_Data[30] = 
+		u32 vertexSize = sizeof(f32) * 6 * 3;
+		u32 texCoordSize = sizeof(f32) * 6 * 2;
+		f32 VBO_Data[30] = 
 		{ 
 			/*
 			vec3 Vertex
@@ -421,12 +421,12 @@ namespace Jwl
 
 		glBufferData(GL_ARRAY_BUFFER, vertexSize + texCoordSize, VBO_Data, GL_STATIC_DRAW);
 
-		glVertexAttribPointer((GLuint)0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 5, reinterpret_cast<void*>(0));
-		glVertexAttribPointer((GLuint)1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5, reinterpret_cast<void*>(sizeof(float) * 3));
+		glVertexAttribPointer((GLuint)0, 3, GL_FLOAT, GL_FALSE, sizeof(f32) * 5, reinterpret_cast<void*>(0));
+		glVertexAttribPointer((GLuint)1, 2, GL_FLOAT, GL_FALSE, sizeof(f32) * 5, reinterpret_cast<void*>(sizeof(f32) * 3));
 
 		// Load unit cube for skyboxes.
-		unsigned skyboxSize = sizeof(float) * 6 * 3 * 6;
-		float skyboxData[108] =
+		u32 skyboxSize = sizeof(f32) * 6 * 3 * 6;
+		f32 skyboxData[108] =
 		{
 			//posX
 			1.0f, -1.0f, -1.0f,
@@ -493,9 +493,9 @@ namespace Jwl
 		glBindVertexArray(GL_NONE);
 
 		// Prepare buffer for unit quad rendering.
-		vertexSize = sizeof(float) * 6 * 3;
-		texCoordSize = sizeof(float) * 6 * 2;
-		float quad_Data[30] =
+		vertexSize = sizeof(f32) * 6 * 3;
+		texCoordSize = sizeof(f32) * 6 * 2;
+		f32 quad_Data[30] =
 		{
 			/*
 			 vec3 Vertex
@@ -531,8 +531,8 @@ namespace Jwl
 		glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
 		glBufferData(GL_ARRAY_BUFFER, vertexSize + texCoordSize, quad_Data, GL_STATIC_DRAW);
 
-		glVertexAttribPointer((GLuint)0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 5, reinterpret_cast<void*>(0));
-		glVertexAttribPointer((GLuint)1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5, reinterpret_cast<void*>(sizeof(float) * 3));
+		glVertexAttribPointer((GLuint)0, 3, GL_FLOAT, GL_FALSE, sizeof(f32) * 5, reinterpret_cast<void*>(0));
+		glVertexAttribPointer((GLuint)1, 2, GL_FLOAT, GL_FALSE, sizeof(f32) * 5, reinterpret_cast<void*>(sizeof(f32) * 3));
 
 		glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
 		glBindVertexArray(GL_NONE);
@@ -557,12 +557,12 @@ namespace Jwl
 		texturedRectangleProgram.Unload();
 		texturedFullScreenQuadProgram.Unload();
 
-		auto unloadVBO = [](unsigned vbo) {
+		auto unloadVBO = [](u32 vbo) {
 			glDeleteBuffers(1, &vbo);
 			vbo = GL_NONE;
 		};
 
-		auto unloadVAO = [](unsigned vao) {
+		auto unloadVAO = [](u32 vao) {
 			glDeleteVertexArrays(1, &vao);
 			vao = GL_NONE;
 		};
@@ -719,7 +719,7 @@ namespace Jwl
 		glBindVertexArray(GL_NONE);
 	}
 
-	void Primitives::DrawGrid(const vec3& p1, const vec3& p2, const vec3& p3, const vec3& p4, const vec4& color, unsigned numDivisions)
+	void Primitives::DrawGrid(const vec3& p1, const vec3& p2, const vec3& p3, const vec3& p4, const vec4& color, u32 numDivisions)
 	{
 		ASSERT(IsLoaded(), "Primitives must be initialized to call this function.");
 
@@ -730,17 +730,17 @@ namespace Jwl
 		DrawLine(p4, p1, color);
 
 		// Draw grid lines.
-		vec3 step = (p2 - p1) / static_cast<float>(numDivisions + 1);
-		for (unsigned i = 1; i <= numDivisions; i++)
+		vec3 step = (p2 - p1) / static_cast<f32>(numDivisions + 1);
+		for (u32 i = 1; i <= numDivisions; i++)
 		{
-			float num = static_cast<float>(i);
+			f32 num = static_cast<f32>(i);
 			DrawLine(p4 + step * num, p1 + step * num, color);
 		}
 
-		step = (p3 - p2) / static_cast<float>(numDivisions + 1);
-		for (unsigned i = 1; i <= numDivisions; i++)
+		step = (p3 - p2) / static_cast<f32>(numDivisions + 1);
+		for (u32 i = 1; i <= numDivisions; i++)
 		{
-			float num = static_cast<float>(i);
+			f32 num = static_cast<f32>(i);
 			DrawLine(p1 + step * num, p2 + step * num, color);
 		}
 	}

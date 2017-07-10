@@ -85,7 +85,7 @@ namespace Jwl
 		}
 	}
 
-	void Material::CreateUniformBuffer(unsigned unit)
+	void Material::CreateUniformBuffer(u32 unit)
 	{
 		ASSERT(shader, "Must have a Shader attached.");
 
@@ -98,7 +98,7 @@ namespace Jwl
 
 		const auto& bindings = shader->GetBufferBindings();
 
-		for (unsigned i = 0; i < bindings.size(); i++)
+		for (u32 i = 0; i < bindings.size(); i++)
 		{
 			if (bindings[i].templateBuff)
 			{

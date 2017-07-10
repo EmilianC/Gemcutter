@@ -22,7 +22,7 @@ namespace Jwl
 	public:
 		ComponentBase() = delete;
 		ComponentBase(const ComponentBase&) = delete;
-		ComponentBase(Entity& owner, unsigned componentId);
+		ComponentBase(Entity& owner, u32 componentId);
 		ComponentBase& operator=(const ComponentBase&);
 		virtual ~ComponentBase() = default;
 
@@ -35,7 +35,7 @@ namespace Jwl
 		//- The Entity to which this component is attached.
 		Entity& owner;
 		//- The unique ID used by the derived component.
-		const unsigned componentId;
+		const u32 componentId;
 
 	protected:
 		//- Called when the component is removed from queries.
@@ -44,7 +44,7 @@ namespace Jwl
 		virtual void OnEnable() {};
 
 		//- Consumes a new component-Id. Used statically by derived components.
-		static unsigned GenerateID();
+		static u32 GenerateID();
 
 	private:
 		virtual void Copy(Entity& newOwner) const = 0;
@@ -65,16 +65,16 @@ namespace Jwl
 		virtual ~Component() = default;
 
 		//- Returns the unique Id for the component.
-		static unsigned GetComponentId();
+		static u32 GetComponentId();
 
 	private:
 		virtual void Copy(Entity& newOwner) const final override;
 
 		//- A unique Id given to each component type.
-		static unsigned componentId;
+		static u32 componentId;
 	};
 
-	template<class derived> unsigned Component<derived>::componentId = ComponentBase::GenerateID();
+	template<class derived> u32 Component<derived>::componentId = ComponentBase::GenerateID();
 
 	struct TagBase {};
 	//- Base class for all tags. Cannot be instantiated.
@@ -184,17 +184,17 @@ namespace Jwl
 		void LookAt(const Entity& target, const vec3& up = vec3::Up);
 
 	private:
-		void Tag(unsigned tagId);
-		void RemoveTag(unsigned tagId);
+		void Tag(u32 tagId);
+		void RemoveTag(u32 tagId);
 
-		void IndexTag(unsigned tagId);
-		void UnindexTag(unsigned tagId);
+		void IndexTag(u32 tagId);
+		void UnindexTag(u32 tagId);
 
 		void Index(ComponentBase& comp);
 		void Unindex(ComponentBase& comp);
 
 		std::vector<ComponentBase*> components;
-		std::vector<unsigned> tags;
+		std::vector<u32> tags;
 
 		bool isEnabled = true;
 	};

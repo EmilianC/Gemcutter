@@ -36,21 +36,21 @@ namespace Jwl
 		}
 		defer { fclose(binaryFile); };
 
-		fread(&numFaces, sizeof(int), 1, binaryFile);
+		fread(&numFaces, sizeof(s32), 1, binaryFile);
 		// Which attributes are enabled?
 		fread(&hasUvs, sizeof(bool), 1, binaryFile);
 		fread(&hasNormals, sizeof(bool), 1, binaryFile);
 
 		// Determine size of file.
 		numVertices = numFaces * 3;
-		int bufferSize = numVertices * 3;
+		s32 bufferSize = numVertices * 3;
 		if (hasUvs) bufferSize += numVertices * 2;
 		if (hasNormals) bufferSize += numVertices * 3;
 
 		// Read the data buffer.
-		float* data = static_cast<float*>(malloc(sizeof(float) * bufferSize));
+		f32* data = static_cast<f32*>(malloc(sizeof(f32) * bufferSize));
 		defer { free(data); };
-		fread(data, sizeof(float), bufferSize, binaryFile);
+		fread(data, sizeof(f32), bufferSize, binaryFile);
 
 		// Send data to OpenGL.
 		glGenVertexArrays(1, &VAO);
@@ -58,12 +58,12 @@ namespace Jwl
 
 		glBindVertexArray(VAO);
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * bufferSize, data, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(f32) * bufferSize, data, GL_STATIC_DRAW);
 
 		// Determine the stride.
-		int stride = sizeof(float) * 3;
-		if (hasUvs) stride += sizeof(float) * 2;
-		if (hasNormals) stride += sizeof(float) * 3;
+		s32 stride = sizeof(f32) * 3;
+		if (hasUvs) stride += sizeof(f32) * 2;
+		if (hasNormals) stride += sizeof(f32) * 3;
 
 		// Vertex attribute  : 0
 		// Texture attribute : 1
@@ -73,8 +73,8 @@ namespace Jwl
 		if (hasNormals) glEnableVertexAttribArray(2);
 
 		glVertexAttribPointer(0u, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(0));
-		if (hasUvs) glVertexAttribPointer(1u, 2, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(sizeof(float) * 3));
-		if (hasNormals) glVertexAttribPointer(2u, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(sizeof(float) * (hasUvs ? 5 : 3)));
+		if (hasUvs) glVertexAttribPointer(1u, 2, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(sizeof(f32) * 3));
+		if (hasNormals) glVertexAttribPointer(2u, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(sizeof(f32) * (hasUvs ? 5 : 3)));
 
 		glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
 		glBindVertexArray(GL_NONE);
@@ -103,7 +103,7 @@ namespace Jwl
 		numVertices = 0;
 	}
 
-	unsigned Model::GetVAO() const
+	u32 Model::GetVAO() const
 	{
 		return VAO;
 	}
@@ -118,12 +118,12 @@ namespace Jwl
 		return hasNormals;
 	}
 
-	unsigned Model::GetNumFaces() const
+	u32 Model::GetNumFaces() const
 	{
 		return numFaces;
 	}
 
-	unsigned Model::GetNumVerticies() const
+	u32 Model::GetNumVerticies() const
 	{
 		return numVertices;
 	}
