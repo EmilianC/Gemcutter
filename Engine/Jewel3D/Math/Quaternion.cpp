@@ -117,23 +117,23 @@ namespace Jwl
 
 	void quat::Normalize()
 	{
-		float length = sqrt(x * x + y * y + z * z + w * w);
+		float invLength = 1.0f / sqrt(x * x + y * y + z * z + w * w);
 
-		ASSERT(length != 0.0f, "Zero length quaternion cannot be normalized.");
+		ASSERT(!std::isinf(invLength), "Zero length quaternion cannot be normalized.");
 
-		x /= length;
-		y /= length;
-		z /= length;
-		w /= length;
+		x *= invLength;
+		y *= invLength;
+		z *= invLength;
+		w *= invLength;
 	}
 
 	quat quat::GetNormalized() const
 	{
-		float length = sqrt(x * x + y * y + z * z + w * w);
+		float invLength = 1.0f / sqrt(x * x + y * y + z * z + w * w);
 		
-		ASSERT(length != 0.0f, "Zero length quaternion cannot be normalized.");
+		ASSERT(!std::isinf(invLength), "Zero length quaternion cannot be normalized.");
 
-		return quat(x / length, y / length, z / length, w / length);
+		return quat(x * invLength, y * invLength, z * invLength, w * invLength);
 	}
 
 	vec3 quat::GetRight() const
@@ -195,19 +195,14 @@ namespace Jwl
 
 	quat Slerp(const quat& p0, const quat& p1, float percent)
 	{
-		float dot = Dot(p0, p1);
-		if (dot < 0.0f)
-		{
-			dot *= -1.0f;
-		}
-
-		float angle = acos(dot);
-		if (angle == 0.0f)
+		float dot = Abs(Dot(p0, p1));
+		if (dot == 1.0f)
 		{
 			// Quaternions are the same.
 			return p0;
 		}
 
+		float angle = acos(dot);
 		float sAngle = sin(angle);
 		float coef1 = sin((1.0f - percent) * angle) / sAngle;
 		float coef2 = sin(percent * angle) / sAngle;
