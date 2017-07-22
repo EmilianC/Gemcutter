@@ -23,7 +23,7 @@ namespace Jwl
 			Box
 		};
 
-		void Warmup(float time);
+		void Warmup(float time, float step = 0.25f);
 		void Update();
 
 		unsigned GetNumAliveParticles() const;

@@ -60,17 +60,16 @@ namespace Jwl
 		return *this;
 	}
 
-	void ParticleEmitter::Warmup(float time)
+	void ParticleEmitter::Warmup(float time, float step)
 	{
 		ASSERT(time > 0.0f, "Warmup time must be greater than 0.");
+		ASSERT(step > 0.0f, "Warmup step must be greater than 0.");
 
-		const float divisor = 0.5f;
-
-		while (time > divisor)
+		while (time > step)
 		{
-			UpdateInternal(time);
+			UpdateInternal(step);
 
-			time -= divisor;
+			time -= step;
 		}
 
 		// Finish the rest of the time and upload The data to the GPU.
