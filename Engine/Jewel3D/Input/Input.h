@@ -11,7 +11,7 @@ namespace Jwl
 {
 	enum class Key
 	{
-		//- Keyboard keys
+		// Keyboard keys
 		Left = 0x25,
 		Up,
 		Right,
@@ -37,7 +37,7 @@ namespace Jwl
 		F1 = 0x70, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12,
 		A = 'A', B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
 
-		//- Mouse buttons
+		// Mouse buttons
 		MouseLeft = 257,
 		MouseRight,
 		MouseMiddle,
@@ -45,7 +45,7 @@ namespace Jwl
 		NUM_KEYS
 	};
 
-	//- Singleton class for managing keyboard and mouse input.
+	// Singleton class for managing keyboard and mouse input.
 	static class Input : public Singleton<class Input>
 	{
 		friend class Application;
@@ -65,27 +65,27 @@ namespace Jwl
 		int y = 0;
 	} &Input = Singleton<class Input>::instanceRef;
 
-	//- An event distributed by the engine when the mouse position has changed from the previous frame.
+	// An event distributed by the engine when the mouse position has changed from the previous frame.
 	struct MouseMoved : public Event<MouseMoved>
 	{
 		MouseMoved(const vec2& pos, const vec2& delta);
 
-		//- The new mouse position.
+		// The new mouse position.
 		const vec2 pos;
-		//- The different between this position and the last.
+		// The different between this position and the last.
 		const vec2 delta;
 	};
 
-	//- An event distributed by the engine when the mouse wheel is moved.
+	// An event distributed by the engine when the mouse wheel is moved.
 	struct MouseScrolled : public Event<MouseScrolled>
 	{
 		MouseScrolled(int scroll);
 
-		//- Each positive integer indicates a single roll away from the user, and vice-versa.
+		// Each positive integer indicates a single roll away from the user, and vice-versa.
 		const int scroll;
 	};
 
-	//- An event distributed by the engine when a key is first pressed.
+	// An event distributed by the engine when a key is first pressed.
 	struct KeyPressed : public Event<KeyPressed>
 	{
 		KeyPressed(Key key);
@@ -93,7 +93,7 @@ namespace Jwl
 		const Key key;
 	};
 
-	//- An event distributed by the engine when a key is released after previously being down.
+	// An event distributed by the engine when a key is released after previously being down.
 	struct KeyReleased : public Event<KeyReleased>
 	{
 		KeyReleased(Key key);

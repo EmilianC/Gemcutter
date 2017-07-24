@@ -1401,7 +1401,6 @@ namespace Jwl
 			glAttachShader(hProgram, hFragShader);
 		}
 
-		/* Link */
 		if (!LinkProgram(hProgram))
 		{
 			Error("Shader variant failed to link.");

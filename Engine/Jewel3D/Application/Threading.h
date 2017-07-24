@@ -11,10 +11,10 @@ namespace Jwl
 
 		bool Init();
 
-		//- Locks others out of the mutex.
+		// Locks others out of the mutex.
 		void Lock();
 
-		//- Releases the mutex for other threads to use.
+		// Releases the mutex for other threads to use.
 		void Unlock();
 
 	private:
@@ -30,16 +30,16 @@ namespace Jwl
 
 		Thread &operator=(const Thread&) = delete;
 
-		//- Start the thread on the specified function. Returns false if thread didn't start.
+		// Start the thread on the specified function. Returns false if thread didn't start.
 		bool Start(unsigned (__stdcall *startFunc)(void* arg), void* argData = NULL);
 
-		//- Returns only once the internal thread has finished.
+		// Returns only once the internal thread has finished.
 		void Join();
 
-		//- Returns false if the function could not retrieve the return value of the thread.
+		// Returns false if the function could not retrieve the return value of the thread.
 		bool GetReturnValue(unsigned* value);
 
-		//- Returns the thread ID.
+		// Returns the thread ID.
 		DWORD GetID() const;
 
 	private:

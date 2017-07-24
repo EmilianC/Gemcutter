@@ -9,8 +9,8 @@
 
 namespace Jwl
 {
-	//- A base class for all asset packers that provides a common interface to the AssetManager.
-	//- Derive from this class to create a custom asset packing tool for integration with the AssetManager.
+	// A base class for all asset packers that exposes a common interface to the AssetManager.
+	// Derive from this class to create a custom asset packing tool for integration with the AssetManager.
 	class Encoder
 	{
 	public:
@@ -20,7 +20,7 @@ namespace Jwl
 		}
 		virtual ~Encoder() = default;
 
-		//- Loads a .meta file and ensures that it has a valid version number.
+		// Loads a .meta file and ensures that it has a valid version number.
 		static bool LoadMetaData(const std::string& file, ConfigTable& out)
 		{
 			out = ConfigTable();
@@ -52,6 +52,7 @@ namespace Jwl
 			return true;
 		}
 
+		// Updates the metadata fields to the newest asset version.
 		bool UpgradeData(ConfigTable& metadata) const
 		{
 			auto currentVersion = static_cast<unsigned>(metadata.GetInt("version"));
@@ -94,20 +95,20 @@ namespace Jwl
 			return Validate(metadata, version);
 		}
 
-		//- The derived function should return default settings for the asset.
+		// Returns the default settings for the asset.
 		virtual ConfigTable GetDefault() const = 0;
 
-		//- The derived function should read from the source file and output the packed asset to the destination file.
-		//- data will contain settings of the newest version.
+		// Reads from the source file and output the packed asset to the destination file.
+		// 'metadata' will contain settings of the newest version.
 		virtual bool Convert(const std::string& source, const std::string& destination, const ConfigTable& metadata) const = 0;
 
 	protected:
-		//- The derived function should ensure that all fields are present and contain correct data.
-		//- Validation should be done based on the provided version.
+		// Ensures that all fields are present and contain valid data.
+		// Validation should be done based on the provided version, which may not be the newest version.
 		virtual bool Validate(const ConfigTable& metadata, unsigned loadedVersion) const = 0;
 
-		//- The derived function should update the provided data in order boost its version number by one.
-		//- Upgrading is a sequential process, meaning that you only need to provide code to upgrade from 1->2 and from 2->3, not 1->3.
+		// Updates the provided data in order boost its version number by one.
+		// Upgrading is a sequential process, meaning that you only need to provide code to upgrade from 1->2 and from 2->3, not 1->3.
 		virtual bool Upgrade(ConfigTable& metadata, unsigned loadedVersion) const { return true; };
 
 	private:

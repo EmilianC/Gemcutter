@@ -23,18 +23,18 @@ namespace Jwl
 
 		Type type = Type::Point;
 
-		//- Main color of the light.
+		// Main color of the light.
 		UniformHandle<vec3> color;
-		//- Base attenuation factor.
+		// Base attenuation factor.
 		UniformHandle<float> attenuationConstant;
-		//- Linear attenuation factor.
+		// Linear attenuation factor.
 		UniformHandle<float> attenuationLinear;
-		//- Exponential attenuation factor.
+		// Exponential attenuation factor.
 		UniformHandle<float> attenuationQuadratic;
-		//- Cone angle for spotlights, in degrees.
+		// Cone angle for spotlights, in degrees.
 		float angle = 25.0f;
 
-		//- Keeps the internal buffer up to date with the light's transform.
+		// Keeps the internal buffer up to date with the light's transform.
 		void Update();
 
 		UniformBuffer::Ptr& GetBuffer();

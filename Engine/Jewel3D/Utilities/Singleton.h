@@ -1,17 +1,18 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
 
+/*
+ Inherit from this class to create a singleton.
+ You must declare your class in this way when doing so:
+ 
+ static class MyClass : public Singleton<MyClass>
+ {
+ 	//...
+ } &MyClass = Singleton<class MyClass>::instanceRef;
+*/
+
 namespace Jwl
 {
-	//- Inherit from this class to create a singleton.
-	//- You must declare your class in a special way when doing so.
-	//  For example:
-	//
-	//static class MyClass : public Singleton<MyClass>
-	//{
-	//	...
-	//} &MyClass = Singleton<class MyClass>::instanceRef;
-	//
 	template<class T>
 	class Singleton
 	{

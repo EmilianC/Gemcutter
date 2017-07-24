@@ -9,7 +9,7 @@
 
 namespace
 {
-	//- Resolves Left/Right virtual key codes for Shift/Control/Alt.
+	// Resolves Left/Right virtual key codes for Shift/Control/Alt.
 	static WPARAM MapLeftRightKeys(WPARAM vk, LPARAM lParam)
 	{
 		WPARAM new_vk = vk;

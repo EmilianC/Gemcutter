@@ -85,9 +85,9 @@ namespace AssetManager
 			RefreshWorkspace();
 		}
 
-		//- Starts the updating process.
-		//- Any assets without a .meta file will have one added.
-		//- Any existing .meta files will be updated to the newest versions.
+		// Starts the updating process.
+		// Any assets without a .meta file will have one added.
+		// Any existing .meta files will be updated to the newest versions.
 		public bool UpdateWorkspace()
 		{
 			Icon = Properties.Resources.Building;
@@ -127,8 +127,8 @@ namespace AssetManager
 			return result;
 		}
 
-		//- Starts the packing process. Rebuilds the target Asset directory from scratch.
-		//- Convertible files are put through the appropriate binary converter. Other files are copied as-is.
+		// Starts the packing process. Rebuilds the target Asset directory from scratch.
+		// Convertible files are put through the appropriate binary converter. Other files are copied as-is.
 		public bool PackWorkspace()
 		{
 			Icon = Properties.Resources.Building;

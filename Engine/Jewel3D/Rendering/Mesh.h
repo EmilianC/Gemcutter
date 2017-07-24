@@ -5,16 +5,13 @@
 
 namespace Jwl
 {
+	// Causes an entity to render as a 3D mesh.
 	class Mesh : public Component<Mesh>
 	{
 	public:
 		Mesh(Entity& owner);
 		Mesh(Entity& owner, Model::Ptr model);
 
-		void AddData(Model::Ptr model);
-		Model::Ptr GetData() const;
-
-	private:
-		Model::Ptr data;
+		Model::Ptr model;
 	};
 }

@@ -152,11 +152,6 @@ namespace Jwl
 		return table.find(name) != table.end();
 	}
 
-	void UniformBuffer::SetDirty()
-	{
-		dirty = true;
-	}
-
 	void* UniformBuffer::GetBufferLoc(const std::string& name) const
 	{
 		auto loc = table.find(name);

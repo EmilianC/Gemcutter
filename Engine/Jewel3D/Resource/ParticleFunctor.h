@@ -10,21 +10,21 @@ namespace Jwl
 {
 	class ParticleEmitter;
 
-	//- Base functor class for changing particle behaviour or spawning particles.
+	// Base functor class for changing particle behaviour or spawning particles.
 	class ParticleFunctor
 	{
 	public:
 		virtual ~ParticleFunctor() = default;
-		//- Called to, optionally, initialize newly spawned particles.
-		//- New particles will be in the specified index range.
+		// Called to, optionally, initialize newly spawned particles.
+		// New particles will be in the specified index range.
 		virtual void Init(ParticleBuffer& particles, ParticleEmitter& emitter, unsigned startIndex, unsigned count) {};
-		//- Main update call for the functor.
+		// Main update call for the functor.
 		virtual void Update(ParticleBuffer& particles, ParticleEmitter& emitter, float deltaTime) = 0;
-		//- Specifies the required data buffers for this functor to update.
+		// Specifies the required data buffers for this functor to update.
 		virtual ParticleBuffers GetRequirements() const { return ParticleBuffers::None; };
 	};
 
-	//- A list of ParticleFunctors acting on a ParticleEmitter.
+	// A list of ParticleFunctors acting on a ParticleEmitter.
 	class FunctorList
 	{
 		friend ParticleEmitter;
@@ -43,7 +43,7 @@ namespace Jwl
 			dirty = true;
 		}
 
-		//- Removes all functors.
+		// Removes all functors.
 		void Clear();
 
 		const auto& GetAll() const { return functors; }
@@ -55,7 +55,7 @@ namespace Jwl
 	};
 
 	/* Default Jewel3D Particle Functors */
-	//- Rotates particles.
+	// Rotates particles.
 	class RotationFunc : public ParticleFunctor, public Shareable<RotationFunc>
 	{
 		friend ShareableAlloc;

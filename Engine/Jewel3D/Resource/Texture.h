@@ -8,13 +8,14 @@
 
 namespace Jwl
 {
+	// A 2D texture, renderTarget, or cubemap.
 	class Texture : public Resource<Texture>
 	{
 	public:
 		Texture() = default;
 		~Texture();
 
-		// Creates an empty texture.
+		// Creates an empty texture that can be rendered to.
 		void CreateTexture(
 			unsigned width, unsigned height,
 			TextureFormat format,
@@ -61,7 +62,7 @@ namespace Jwl
 		float anisotropicLevel = 1.0f;
 	};
 
-	//- Used to associate a Texture with a particular binding point.
+	// Used to associate a Texture with a particular binding point.
 	struct TextureSlot
 	{
 		TextureSlot() = default;
@@ -71,11 +72,11 @@ namespace Jwl
 		void UnBind() const;
 
 		Texture::Ptr tex;
-		//- Unit the texture should be bound to when rendering.
+		// Unit the texture should be bound to when rendering.
 		unsigned unit = 0;
 	};
 	
-	//- A group of textures that are bound and unbound together.
+	// A group of textures that are bound and unbound together.
 	class TextureList
 	{
 	public:
@@ -84,10 +85,9 @@ namespace Jwl
 
 		void Add(Texture::Ptr tex, unsigned unit = 0);
 		void Remove(unsigned unit);
-		//- Removes all TextureSlots.
 		void Clear();
 
-		//- Returns the buffer bound at the specified unit.
+		// Returns the buffer bound at the specified unit.
 		Texture::Ptr& operator[](unsigned unit);
 
 		const auto& GetAll() const { return textureSlots; }
@@ -96,13 +96,12 @@ namespace Jwl
 		std::vector<TextureSlot> textureSlots;
 	};
 
-	//- Loads raw image data from the disk.
-	//- Can be used when an image is needed for non-rendering use.
+	// Loads raw image data from the disk.
+	// Can be used when an image is needed for non-rendering use.
 	class Image
 	{
 	public:
 		Image() = default;
-		Image(int width, int height, TextureFormat format, unsigned char* data);
 		~Image();
 
 		// Loads *.png, *.jpg, *.tga, and *.bmp.
@@ -112,5 +111,8 @@ namespace Jwl
 		const int height = 0;
 		const TextureFormat format = TextureFormat::RGB_8;
 		const unsigned char* data = nullptr;
+
+	private:
+		Image(int width, int height, TextureFormat format, unsigned char* data);
 	};
 }

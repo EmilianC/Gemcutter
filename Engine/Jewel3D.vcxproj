@@ -313,6 +313,7 @@
   <ItemGroup>
     <None Include="Jewel3D\Entity\Entity.inl" />
     <None Include="Jewel3D\Entity\Query.inl" />
+    <None Include="Jewel3D\Resource\UniformBuffer.inl" />
     <None Include="Jewel3D\Utilities\Hierarchy.inl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

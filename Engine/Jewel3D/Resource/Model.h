@@ -4,12 +4,14 @@
 
 namespace Jwl
 {
+	// A 3D model resource.
+	// To be rendered, the model must be set on an Entity's Mesh component.
 	class Model : public Resource<Model>
 	{
 	public:
 		~Model();
 
-		//- Loads pre-packed *.model resources.
+		// Loads pre-packed *.model resources.
 		bool Load(std::string filePath);
 		void Unload();
 
@@ -20,7 +22,7 @@ namespace Jwl
 		unsigned GetNumVerticies() const;
 
 	private:
-		/* OpenGL buffers */
+		// OpenGL buffers.
 		unsigned VBO = 0;
 		unsigned VAO = 0;
 

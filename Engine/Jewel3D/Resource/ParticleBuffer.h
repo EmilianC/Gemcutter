@@ -26,7 +26,7 @@ namespace Jwl
 
 		void SetBuffers(unsigned numParticles, EnumFlags<ParticleBuffers> requirements);
 		void Unload();
-		//- Uploads data to the GPU buffers.
+		// Uploads data to the GPU buffers.
 		void Update(unsigned numParticles);
 
 		void Kill(unsigned index, unsigned last);

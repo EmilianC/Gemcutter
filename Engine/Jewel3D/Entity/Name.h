@@ -6,17 +6,17 @@
 
 namespace Jwl
 {
-	//- Writes the sub-tree of Entity names to the program log.
+	// Writes the sub-tree of Entity names to the program log.
 	void LogSceneGraph(const Entity& root);
 
-	//- Searches the given entity's sub-tree for the first child with the specified name.
+	// Searches the given entity's sub-tree for the first child with the specified name.
 	Entity::Ptr FindChild(const Entity& root, const std::string& name);
 
-	//- Searches all Entities with a name component and returns the first one found with the specified name.
+	// Searches all Entities with a name component and returns the first one found with the specified name.
 	Entity::Ptr FindEntity(const std::string& name);
 
-	//- Associates an entity with a name. Used by LogSceneGraph() and FindEntity().
-	//- When copied, appends "_Copy" to the name.
+	// Associates an entity with a name.
+	// When copied, appends "_Copy" to the name.
 	class Name : public Component<Name>
 	{
 	public:

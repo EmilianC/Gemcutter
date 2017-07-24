@@ -8,10 +8,10 @@ namespace Jwl
 {
 	#define PACKET_LENGTH 512
 
-	//- Prepares Windows Sockets for use.
+	// Prepares Windows Sockets for use.
 	bool InitWinSock();
 
-	//- Unloads the Windows Socketing system.
+	// Unloads the Windows Socketing system.
 	void DestroyWinSock();
 
 	class NetworkUDP
@@ -19,9 +19,9 @@ namespace Jwl
 	public:
 		NetworkUDP();
 
-		//- Init socket for receiving.
+		// Init socket for receiving.
 		bool Init(int localPortNum);
-		//- Init socket for sending.
+		// Init socket for sending.
 		bool Init(const std::string& remoteIP, int remotePortNum);
 
 		void Destroy();
@@ -51,14 +51,14 @@ namespace Jwl
 		bool Init();
 		void Destroy();
 	
-		//- Allow other hosts to request a TCP connection with us.
+		// Allow other hosts to request a TCP connection with us.
 		bool OpenToConnectionRequests(int localPortNum);
-		//- Check for pending connection requests.
+		// Check for pending connection requests.
 		bool CheckForConnectionRequests();
 	
-		//- Send a connection request to IP/Port.
+		// Send a connection request to IP/Port.
 		bool SendConnectionRequest(const std::string& remoteIP, int remotePortNum);
-		//- Returns true if a TCP connection is established.
+		// Returns true if a TCP connection is established.
 		bool IsConnected() const;
 	
 		bool Send(const std::string& packet);
@@ -85,9 +85,9 @@ namespace Jwl
 		bool Init(int localPortNumTCP, int localPortNumUDP, const std::string& remoteIP, int remotePortNumTCP, int remotePortNumUDP);
 		void Destroy();
 	
-		//- Send a connection request to IP/Port.
+		// Send a connection request to IP/Port.
 		bool SendConnectionRequest();
-		//- Returns true if a connection is established.
+		// Returns true if a connection is established.
 		bool IsConnected() const;
 
 		bool SendUDP(const std::string& packet);
@@ -120,12 +120,12 @@ namespace Jwl
 		bool Init(int localPortNumTCP, int localPortNumUDP);
 		void Destroy();
 	
-		//- Allow other hosts to request a connection with us.
+		// Allow other hosts to request a connection with us.
 		bool OpenToConnectionRequests();
-		//- Check for pending connection requests.
-		//- Returns Unique ID.
+		// Check for pending connection requests. 
+		// Returns the new client's unique ID.
 		int CheckForConnectionRequests();
-		//- Returns true if the ID is valid.
+		// Returns true a client with ID is connected.
 		bool IsConnected(int ID) const;
 
 		unsigned GetNumClients() const;
@@ -133,13 +133,13 @@ namespace Jwl
 		void RemoveClient(int ID);
 		
 		bool SendUDP(const std::string& packet, int ID);
-		//- Sends the message to all clients.
+		// Sends the message to all clients.
 		bool SendUDP(const std::string& packet);
 		bool SendToAllButOneUDP(const std::string& packet, int excludedID);
 		int ReceiveUDP(std::string& out_packet);
 
 		bool SendTCP(const std::string& packet, int ID);
-		//- Sends the message to all clients
+		// Sends the message to all clients
 		bool SendTCP(const std::string& packet);
 		bool SendToAllButOneTCP(const std::string& packet, int excludedID);
 		int ReceiveTCP(std::string& out_packet);
@@ -176,8 +176,7 @@ namespace Jwl
 
 		std::vector<Client> clients;
 
-		//- Returns the array index of the client with ID.
-		//- Returns -1 if no client exists with ID.
+		// Returns the array index of the client with the ID, or -1 if no client is found.
 		unsigned GetClientIndex(int ID) const;
 	};
 }

@@ -27,14 +27,14 @@ public:
 	virtual void OnDisable() override { onDisableCalled = true; }
 };
 
-//- Inherits indirectly from Component<>, and doesn't generate its own Component ID.
+// Inherits indirectly from Component<>, and doesn't generate its own Component ID.
 class DerivedA : public Base
 {
 public:
 	DerivedA(Entity& owner) : Base(owner) {}
 };
 
-//- Inherits indirectly from Component<>, and doesn't generate its own Component ID.
+// Inherits indirectly from Component<>, and doesn't generate its own Component ID.
 class DerivedB : public Base
 {
 public:

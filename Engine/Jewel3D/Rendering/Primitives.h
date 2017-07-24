@@ -9,8 +9,8 @@ namespace Jwl
 	class vec3;
 	class vec4;
 
-	//- Provides simple, intimidate, geometry rendering.
-	//- These features are mostly intended for debugging, as they are not particularly efficient.
+	// Provides simple, intimidate, geometry rendering.
+	// Line, Triangle, and Rectangle functions are intended for debugging; they are not particularly efficient.
 	static class Primitives : public Singleton<class Primitives>
 	{
 	public:

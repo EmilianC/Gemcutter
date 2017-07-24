@@ -116,22 +116,22 @@ namespace Jwl { namespace Meta
 			static constexpr char buff[len + 1] = { str..., '\0' };
 
 		public:
-			//- The size of the string, null character not included.
+			// The size of the string, null character not included.
 			static constexpr unsigned size() { return StrLen(buff); }
 
-			//- The length of the string, null character not included.
+			// The length of the string, null character not included.
 			static constexpr unsigned length() { return StrLen(buff); }
 
-			//- Returns a pointer to the first character in the string.
+			// Returns a pointer to the first character in the string.
 			static constexpr const char* data() { return buff; }
 
-			//- Returns a pointer to the first character in the string.
+			// Returns a pointer to the first character in the string.
 			static constexpr const char* c_str() { return buff; }
 
-			//- Returns a pointer to the first character in the string.
+			// Returns a pointer to the first character in the string.
 			static constexpr const char* cbegin() { return buff; }
 
-			//- Returns a pointer to the last character in the string.
+			// Returns a pointer to the last character in the string.
 			static constexpr const char* cend() { return &buff[len]; }
 		};
 

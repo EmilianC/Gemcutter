@@ -27,7 +27,7 @@ namespace Jwl
 		return std::abs(val);
 	}
 
-	//- Returns the lesser of all arguments.
+	// Returns the lesser of all arguments.
 	template<typename T0, typename T1, typename... Args>
 	auto Min(T0&& val1, T1&& val2, Args&&... args)
 	{
@@ -38,7 +38,7 @@ namespace Jwl
 			return Min(val2, std::forward<Args>(args)...);
 	}
 
-	//- Returns the greater of all arguments.
+	// Returns the greater of all arguments.
 	template<typename T0, typename T1, typename... Args>
 	auto Max(T0&& val1, T1&& val2, Args&&... args)
 	{
@@ -49,7 +49,7 @@ namespace Jwl
 			return Max(val1, std::forward<Args>(args)...);
 	}
 
-	//- Clamps data to the range [low, high]
+	// Clamps data to the range [low, high]
 	template<class T>
 	constexpr T Clamp(const T& data, const T& low, const T& high)
 	{
@@ -94,16 +94,16 @@ namespace Jwl
 			data1;
 	}
 
-	//- Returns the closest multiple of step.
+	// Returns the closest multiple of step.
 	float SnapToGrid(float value, float step);
 
-	//- Apply ease-in to a value in the range of [0, 1]
+	// Apply ease-in to a value in the range of [0, 1]
 	float EaseIn(float percent);
 
-	//- Apply ease-out to a value in the range of [0, 1]
+	// Apply ease-out to a value in the range of [0, 1]
 	float EaseOut(float percent);
 
-	//- Apply ease-in and ease-out to a value in the range of [0, 1]
+	// Apply ease-in and ease-out to a value in the range of [0, 1]
 	constexpr float EaseInOut(float percent)
 	{
 		return SmoothStep(0.0f, 1.0f, percent);

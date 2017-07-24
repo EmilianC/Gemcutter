@@ -15,9 +15,9 @@ namespace Jwl
 			static T* Cast(ComponentBase* comp) { return static_cast<T*>(comp); }
 		};
 
-		//- Allows for compile-time decision of whether or not a dynamic cast is required.
-		//- A dynamic cast is required when a class inherits from Component indirectly, and
-		//  as such, doesn't compile its own unique component type ID.
+		// Allows for compile-time decision of whether or not a dynamic cast is required.
+		// A dynamic cast is required when a class inherits from Component indirectly, and
+		// as such, doesn't compile its own unique component type ID.
 		template<class T>
 		T* safe_cast(ComponentBase* comp)
 		{
@@ -27,7 +27,7 @@ namespace Jwl
 			return _safe_cast<T, T::StaticComponentType>::Cast(comp);
 		}
 
-		//- Copies a component using direct assignment. Compiles to a warning if direct assignment is invalid.
+		// Copies a component using direct assignment. Compiles to a warning if direct assignment is invalid.
 		template<class Component>
 		std::enable_if_t<!std::is_base_of<TagBase, Component>::value && std::is_copy_assignable<Component>::value>
 		copy_component(Entity& destination, const Component& source)
@@ -41,7 +41,7 @@ namespace Jwl
 			}
 		}
 
-		//- Copies a component using direct assignment. Compiles to a warning if direct assignment is invalid.
+		// Copies a component using direct assignment. Compiles to a warning if direct assignment is invalid.
 		template<class Component>
 		std::enable_if_t<!std::is_base_of<TagBase, Component>::value && !std::is_copy_assignable<Component>::value>
 		copy_component(Entity& destination, const Component& source)
@@ -49,7 +49,7 @@ namespace Jwl
 			Warning("Component could not be copied. It does not have a valid assignment operator.");
 		}
 
-		//- The copy operation is disabled tags.
+		// The copy operation is disabled for tags.
 		template<class Component>
 		std::enable_if_t<std::is_base_of<TagBase, Component>::value>
 		copy_component(Entity& destination, const Component& source)

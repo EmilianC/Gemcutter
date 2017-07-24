@@ -183,14 +183,7 @@ namespace Jwl
 
 	void SetWireframe(bool enabled)
 	{
-		if (enabled)
-		{
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		}
-		else
-		{
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		}
+		glPolygonMode(GL_FRONT_AND_BACK, enabled ? GL_LINE : GL_FILL);
 	}
 
 	void SetCullFunc(CullFunc func)

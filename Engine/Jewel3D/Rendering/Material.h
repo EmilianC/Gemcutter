@@ -6,8 +6,15 @@
 
 namespace Jwl
 {
+	// When rendering an Entity, the Material specifies:
+	// - Textures
+	// - Blend / Cull / Depth modes
+	// - The shader
+	// - Shader uniform buffers
+	// - Shader definitions and permutations
 	class Material : public Component<Material>
 	{
+		friend class RenderPass;
 	public:
 		Material(Entity& owner);
 		Material(Entity& owner, Shader::Ptr shader);
@@ -22,30 +29,30 @@ namespace Jwl
 		DepthFunc GetDepthMode() const;
 		CullFunc GetCullMode() const;
 
-		//- The set of definitions used to permute the shader.
+		// The set of definitions used to permute the shader.
 		ShaderVariantControl variantDefinitions;
 
-		//- Bind all textures, buffers, state, and the shader for rendering. Used internally.
-		void Bind();
-		//- Bind all textures, buffers, and state. Used internally.
-		void BindState();
-		//- Unbinds all textures, buffers, and the shader. Used internally.
-		void UnBind();
-
-		//- Mirror the current shader's UniformBuffer bound to the specified index.
-		//- The specified buffer must be marked as a 'template'.
+		// Mirror the current shader's UniformBuffer bound to the specified index.
+		// The specified buffer must be marked as a 'template' in the shader.
 		void CreateUniformBuffer(unsigned unit);
-		//- Enumerates and mirrors all the current shader's 'template' UniformBuffers.
+		// Enumerates and mirrors all the current shader's 'template' UniformBuffers.
 		void CreateUniformBuffers();
 
-		//- The shader used to render the entity.
+		// The shader used to render the entity.
 		Shader::Ptr shader;
-		//- These textures will be bound whenever the material is used in rendering.
+		// These textures will be bound whenever the material is used in rendering.
 		TextureList textures;
-		//- These buffers will be bound whenever the material is used in rendering.
+		// These buffers provide the shader's uniform data.
 		BufferList buffers;
 
 	private:
+		// Bind all textures, buffers, state, and the shader for rendering.
+		void Bind();
+		// Bind all textures, buffers, and state.
+		void BindState();
+		// Unbinds all textures, buffers, and the shader.
+		void UnBind();
+
 		BlendFunc blendMode = BlendFunc::None;
 		DepthFunc depthMode = DepthFunc::Normal;
 		CullFunc cullMode = CullFunc::Clockwise;

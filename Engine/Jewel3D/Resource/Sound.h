@@ -4,12 +4,15 @@
 
 namespace Jwl
 {
+	// An audio clip.
+	// To be played, the clip must be set on an Entity's SoundSource component.
+	// A SoundListener must also be present in the scene.
 	class Sound : public Resource<Sound>
 	{
 	public:
 		~Sound();
 
-		//- Loads .wav (must be 8-bit unsigned PCM).
+		// Loads .wav (must be 8-bit unsigned PCM).
 		bool Load(std::string filePath);
 		void Unload();
 

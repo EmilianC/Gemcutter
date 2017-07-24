@@ -7,6 +7,7 @@
 
 namespace Jwl
 {
+	// Causes text to render at the entity's position.
 	class Text : public Component<Text>
 	{
 	public:
@@ -15,17 +16,14 @@ namespace Jwl
 		Text(Entity& owner, const std::string& text);
 		Text(Entity& owner, const std::string& text, Font::Ptr font);
 
-		void SetFont(Font::Ptr font);
-		Font::Ptr GetFont() const;
 		unsigned GetNumLines() const;
 		float GetLineWidth(unsigned line) const;
 
+		Font::Ptr font;
 		std::string text;
 		bool centeredX = false;
 		bool centeredY = false;
+		// Scale of spacing between letters.
 		float kernel = 1.0f;
-
-	private:
-		Font::Ptr data;
 	};
 }

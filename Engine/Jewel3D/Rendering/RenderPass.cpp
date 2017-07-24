@@ -273,7 +273,7 @@ namespace Jwl
 		if (mesh && mesh->IsComponentEnabled())
 		{
 			// Capture pointer to current mesh data.
-			auto modelData = mesh->GetData();
+			auto modelData = mesh->model;
 			ASSERT(modelData, "Entity has a Mesh component but does not have a Model to render.");
 
 			glBindVertexArray(modelData->GetVAO());
@@ -284,7 +284,7 @@ namespace Jwl
 #pragma region Render Text
 		if (text && text->IsComponentEnabled())
 		{
-			auto font = text->GetFont();
+			auto font = text->font;
 			ASSERT(font != nullptr, "Entity has a Text component but does not have a Font to render with.");
 
 			auto dimensions = font->GetDimensions();
@@ -424,7 +424,7 @@ namespace Jwl
 #pragma region Render Sprite
 		if (sprite && sprite->IsComponentEnabled())
 		{
-			ASSERT(Primitives.IsLoaded(), "Primitives system must be initialized in order to render sprties.");
+			ASSERT(Primitives.IsLoaded(), "Primitives system must be initialized in order to render sprites.");
 
 			Primitives.DrawUnitRectangle();
 		}

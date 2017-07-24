@@ -26,6 +26,6 @@ private:
 	Entity::Ptr root = Entity::MakeNew("root");
 
 	/* Assets */
-	//- The config contains all the properties found in Settings.cfg.
+	// The config contains all the properties found in Settings.cfg.
 	ConfigTable& config;
 };

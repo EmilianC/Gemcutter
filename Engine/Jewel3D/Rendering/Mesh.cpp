@@ -9,19 +9,9 @@ namespace Jwl
 	{
 	}
 
-	Mesh::Mesh(Entity& _owner, Model::Ptr model)
+	Mesh::Mesh(Entity& _owner, Model::Ptr _model)
 		: Component(_owner)
+		, model(_model)
 	{
-		AddData(model);
-	}
-
-	void Mesh::AddData(Model::Ptr model)
-	{
-		data = model;
-	}
-
-	Model::Ptr Mesh::GetData() const
-	{
-		return data;
 	}
 }

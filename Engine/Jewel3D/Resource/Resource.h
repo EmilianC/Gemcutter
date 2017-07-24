@@ -11,7 +11,7 @@ namespace Jwl
 {
 	extern std::string RootAssetDirectory;
 
-	//- Base resource class. Provides an interface for cached loading.
+	// Base resource class. Provides an interface for cached loading.
 	template<class Asset>
 	class Resource : public Shareable<Asset>
 	{
@@ -21,8 +21,8 @@ namespace Jwl
 		Resource& operator=(const Resource&) = delete;
 
 	public:
-		//- Loads an asset from the specified file, if it wasn't loaded already.
-		//- Calls the derived class's Load() with the file path and any other arguments.
+		// Loads an asset from the specified file, if it wasn't loaded already.
+		// Calls the derived class's Load() with the file path and any other arguments.
 		template<typename... Args>
 		static Ptr Load(std::string filePath, Args&&... params)
 		{
@@ -58,7 +58,7 @@ namespace Jwl
 			}
 		}
 
-		//- Searches for a loaded asset previously loaded from the specified file path.
+		// Searches for a loaded asset previously loaded from the specified file path.
 		static Ptr Find(const std::string& filePath)
 		{
 			auto itr = resourceCache.find(filePath);
@@ -72,7 +72,7 @@ namespace Jwl
 			}
 		}
 
-		//- Clears the asset cache. An asset will need to load from file again after this call.
+		// Clears the asset cache. An asset will need to load from file again after this call.
 		static void UnloadAll()
 		{
 			resourceCache.clear();
@@ -85,14 +85,14 @@ namespace Jwl
 	template<class Asset>
 	std::unordered_map<std::string, typename Resource<Asset>::Ptr> Resource<Asset>::resourceCache;
 
-	//- Helper function to load an asset.
+	// Helper function to load an asset.
 	template<class Asset, typename... Args>
 	typename Resource<Asset>::Ptr Load(const std::string& filePath, Args&&... params)
 	{
 		return Resource<Asset>::Load(filePath, std::forward<Args>(params)...);
 	}
 
-	//- Helper function to unload all managed instances of an asset.
+	// Helper function to unload all managed instances of an asset.
 	template<class Asset>
 	void UnloadAll()
 	{

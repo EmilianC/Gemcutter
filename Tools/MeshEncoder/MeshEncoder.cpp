@@ -16,7 +16,7 @@ std::unique_ptr<Jwl::Encoder> GetEncoder()
 	return std::make_unique<MeshEncoder>();
 }
 
-//- Indices for three points; one triangle. v1/vt1/vn1 v2/vt2/vn2 v3/vt3/vn3
+// Indices for three points; one triangle. v1/vt1/vn1 v2/vt2/vn2 v3/vt3/vn3
 struct MeshFace
 {
 	MeshFace() = default;

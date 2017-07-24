@@ -3,11 +3,13 @@
 #include <string>
 
 /*
-- This file defines various functions and macros for logging.
-- "Log_Output.txt" is appended with every message if it has been previously opened with OpenOutputLog().
-- Console output can be toggled as well with CreateConsoleWindow() and DestroyConsoleWindow().
-- DEBUG_* macros allow you to log only when in debug mode.
-- To force macros off, define JWL_DISABLE_DEBUG_MESSAGES.
+ This file defines various functions and macros for logging.
+
+ "Log_Output.txt" is appended with every message if it has been previously opened with OpenOutputLog().
+ Console output can be toggled as well with CreateConsoleWindow() and DestroyConsoleWindow().
+ DEBUG_* macros allow you to log only when in debug mode.
+
+ To force macros off, define JWL_DISABLE_DEBUG_MESSAGES.
 */
 
 namespace Jwl

@@ -34,14 +34,14 @@ namespace Jwl
 		alGenSources(1, &hSound);
 		AL_DEBUG_CHECK();
 
-		AddData(sound);
+		SetData(sound);
 	}
 
 	SoundSource& SoundSource::operator=(const SoundSource& other)
 	{
 		if (other.data)
 		{
-			AddData(other.data);
+			SetData(other.data);
 		}
 
 		return *this;
@@ -58,7 +58,7 @@ namespace Jwl
 		AL_DEBUG_CHECK();
 	}
 
-	void SoundSource::AddData(Sound::Ptr sound)
+	void SoundSource::SetData(Sound::Ptr sound)
 	{
 		ASSERT(sound, "SoundHandle is not valid.");
 

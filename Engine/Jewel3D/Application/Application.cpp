@@ -380,7 +380,7 @@ namespace Jwl
 			return;
 		}
 
-		//- Timing control variables.
+		// Timing control variables.
 		constexpr unsigned MAX_CONCURRENT_UPDATES = 5;
 		unsigned fpsCounter = 0;
 		__int64 lastUpdate = Timer::GetCurrentTick();

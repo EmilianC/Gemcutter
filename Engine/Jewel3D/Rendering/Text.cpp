@@ -11,10 +11,10 @@ namespace Jwl
 	{
 	}
 
-	Text::Text(Entity& _owner, Font::Ptr font)
+	Text::Text(Entity& _owner, Font::Ptr _font)
 		: Component(_owner)
+		, font(_font)
 	{
-		SetFont(font);
 	}
 
 	Text::Text(Entity& _owner, const std::string& _text)
@@ -23,23 +23,13 @@ namespace Jwl
 	{
 	}
 
-	Text::Text(Entity& _owner, const std::string& _text, Font::Ptr font)
+	Text::Text(Entity& _owner, const std::string& _text, Font::Ptr _font)
 		: Component(_owner)
 		, text(_text)
+		, font(_font)
 	{
-		SetFont(font);
 	}
 
-	void Text::SetFont(Font::Ptr _data)
-	{
-		data = _data;
-	}
-
-	Font::Ptr Text::GetFont() const
-	{
-		return data;
-	}
-	
 	unsigned Text::GetNumLines() const
 	{
 		unsigned count = 1;
@@ -57,7 +47,7 @@ namespace Jwl
 	float Text::GetLineWidth(unsigned line) const
 	{
 		ASSERT(line != 0, "'line' must be greater than 0.");
-		ASSERT(data != nullptr, "Must have a Font attached to query width.");
+		ASSERT(font != nullptr, "Must have a Font attached to query width.");
 
 		if (line > GetNumLines())
 		{
@@ -68,11 +58,11 @@ namespace Jwl
 			size_t loc = text.find('\n');
 			if (loc == std::string::npos)
 			{
-				return static_cast<float>(data->GetStringWidth(text));
+				return static_cast<float>(font->GetStringWidth(text));
 			}
 			else
 			{
-				return static_cast<float>(data->GetStringWidth(text.substr(0, loc)));
+				return static_cast<float>(font->GetStringWidth(text.substr(0, loc)));
 			}
 		}
 		else
@@ -107,7 +97,7 @@ namespace Jwl
 				return 0.0f;
 			}
 
-			return static_cast<float>(data->GetStringWidth(text.substr(start, end)));
+			return static_cast<float>(font->GetStringWidth(text.substr(start, end)));
 		}
 	}
 }

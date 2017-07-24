@@ -3,14 +3,14 @@ namespace Jwl
 {
 	namespace detail
 	{
-		//- Index of all Entities for each component and tag type. Used to power the queries.
-		//- Sorted to allow for logical operations, such as ANDing, between multiple tables in the index.
+		// Index of all Entities for each component and tag type. Used to power the queries.
+		// Sorted to allow for logical operations, such as ANDing, between multiple tables in the index.
 		extern std::unordered_map<unsigned, std::vector<Entity*>> entityIndex;
-		//- Index of all Components of a particular type. Used to power the queries.
-		//- Not sorted since no logical operations are performed using these tables.
+		// Index of all Components of a particular type. Used to power the queries.
+		// Not sorted since no logical operations are performed using these tables.
 		extern std::unordered_map<unsigned, std::vector<ComponentBase*>> componentIndex;
 		
-		//- Enumerates a table of the componentIndex while performing a cast and a dereference.
+		// Enumerates a table of the componentIndex while performing a cast and a dereference.
 		template<class Component>
 		class ComponentIterator : public std::iterator<std::forward_iterator_tag, Component>
 		{
@@ -54,12 +54,12 @@ namespace Jwl
 			}
 
 		private:
-			//- The current position in the target table.
+			// The current position in the target table.
 			Iterator itr;
 		};
 
-		//- A safe iterator used to enumerate the entityIndex tables.
-		//- Although it models a single iterator, it knows when it has reached the end of the table.
+		// A safe iterator used to enumerate the entityIndex tables.
+		// Although it models a single iterator, it knows when it has reached the end of the table.
 		class SafeIterator : public std::iterator<std::forward_iterator_tag, Entity*>
 		{
 			using Iterator = std::vector<Entity*>::iterator;
@@ -126,14 +126,14 @@ namespace Jwl
 			}
 
 		private:
-			//- The current position in the table.
+			// The current position in the table.
 			Iterator itr;
-			//- This is required to ensure we don't surpass the table while we are skipping items.
+			// This is required to ensure we don't surpass the table while we are skipping items.
 			const Iterator itrEnd;
 		};
 
-		//- Provides functions to advance two SafeIterators as a logical AND of two entityIndex tables.
-		//- This provider pattern will allow us to add more operations in the future.
+		// Provides functions to advance two SafeIterators as a logical AND of two entityIndex tables.
+		// This provider pattern will allow us to add more operations in the future.
 		struct Intersection
 		{
 			static void FindFirst(SafeIterator& itr1, SafeIterator& itr2)
@@ -167,8 +167,8 @@ namespace Jwl
 			}
 		};
 
-		//- Enumerates a SafeIterator and a templated iterator while performing a logical operation between them.
-		//- The templated iterator expands into a subtree of more LogicalIterators.
+		// Enumerates a SafeIterator and a templated iterator while performing a logical operation between them.
+		// The templated iterator expands into a subtree of more LogicalIterators.
 		template<class Iterator, class Operation>
 		class LogicalIterator : public std::iterator<std::forward_iterator_tag, Entity*>
 		{
@@ -226,8 +226,8 @@ namespace Jwl
 			Iterator itr2;
 		};
 
-		//- LogicalIterator specialization for the bottom of the hierarchy.
-		//- Directly operates on two SafeIterators.
+		// LogicalIterator specialization for the bottom of the hierarchy.
+		// Directly operates on two SafeIterators.
 		template<class Operation>
 		class LogicalIterator<SafeIterator, Operation> : public std::iterator<std::forward_iterator_tag, Entity*>
 		{
@@ -281,7 +281,7 @@ namespace Jwl
 			SafeIterator itr2;
 		};
 
-		//- Represents a lazy-evaluated range that can be used in a range-based for loop.
+		// Represents a lazy-evaluated range that can be used in a range-based for loop.
 		template<class RootIterator>
 		class Range
 		{
@@ -300,14 +300,14 @@ namespace Jwl
 			const RootIterator itrEnd;
 		};
 
-		//- Template deduction assisted construction.
+		// Template deduction assisted construction.
 		template<class Iterator>
 		auto BuildLogicalIterator(SafeIterator&& set1, Iterator&& set2)
 		{
 			return LogicalIterator<Iterator, Intersection>(set1, set2);
 		}
 
-		//- Constructs a logical iterator representing the start of the sequence.
+		// Constructs a logical iterator representing the start of the sequence.
 		template<typename Arg1, typename Arg2, typename... Args>
 		auto BuildRootBegin()
 		{
@@ -318,7 +318,7 @@ namespace Jwl
 			return BuildLogicalIterator(SafeIterator(rawBegin, rawEnd), BuildRootBegin<Arg2, Args...>());
 		}
 
-		//- BuildRootBegin() base case.
+		// BuildRootBegin() base case.
 		template<typename Arg>
 		SafeIterator BuildRootBegin()
 		{
@@ -329,7 +329,7 @@ namespace Jwl
 			return SafeIterator(rawBegin, rawEnd);
 		}
 
-		//- Constructs a logical iterator representing the end of the sequence.
+		// Constructs a logical iterator representing the end of the sequence.
 		template<typename Arg1, typename Arg2, typename... Args>
 		auto BuildRootEnd()
 		{
@@ -338,7 +338,7 @@ namespace Jwl
 			return BuildLogicalIterator(SafeIterator(rawEnd, rawEnd), BuildRootEnd<Arg2, Args...>());
 		}
 
-		//- BuildRootEnd() base case.
+		// BuildRootEnd() base case.
 		template<typename Arg>
 		SafeIterator BuildRootEnd()
 		{
@@ -348,9 +348,9 @@ namespace Jwl
 		}
 	}
 
-	//- Returns an enumerable range of all enabled Components of the specified type.
-	//- This is a faster option than With<>() but it only allows you to specify a single Component type.
-	//- Additionally, by giving you the Component directly you don't have to waste time calling Entity.Get<>().
+	// Returns an enumerable range of all enabled Components of the specified type.
+	// This is a faster option than With<>() but it only allows you to specify a single Component type.
+	// Additionally, by giving you the Component directly you don't have to waste time calling Entity.Get<>().
 	template<class Component>
 	auto All()
 	{
@@ -374,10 +374,10 @@ namespace Jwl
 		return detail::Range<decltype(begin)>(begin, end);
 	}
 
-	//- Returns an enumerable range of all Entities which have an active instance of each specified Component/Tag.
-	//- Disabled Components and Components belonging to disabled Entities are not considered.
-	//! Adding/Removing Components or Tags of the queried types will invalidate the returned Range.
-	//	For this reason, you must not do this until after you are finished using the Range.
+	// Returns an enumerable range of all Entities which have an active instance of each specified Component/Tag.
+	// Disabled Components and Components belonging to disabled Entities are not considered.
+	// * Adding/Removing Components or Tags of the queried types will invalidate the returned Range *
+	// For this reason, you must not do this until after you are finished using the Range.
 	template<typename... Args>
 	auto With()
 	{
@@ -397,10 +397,10 @@ namespace Jwl
 		return detail::Range<decltype(begin)>(begin, end);
 	}
 
-	//- Returns all Entities which have an active instance of each specified Component/Tag.
-	//- Disabled Components and Components belonging to disabled Entities are not considered.
-	//- Unlike With<>(), adding or removing Components/Tags of the queried type will NOT invalidate the returned Range.
-	//! This should only be used if necessary, as it is much slower than using With<>().
+	// Returns all Entities which have an active instance of each specified Component/Tag.
+	// Disabled Components and Components belonging to disabled Entities are not considered.
+	// Unlike With<>(), adding or removing Components/Tags of the queried type will NOT invalidate the returned Range.
+	// * This should only be used if necessary, as it is much slower than using With<>() *
 	template<typename... Args>
 	auto CaptureWith()
 	{
@@ -417,8 +417,8 @@ namespace Jwl
 		return result;
 	}
 
-	//- Returns the raw vector container of the specified Component.
-	//- This can be useful in special cases when you need custom iterator logic.
+	// Returns the raw vector container of the specified Component.
+	// This can be useful in special cases when you need custom iterator logic.
 	template<class Component>
 	std::vector<ComponentBase*>& GetComponentIndex()
 	{

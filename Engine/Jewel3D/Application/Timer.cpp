@@ -22,7 +22,7 @@ namespace
 	static const __int64 ticksPerSecond = GetTimerResolution();
 	static const __int64 ticksPerMS = ticksPerSecond / 1000;
 
-	//- Casted ahead of time for a performance boost in GetElapsedMS() and GetElapsedSeconds().
+	// Casted ahead of time for a performance boost in GetElapsedMS() and GetElapsedSeconds().
 	static const double d_ticksPerSecond = static_cast<double>(ticksPerSecond);
 	static const double d_ticksPerMS = static_cast<double>(ticksPerMS);
 }

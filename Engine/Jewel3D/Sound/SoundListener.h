@@ -4,23 +4,23 @@
 
 namespace Jwl
 {
-	//- The Entity with this component is also the location where sounds are heard from.
-	//- The first instance of the component is active be default, others are inactive by default.
-	//- Setting a SoundListener as active will disable any other instances.
+	// The Entity with this component is also the location where sounds are heard from.
+	// The first instance of the component is active be default, others are inactive by default.
+	// Setting a SoundListener as active will disable any other instances.
 	class SoundListener : public Component<SoundListener>
 	{
 	public:
 		SoundListener(Entity& owner);
 
-		//- Gets the currently active SoundListener. There can only ever be one.
+		// Gets the currently active SoundListener. There can only ever be one.
 		static Entity::Ptr GetListener();
 
 	private:
-		//- Disabling this component causes audio to stop being heard until a SoundListener becomes active again.
+		// Disabling this component causes audio to stop being heard until a SoundListener becomes active again.
 		virtual void OnDisable() final override;
 		virtual void OnEnable() final override;
 
-		//- A pointer to the active listener. Only one is allowed.
+		// A pointer to the active listener. Only one is allowed.
 		static Entity::WeakPtr listener;
 	};
 }

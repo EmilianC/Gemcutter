@@ -10,18 +10,20 @@ namespace Jwl
 		int y;
 	};
 
+	// A typeface that can be used to render text.
+	// To be rendered, this must be set on an Entity's Text component.
 	class Font : public Resource<Font>
 	{
 	public:
 		Font();
 		~Font();
 
-		//- Loads pre-packed *.font resources.
+		// Loads pre-packed *.font resources.
 		bool Load(std::string filePath);
 		void Unload();
 
-		//- Returns the real world unit width of the string.
-		//- If the string is multi-line, the length of the longest line is returned.
+		// Returns the real world unit width of the string.
+		// If the string is multi-line, the length of the longest line is returned.
 		int GetStringWidth(const std::string& text) const;
 		int GetStringHeight() const;
 
@@ -38,13 +40,13 @@ namespace Jwl
 
 	private:
 		unsigned textures[94];
-		//- Each character's dimensions.
+		// Each character's dimensions.
 		CharData dimensions[94];
-		//- The position of each character.
+		// The position of each character.
 		CharData positions[94];
-		//- The distance from one character to the next.
+		// The distance from one character to the next.
 		CharData advances[94];
-		//- Whether the character is included in the font.
+		// Whether the character is included in the font.
 		bool masks[94];
 		unsigned width  = 0;
 		unsigned height = 0;

@@ -4,6 +4,8 @@
 
 namespace Jwl
 {
+	// Causes an entity to render as a 2D textured sprite.
+	// The desired textures should be set on the Material component.
 	class Sprite : public Component<Sprite>
 	{
 	public:
@@ -15,6 +17,8 @@ namespace Jwl
 		bool GetCenteredX() const;
 		bool GetCenteredY() const;
 
+		// Defines "JWL_SPRITE_BILLBOARD" on the entity's shader.
+		// If the standard sprite shader is used, this causes the Sprite to face the camera.
 		void SetBillBoarded(bool state);
 		bool GetBillBoarded() const;
 

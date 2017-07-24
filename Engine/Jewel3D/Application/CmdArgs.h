@@ -3,17 +3,17 @@
 #include <string>
 
 /*
-* Assists in reading command line arguments, especially in the format:
-* -<argument name> <argument value>
-* 
-* For example, if the command line arguments are:
-* -width 10 -name MyGame -enableDebug 1 -speed 10.2
-* 
-* Then we could retrieve these values with:
-* GetCommandLineArgument("-width", &int)
-* GetCommandLineArgument("-name", &string)
-* GetCommandLineArgument("-enableDebug", &bool)
-* GetCommandLineArgument("-speed", &float)
+ Assists in reading command line arguments, especially in the format:
+ -<argument name> <argument value>
+ 
+ For example, if the command line arguments are:
+ -width 10 -name MyGame -enableDebug 1 -speed 10.2
+ 
+ Then we could retrieve these values with:
+ GetCommandLineArgument("-width", &int)
+ GetCommandLineArgument("-name", &string)
+ GetCommandLineArgument("-enableDebug", &bool)
+ GetCommandLineArgument("-speed", &float)
 */
 
 namespace Jwl
@@ -21,14 +21,14 @@ namespace Jwl
 	int GetArgc();
 	char** GetArgv();
 
-	//- Returns true if the command line argument with the given name is defined.
+	// Returns true if the command line argument with the given name is defined.
 	bool ArgumentExists(const char* name);
-	//- Returns the index of an argument or -1 if the argument is not found.
+	// Returns the index of an argument or -1 if the argument is not found.
 	int FindCommandLineArgument(const char* name);
-	//- Returns the directory in which the program's executable was run.
+	// Returns the directory in which the program's executable was run.
 	std::string GetExecutablePath();
 
-	//- Gets the entry after the specified argument name.
+	// Gets the entry after the specified argument name.
 	bool GetCommandLineArgument(const char* name, bool& val);
 	bool GetCommandLineArgument(const char* name, double& val);
 	bool GetCommandLineArgument(const char* name, float& val);
@@ -37,7 +37,7 @@ namespace Jwl
 	bool GetCommandLineArgument(const char* name, char& val);
 	bool GetCommandLineArgument(const char* name, std::string& val);
 
-	//- Gets the entry at the specified index.
+	// Gets the entry at the specified index.
 	bool GetCommandLineArgument(int index, bool& val);
 	bool GetCommandLineArgument(int index, double& val);
 	bool GetCommandLineArgument(int index, float& val);

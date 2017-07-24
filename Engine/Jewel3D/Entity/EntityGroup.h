@@ -6,7 +6,7 @@
 
 namespace Jwl
 {
-	//- Represents a list of Entities to be associated together.
+	// Represents a list of Entities to be associated together.
 	class EntityGroup
 	{
 	public:

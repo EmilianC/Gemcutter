@@ -2,38 +2,38 @@
 #pragma once
 
 /*
-* ScopeGuard assists in preventing memory leaks and makes code more clear.
-* Following RAII principles, this can allow you to create safer functions.
-* 
-* A function that allocates memory but has many exit points can easily 
-* leak memory. Unless you remember to duplicate your cleanup code in 
-* every return case, you will leak memory. For example:
-*
-* void Load() {
-*	int* memory = new int[256];
-*	
-*	if (!okay) return; // Leaks memory!
-*	
-*	// Many more exit points...
-*	
-*	delete[] int; // Only here will the data be released.
-* }
-* 
-* With the scope guard we improve readability, safety, and maintainability.
-* Write the cleanup code once, and it will run however the function exits.
-*
-* void Load() {
-*	int* memory = new int[256];
-*	defer { delete[] memory };
-*
-*	if (!okay) return; // defer block is called!
-*
-*	// Many more (safe) exit points...
-*
-*	// defer block is called. no need to manually delete.
-* }
-*
-* Based on the implementation by Andrei Alexandrescu
+ ScopeGuard assists in preventing memory leaks and makes code more clear.
+ Following RAII principles, this can allow you to create safer functions.
+ 
+ A function that allocates memory but has many exit points can easily 
+ leak memory. Unless you remember to duplicate your cleanup code in 
+ every return case, you will leak memory. For example:
+ 
+ void Load() {
+ 	int* memory = new int[256];
+ 	
+ 	if (!okay) return; // Leaks memory!
+ 	
+ 	// Many more exit points...
+ 	
+ 	delete[] int; // Only here will the data be released.
+ }
+ 
+ With the scope guard we improve readability, safety, and maintainability.
+ Write the cleanup code once, and it will run however the function exits.
+ 
+ void Load() {
+ 	int* memory = new int[256];
+ 	defer { delete[] memory };
+ 	
+ 	if (!okay) return; // defer block is called!
+ 	
+ 	// Many more (safe) exit points...
+ 	
+ 	// defer block is called. no need to manually delete.
+ }
+
+ Based on the implementation by Andrei Alexandrescu
 */
 
 namespace Jwl

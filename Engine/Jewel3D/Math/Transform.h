@@ -5,7 +5,7 @@
 
 namespace Jwl
 {
-	//- A pose in space - Position / Rotation / Scale.
+	// A pose in space - Position / Rotation / Scale.
 	class Transform
 	{
 	public:

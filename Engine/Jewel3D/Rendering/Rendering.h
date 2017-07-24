@@ -8,6 +8,7 @@ namespace Jwl
 {
 	class vec4;
 
+	// Binding locations for Jewel3D uniform buffers.
 	enum class UniformBufferSlot : unsigned
 	{
 		Camera = 10,
@@ -132,17 +133,16 @@ namespace Jwl
 
 	static class GPUInfo : public Singleton<class GPUInfo>
 	{
+		friend class Application;
 	public:
-		//- Queries the limits from the device and provides them to the application.
-		//- Called by Application on window creation.
-		void ScanDevice();
-
 		unsigned GetMaxTextureSlots() const;
 		unsigned GetMaxUniformBufferSlots() const;
 		unsigned GetMaxRenderTargetAttachments() const;
 		unsigned GetMaxDrawBuffers() const;
 
 	private:
+		void ScanDevice();
+
 		unsigned MaxTextureSlots = 0;
 		unsigned MaxUniformBufferSlots = 0;
 		unsigned MaxRenderTargetAttachments = 0;

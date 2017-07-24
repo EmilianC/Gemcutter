@@ -3,9 +3,11 @@
 #include "Jewel3D/Application/Event.h"
 #include "Jewel3D/Entity/Entity.h"
 
+#include <functional>
+
 namespace Jwl
 {
-	//- Responds to events given from an EventDispatcher component higher in the hierarchy.
+	// Responds to events given from an EventDispatcher component higher in the hierarchy.
 	template<class EventObj>
 	class ProxyListener : public Component<ProxyListener<EventObj>>
 	{
@@ -16,12 +18,12 @@ namespace Jwl
 		{
 		}
 
-		//- Your function should return 'true' if the event is handled,
-		//  This will cause it to stop propagating down the hierarchy.
+		// Your function should return 'true' if the event is handled,
+		// This will cause it to stop propagating down the hierarchy.
 		std::function<bool(const EventObj&)> callback;
 	};
 
-	//- Propagates an event through a hierarchy of Entities.
+	// Propagates an event through a hierarchy of Entities.
 	template<class EventObj>
 	class EventDispatcher : public Component<EventDispatcher<EventObj>>
 	{
@@ -44,8 +46,8 @@ namespace Jwl
 		}
 
 	private:
-		//- Propagates the event through the hierarchy, breadth first, notifying ProxyListeners.
-		//- Once a listener has handled the event by returning true from it's callback, propagation stops.
+		// Propagates the event through the hierarchy, breadth first, notifying ProxyListeners.
+		// Once a listener has handled the event by returning true from it's callback, propagation stops.
 		static bool Distribute(Entity& ent, const EventObj& e)
 		{
 			auto& children = ent.GetChildren();

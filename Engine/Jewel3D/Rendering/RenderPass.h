@@ -11,7 +11,7 @@ namespace Jwl
 	class EntityGroup;
 	class Viewport;
 
-	//- Consolidates the three main components for rendering: input Geometry, shader pipeline and render target.
+	// Consolidates the three main components for rendering: input Geometry, shader pipeline and render target.
 	class RenderPass
 	{
 	public:
@@ -20,15 +20,15 @@ namespace Jwl
 
 		RenderPass& operator=(const RenderPass&);
 
-		//- Camera is optional. Provided SceneNode must have a camera component.
+		// Camera is optional. Provided SceneNode must have a camera component.
 		void SetCamera(Entity::Ptr cam);
-		//- The program that will be used if the render call is a post process, or if a renderable does not have a material.
+		// The program that will be used if the render call is a post process, or if a renderable does not have a material.
 		void SetShader(Shader::Ptr program);
-		//- If no explicit target is set, the render pass will target the backbuffer.
+		// If no explicit target is set, the render pass will target the backbuffer.
 		void SetTarget(RenderTarget::Ptr target);
-		//- If no explicit viewport is set, the viewport will match the render target or back buffer.
+		// If no explicit viewport is set, the viewport will match the render target or back buffer.
 		void SetViewport(const Viewport& vp);
-		//- Rendered after all the group objects attached. Ignored for post process passes.
+		// Rendered after all the group objects attached. Ignored for post process passes.
 		void SetSkybox(Texture::Ptr sky);
 
 		Entity::Ptr GetCamera() const;
@@ -37,16 +37,16 @@ namespace Jwl
 		const Viewport* GetViewport() const;
 		Texture::Ptr GetSkybox() const;
 
-		//- Renders a fullscreen quad.
+		// Renders a fullscreen quad.
 		void PostProcess();
-		//- Traverses the root Entity and renders all renderable children.
+		// Traverses the root Entity and renders all renderable children.
 		void Render(const Entity& root);
-		//- Renders every Entity included in the group.
+		// Renders every Entity included in the group.
 		void Render(const EntityGroup& group);
 
-		//- These textures will be bound during the execution of the render pass.
+		// These textures will be bound during the execution of the render pass.
 		TextureList textures;
-		//- These buffers will be bound during the execution of the render pass.
+		// These buffers will be bound during the execution of the render pass.
 		BufferList buffers;
 
 	private:
@@ -65,7 +65,7 @@ namespace Jwl
 		Shader::Ptr shader;
 		Texture::Ptr skybox;
 
-		//- Holds the world transformation matrices for an entity while rendering.
+		// Holds the world transformation matrices for an entity while rendering.
 		UniformBuffer transformBuffer;
 
 		UniformHandle<mat4> MVP;

@@ -8,10 +8,13 @@
 
 namespace Jwl
 {
-	template<class T> class UniformHandle;
-
+	// A collection of parameters that are used by a shader.
+	// To be used by a shader, an instance must either be attached to the 
+	// shader directly, or to a Material component.
 	class UniformBuffer : public Shareable<UniformBuffer>
 	{
+		template<class T>
+		friend class UniformHandle;
 	public:
 		UniformBuffer() = default;
 		~UniformBuffer();
@@ -19,27 +22,30 @@ namespace Jwl
 		UniformBuffer& operator=(const UniformBuffer&);
 		void Copy(const UniformBuffer& other);
 
+		// During the initialization phase, appends a new variable to the buffer.
 		void AddUniform(const std::string& name, unsigned bytes, unsigned count = 1);
 
+		// Once this is called, no more uniforms can be added and the buffer is ready for use.
 		void InitBuffer();
 		void UnLoad();
 
 		void Bind(unsigned slot) const;
 		static void UnBind(unsigned slot);
 
+		// Once initialized, this sets the value of a uniform.
+		// * If used regularly, consider caching a UniformHandle instead. It will be faster *
 		template<class T>
 		void SetUniform(const std::string& name, const T& data);
 		template<class T>
 		void SetUniformArray(const std::string& name, unsigned numElements, T* data);
 
+		// Returns a handle that can be used to directly modify the value of a uniform.
+		// This is more performant then SetUniform() or SetUniformArray().
 		template<class T>
 		UniformHandle<T> MakeHandle(const std::string& name);
 
 		int GetByteSize();
 		bool IsUniform(const std::string& name);
-
-		//- Force the uniform buffer to re-upload it's data the next time it's bound. Used internally.
-		void SetDirty();
 
 	private:
 		void* GetBufferLoc(const std::string& name) const;
@@ -52,31 +58,7 @@ namespace Jwl
 		std::unordered_map<std::string, int> table;
 	};
 
-	template<class T>
-	void UniformBuffer::SetUniform(const std::string& name, const T& data)
-	{
-		T* dest = reinterpret_cast<T*>(GetBufferLoc(name));
-		ASSERT(dest, "Could not find uniform parameter ( %s ).", name.c_str());
-		ASSERT(dest + sizeof(T) <= reinterpret_cast<T*>(buffer) + bufferSize, "Setting uniform ( %s ) out of bounds of the buffer.", name.c_str());
-
-		*dest = data;
-		dirty = true;
-	}
-
-	template<class T>
-	void UniformBuffer::SetUniformArray(const std::string& name, unsigned numElements, T* data)
-	{
-		ASSERT(data != nullptr, "Source data cannot be null.");
-
-		void* dest = GetBufferLoc(name);
-		ASSERT(dest, "Could not find uniform parameter ( %s ).", name.c_str());
-		ASSERT(dest + sizeof(T) * numElements <= reinterpret_cast<char*>(buffer) + bufferSize, "Setting uniform ( %s ) out of bounds of the buffer.", name.c_str());
-
-		memcpy(dest, data, sizeof(T) * numElements);
-		dirty = true;
-	}
-
-	//- Used to associate a UniformBuffer with a particular binding point.
+	// Used to associate a UniformBuffer with a particular binding point.
 	struct BufferSlot
 	{
 		BufferSlot() = default;
@@ -89,7 +71,7 @@ namespace Jwl
 		unsigned unit = 0;
 	};
 
-	//- A group of UniformBuffers that are bound and unbound together.
+	// A group of UniformBuffers that are bound and unbound together.
 	class BufferList
 	{
 	public:
@@ -98,10 +80,10 @@ namespace Jwl
 
 		void Add(UniformBuffer::Ptr buffer, unsigned unit);
 		void Remove(unsigned unit);
-		//- Removes all Buffers.
+		// Removes all Buffers.
 		void Clear();
 
-		//- Returns the buffer bound at the specified unit.
+		// Returns the buffer bound at the specified unit.
 		UniformBuffer::Ptr& operator[](unsigned unit);
 
 		const auto& GetAll() const { return buffers; }
@@ -110,58 +92,31 @@ namespace Jwl
 		std::vector<BufferSlot> buffers;
 	};
 
-	//- Provides direct and performant access to a uniform member value.
-	//- No type checking is done. It is your responsibility to ensure the type is correct.
-	template<class T> class UniformHandle
+	// Provides direct and performant access to a uniform member value.
+	// * No type checking is done. It is your responsibility to ensure the type is correct *
+	// * Usage is unsafe after the source uniform buffer is deleted *
+	template<class T>
+	class UniformHandle
 	{
 	public:
 		UniformHandle<T>() = default;
-		UniformHandle<T>(UniformBuffer& buff, T& data)
-			: buffer(&buff), data(&data)
-		{
-		}
+		UniformHandle<T>(UniformBuffer& buff, T& data);
 
-		//- Set the value of the uniform. Implicitly dirties the UniformBuffer.
-		UniformHandle<T>& operator=(const T& value)
-		{
-			Set(value);
-			return *this;
-		}
+		// Set the value of the uniform.
+		UniformHandle<T>& operator=(const T& value);
 
-		//- Set the value of the uniform. Implicitly dirties the UniformBuffer.
-		void Set(const T& value)
-		{
-			ASSERT(data, "Uniform handle is not associated with a UniformBuffer.");
+		// Set the value of the uniform.
+		void Set(const T& value);
+		// Read the current value of the uniform.
+		const T& Get() const;
 
-			*data = value;
-			buffer->SetDirty();
-		}
-
-		//- Read the current value. Asserts if the buffer has been deleted.
-		const T& Get() const
-		{
-			ASSERT(data, "Uniform handle is not associated with a UniformBuffer.");
-
-			return *data;
-		}
-
-		//- Gets a pointer to the associated UniformBuffer.
-		UniformBuffer* GetBuffer() const
-		{
-			return buffer;
-		}
+		// Gets a pointer to the associated UniformBuffer.
+		UniformBuffer* GetBuffer() const;
 
 	private:
 		UniformBuffer* buffer = nullptr;
 		T* data;
 	};
-
-	template<class T>
-	UniformHandle<T> UniformBuffer::MakeHandle(const std::string& name)
-	{
-		T* loc = reinterpret_cast<T*>(GetBufferLoc(name));
-		ASSERT(loc, "\"%s\" does not match the name of a Uniform.", name.c_str());
-
-		return UniformHandle<T>(*this, *loc);
-	}
 }
+
+#include "UniformBuffer.inl"

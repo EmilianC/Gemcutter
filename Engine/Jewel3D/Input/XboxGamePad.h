@@ -29,34 +29,34 @@ namespace Jwl
 		};
 
 		XboxGamePad() = delete;
-		//- Initialize with a game-pad ID to read input from. [0,1,2,3]
+		// Initialize with a game-pad ID to read input from. [0,1,2,3]
 		XboxGamePad(unsigned gamepadID = 0);
 
-		//- Returns true if the controller is connected and ready to use. Implicitly updates.
+		// Returns true if the controller is connected and ready to use. Implicitly updates.
 		bool IsConnected();
 
-		//- Updates the internal states by polling the device for input.
+		// Updates the internal states by polling the device for input.
 		void Update();
 
-		//- Set the level of vibration. [0,1]
+		// Set the level of vibration. [0,1]
 		void SetVibration(float left, float right);
 
-		//- Returns the state of a given button.
+		// Returns the state of a given button.
 		bool GetButton(Buttons button) const;
 
-		//- Returns the state of the left trigger. [0,1]
+		// Returns the state of the left trigger. [0,1]
 		float GetLeftTrigger() const;
-		//- Returns the state of the right trigger. [0,1]
+		// Returns the state of the right trigger. [0,1]
 		float GetRightTrigger() const;
 
-		//- Returns x,y state of the left thumb stick. [-1,1]
+		// Returns x,y state of the left thumb stick. [-1,1]
 		vec2 GetLeftThumbStick() const;
-		//- Returns x,y state of the right thumb stick. [-1,1]
+		// Returns x,y state of the right thumb stick. [-1,1]
 		vec2 GetRightThumbStick() const;
 
-		//- Returns the distance of the left thumb stick from the origin. [0,1]
+		// Returns the distance of the left thumb stick from the origin. [0,1]
 		float GetLeftThumbStickMagnitude() const;
-		//- Returns the distance of the right thumb stick from the origin. [0,1]
+		// Returns the distance of the right thumb stick from the origin. [0,1]
 		float GetRightThumbStickMagnitude() const;
 
 	private:

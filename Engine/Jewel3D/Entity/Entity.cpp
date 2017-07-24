@@ -147,7 +147,7 @@ namespace Jwl
 			return;
 		}
 
-		//- Re-Index all active components.
+		// Re-Index all active components.
 		for (auto comp : components)
 		{
 			if (comp->IsComponentEnabled())
@@ -157,7 +157,7 @@ namespace Jwl
 			}
 		}
 
-		//- Re-Index all tags.
+		// Re-Index all tags.
 		for (auto tag : tags)
 		{
 			IndexTag(tag);
@@ -173,7 +173,7 @@ namespace Jwl
 			return;
 		}
 
-		//- UnIndex all active components.
+		// UnIndex all active components.
 		for (auto comp : components)
 		{
 			if (comp->IsComponentEnabled())
@@ -183,7 +183,7 @@ namespace Jwl
 			}
 		}
 
-		//- UnIndex all tags.
+		// UnIndex all tags.
 		for (auto tag : tags)
 		{
 			UnindexTag(tag);

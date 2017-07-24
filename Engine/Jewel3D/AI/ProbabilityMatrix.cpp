@@ -9,11 +9,14 @@ namespace Jwl
 {
 	ProbabilityMatrix::ProbabilityMatrix(unsigned _numStates, unsigned _numActions)
 	{
+		ASSERT(_numStates != 0, "Cannot have zero states.");
+		ASSERT(_numActions != 0, "Cannot have zero actions.");
+
 		numStates = _numStates;
 		numActions = _numActions;
 		data = static_cast<float*>(malloc(sizeof(float) * numStates * numActions));
 
-		SetUniform();
+		Reset();
 	}
 
 	ProbabilityMatrix::ProbabilityMatrix(const ProbabilityMatrix& other)
@@ -60,7 +63,7 @@ namespace Jwl
 		}
 	}
 
-	void ProbabilityMatrix::SetUniform()
+	void ProbabilityMatrix::Reset()
 	{
 		float value = 1.0f / numActions;
 

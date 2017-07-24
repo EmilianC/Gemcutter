@@ -74,7 +74,7 @@ namespace Jwl
 
 		mat3();
 		explicit mat3(const quat& rotation);
-		//- Extracts the rotational component from the 4x4 matrix.
+		// Extracts the rotational component from the 4x4 matrix.
 		explicit mat3(const mat4& mat);
 		mat3(const vec3& right, const vec3& up, const vec3& forward);
 		mat3(float f0, float f3, float f6,
@@ -166,15 +166,15 @@ namespace Jwl
 
 		void Transpose();
 		void Inverse();
-		//- Computes the inverse assuming standard homogeneous matrix format.
-		//- [ R		T ]
-		//- [ 0 0 0 1 ]
+		// Computes the inverse assuming standard homogeneous matrix format.
+		// [ R     T ]
+		// [ 0 0 0 1 ]
 		void FastInverse();
 		mat4 GetTranspose() const;
 		mat4 GetInverse() const;
-		//- Computes the inverse assuming standard homogeneous matrix format.
-		//- [ R		T ]
-		//- [ 0 0 0 1 ]
+		// Computes the inverse assuming standard homogeneous matrix format.
+		// [ R     T ]
+		// [ 0 0 0 1 ]
 		mat4 GetFastInverse() const;
 
 		void Scale(const vec3& scale);

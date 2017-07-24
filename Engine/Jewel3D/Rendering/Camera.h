@@ -17,11 +17,11 @@ namespace Jwl
 		Camera(Entity& owner, float left, float right, float top, float bottom, float zNear, float zFar);
 		Camera& operator=(const Camera&);
 
-		//- Uploads the camera's values to OpenGL.
+		// Uploads the camera's values to OpenGL.
 		void Bind() const;
 		static void UnBind();
 
-		//- Returns the inverse node pose, ready to use for rendering.
+		// Returns the inverse node pose, ready to use for rendering.
 		mat4 GetViewMatrix() const;
 		mat4 GetViewProjMatrix() const;
 		mat4 GetProjMatrix() const;
@@ -32,23 +32,23 @@ namespace Jwl
 		float GetFarPlaneWidth() const;
 		float GetFarPlaneHeight() const;
 
-		//- Computes the corners of the far plane in view-space.
+		// Computes the corners of the far plane in view-space.
 		void GetFarPlaneCorners(vec3& bottomLeft, vec3& bottomRight, vec3& topRight, vec3& topLeft) const;
-		//- Computes the corners of the near plane in view-space.
+		// Computes the corners of the near plane in view-space.
 		void GetNearPlaneCorners(vec3& bottomLeft, vec3& bottomRight, vec3& topRight, vec3& topLeft) const;
-		//- Returns the center of the viewing volume, compute as average of corners.
+		// Returns the center of the viewing volume, compute as average of corners.
 		vec3 GetCenterOfVolume() const;
 
-		//- Sets the camera to Perspective mode with the current settings.
+		// Sets the camera to Perspective mode with the current settings.
 		void SetPerspective();
-		//- Sets the camera to Perspective mode, overriding the settings.
+		// Sets the camera to Perspective mode, overriding the settings.
 		void SetPerspective(float fovyDegrees, float aspectRatio, float zNear, float zFar);
 
-		//- Sets the camera to Orthographic mode with the current settings.
+		// Sets the camera to Orthographic mode with the current settings.
 		void SetOrthograpic();
-		//- Sets the camera to Orthographic mode, overriding the settings.
+		// Sets the camera to Orthographic mode, overriding the settings.
 		void SetOrthograpic(float left, float right, float top, float bottom, float zNear, float zFar);
-		//- Sets the camera to Orthographic mode, overriding the settings to match the viewport's dimensions.
+		// Sets the camera to Orthographic mode, overriding the settings to match the viewport's dimensions.
 		void SetOrthograpic(const Viewport& viewport, float zNear, float zFar);
 
 		bool IsPerspective() const;

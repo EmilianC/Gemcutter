@@ -14,9 +14,9 @@ namespace Jwl
 		bool operator==(const ConfigTable&) const;
 		bool operator!=(const ConfigTable&) const;
 
-		//- Returns true if the setting has a value in the table.
+		// Returns true if the setting has a value in the table.
 		bool HasSetting(const std::string& setting) const;
-		//- Returns the number of entries in the table.
+		// Returns the number of entries in the table.
 		unsigned GetSize() const;
 
 		std::string GetString(const std::string& setting) const;
@@ -24,14 +24,14 @@ namespace Jwl
 		int GetInt(const std::string& setting) const;
 		bool GetBool(const std::string& setting) const;
 
-		//- Creates or overwrites an existing setting.
+		// Creates or overwrites an existing setting.
 		void SetValue(const std::string& setting, const std::string& value);
 		void SetValue(const std::string& setting, const char* value);
 		void SetValue(const std::string& setting, float value);
 		void SetValue(const std::string& setting, int value);
 		void SetValue(const std::string& setting, bool value);
 
-		//- Does not overwrite an existing setting, but creates it if it doesn't exist.
+		// Does not overwrite an existing setting, but creates it if it doesn't exist.
 		void SetDefaultValue(const std::string& setting, const std::string& value);
 		void SetDefaultValue(const std::string& setting, const char* value);
 		void SetDefaultValue(const std::string& setting, float value);
