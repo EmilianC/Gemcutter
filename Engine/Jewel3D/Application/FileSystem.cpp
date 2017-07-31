@@ -16,7 +16,7 @@
 
 namespace
 {
-	static std::stack<std::string> currentDirectoryStack;
+	std::stack<std::string> currentDirectoryStack;
 }
 
 namespace Jwl
@@ -31,15 +31,13 @@ namespace Jwl
 		outData.files.clear();
 		outData.folders.clear();
 
-		DIR* dir = nullptr;
-		dirent* drnt = nullptr;
-
-		dir = opendir(directory.c_str());
+		DIR* dir = opendir(directory.c_str());
 		if (dir == nullptr)
 		{
 			return false;
 		}
 
+		dirent* drnt;
 		while ((drnt = readdir(dir)) != nullptr)
 		{
 			switch (drnt->d_type)
@@ -404,7 +402,7 @@ namespace Jwl
 	{
 		if (buffer.empty())
 		{
-			return (char)file.get();
+			return static_cast<char>(file.get());
 		}
 		else
 		{

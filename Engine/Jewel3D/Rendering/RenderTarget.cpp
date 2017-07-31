@@ -379,7 +379,8 @@ namespace Jwl
 	{
 		ASSERT(FBO != GL_NONE, "RenderTarget must be initialized before use.");
 		ASSERT(HasDepth(), "RenderTarget does not have a depth texture to copy.");
-		ASSERT(width == (unsigned)Application.GetScreenWidth() && height == (unsigned)Application.GetScreenHeight(), "RenderTarget and Backbuffer must have the same dimensions.");
+		ASSERT(width == static_cast<unsigned>(Application.GetScreenWidth()) && height == static_cast<unsigned>(Application.GetScreenHeight()), 
+			"RenderTarget and Backbuffer must have the same dimensions.");
 
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, FBO);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, GL_NONE);
@@ -424,6 +425,8 @@ namespace Jwl
 			break;
 		case 1: format = GL_RED;
 			break;
+		default:
+			ASSERT(false, "Unsupported texture format.");
 		}
 
 		vec4 result;

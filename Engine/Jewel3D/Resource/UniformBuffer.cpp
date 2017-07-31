@@ -105,7 +105,7 @@ namespace Jwl
 		// GPU buffer.
 		glGenBuffers(1, &UBO);
 		glBindBuffer(GL_UNIFORM_BUFFER, UBO);
-		glBufferData(GL_UNIFORM_BUFFER, bufferSize, NULL, GL_STREAM_DRAW);
+		glBufferData(GL_UNIFORM_BUFFER, bufferSize, nullptr, GL_STREAM_DRAW);
 		glBindBuffer(GL_UNIFORM_BUFFER, GL_NONE);
 
 		// RAM buffer.
@@ -142,12 +142,12 @@ namespace Jwl
 		glBindBufferBase(GL_UNIFORM_BUFFER, slot, GL_NONE);
 	}
 
-	int UniformBuffer::GetByteSize()
+	int UniformBuffer::GetByteSize() const
 	{
 		return bufferSize;
 	}
 
-	bool UniformBuffer::IsUniform(const std::string& name)
+	bool UniformBuffer::IsUniform(const std::string& name) const
 	{
 		return table.find(name) != table.end();
 	}
@@ -210,7 +210,7 @@ namespace Jwl
 
 	void BufferList::Remove(unsigned unit)
 	{
-		for (auto itr = buffers.begin(); itr < buffers.end(); itr++)
+		for (auto itr = buffers.begin(); itr < buffers.end(); ++itr)
 		{
 			if (itr->unit == unit)
 			{

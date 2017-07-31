@@ -2,7 +2,6 @@
 #include "Jewel3D/Precompiled.h"
 #include "Material.h"
 #include "Sprite.h"
-#include "Jewel3D/Application/Logging.h"
 
 namespace Jwl
 {

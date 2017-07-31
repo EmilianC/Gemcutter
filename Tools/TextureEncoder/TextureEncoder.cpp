@@ -3,8 +3,6 @@
 #include "Jewel3D/Resource/Texture.h"
 #include "Jewel3D/Utilities/String.h"
 
-#include <SOIL/SOIL.h>
-
 #define CURRENT_VERSION 1
 
 std::unique_ptr<Jwl::Encoder> GetEncoder()

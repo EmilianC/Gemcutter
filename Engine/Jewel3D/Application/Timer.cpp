@@ -19,12 +19,12 @@ namespace
 		return 0;
 	}
 
-	static const __int64 ticksPerSecond = GetTimerResolution();
-	static const __int64 ticksPerMS = ticksPerSecond / 1000;
+	const __int64 ticksPerSecond = GetTimerResolution();
+	const __int64 ticksPerMS = ticksPerSecond / 1000;
 
 	// Casted ahead of time for a performance boost in GetElapsedMS() and GetElapsedSeconds().
-	static const double d_ticksPerSecond = static_cast<double>(ticksPerSecond);
-	static const double d_ticksPerMS = static_cast<double>(ticksPerMS);
+	const double d_ticksPerSecond = static_cast<double>(ticksPerSecond);
+	const double d_ticksPerMS = static_cast<double>(ticksPerMS);
 }
 
 namespace Jwl

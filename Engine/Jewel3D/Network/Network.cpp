@@ -43,7 +43,7 @@ namespace Jwl
 		localAddress.sin_family = AF_INET;
 		localAddress.sin_port = htons(static_cast<u_short>(localPort));
 		localAddress.sin_addr.S_un.S_addr = INADDR_ANY;
-		if (bind(inputSocket, (sockaddr*)&localAddress, sizeof(sockaddr)) == SOCKET_ERROR)
+		if (bind(inputSocket, reinterpret_cast<sockaddr*>(&localAddress), sizeof(sockaddr)) == SOCKET_ERROR)
 		{
 			Destroy();
 			return false;
@@ -99,7 +99,7 @@ namespace Jwl
 
 	bool NetworkUDP::Send(const std::string& packet)
 	{
-		return sendto(outputSocket, packet.c_str(), packet.size(), 0, (sockaddr*)&remoteAddress, sizeof(sockaddr)) != SOCKET_ERROR;
+		return sendto(outputSocket, packet.c_str(), packet.size(), 0, reinterpret_cast<sockaddr*>(&remoteAddress), sizeof(sockaddr)) != SOCKET_ERROR;
 	}
 
 	bool NetworkUDP::Receive(std::string& out_packet)
@@ -178,7 +178,7 @@ namespace Jwl
 		address.sin_addr.S_un.S_addr = INADDR_ANY;
 	
 		/* Bind our Socket */
-		if (bind(socketId, (SOCKADDR*)(&address), sizeof(sockaddr)) == SOCKET_ERROR)
+		if (bind(socketId, reinterpret_cast<sockaddr*>(&address), sizeof(sockaddr)) == SOCKET_ERROR)
 		{
 			Destroy();
 			return false;
@@ -225,7 +225,7 @@ namespace Jwl
 		address.sin_port = htons(static_cast<u_short>(remotePort));
 		address.sin_addr.S_un.S_addr = inet_addr(remoteIp.c_str());
 	
-		if (connect(socketId, (SOCKADDR*)(&address), sizeof(sockaddr)) != 0)
+		if (connect(socketId, reinterpret_cast<sockaddr*>(&address), sizeof(sockaddr)) != 0)
 		{
 			closesocket(socketId);
 			if ((socketId = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) == SOCKET_ERROR)
@@ -329,7 +329,7 @@ namespace Jwl
 		address.sin_port = htons(static_cast<u_short>(localPortUDP));
 		address.sin_addr.S_un.S_addr = INADDR_ANY;
 		// Bind to retrieve IP address.
-		if (bind(UDPReceiveSocket, (sockaddr*)&address, sizeof(sockaddr)) == SOCKET_ERROR)
+		if (bind(UDPReceiveSocket, reinterpret_cast<sockaddr*>(&address), sizeof(sockaddr)) == SOCKET_ERROR)
 		{
 			Destroy();
 			return false;
@@ -380,7 +380,7 @@ namespace Jwl
 		TCPAddress.sin_port = htons(static_cast<u_short>(remotePortTCP));
 		TCPAddress.sin_addr.S_un.S_addr = inet_addr(remoteIp.c_str());
 
-		int result = connect(TCPSocket, (SOCKADDR*)(&TCPAddress), sizeof(sockaddr));
+		int result = connect(TCPSocket, reinterpret_cast<sockaddr*>(&TCPAddress), sizeof(sockaddr));
 		if (result != 0)
 		{
 			//allow the socket to be used again
@@ -417,7 +417,7 @@ namespace Jwl
 
 	bool NetworkClient::SendUDP(const std::string& packet)
 	{
-		return sendto(UDPSendSocket, packet.c_str(), packet.size(), 0, (sockaddr*)&UDPAddress, sizeof(sockaddr)) != SOCKET_ERROR;
+		return sendto(UDPSendSocket, packet.c_str(), packet.size(), 0, reinterpret_cast<sockaddr*>(&UDPAddress), sizeof(sockaddr)) != SOCKET_ERROR;
 	}
 
 	bool NetworkClient::ReceiveUDP(std::string& out_packet)
@@ -510,7 +510,7 @@ namespace Jwl
 		address.sin_port = htons(static_cast<u_short>(localPortUDP));
 		address.sin_addr.S_un.S_addr = INADDR_ANY;
 		// Bind to retrieve IP address.
-		if (bind(UDPReceiveSocket, (sockaddr*)&address, sizeof(sockaddr)) == SOCKET_ERROR)
+		if (bind(UDPReceiveSocket, reinterpret_cast<sockaddr*>(&address), sizeof(sockaddr)) == SOCKET_ERROR)
 		{
 			Destroy();
 			return false;
@@ -553,7 +553,7 @@ namespace Jwl
 		TCPAddress.sin_addr.S_un.S_addr = INADDR_ANY;
 	
 		/* Bind our Socket */
-		if (bind(TCPSocket, (SOCKADDR*)(&TCPAddress), sizeof(sockaddr)) == SOCKET_ERROR)
+		if (bind(TCPSocket, reinterpret_cast<sockaddr*>(&TCPAddress), sizeof(sockaddr)) == SOCKET_ERROR)
 		{
 			Destroy();
 			return false;
@@ -571,10 +571,8 @@ namespace Jwl
 
 	int NetworkServer::CheckForConnectionRequests()
 	{
-		SOCKET tempSocket = static_cast<SOCKET>(SOCKET_ERROR);
 		Client newClient;
-
-		tempSocket = accept(TCPSocket, (sockaddr*)&newClient.TCPAddress, &newClient.TCPAddressSize);
+		SOCKET tempSocket = accept(TCPSocket, reinterpret_cast<sockaddr*>(&newClient.TCPAddress), &newClient.TCPAddressSize);
 	
 		if (tempSocket == SOCKET_ERROR)
 		{
@@ -588,11 +586,8 @@ namespace Jwl
 
 			// Wait for message with client's port.
 			memset(receiveBuffer, '\0', PACKET_LENGTH);
-			int length = SOCKET_ERROR;
-			do
-			{
-				length = recv(newClient.TCPSocket, receiveBuffer, PACKET_LENGTH, 0);
-			} while (length == SOCKET_ERROR || WSAGetLastError() == WSAEWOULDBLOCK);
+			while (recv(newClient.TCPSocket, receiveBuffer, PACKET_LENGTH, 0) == SOCKET_ERROR || WSAGetLastError() == WSAEWOULDBLOCK)
+			{};
 
 			int port = std::atoi(receiveBuffer);
 
@@ -632,7 +627,7 @@ namespace Jwl
 		unsigned i = GetClientIndex(ID);
 		ASSERT(i != -1, "Client with ID %d could not be found.", ID);
 
-		return sendto(UDPSendSocket, packet.c_str(), packet.size(), 0, (sockaddr*)&clients[i].UDPAddress, clients[i].UDPAddressSize) != SOCKET_ERROR;
+		return sendto(UDPSendSocket, packet.c_str(), packet.size(), 0, reinterpret_cast<sockaddr*>(&clients[i].UDPAddress), clients[i].UDPAddressSize) != SOCKET_ERROR;
 	}
 
 	bool NetworkServer::SendUDP(const std::string& packet)
@@ -640,7 +635,7 @@ namespace Jwl
 		bool okay = true;
 		for (unsigned i = 0; i < clients.size(); i++)
 		{
-			bool result = sendto(UDPSendSocket, packet.c_str(), packet.size(), 0, (sockaddr*)&clients[i].UDPAddress, clients[i].UDPAddressSize) != SOCKET_ERROR;
+			bool result = sendto(UDPSendSocket, packet.c_str(), packet.size(), 0, reinterpret_cast<sockaddr*>(&clients[i].UDPAddress), clients[i].UDPAddressSize) != SOCKET_ERROR;
 			okay = okay && result;
 		}
 
@@ -655,7 +650,7 @@ namespace Jwl
 			if (clients[i].ID == excludedID)
 				continue;
 
-			bool result = sendto(UDPSendSocket, packet.c_str(), packet.size(), 0, (sockaddr*)&clients[i].UDPAddress, clients[i].UDPAddressSize) != SOCKET_ERROR;
+			bool result = sendto(UDPSendSocket, packet.c_str(), packet.size(), 0, reinterpret_cast<sockaddr*>(&clients[i].UDPAddress), clients[i].UDPAddressSize) != SOCKET_ERROR;
 			okay = okay && result;
 		}
 
@@ -671,7 +666,7 @@ namespace Jwl
 		sockaddr_in addr;
 		int addrSize = sizeof(sockaddr);
 
-		int length = recvfrom(UDPReceiveSocket, receiveBuffer, PACKET_LENGTH, 0, (sockaddr*)&addr, &addrSize);
+		int length = recvfrom(UDPReceiveSocket, receiveBuffer, PACKET_LENGTH, 0, reinterpret_cast<sockaddr*>(&addr), &addrSize);
 
 		if (length == SOCKET_ERROR || WSAGetLastError() == WSAEWOULDBLOCK)
 		{

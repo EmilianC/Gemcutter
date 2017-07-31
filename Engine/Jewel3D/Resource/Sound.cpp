@@ -2,8 +2,6 @@
 #include "Jewel3D/Precompiled.h"
 #include "Sound.h"
 #include "Jewel3D/Application/Logging.h"
-#include "Jewel3D/Math/Vector.h"
-#include "Jewel3D/Sound/SoundSystem.h"
 #include "Jewel3D/Utilities/ScopeGuard.h"
 #include "Jewel3D/Utilities/String.h"
 

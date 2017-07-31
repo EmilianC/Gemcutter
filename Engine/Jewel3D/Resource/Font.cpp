@@ -8,7 +8,6 @@
 #include "Jewel3D/Utilities/ScopeGuard.h"
 #include "Jewel3D/Utilities/String.h"
 
-#include <algorithm>
 #include <cstdio>
 #include <GLEW/GL/glew.h>
 

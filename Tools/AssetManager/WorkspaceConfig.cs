@@ -37,7 +37,7 @@ namespace AssetManager
 			excludedExtensions = "";
 		}
 
-		static public WorkspaceConfig Load()
+		public static WorkspaceConfig Load()
 		{
 			WorkspaceConfig config;
 			try

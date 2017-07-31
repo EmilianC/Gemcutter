@@ -6,7 +6,6 @@
 #include "Jewel3D/Application/Logging.h"
 #include "Jewel3D/Entity/Entity.h"
 #include "Jewel3D/Math/Matrix.h"
-#include "Jewel3D/Math/Transform.h"
 #include "Jewel3D/Math/Vector.h"
 #include "Jewel3D/Resource/Sound.h"
 
@@ -29,7 +28,7 @@ namespace Jwl
 	bool SoundSystem::Init()
 	{
 		// Init audio device.
-		device = alcOpenDevice(NULL);
+		device = alcOpenDevice(nullptr);
 		if (device == nullptr)
 		{
 			Error("SoundSystem: Failed to create device.");
@@ -40,7 +39,7 @@ namespace Jwl
 		alGetError();
 
 		// Make context.
-		context = alcCreateContext(device, NULL);
+		context = alcCreateContext(device, nullptr);
 		if (context == nullptr)
 		{
 			Error("SoundSystem: Failed to create context.");
@@ -70,7 +69,7 @@ namespace Jwl
 		// Delete all resources that require the OpenAL context.
 		UnloadAll<Sound>();
 
-		alcMakeContextCurrent(NULL);
+		alcMakeContextCurrent(nullptr);
 		alcDestroyContext(context);
 		alcCloseDevice(device);
 

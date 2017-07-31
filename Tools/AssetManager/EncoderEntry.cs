@@ -50,14 +50,14 @@ namespace AssetManager
 
 		public string extension
 		{
-			get { return extensionBox.Text;  }
-			set { extensionBox.Text = value; Validate(); }
+			get { return extensionBox.Text; }
+			private set { extensionBox.Text = value; Validate(); }
 		}
 
 		public string encoder
 		{
 			get { return encoderBox.Text; }
-			set { encoderBox.Text = value; Validate(); }
+			private set { encoderBox.Text = value; Validate(); }
 		}
 
 		public void SetPosition(int offset)
@@ -75,7 +75,7 @@ namespace AssetManager
 		// Returns true if the contained data represents a valid extension/encoder pair.
 		public bool Validate()
 		{
-			status.BackgroundImage = Properties.Resources.Error as Image;
+			status.BackgroundImage = Properties.Resources.Error;
 
 			if (extensionBox.Text.Length == 0 ||
 				encoderBox.Text.Length == 0)
@@ -97,7 +97,7 @@ namespace AssetManager
 			}
 
 			if (encoderBox.Text.Any(x => Path.GetInvalidPathChars().Contains(x)) ||
-				!encoderBox.Text.EndsWith(".dll", System.StringComparison.InvariantCultureIgnoreCase))
+				!encoderBox.Text.EndsWith(".dll", StringComparison.InvariantCultureIgnoreCase))
 			{
 				statusLog.SetToolTip(status, "The Encoder is not a valid path to a dynamic library.");
 				return false;
@@ -113,7 +113,7 @@ namespace AssetManager
 				return false;
 			}
 
-			status.BackgroundImage = Properties.Resources.Correct as Image;
+			status.BackgroundImage = Properties.Resources.Correct;
 			statusLog.SetToolTip(status, "Extension / Encoder pair are valid.");
 			return true;
 		}
@@ -153,8 +153,7 @@ namespace AssetManager
 			{
 				DeleteControls();
 
-				if (onDelete != null)
-					onDelete(this, EventArgs.Empty);
+				onDelete?.Invoke(this, EventArgs.Empty);
 			};
 
 			parent.Controls.Add(status);
@@ -166,10 +165,12 @@ namespace AssetManager
 
 		private void SearchForEncoder()
 		{
-			OpenFileDialog dialog = new OpenFileDialog();
-			dialog.Filter = "dynamic libraries (*.dll)|*.dll";
-			dialog.FilterIndex = 1;
-			dialog.RestoreDirectory = true;
+			OpenFileDialog dialog = new OpenFileDialog
+			{
+				Filter = "dynamic libraries (*.dll)|*.dll",
+				FilterIndex = 1,
+				RestoreDirectory = true
+			};
 
 			if (dialog.ShowDialog() == DialogResult.OK)
 				encoderBox.Text = dialog.FileName;

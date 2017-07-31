@@ -4,8 +4,6 @@
 #include "Math.h"
 #include "Jewel3D/Application/Logging.h"
 
-#include <cfloat>
-
 namespace Jwl
 {
 	Transform::Transform(const vec3& _position)

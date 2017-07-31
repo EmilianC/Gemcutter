@@ -11,14 +11,14 @@
 
 namespace
 {
-	static const int filterMinMode_Resolve[] = {
+	const int filterMinMode_Resolve[] = {
 		GL_NEAREST,
 		GL_LINEAR,
 		GL_LINEAR_MIPMAP_NEAREST,
 		GL_LINEAR_MIPMAP_LINEAR
 	};
 
-	static const int wrapMode_Resolve[] = {
+	const int wrapMode_Resolve[] = {
 		GL_CLAMP_TO_EDGE,
 		GL_CLAMP_TO_BORDER,
 		GL_REPEAT,
@@ -26,7 +26,7 @@ namespace
 		GL_MIRROR_CLAMP_TO_EDGE
 	};
 
-	static const unsigned format_Resolve[] = {
+	const unsigned format_Resolve[] = {
 		GL_RGB8,
 		GL_RGB16,
 		GL_RGB16F,
@@ -274,7 +274,7 @@ namespace Jwl
 		}
 
 		typedef bool (APIENTRY *FUNC)(int);
-		FUNC wglSwapIntervalEXT = (FUNC)wglGetProcAddress("wglSwapIntervalEXT");
+		FUNC wglSwapIntervalEXT = reinterpret_cast<FUNC>(wglGetProcAddress("wglSwapIntervalEXT"));
 		if (!wglSwapIntervalEXT)
 		{
 			Error("Could not retrieve \"wglSwapIntervalEXT\" function.");

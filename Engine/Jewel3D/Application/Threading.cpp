@@ -47,7 +47,7 @@ namespace Jwl
 		threadHandle = CreateThread(
 			NULL,	// Default security
 			NULL,	// Default stack size
-			(LPTHREAD_START_ROUTINE)startFunc, // Start location
+			reinterpret_cast<LPTHREAD_START_ROUTINE>(startFunc), // Start location
 			argData, // Data argument
 			NULL,	 // Default creation
 			&id);	 // Thread ID

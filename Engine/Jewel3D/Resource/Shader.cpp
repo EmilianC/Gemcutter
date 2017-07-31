@@ -3,7 +3,6 @@
 #include "Shader.h"
 #include "Jewel3D/Application/FileSystem.h"
 #include "Jewel3D/Application/Logging.h"
-#include "Jewel3D/Math/Matrix.h"
 #include "Jewel3D/Math/Vector.h"
 #include "Jewel3D/Utilities/ScopeGuard.h"
 #include "Jewel3D/Utilities/String.h"
@@ -11,14 +10,13 @@
 #include <GLEW/GL/glew.h>
 #include <algorithm>
 #include <cctype>
-#include <fstream>
 #include <functional>
 #include <iostream>
 
 namespace
 {
 	// Built in shaders.
-	static constexpr char passThroughVertex[] =
+	constexpr char passThroughVertex[] =
 		"\n"
 		"layout(location = 0) in vec4 a_vert;\n"
 		"layout(location = 1) in vec2 a_uv;\n"
@@ -28,7 +26,7 @@ namespace
 			"\ttexcoord = a_uv;\n"
 		"}\n";
 
-	static constexpr char passThroughFragment[] =
+	constexpr char passThroughFragment[] =
 		"\n"
 		"uniform sampler2D sTex;\n"
 		"in vec2 texcoord;\n"
@@ -37,7 +35,7 @@ namespace
 			"\toutColor = texture(sTex, texcoord);\n"
 		"}\n";
 
-	static constexpr char passThroughProgram[] =
+	constexpr char passThroughProgram[] =
 		"Attributes\n{\n"
 		"	vec4 a_vert : 0;\n"
 		"	vec2 a_uv : 1;\n"
@@ -62,7 +60,7 @@ namespace
 		"	}\n"
 		"}\n";
 
-	static constexpr char builtInBuffers[] =
+	constexpr char builtInBuffers[] =
 		"\n"
 		"layout(std140) uniform Jwl_Camera_Uniforms\n"
 		"{\n"
@@ -92,7 +90,7 @@ namespace
 		"};\n"
 		"\n";
 
-	static constexpr char builtInLightingFunctions[] =
+	constexpr char builtInLightingFunctions[] =
 		"vec3 JWL_COMPUTE_POINT_LIGHT(vec3 normal, vec3 surfacePos, vec3 color, vec3 lightPos, float attenConstant, float attenLinear, float attenQuadratic)\n"
 		"{\n"
 		"	lightPos = (Jwl_View * vec4(lightPos, 1.0)).xyz;\n"
@@ -143,7 +141,7 @@ namespace
 		"	return vec3(0.0);\n"
 		"}\n";
 
-	static constexpr char builtInLightingMacros[] =
+	constexpr char builtInLightingMacros[] =
 		"#define COMPUTE_POINT_LIGHT(light, normal, pos) "
 		"JWL_COMPUTE_POINT_LIGHT(normal, pos, light##.Color, light##.Position, light##.AttenuationConstant, light##.AttenuationLinear, light##.AttenuationQuadratic)\n"
 		"#define COMPUTE_DIRECTIONAL_LIGHT(light, normal) "
@@ -172,7 +170,7 @@ namespace Jwl
 			infoLog = static_cast<char*>(malloc(sizeof(char) * infoLen));
 			defer { free(infoLog); };
 
-			glGetShaderInfoLog(shader, sizeof(char) * infoLen, NULL, infoLog);
+			glGetShaderInfoLog(shader, sizeof(char) * infoLen, nullptr, infoLog);
 
 			// Avoid duplicate newline characters.
 			if (infoLog[infoLen - 2] == '\n')
@@ -209,7 +207,7 @@ namespace Jwl
 			infoLog = static_cast<char*>(malloc(sizeof(char) * infoLen));
 			defer { free(infoLog); };
 
-			glGetProgramInfoLog(program, sizeof(char) * infoLen, NULL, infoLog);
+			glGetProgramInfoLog(program, sizeof(char) * infoLen, nullptr, infoLog);
 
 			// Avoid duplicate newline characters.
 			if (infoLog[infoLen - 2] == '\n')
@@ -643,10 +641,6 @@ namespace Jwl
 
 	bool Shader::ParseShader(const Block& block)
 	{
-		ASSERT(block.type == BlockType::Vertex ||
-			block.type == BlockType::Geometry ||
-			block.type == BlockType::Fragment, "Expected a Shader block type.");
-
 		std::string *output = nullptr;
 		switch (block.type)
 		{
@@ -659,6 +653,8 @@ namespace Jwl
 		case BlockType::Fragment:
 			output = &fragmentSrouce;
 			break;
+		default:
+			ASSERT(false, "Expected a Shader block type.");
 		}
 
 		// The first keyword in the block might be an external reference or the indicating a passthrough shader.
@@ -1207,7 +1203,7 @@ namespace Jwl
 		textures.Clear();
 		buffers.Clear();
 		
-		for (auto itr = variants.begin(); itr != variants.end(); itr++)
+		for (auto itr = variants.begin(); itr != variants.end(); ++itr)
 		{
 			itr->second.Unload();
 		}
@@ -1351,7 +1347,7 @@ namespace Jwl
 
 			std::string source = _header + vertSource;
 			const char* charSource = source.c_str();
-			glShaderSource(hVertShader, 1, &charSource, NULL);
+			glShaderSource(hVertShader, 1, &charSource, nullptr);
 
 			if (!CompileShader(hVertShader))
 			{
@@ -1370,7 +1366,7 @@ namespace Jwl
 
 			std::string source = _header + geomSource;
 			const char* charSource = source.c_str();
-			glShaderSource(hGeomShader, 1, &charSource, NULL);
+			glShaderSource(hGeomShader, 1, &charSource, nullptr);
 
 			if (!CompileShader(hGeomShader))
 			{
@@ -1389,7 +1385,7 @@ namespace Jwl
 
 			std::string source = _header + fragSource;
 			const char* charSource = source.c_str();
-			glShaderSource(hFragShader, 1, &charSource, NULL);
+			glShaderSource(hFragShader, 1, &charSource, nullptr);
 
 			if (!CompileShader(hFragShader))
 			{

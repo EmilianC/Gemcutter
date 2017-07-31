@@ -2,7 +2,6 @@
 #include "Jewel3D/Precompiled.h"
 #include "Light.h"
 #include "Jewel3D/Math/Math.h"
-#include "Jewel3D/Math/Transform.h"
 
 namespace Jwl
 {

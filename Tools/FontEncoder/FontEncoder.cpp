@@ -149,7 +149,6 @@ bool FontEncoder::Convert(const std::string& source, const std::string& destinat
 	}
 
 	// File preparation.
-	FILE* fontFile = nullptr;
 	std::vector<unsigned char> bitmapBuffer;
 	CharData dimensions[94] = { CharData() };
 	CharData positions[94] = { CharData() };
@@ -227,7 +226,7 @@ bool FontEncoder::Convert(const std::string& source, const std::string& destinat
 	}
 
 	// Save file.
-	fontFile = fopen(outputFile.c_str(), "wb");
+	FILE* fontFile = fopen(outputFile.c_str(), "wb");
 	if (fontFile == nullptr)
 	{
 		Jwl::Error("Output file could not be created.");

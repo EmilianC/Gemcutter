@@ -33,7 +33,7 @@ namespace AssetManager
 			{ ConsoleColor.White, Color.White }
 		};
 
-		private RichTextBox output;
+		private readonly RichTextBox output;
 
 		public RichTextBoxStreamWriter(RichTextBox _output)
 		{
@@ -42,7 +42,7 @@ namespace AssetManager
 
 		public override void Write(string value)
 		{
-			Color color = Color.Azure;
+			Color color;
 			colorMap.TryGetValue(ForegroundColor, out color);
 
 			output.SelectionColor = color;

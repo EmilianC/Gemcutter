@@ -1406,12 +1406,9 @@ namespace Jwl
 
 	mat4 mat4::LookAt(const vec3& position, const vec3& target, const vec3& upVector)
 	{
-		vec3 forward = (target - position).GetNormalized();
-		vec3 right;
-		vec3 up;
-
-		right = Cross(forward, upVector).GetNormalized();
-		up = Cross(right, forward);
+		const vec3 forward = (target - position).GetNormalized();
+		const vec3 right = Cross(forward, upVector).GetNormalized();
+		const vec3 up = Cross(right, forward);
 
 		return mat4(right.x, up.x, -forward.x, position.x,
 			right.y, up.y, -forward.y, position.y,

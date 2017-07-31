@@ -1,7 +1,6 @@
 // Copyright (c) 2017 Emilian Cioca
 #include "Jewel3D/Precompiled.h"
 #include "Input.h"
-#include "Jewel3D/Application/Logging.h"
 #include "Jewel3D/Application/Application.h"
 
 #include <WindowsX.h> // GET_X_LPARAM and GET_Y_LPARAM
@@ -10,7 +9,7 @@
 namespace
 {
 	// Resolves Left/Right virtual key codes for Shift/Control/Alt.
-	static WPARAM MapLeftRightKeys(WPARAM vk, LPARAM lParam)
+	WPARAM MapLeftRightKeys(WPARAM vk, LPARAM lParam)
 	{
 		WPARAM new_vk = vk;
 		UINT scancode = (lParam & 0x00ff0000) >> 16;

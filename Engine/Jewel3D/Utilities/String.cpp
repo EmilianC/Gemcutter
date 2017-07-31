@@ -7,8 +7,8 @@
 
 namespace
 {
-	static constexpr unsigned BUFFER_SIZE = 1024;
-	static char buffer[BUFFER_SIZE] = { '\0' };
+	constexpr unsigned BUFFER_SIZE = 1024;
+	char buffer[BUFFER_SIZE] = { '\0' };
 }
 
 namespace Jwl
@@ -24,7 +24,7 @@ namespace Jwl
 	{
 		bool skipTabs = false;
 
-		for (auto itr = str.begin(); itr < str.end() - 1; itr++)
+		for (auto itr = str.begin(); itr < str.end() - 1; ++itr)
 		{
 			char lhs = *itr;
 			char rhs = *(itr + 1);
@@ -64,11 +64,9 @@ namespace Jwl
 
 	std::string FormatString(const char* format, ...)
 	{
-		std::string result;
-
 		va_list argptr;
 		va_start(argptr, format);
-		result = FormatString(format, argptr);
+		const std::string result = FormatString(format, argptr);
 		va_end(argptr);
 
 		return result;

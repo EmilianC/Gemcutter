@@ -36,10 +36,13 @@ namespace AssetManager
 			};
 
 			// Watch the directory for changes and auto-refresh when needed.
-			watcher = new FileSystemWatcher(Directory.GetCurrentDirectory());
-			watcher.IncludeSubdirectories = true;
-			watcher.EnableRaisingEvents = true;
-			watcher.NotifyFilter = NotifyFilters.FileName | NotifyFilters.DirectoryName;
+			watcher = new FileSystemWatcher
+			{
+				Path = Directory.GetCurrentDirectory(),
+				IncludeSubdirectories = true,
+				EnableRaisingEvents = true,
+				NotifyFilter = NotifyFilters.FileName | NotifyFilters.DirectoryName
+			};
 
 			watcher.Renamed += (s, e) =>
 			{
@@ -88,7 +91,7 @@ namespace AssetManager
 		// Starts the updating process.
 		// Any assets without a .meta file will have one added.
 		// Any existing .meta files will be updated to the newest versions.
-		public bool UpdateWorkspace()
+		public void UpdateWorkspace()
 		{
 			Icon = Properties.Resources.Building;
 
@@ -98,7 +101,6 @@ namespace AssetManager
 
 			string inputRoot = Directory.GetCurrentDirectory();
 
-			bool result = false;
 			try
 			{
 				foreach (var file in GetWorkspaceFiles().Where(file =>
@@ -112,19 +114,15 @@ namespace AssetManager
 				}
 
 				Log(">>>>>> Finished Validating <<<<<<", ConsoleColor.Green);
-				result = true;
 			}
 			catch (Exception e)
 			{
 				Log($"ERROR:   {e.Message}", ConsoleColor.Red);
-				result = false;
 			}
 			finally
 			{
 				Icon = Properties.Resources.JewelIcon;
 			}
-
-			return result;
 		}
 
 		// Starts the packing process. Rebuilds the target Asset directory from scratch.
@@ -152,7 +150,8 @@ namespace AssetManager
 				// Wait for deletion.
 				var watch = new Stopwatch();
 				watch.Start();
-				while (Directory.Exists(outputRoot) && watch.Elapsed < TimeSpan.FromSeconds(2)) ;
+				while (Directory.Exists(outputRoot) && watch.Elapsed < TimeSpan.FromSeconds(2))
+				{};
 
 				if (Directory.Exists(outputRoot))
 				{
@@ -387,15 +386,6 @@ namespace AssetManager
 		private void buttonWorkspaceOpen_Click(object sender, EventArgs e)
 		{
 			Process.Start("explorer.exe", Directory.GetCurrentDirectory());
-		}
-
-		// Browses to the selected folder directory.
-		private void buttonAssetOpen_Click(object sender, EventArgs e)
-		{
-			var path = GetNodePath(treeViewAssets.SelectedNode);
-
-			if (path.Length != 0)
-				Process.Start("explorer.exe", string.Join("\\", path));
 		}
 
 		private void ButtonPack_Click(object sender, EventArgs e)

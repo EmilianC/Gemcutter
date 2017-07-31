@@ -1,6 +1,6 @@
 // Copyright (c) 2017 Emilian Cioca
-#include "Jewel3D/Application/Logging.h"
 #include "Jewel3D/Precompiled.h"
+#include "Jewel3D/Application/Logging.h"
 #include "Event.h"
 
 namespace Jwl

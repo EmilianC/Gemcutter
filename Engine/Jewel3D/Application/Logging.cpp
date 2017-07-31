@@ -9,8 +9,8 @@
 
 namespace
 {
-	static std::ofstream logOutput;
-	static HANDLE stdOutputHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+	std::ofstream logOutput;
+	HANDLE stdOutputHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 }
 
 namespace Jwl

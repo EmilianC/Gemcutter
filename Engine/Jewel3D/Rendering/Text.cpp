@@ -23,10 +23,10 @@ namespace Jwl
 	{
 	}
 
-	Text::Text(Entity& _owner, const std::string& _text, Font::Ptr _font)
+	Text::Text(Entity& _owner, Font::Ptr _font, const std::string& _text)
 		: Component(_owner)
-		, text(_text)
 		, font(_font)
+		, text(_text)
 	{
 	}
 

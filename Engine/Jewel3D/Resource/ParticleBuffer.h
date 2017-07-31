@@ -30,7 +30,7 @@ namespace Jwl
 		void Update(unsigned numParticles);
 
 		void Kill(unsigned index, unsigned last);
-		bool IsAlive(unsigned index);
+		bool IsAlive(unsigned index) const;
 
 		EnumFlags<ParticleBuffers> GetBuffers() const;
 		unsigned GetVAO() const;

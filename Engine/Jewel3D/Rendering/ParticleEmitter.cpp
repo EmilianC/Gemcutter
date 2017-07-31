@@ -4,12 +4,6 @@
 #include "Material.h"
 #include "Jewel3D/Application/Application.h"
 #include "Jewel3D/Application/Logging.h"
-#include "Jewel3D/Math/Math.h"
-#include "Jewel3D/Math/Transform.h"
-
-#include <algorithm>
-#include <memory>
-#include <stdlib.h>
 
 namespace Jwl
 {

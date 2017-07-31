@@ -4,7 +4,6 @@
 #include "Logging.h"
 #include "Timer.h"
 #include "Jewel3D/Input/Input.h"
-#include "Jewel3D/Math/Math.h"
 #include "Jewel3D/Rendering/Light.h"
 #include "Jewel3D/Rendering/ParticleEmitter.h"
 #include "Jewel3D/Rendering/Rendering.h"
@@ -32,7 +31,7 @@ extern "C" IMAGE_DOS_HEADER __ImageBase;
 
 namespace
 {
-	static LONG GetStyle(bool fullScreen, bool bordered, bool resizable)
+	LONG GetStyle(bool fullScreen, bool bordered, bool resizable)
 	{
 		if (bordered && !fullScreen)
 		{
@@ -51,7 +50,7 @@ namespace
 		}
 	}
 
-	static RECT GetWindowSize(LONG style, unsigned clientWidth, unsigned clientHeight)
+	RECT GetWindowSize(LONG style, unsigned clientWidth, unsigned clientHeight)
 	{
 		RECT windowRect;
 		windowRect.left = 0;
@@ -67,7 +66,7 @@ namespace
 		return windowRect;
 	}
 
-	static bool ApplyFullscreen(HWND window, bool state, unsigned clientWidth, unsigned clientHeight)
+	bool ApplyFullscreen(HWND window, bool state, unsigned clientWidth, unsigned clientHeight)
 	{
 		if (state)
 		{
@@ -110,7 +109,7 @@ namespace
 		return true;
 	}
 
-	static bool ApplyStyle(HWND window, LONG style, unsigned clientWidth, unsigned clientHeight)
+	bool ApplyStyle(HWND window, LONG style, unsigned clientWidth, unsigned clientHeight)
 	{
 		RECT windowRect = GetWindowSize(style, clientWidth, clientHeight);
 
@@ -124,7 +123,7 @@ namespace
 		return true;
 	}
 
-	static bool ApplyResolution(HWND window, LONG style, unsigned clientWidth, unsigned clientHeight)
+	bool ApplyResolution(HWND window, LONG style, unsigned clientWidth, unsigned clientHeight)
 	{
 		RECT windowRect = GetWindowSize(style, clientWidth, clientHeight);
 		if (SetWindowPos(window, 0, 0, 0, windowRect.right - windowRect.left, windowRect.bottom - windowRect.top, SWP_NOMOVE | SWP_NOZORDER | SWP_SHOWWINDOW) == ERROR)
@@ -137,11 +136,8 @@ namespace
 	}
 
 	#ifdef _DEBUG
-	static void CALLBACK OpenGLDebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* msg, const void* data)
+	void CALLBACK OpenGLDebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* msg, const void* /* unused */)
 	{
-		// Unused argument.
-		data = nullptr;
-
 		// Ignored messages.
 		if (
 			// Usage warning : Generic vertex attribute array # uses a pointer with a small value (#). Is this intended to be used as an offset into a buffer object?
@@ -718,7 +714,7 @@ namespace Jwl
 			app.screenViewport.bind();
 
 			EventQueue.Push(std::make_unique<Resize>(app.screenViewport.width, app.screenViewport.height));
-			return 0; break;
+			return 0;
 		}
 
 		case WM_CREATE:
@@ -780,7 +776,7 @@ namespace Jwl
 			}
 
 			// Get the function we can use to generate a modern context.
-			PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = (PFNWGLCREATECONTEXTATTRIBSARBPROC)wglGetProcAddress("wglCreateContextAttribsARB");
+			PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = reinterpret_cast<PFNWGLCREATECONTEXTATTRIBSARBPROC>(wglGetProcAddress("wglCreateContextAttribsARB"));
 
 			if (wglCreateContextAttribsARB)
 			{
@@ -830,12 +826,12 @@ namespace Jwl
 			SetCullFunc(CullFunc::Clockwise);
 			SetDepthFunc(DepthFunc::Normal);
 		}
-		return 0; break;
+		return 0;
 
 		case WM_CLOSE:
 		case WM_DESTROY:
 			app.Exit();
-			return 0; break;
+			return 0;
 
 		case WM_SYSCOMMAND:
 			// Here we block screen savers and monitor power-saving modes.

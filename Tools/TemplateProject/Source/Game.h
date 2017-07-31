@@ -1,5 +1,4 @@
 #pragma once
-#include <Jewel3D/Application/Application.h>
 #include <Jewel3D/Entity/Entity.h>
 #include <Jewel3D/Rendering/RenderPass.h>
 #include <Jewel3D/Resource/ConfigTable.h>

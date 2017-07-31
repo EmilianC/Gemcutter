@@ -2,8 +2,6 @@
 #include "Jewel3D/Precompiled.h"
 #include "SoundSource.h"
 #include "Jewel3D/Application/Logging.h"
-#include "Jewel3D/Math/Transform.h"
-#include "Jewel3D/Sound/SoundSystem.h"
 
 #include <OpenAL_Soft/al.h>
 #include <OpenAL_Soft/alc.h>

@@ -1,7 +1,6 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
 #include "Jewel3D/Entity/Entity.h"
-#include "Jewel3D/Math/Vector.h"
 #include "Jewel3D/Resource/ParticleBuffer.h"
 #include "Jewel3D/Resource/ParticleFunctor.h"
 #include "Jewel3D/Resource/UniformBuffer.h"
@@ -9,6 +8,9 @@
 
 namespace Jwl
 {
+	class vec2;
+	class vec3;
+
 	// Spawns particles and updates their positions.
 	// Can be extended with ParticleFunctors to add custom functionality.
 	class ParticleEmitter : public Component<ParticleEmitter>

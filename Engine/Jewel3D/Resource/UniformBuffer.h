@@ -44,8 +44,8 @@ namespace Jwl
 		template<class T>
 		UniformHandle<T> MakeHandle(const std::string& name);
 
-		int GetByteSize();
-		bool IsUniform(const std::string& name);
+		int GetByteSize() const;
+		bool IsUniform(const std::string& name) const;
 
 	private:
 		void* GetBufferLoc(const std::string& name) const;

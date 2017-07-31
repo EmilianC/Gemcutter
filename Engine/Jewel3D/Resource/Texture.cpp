@@ -2,7 +2,6 @@
 #include "Jewel3D/Precompiled.h"
 #include "Texture.h"
 #include "Jewel3D/Application/Logging.h"
-#include "Jewel3D/Math/Math.h"
 #include "Jewel3D/Utilities/ScopeGuard.h"
 #include "Jewel3D/Utilities/String.h"
 
@@ -410,7 +409,7 @@ namespace Jwl
 
 	void TextureList::Remove(unsigned unit)
 	{
-		for (auto itr = textureSlots.begin(); itr < textureSlots.end(); itr++)
+		for (auto itr = textureSlots.begin(); itr < textureSlots.end(); ++itr)
 		{
 			if (itr->unit == unit)
 			{

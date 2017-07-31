@@ -9,7 +9,7 @@
 
 namespace
 {
-	static constexpr char LINE_PROGRAM[] =
+	constexpr char LINE_PROGRAM[] =
 	"Uniforms\n{\n"
 	"	static Data : 0\n{\n"
 	"		vec4 uP1;\n"
@@ -45,7 +45,7 @@ namespace
 	"	}\n"
 	"}\n";
 
-	static constexpr char TEXTURED_LINE_PROGRAM[] =
+	constexpr char TEXTURED_LINE_PROGRAM[] =
 	"Uniforms\n{\n"
 	"	static Data : 0\n{\n"
 	"		vec4 uP1;\n"
@@ -83,7 +83,7 @@ namespace
 	"	}\n"
 	"}\n";
 
-	static constexpr char TRIANGLE_PROGRAM[] =
+	constexpr char TRIANGLE_PROGRAM[] =
 	"Uniforms\n{\n"
 	"	static Data : 0\n{\n"
 	"		vec4 uP1;\n"
@@ -124,7 +124,7 @@ namespace
 	"	}\n"
 	"}\n";
 
-	static constexpr char TEXTURED_TRIANGLE_PROGRAM[] =
+	constexpr char TEXTURED_TRIANGLE_PROGRAM[] =
 	"Uniforms\n{\n"
 	"	static Data : 0\n{\n"
 	"		vec4 uP1;\n"
@@ -166,7 +166,7 @@ namespace
 	"	}\n"
 	"}\n";
 
-	static constexpr char RECTANGE_PROGRAM[] =
+	constexpr char RECTANGE_PROGRAM[] =
 	"Uniforms\n{\n"
 	"	static Data : 0\n{\n"
 	"		vec4 uP1;\n"
@@ -213,7 +213,7 @@ namespace
 	"	}\n"
 	"}\n";
 
-	static constexpr char TEXTURED_RECTANGLE_PROGRAM[] =
+	constexpr char TEXTURED_RECTANGLE_PROGRAM[] =
 	"Uniforms\n{\n"
 	"	static Data : 0\n{\n"
 	"		vec4 uP1;\n"
@@ -259,7 +259,7 @@ namespace
 	"	}\n"
 	"}\n";
 
-	static constexpr char TEXTURED_FULLSCREEN_QUAD_PROGRAM[] =
+	constexpr char TEXTURED_FULLSCREEN_QUAD_PROGRAM[] =
 	"Attributes\n{\n"
 	"	vec4 a_vert : 0;"
 	"	vec2 a_uv : 1;\n"
@@ -284,7 +284,7 @@ namespace
 	"	}\n"
 	"}\n";
 
-	static constexpr char SKYBOX_PROGRAM[] =
+	constexpr char SKYBOX_PROGRAM[] =
 	"Attributes\n{\n"
 	"	vec3 a_vert : 0;"
 	"}\n"
@@ -421,8 +421,8 @@ namespace Jwl
 
 		glBufferData(GL_ARRAY_BUFFER, vertexSize + texCoordSize, VBO_Data, GL_STATIC_DRAW);
 
-		glVertexAttribPointer((GLuint)0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 5, reinterpret_cast<void*>(0));
-		glVertexAttribPointer((GLuint)1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5, reinterpret_cast<void*>(sizeof(float) * 3));
+		glVertexAttribPointer(0u, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 5, reinterpret_cast<void*>(0));
+		glVertexAttribPointer(1u, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5, reinterpret_cast<void*>(sizeof(float) * 3));
 
 		// Load unit cube for skyboxes.
 		unsigned skyboxSize = sizeof(float) * 6 * 3 * 6;
@@ -487,7 +487,7 @@ namespace Jwl
 		glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
 
 		glBufferData(GL_ARRAY_BUFFER, skyboxSize, skyboxData, GL_STATIC_DRAW);
-		glVertexAttribPointer(GLuint(0), 3, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<void*>(0));
+		glVertexAttribPointer(0u, 3, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<void*>(0));
 
 		glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
 		glBindVertexArray(GL_NONE);
@@ -531,8 +531,8 @@ namespace Jwl
 		glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
 		glBufferData(GL_ARRAY_BUFFER, vertexSize + texCoordSize, quad_Data, GL_STATIC_DRAW);
 
-		glVertexAttribPointer((GLuint)0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 5, reinterpret_cast<void*>(0));
-		glVertexAttribPointer((GLuint)1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5, reinterpret_cast<void*>(sizeof(float) * 3));
+		glVertexAttribPointer(0u, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 5, reinterpret_cast<void*>(0));
+		glVertexAttribPointer(1u, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5, reinterpret_cast<void*>(sizeof(float) * 3));
 
 		glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
 		glBindVertexArray(GL_NONE);

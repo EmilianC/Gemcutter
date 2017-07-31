@@ -24,7 +24,7 @@ namespace Jwl
 			static_assert(std::is_base_of<ComponentBase, T>::value, "Template argument must inherit from Component.");
 			static_assert(!std::is_base_of<TagBase, T>::value, "Template argument cannot be a Tag");
 
-			return _safe_cast<T, T::StaticComponentType>::Cast(comp);
+			return _safe_cast<T, typename T::StaticComponentType>::Cast(comp);
 		}
 
 		// Copies a component using direct assignment. Compiles to a warning if direct assignment is invalid.
@@ -137,7 +137,7 @@ namespace Jwl
 		static_assert(!std::is_base_of<TagBase, T>::value, "Template argument cannot be a Tag");
 
 		auto itr = components.begin();
-		for (; itr != components.end(); itr++)
+		for (; itr != components.end(); ++itr)
 		{
 			if ((*itr)->componentId == T::GetComponentId())
 			{
