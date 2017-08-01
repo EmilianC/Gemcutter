@@ -10,12 +10,9 @@ namespace Jwl
 	{
 		CreateUniformBuffer();
 		CreateUniformHandles();
+		InitializeUniformValues();
 
 		color.Set(vec3(1.0f));
-		attenuationConstant.Set(0.01f);
-		attenuationLinear.Set(0.25f);
-		attenuationQuadratic.Set(0.01f);
-		cosAngle.Set(cos(ToRadian(angle)));
 	}
 
 	Light::Light(Entity& _owner, const vec3& _color)
@@ -23,12 +20,9 @@ namespace Jwl
 	{
 		CreateUniformBuffer();
 		CreateUniformHandles();
+		InitializeUniformValues();
 
 		color.Set(_color);
-		attenuationConstant.Set(0.01f);
-		attenuationLinear.Set(0.25f);
-		attenuationQuadratic.Set(0.01f);
-		cosAngle.Set(cos(ToRadian(angle)));
 	}
 
 	Light::Light(Entity& _owner, const vec3& _color, Type _type)
@@ -37,12 +31,9 @@ namespace Jwl
 	{
 		CreateUniformBuffer();
 		CreateUniformHandles();
+		InitializeUniformValues();
 
 		color.Set(_color);
-		attenuationConstant.Set(0.01f);
-		attenuationLinear.Set(0.25f);
-		attenuationQuadratic.Set(0.01f);
-		cosAngle.Set(cos(ToRadian(angle)));
 	}
 
 	Light& Light::operator=(const Light& other)
@@ -118,5 +109,13 @@ namespace Jwl
 		cosAngle = lightBuffer->MakeHandle<float>("Angle");
 		position = lightBuffer->MakeHandle<vec3>("Position");
 		direction = lightBuffer->MakeHandle<vec3>("Direction");
+	}
+
+	void Light::InitializeUniformValues()
+	{
+		attenuationConstant.Set(0.0f);
+		attenuationLinear.Set(0.0f);
+		attenuationQuadratic.Set(1.0f);
+		cosAngle.Set(cos(ToRadian(angle)));
 	}
 }

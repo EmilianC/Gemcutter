@@ -42,6 +42,7 @@ namespace Jwl
 	private:
 		void CreateUniformBuffer();
 		void CreateUniformHandles();
+		void InitializeUniformValues();
 
 		UniformHandle<vec3> position;
 		UniformHandle<vec3> direction;
