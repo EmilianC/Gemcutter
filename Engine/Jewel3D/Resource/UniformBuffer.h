@@ -98,6 +98,7 @@ namespace Jwl
 	template<class T>
 	class UniformHandle
 	{
+		static_assert(std::is_standard_layout<T>::value, "Uniforms cannot be complex types.");
 	public:
 		UniformHandle<T>() = default;
 		UniformHandle<T>(UniformBuffer& buff, T& data);

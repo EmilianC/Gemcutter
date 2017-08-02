@@ -4,6 +4,8 @@ namespace Jwl
 	template<class T>
 	void UniformBuffer::SetUniform(const std::string& name, const T& data)
 	{
+		static_assert(std::is_standard_layout<T>::value, "Uniforms cannot be complex types.");
+
 		T* dest = reinterpret_cast<T*>(GetBufferLoc(name));
 		ASSERT(dest, "Could not find uniform parameter ( %s ).", name.c_str());
 		ASSERT(dest + sizeof(T) <= reinterpret_cast<T*>(buffer) + bufferSize, "Setting uniform ( %s ) out of bounds of the buffer.", name.c_str());
@@ -15,6 +17,7 @@ namespace Jwl
 	template<class T>
 	void UniformBuffer::SetUniformArray(const std::string& name, unsigned numElements, T* data)
 	{
+		static_assert(std::is_standard_layout<T>::value, "Uniforms cannot be complex types.");
 		ASSERT(data != nullptr, "Source data cannot be null.");
 
 		void* dest = GetBufferLoc(name);
