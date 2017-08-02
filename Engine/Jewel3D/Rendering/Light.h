@@ -9,7 +9,7 @@ namespace Jwl
 	class Light : public Component<Light>
 	{
 	public:
-		enum class Type
+		enum class Type : unsigned
 		{
 			Point,
 			Directional,
@@ -21,15 +21,15 @@ namespace Jwl
 		Light(Entity& owner, const vec3& color, Type type);
 		Light& operator=(const Light&);
 
-		Type type = Type::Point;
-
-		// Main color of the light.
+		// Defaults to a point light.
+		UniformHandle<Type> type;
+		// Defaults to a white light.
 		UniformHandle<vec3> color;
-		// Base attenuation factor.
+		// Defaults to zero.
 		UniformHandle<float> attenuationConstant;
-		// Linear attenuation factor.
+		// Defaults to zero.
 		UniformHandle<float> attenuationLinear;
-		// Exponential attenuation factor.
+		// Defaults to one.
 		UniformHandle<float> attenuationQuadratic;
 		// Cone angle for spotlights, in degrees.
 		float angle = 25.0f;

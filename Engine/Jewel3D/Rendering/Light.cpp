@@ -13,6 +13,7 @@ namespace Jwl
 		InitializeUniformValues();
 
 		color.Set(vec3(1.0f));
+		type.Set(Type::Point);
 	}
 
 	Light::Light(Entity& _owner, const vec3& _color)
@@ -23,17 +24,18 @@ namespace Jwl
 		InitializeUniformValues();
 
 		color.Set(_color);
+		type.Set(Type::Point);
 	}
 
 	Light::Light(Entity& _owner, const vec3& _color, Type _type)
 		: Component(_owner)
-		, type(_type)
 	{
 		CreateUniformBuffer();
 		CreateUniformHandles();
 		InitializeUniformValues();
 
 		color.Set(_color);
+		type.Set(_type);
 	}
 
 	Light& Light::operator=(const Light& other)
@@ -44,15 +46,15 @@ namespace Jwl
 		CreateUniformHandles();
 
 		// Copy the remaining data.
-		type = other.type;
+		type.Set(other.type.Get());
 		color.Set(other.color.Get());
 		attenuationConstant.Set(other.attenuationConstant.Get());
 		attenuationLinear.Set(other.attenuationLinear.Get());
 		attenuationQuadratic.Set(other.attenuationQuadratic.Get());
-		angle = other.angle;
-		cosAngle.Set(cos(ToRadian(angle)));
 		position.Set(other.position.Get());
 		direction.Set(other.direction.Get());
+		angle = other.angle;
+		cosAngle.Set(cos(ToRadian(angle)));
 
 		return *this;
 	}
@@ -61,7 +63,7 @@ namespace Jwl
 	{
 		auto transform = owner.GetWorldTransform();
 		
-		switch (type)
+		switch (type.Get())
 		{
 		case Type::Spot:
 			ASSERT(angle >= 0.0f && angle <= 360.0f, "Invalid SpotLight cone angle ( %f )", angle);
@@ -95,6 +97,7 @@ namespace Jwl
 		lightBuffer->AddUniform("AttenuationLinear", sizeof(float));
 		lightBuffer->AddUniform("AttenuationQuadratic", sizeof(float));
 		lightBuffer->AddUniform("Angle", sizeof(float));
+		lightBuffer->AddUniform("Type", sizeof(Type));
 		lightBuffer->InitBuffer();
 	}
 
@@ -103,12 +106,13 @@ namespace Jwl
 		ASSERT(lightBuffer, "Light Uniform Buffer is not initialized.");
 
 		color = lightBuffer->MakeHandle<vec3>("Color");
+		position = lightBuffer->MakeHandle<vec3>("Position");
+		direction = lightBuffer->MakeHandle<vec3>("Direction");
 		attenuationConstant = lightBuffer->MakeHandle<float>("AttenuationConstant");
 		attenuationLinear = lightBuffer->MakeHandle<float>("AttenuationLinear");
 		attenuationQuadratic = lightBuffer->MakeHandle<float>("AttenuationQuadratic");
 		cosAngle = lightBuffer->MakeHandle<float>("Angle");
-		position = lightBuffer->MakeHandle<vec3>("Position");
-		direction = lightBuffer->MakeHandle<vec3>("Direction");
+		type = lightBuffer->MakeHandle<Type>("Type");
 	}
 
 	void Light::InitializeUniformValues()

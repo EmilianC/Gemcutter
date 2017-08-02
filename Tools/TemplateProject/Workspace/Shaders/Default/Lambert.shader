@@ -21,6 +21,7 @@ Uniforms
 		float AttenuationLinear;
 		float AttenuationQuadratic;
 		float Angle;
+		uint Type;
 	}
 
 	template static Ambient : 1
@@ -58,7 +59,7 @@ Fragment
 		vec3 normal = normalize(norm);
 
 		vec3 lighting = Ambient.Color;
-		lighting += COMPUTE_POINT_LIGHT(Light, normal, pos);
+		lighting += compute_light(Light, normal, pos);
 
 		outColor = texture(sTex, texcoord).rgb * lighting;
 	}

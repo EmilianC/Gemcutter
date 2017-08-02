@@ -88,12 +88,15 @@ mat4 Jwl_InvModel;
 ```
 
 A series of lighting functions are also available for all GLSL shader blocks.
-Values are assumed to be in view space. The first parameter should be a Light's Uniform Buffer.
-These functions will respect the light's attenuation values.
 ```cpp
-vec3 COMPUTE_POINT_LIGHT(Light light, vec3 normal, vec3 pos);
-vec3 COMPUTE_DIRECTIONAL_LIGHT(Light light, vec3 normal);
-vec3 COMPUTE_SPOT_LIGHT(Light light, vec3 normal, vec3 pos);
+bool is_point_light(Light light);
+bool is_directional_light(Light light);
+bool is_spot_light(Light light);
+
+// Computes the surface contribution from any type of light and its parameters.
+// The first parameter should be a Light's Uniform Buffer.
+// 'normal' and 'pos' should be view space vectors describing the surface.
+vec3 compute_light(Light light, vec3 normal, vec3 pos);
 ```
 
 # Lighting Example
@@ -119,6 +122,7 @@ Uniforms
 		float AttenuationLinear;
 		float AttenuationQuadratic;
 		float Angle;
+		uint Type;
 	}
 
 	// Static values owned globally by the shader.
@@ -165,9 +169,9 @@ Fragment
 		// Re-normalize after rasterization.
 		vec3 normal = normalize(norm);
 
-		// Built-in lighting functions respect all light parameters.
+		// The built-in lighting function respects all light parameters.
 		vec3 lighting = Ambient.Color;
-		lighting += COMPUTE_POINT_LIGHT(Light, normal, pos);
+		lighting += compute_light(Light, normal, pos);
 
 		// Combine lighting with the diffuse texture.
 		outColor = texture(sTex, texcoord).rgb * lighting;
