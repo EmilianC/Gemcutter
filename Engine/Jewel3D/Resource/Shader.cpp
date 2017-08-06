@@ -577,9 +577,6 @@ namespace Jwl
 						return false;
 					}
 					break;
-				default:
-					ASSERT(false, "Unrecognized block type");
-					break;
 				}
 			}
 
@@ -1269,7 +1266,7 @@ namespace Jwl
 				for (auto& binding : textureBindings)
 				{
 					unsigned location = glGetUniformLocation(variant.hProgram, binding.name.c_str());
-					ASSERT(location != GL_INVALID_INDEX, "Sampler location for shader variant could not be found.");
+					ASSERT(location != GL_INVALID_INDEX, "Sampler location of ( %s ) for shader variant could not be found.", binding.name.c_str());
 
 					glProgramUniform1i(variant.hProgram, location, binding.unit);
 				}
@@ -1278,7 +1275,7 @@ namespace Jwl
 				for (auto& binding : bufferBindings)
 				{
 					unsigned block = glGetUniformBlockIndex(variant.hProgram, ("Jwl_User_" + binding.name).c_str());
-					ASSERT(block != GL_INVALID_INDEX, "Block index for shader variant could not be found.");
+					ASSERT(block != GL_INVALID_INDEX, "Block index of ( %s ) for shader variant could not be found.", binding.name.c_str());
 
 					// We offset the binding unit to make room for the engine defined binding points.
 					glUniformBlockBinding(variant.hProgram, block, binding.unit);
@@ -1313,7 +1310,7 @@ namespace Jwl
 		{
 			if (binding.unit == unit)
 			{
-				ASSERT(binding.templateBuff, "Specified binding unit is not marked as 'template' in the shader.");
+				ASSERT(binding.templateBuff, "Binding unit ( %d ) is not marked as 'template' in the shader.", unit);
 
 				newBuf->Copy(*binding.templateBuff);
 
@@ -1321,7 +1318,7 @@ namespace Jwl
 			}
 		}
 
-		ASSERT(false, "Specified binding unit does not have a uniform buffer bound to it.");
+		ASSERT(false, "Specified binding unit ( %d ) does not have a uniform buffer bound to it.", unit);
 		return newBuf;
 	}
 
