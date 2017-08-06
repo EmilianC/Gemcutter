@@ -117,7 +117,7 @@ namespace Jwl
 
 	void Light::InitializeUniformValues()
 	{
-		attenuationConstant.Set(0.0f);
+		attenuationConstant.Set(0.1f);
 		attenuationLinear.Set(0.0f);
 		attenuationQuadratic.Set(1.0f);
 		cosAngle.Set(cos(ToRadian(angle)));
