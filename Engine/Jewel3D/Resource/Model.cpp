@@ -37,7 +37,6 @@ namespace Jwl
 		defer { fclose(binaryFile); };
 
 		fread(&numFaces, sizeof(int), 1, binaryFile);
-		// Which attributes are enabled?
 		fread(&hasUvs, sizeof(bool), 1, binaryFile);
 		fread(&hasNormals, sizeof(bool), 1, binaryFile);
 

@@ -5,7 +5,6 @@
 #include "Jewel3D/Resource/Encoder.h"
 
 #include <fstream>
-#include <string>
 #include <vector>
 
 #define CURRENT_VERSION 1
@@ -19,14 +18,6 @@ std::unique_ptr<Jwl::Encoder> GetEncoder()
 // Indices for three points; one triangle. v1/vt1/vn1 v2/vt2/vn2 v3/vt3/vn3
 struct MeshFace
 {
-	MeshFace() = default;
-	MeshFace(unsigned v1, unsigned v2, unsigned v3, unsigned t1, unsigned t2, unsigned t3, unsigned n1, unsigned n2, unsigned n3)
-	{
-		vertices[0] = v1; vertices[1] = v2; vertices[2] = v3;
-		textures[0] = t1; textures[1] = t2; textures[2] = t3;
-		normals[0] = n1; normals[1] = n2; normals[2] = n3;
-	}
-
 	unsigned vertices[3];
 	unsigned textures[3];
 	unsigned normals[3];
@@ -113,78 +104,125 @@ bool MeshEncoder::Convert(const std::string& source, const std::string& destinat
 	{
 		input.getline(inputString, CHAR_BUFFER_SIZE);
 
-		if (std::strchr(inputString, '#') != nullptr)
-			continue;
+		if (inputString[0] == 'v')
+		{
+			if (inputString[1] == 't')
+			{
+				hasUvs = true;
 
-		if (std::strstr(inputString, "vt") == inputString)
-		{
-			hasUvs = true;
+				if (!packUvs)
+					continue;
 
-			// Load texture coordinates.
-			Jwl::vec2 temp;
-			std::sscanf(inputString, "vt %f %f", &temp.x, &temp.y);
-			textureData.push_back(temp);
-		}
-		else if (std::strstr(inputString, "vn") == inputString)
-		{
-			hasNormals = true;
+				// Load texture coordinates.
+				char* endPtr;
+				Jwl::vec2 temp;
+				temp.x = std::strtof(inputString + 3, &endPtr);
+				temp.y = std::strtof(endPtr + 1, nullptr);
 
-			// Load normals.
-			Jwl::vec3 temp;
-			std::sscanf(inputString, "vn %f %f %f", &temp.x, &temp.y, &temp.z);
-			normalData.push_back(temp);
+				textureData.push_back(temp);
+			}
+			else if (inputString[1] == 'n')
+			{
+				hasNormals = true;
+
+				if (!packNormals)
+					continue;
+
+				// Load normals.
+				char* endPtr;
+				Jwl::vec3 temp;
+				temp.x = std::strtof(inputString + 3, &endPtr);
+				temp.y = std::strtof(endPtr + 1, &endPtr);
+				temp.z = std::strtof(endPtr + 1, nullptr);
+
+				normalData.push_back(temp);
+			}
+			else
+			{
+				// Load vertices.
+				char* endPtr;
+				Jwl::vec3 temp;
+				temp.x = std::strtof(inputString + 2, &endPtr);
+				temp.y = std::strtof(endPtr + 1, &endPtr);
+				temp.z = std::strtof(endPtr + 1, nullptr);
+
+				vertexData.push_back(temp);
+			}
 		}
-		else if (std::strchr(inputString, 'v') == inputString)
+		else if (inputString[0] == 'f')
 		{
-			// Load vertices.
-			Jwl::vec3 temp;
-			std::sscanf(inputString, "v %f %f %f", &temp.x, &temp.y, &temp.z);
-			vertexData.push_back(temp * scale);
-		}
-		else if (std::strchr(inputString, 'f') == inputString)
-		{
-			// load face indices.
-			MeshFace temp;
+			// Load face indices.
+			MeshFace face;
+			char* endPtr;
 
 			// Each permutation of data formats.
 			if (hasUvs && hasNormals)
 			{
-				std::sscanf(inputString, "f %u/%u/%u %u/%u/%u %u/%u/%u",
-					&temp.vertices[0], &temp.textures[0], &temp.normals[0],
-					&temp.vertices[1], &temp.textures[1], &temp.normals[1],
-					&temp.vertices[2], &temp.textures[2], &temp.normals[2]);
+				// Format of "f #/#/# #/#/# #/#/#"
+				face.vertices[0] = std::strtol(inputString + 2, &endPtr, 10);
+				face.textures[0] = std::strtol(endPtr + 1, &endPtr, 10);
+				face.normals[0] = std::strtol(endPtr + 1, &endPtr, 10);
+
+				face.vertices[1] = std::strtol(endPtr + 1, &endPtr, 10);
+				face.textures[1] = std::strtol(endPtr + 1, &endPtr, 10);
+				face.normals[1] = std::strtol(endPtr + 1, &endPtr, 10);
+
+				face.vertices[2] = std::strtol(endPtr + 1, &endPtr, 10);
+				face.textures[2] = std::strtol(endPtr + 1, &endPtr, 10);
+				face.normals[2] = std::strtol(endPtr + 1, nullptr, 10);
 			}
 			else if (hasUvs && !hasNormals)
 			{
-				std::sscanf(inputString, "f %u/%u %u/%u %u/%u",
-					&temp.vertices[0], &temp.textures[0],
-					&temp.vertices[1], &temp.textures[1],
-					&temp.vertices[2], &temp.textures[2]);
+				// Format: "f #/# #/# #/#"
+				face.vertices[0] = std::strtol(inputString + 2, &endPtr, 10);
+				face.textures[0] = std::strtol(endPtr + 1, &endPtr, 10);
+
+				face.vertices[1] = std::strtol(endPtr + 1, &endPtr, 10);
+				face.textures[1] = std::strtol(endPtr + 1, &endPtr, 10);
+
+				face.vertices[2] = std::strtol(endPtr + 1, &endPtr, 10);
+				face.textures[2] = std::strtol(endPtr + 1, nullptr, 10);
 			}
 			else if (!hasUvs && hasNormals)
 			{
-				std::sscanf(inputString, "f %u//%u %u//%u %u//%u",
-					&temp.vertices[0], &temp.normals[0],
-					&temp.vertices[1], &temp.normals[1],
-					&temp.vertices[2], &temp.normals[2]);
+				// Format: "f #//# #//# #//#"
+				face.vertices[0] = std::strtol(inputString + 2, &endPtr, 10);
+				face.normals[0] = std::strtol(endPtr + 2, &endPtr, 10);
+
+				face.vertices[1] = std::strtol(endPtr + 1, &endPtr, 10);
+				face.normals[1] = std::strtol(endPtr + 2, &endPtr, 10);
+
+				face.vertices[2] = std::strtol(endPtr + 1, &endPtr, 10);
+				face.normals[2] = std::strtol(endPtr + 2, nullptr, 10);
 			}
 			else
 			{
-				// Only vertices.
-				std::sscanf(inputString, "f %u %u %u",
-					&temp.vertices[0], &temp.vertices[1], &temp.vertices[2]);
+				// Format: "f # # #"
+				face.vertices[0] = std::strtol(inputString + 2, &endPtr, 10);
+				face.vertices[1] = std::strtol(endPtr + 1, &endPtr, 10);
+				face.vertices[2] = std::strtol(endPtr + 1, nullptr, 10);
 			}
 
-			faceData.push_back(temp);
+			faceData.push_back(face);
 		}
 	}
 
 	input.close();
 
-	bool useUvs = packUvs && hasUvs;
-	bool useNormals = packNormals && hasNormals;
+	// Apply scale.
+	if (scale != 1.0f)
+	{
+		for (auto& vertex : vertexData)
+		{
+			vertex *= scale;
+		}
+	}
 
-	const unsigned numVertices = faceData.size() * 3;
+	const bool useUvs = packUvs && hasUvs;
+	const bool useNormals = packNormals && hasNormals;
+
+	const unsigned numFaces = faceData.size();
+	const unsigned numVertices = numFaces * 3;
 	unsigned bufferSize = numVertices * 3;
 	if (useUvs) bufferSize += numVertices * 2;
 	if (useNormals) bufferSize += numVertices * 3;
@@ -226,7 +264,6 @@ bool MeshEncoder::Convert(const std::string& source, const std::string& destinat
 	}
 
 	// Write header.
-	unsigned numFaces = faceData.size();
 	fwrite(&numFaces, sizeof(int), 1, modelFile);
 	fwrite(&useUvs, sizeof(bool), 1, modelFile);
 	fwrite(&useNormals, sizeof(bool), 1, modelFile);
