@@ -62,6 +62,29 @@ namespace Jwl
 		}
 	}
 
+	void RemoveComments(std::string& str)
+	{
+		// Remove comments starting with '//'.
+		size_t pos = str.find("//");
+		while (pos != std::string::npos)
+		{
+			size_t endl = str.find('\n', pos);
+			str.erase(pos, (endl - pos) + 1);
+
+			pos = str.find("//", pos);
+		}
+
+		// Remove multi-line comments.
+		pos = str.find("/*");
+		while (pos != std::string::npos)
+		{
+			size_t endl = str.find("*/", pos);
+			str.erase(pos, (endl - pos) + 2);
+
+			pos = str.find("/*", pos);
+		}
+	}
+
 	std::string FormatString(const char* format, ...)
 	{
 		va_list argptr;

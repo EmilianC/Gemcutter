@@ -15,6 +15,7 @@
     <ClCompile Include="UnitTests\FileSystem.cpp" />
     <ClCompile Include="UnitTests\main.cpp" />
     <ClCompile Include="UnitTests\Math.cpp" />
+    <ClCompile Include="UnitTests\String.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{9479F93A-910C-44D3-A8C9-A56C98E16D9A}</ProjectGuid>

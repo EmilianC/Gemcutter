@@ -10,6 +10,9 @@
     <Filter Include="Entity">
       <UniqueIdentifier>{54c79a28-82d7-4a2d-a243-73ad44bd3d6c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utilities">
+      <UniqueIdentifier>{bc36e282-503b-40d9-8dee-d64a2a265ecb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="UnitTests\main.cpp" />
@@ -21,6 +24,9 @@
     </ClCompile>
     <ClCompile Include="UnitTests\Math.cpp">
       <Filter>Math</Filter>
+    </ClCompile>
+    <ClCompile Include="UnitTests\String.cpp">
+      <Filter>Utilities</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
