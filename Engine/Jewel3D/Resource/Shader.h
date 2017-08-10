@@ -21,6 +21,9 @@ namespace Jwl
 		// Either Define()'s or Undefine()'s the property, based on state.
 		void Switch(const std::string& name, bool state);
 
+		// Defines the property if it does not already exist. If it does, it is undefined.
+		void Toggle(const std::string& name);
+
 		// Returns true if 'name' is defined.
 		bool IsDefined(const std::string& name) const;
 

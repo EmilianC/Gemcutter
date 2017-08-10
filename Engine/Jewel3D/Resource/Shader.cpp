@@ -229,9 +229,7 @@ namespace Jwl
 	void ShaderVariantControl::Define(const std::string& name)
 	{
 		if (IsDefined(name))
-		{
 			return;
-		}
 
 		defines.push_back(name);
 		UpdateHash();
@@ -247,6 +245,22 @@ namespace Jwl
 		{
 			Undefine(name);
 		}
+	}
+
+	void ShaderVariantControl::Toggle(const std::string& name)
+	{
+		defer { UpdateHash(); };
+
+		for (unsigned i = 0; i < defines.size(); i++)
+		{
+			if (defines[i] == name)
+			{
+				defines.erase(defines.begin() + i);
+				return;
+			}
+		}
+
+		defines.push_back(name);
 	}
 
 	bool ShaderVariantControl::IsDefined(const std::string& name) const
@@ -290,6 +304,10 @@ namespace Jwl
 	std::string ShaderVariantControl::GetString() const
 	{
 		std::string result;
+
+		// Rough estimate of total length.
+		result.reserve(defines.size() * 10);
+		
 		for (auto& define : defines)
 		{
 			result += "#define " + define + '\n';
