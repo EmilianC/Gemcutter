@@ -17,22 +17,22 @@ namespace
 {
 	// Built in shaders.
 	constexpr char passThroughVertex[] =
-		"\n"
 		"layout(location = 0) in vec4 a_vert;\n"
 		"layout(location = 1) in vec2 a_uv;\n"
 		"out vec2 texcoord;\n"
-		"void main()\n{\n"
-			"\tgl_Position = Jwl_MVP * a_vert;\n"
-			"\ttexcoord = a_uv;\n"
+		"void main()\n"
+		"{\n"
+		"	gl_Position = Jwl_MVP * a_vert;\n"
+		"	texcoord = a_uv;\n"
 		"}\n";
 
 	constexpr char passThroughFragment[] =
-		"\n"
 		"uniform sampler2D sTex;\n"
 		"in vec2 texcoord;\n"
 		"out vec4 outColor;\n"
-		"void main()\n{\n"
-			"\toutColor = texture(sTex, texcoord);\n"
+		"void main()\n"
+		"{\n"
+		"	outColor = texture(sTex, texcoord);\n"
 		"}\n";
 
 	constexpr char passThroughProgram[] =
@@ -60,42 +60,49 @@ namespace
 		"	}\n"
 		"}\n";
 
-	constexpr char builtInBuffers[] =
+	constexpr char header[] =
+		"\n"
+		"#define M_PI 3.14159265358979323846\n"
+		"#define M_E 2.71828182845904523536\n"
+		"#define M_LOG2E 1.44269504088896340736\n"
+		"#define M_LOG10E 0.434294481903251827651\n"
+		"#define M_LN2 0.693147180559945309417\n"
+		"#define M_LN10 2.30258509299404568402\n"
 		"\n"
 		"layout(std140) uniform Jwl_Camera_Uniforms\n"
 		"{\n"
-			"\tmat4 Jwl_View;\n"
-			"\tmat4 Jwl_Proj;\n"
-			"\tmat4 Jwl_ViewProj;\n"
-			"\tmat4 Jwl_InvView;\n"
-			"\tmat4 Jwl_InvProj;\n"
-		"};\n"
+		"	mat4 Jwl_View;\n"
+		"	mat4 Jwl_Proj;\n"
+		"	mat4 Jwl_ViewProj;\n"
+		"	mat4 Jwl_InvView;\n"
+		"	mat4 Jwl_InvProj;\n"
+		"};"
+		"\n"
 		"layout(std140) uniform Jwl_Model_Uniforms\n"
 		"{\n"
-			"\tmat4 Jwl_MVP;\n"
-			"\tmat4 Jwl_ModelView;\n"
-			"\tmat4 Jwl_Model;\n"
-			"\tmat4 Jwl_InvModel;\n"
-		"};\n"
+		"	mat4 Jwl_MVP;\n"
+		"	mat4 Jwl_ModelView;\n"
+		"	mat4 Jwl_Model;\n"
+		"	mat4 Jwl_InvModel;\n"
+		"};"
+		"\n"
 		"layout(std140) uniform Jwl_Engine_Uniforms\n"
 		"{\n"
-			"\tvec4 ScreenParams;\n"
-		"};\n"
+		"	vec4 ScreenParams;\n"
+		"};"
+		"\n"
 		"layout(std140) uniform Jwl_Time_Uniforms\n"
 		"{\n"
-			"\tvec4 Jwl_Time;\n"
-			"\tvec4 Jwl_Sin;\n"
-			"\tvec4 Jwl_Cos;\n"
-			"\tfloat Jwl_DeltaTime;\n"
+		"	vec4 Jwl_Time;\n"
+		"	vec4 Jwl_Sin;\n"
+		"	vec4 Jwl_Cos;\n"
+		"	float Jwl_DeltaTime;\n"
 		"};\n"
-		"\n";
-
-	constexpr char builtInLightingFunctions[] =
-		// These are enum values from Jwl::Light::Type
+		"\n" // These are enum values from Jwl::Light::Type
 		"bool JWL_IS_POINT_LIGHT(uint type) { return type == 0u; }\n"
 		"bool JWL_IS_DIRECTIONAL_LIGHT(uint type) { return type == 1u; }\n"
 		"bool JWL_IS_SPOT_LIGHT(uint type) { return type == 2u; }\n"
-		""
+		"\n"
 		"vec3 JWL_COMPUTE_LIGHT(vec3 normal, vec3 surfacePos, vec3 color, vec3 lightPos, vec3 direction, float attenConstant, float attenLinear, float attenQuadratic, float angle, uint type)\n"
 		"{\n"
 		"	if (JWL_IS_POINT_LIGHT(type))\n"
@@ -141,14 +148,12 @@ namespace
 		"	}\n"
 		""
 		"	return vec3(0.0);\n"
-		"}\n";
-
-	constexpr char builtInLightingMacros[] =
+		"}"
+		"\n\n"
 		"#define is_point_light(light) JWL_IS_POINT_LIGHT(light##.Type)\n"
 		"#define is_directional_light(light) JWL_IS_DIRECTIONAL_LIGHT(light##.Type)\n"
 		"#define is_spot_light(light) JWL_IS_SPOT_LIGHT(light##.Type)\n"
-		"#define compute_light(light, normal, pos) "
-		"JWL_COMPUTE_LIGHT(normal, pos, light##.Color, light##.Position, light##.Direction, light##.AttenuationConstant, light##.AttenuationLinear, light##.AttenuationQuadratic, light##.Angle, light##.Type)\n";
+		"#define compute_light(light, normal, pos) JWL_COMPUTE_LIGHT(normal, pos, light##.Color, light##.Position, light##.Direction, light##.AttenuationConstant, light##.AttenuationLinear, light##.AttenuationQuadratic, light##.Angle, light##.Type)\n";
 }
 
 namespace Jwl
@@ -347,8 +352,7 @@ namespace Jwl
 
 	//-----------------------------------------------------------------------------------------------------
 
-	std::string Shader::version;
-	std::string Shader::header;
+	std::string Shader::commonHeader;
 
 	Shader::~Shader()
 	{
@@ -425,51 +429,23 @@ namespace Jwl
 		ASSERT(!IsLoaded(), "A Shader is already loaded. Call ShaderData::Unload() first.");
 
 		// Build version identifier from the current openGL version.
-		if (version.empty())
+		if (commonHeader.empty())
 		{
 			int major = 0;
 			int minor = 0;
 			glGetIntegerv(GL_MAJOR_VERSION, &major);
 			glGetIntegerv(GL_MINOR_VERSION, &minor);
 
-			// Our minimum supported version is 3.3, where the GLSL
+			// Our minimum supported version is 3.3, where the format of the GLSL
 			// version identifier begins to be symmetrical with the GL version.
-			version = "#version " + std::to_string(major) + std::to_string(minor) + "0\n";
+			commonHeader = "#version " + std::to_string(major) + std::to_string(minor) + "0\n" + header;
 		}
 
-		// Prepare common shader code.
-		if (header.empty())
-		{
-			header += builtInBuffers;
-			header += builtInLightingFunctions;
-			header += builtInLightingMacros;
-		}
-
-		/* Clean up file for easier parsing */
-		// Remove comments starting with '//'.
-		size_t pos = source.find("//");
-		while (pos != std::string::npos)
-		{
-			size_t endl = source.find('\n', pos);
-			source.erase(pos, (endl - pos) + 1);
-
-			pos = source.find("//");
-		}
-
-		// Remove multi-line comments.
-		pos = source.find("/*");
-		while (pos != std::string::npos)
-		{
-			size_t endl = source.find("*/", pos);
-			source.erase(pos, (endl - pos) + 2);
-
-			pos = source.find("/*");
-		}
-
-		// Reduce extra whitespace. This will make parsing of the file much easier.
+		// Clean up the source to make parsing easier.
+		RemoveComments(source);
 		RemoveRedundantWhitespace(source);
 
-		pos = 0;
+		size_t pos = 0;
 		while (pos < source.size())
 		{
 			if (!std::isspace(source[pos]))
@@ -870,7 +846,7 @@ namespace Jwl
 			assignmentPos = uniformStruct.find('=', nameEnd);
 		}
 
-		uniformStruct = "layout(std140) uniform Jwl_User_" + std::string(name) + "\n{\n" + uniformStruct + "} " + std::string(name) + ";\n";
+		uniformStruct = "layout(std140) uniform Jwl_User_" + std::string(name) + "\n{" + uniformStruct + "} " + std::string(name) + ";\n";
 
 		/* Create template and the shader owned buffer */
 		if (makeTemplate || makeStatic)
@@ -1252,7 +1228,7 @@ namespace Jwl
 			auto& variant = variants.emplace(definitions, ShaderVariant()).first->second;
 
 			if (!variant.Load(
-				version + header + definitions.GetString() + uniformBuffers + samplers,
+				commonHeader + uniformBuffers + samplers + definitions.GetString(),
 				attributes + vertexSource,
 				geometrySource,
 				fragmentSrouce))
@@ -1264,7 +1240,7 @@ namespace Jwl
 
 				// Instead of doing nothing, we load a hard-coded pink shader on failure.
 				if (!variant.Load(
-					version + builtInBuffers,
+					commonHeader,
 					"layout(location = 0) in vec4 a_vert;\n"
 					"void main()\n{\n"
 					"	gl_Position = Jwl_MVP * a_vert;\n"

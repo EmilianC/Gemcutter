@@ -73,7 +73,7 @@ A uniform buffer created this way will assume any default values.
 be attached to the Material Component for per-object control. When rendering, Jewel3D will bind all Textures and Buffers from the currently rendering Shader and Material.
 If both the shader and Material bind a buffer or texture to the same ID, the Material's per-object data is used.
 
-# System Functions and Uniforms
+# System Uniforms, Functions, and Variables
 A series of matrices are available for all GLSL shader blocks.
 ```cpp
 mat4 Jwl_View;
@@ -87,16 +87,26 @@ mat4 Jwl_Model;
 mat4 Jwl_InvModel;
 ```
 
-A series of lighting functions are also available for all GLSL shader blocks.
+The following lighting functions are available to use in all GLSL shader blocks.
 ```cpp
-bool is_point_light(Light light);
-bool is_directional_light(Light light);
-bool is_spot_light(Light light);
-
 // Computes the surface contribution from any type of light and its parameters.
 // The first parameter should be a Light's Uniform Buffer.
 // 'normal' and 'pos' should be view space vectors describing the surface.
 vec3 compute_light(Light light, vec3 normal, vec3 pos);
+
+bool is_point_light(Light light);
+bool is_directional_light(Light light);
+bool is_spot_light(Light light);
+```
+
+The standard math definitions from Jewel3D/Math/Math.h are also defined in all GLSL shader blocks.
+```cpp
+#define M_PI     = 3.14159265358979323846
+#define M_E      = 2.71828182845904523536
+#define M_LOG2E  = 1.44269504088896340736
+#define M_LOG10E = 0.434294481903251827651
+#define M_LN2    = 0.693147180559945309417
+#define M_LN10   = 2.30258509299404568402
 ```
 
 # Lighting Example

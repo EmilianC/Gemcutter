@@ -184,8 +184,7 @@ namespace Jwl
 		std::vector<BufferBinding> bufferBindings;
 
 		// Various shader source code snippets.
-		static std::string version;
-		static std::string header;
+		static std::string commonHeader;
 		std::string attributes;
 		std::string samplers;
 		std::string uniformBuffers;
