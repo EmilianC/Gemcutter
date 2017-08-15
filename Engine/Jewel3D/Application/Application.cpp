@@ -825,6 +825,10 @@ namespace Jwl
 			GPUInfo.ScanDevice();
 			SetCullFunc(CullFunc::Clockwise);
 			SetDepthFunc(DepthFunc::Normal);
+			if (GLEW_ARB_seamless_cube_map)
+			{
+				glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+			}
 		}
 		return 0;
 
