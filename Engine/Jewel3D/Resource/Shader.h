@@ -14,9 +14,7 @@ namespace Jwl
 	{
 	public:
 		// Adds a new define, or updates its value.
-		template<typename T>
-		void Define(const std::string& name, T value);
-		void Define(const std::string& name);
+		void Define(const std::string& name, const std::string& value = "");
 
 		// Either Define()'s or Undefine()'s the property, based on state.
 		void Switch(const std::string& name, bool state);
@@ -48,7 +46,13 @@ namespace Jwl
 	private:
 		void UpdateHash();
 
-		std::vector<std::string> defines;
+		struct Entry
+		{
+			std::string name;
+			std::string value;
+		};
+
+		std::vector<Entry> defines;
 		unsigned hash = 0;
 	};
 }
@@ -192,26 +196,4 @@ namespace Jwl
 		std::string geometrySource;
 		std::string fragmentSrouce;
 	};
-
-	template<typename T>
-	void ShaderVariantControl::Define(const std::string& name, T value)
-	{
-		std::string entry = name + ' ' + std::to_string(value);
-
-		// Search for and update the define if it already exists.
-		for (auto& define : defines)
-		{
-			if (define == name)
-			{
-				define = entry;
-				UpdateHash();
-
-				return;
-			}
-		}
-		
-		// Add as a new define.
-		defines.push_back(entry);
-		UpdateHash();
-	}
 }

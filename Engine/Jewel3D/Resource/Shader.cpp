@@ -231,13 +231,24 @@ namespace Jwl
 
 	//-----------------------------------------------------------------------------------------------------
 
-	void ShaderVariantControl::Define(const std::string& name)
+	void ShaderVariantControl::Define(const std::string& name, const std::string& value)
 	{
-		if (IsDefined(name))
-			return;
+		ASSERT(!name.empty(), "Name cannot be empty.");
 
-		defines.push_back(name);
-		UpdateHash();
+		defer{ UpdateHash(); };
+
+		// Search for and update the define if it already exists.
+		for (auto& define : defines)
+		{
+			if (define.name == name)
+			{
+				define.value = value;
+				return;
+			}
+		}
+
+		// Add as a new define.
+		defines.push_back({ name, value });
 	}
 
 	void ShaderVariantControl::Switch(const std::string& name, bool state)
@@ -254,25 +265,27 @@ namespace Jwl
 
 	void ShaderVariantControl::Toggle(const std::string& name)
 	{
+		ASSERT(!name.empty(), "Name cannot be empty.");
+
 		defer { UpdateHash(); };
 
 		for (unsigned i = 0; i < defines.size(); i++)
 		{
-			if (defines[i] == name)
+			if (defines[i].name == name)
 			{
 				defines.erase(defines.begin() + i);
 				return;
 			}
 		}
 
-		defines.push_back(name);
+		defines.push_back({ name, "" });
 	}
 
 	bool ShaderVariantControl::IsDefined(const std::string& name) const
 	{
 		for (auto& define : defines)
 		{
-			if (define == name)
+			if (define.name == name)
 			{
 				return true;
 			}
@@ -290,7 +303,7 @@ namespace Jwl
 	{
 		for (unsigned i = 0; i < defines.size(); i++)
 		{
-			if (defines[i] == name)
+			if (defines[i].name == name)
 			{
 				defines.erase(defines.begin() + i);
 				UpdateHash();
@@ -311,11 +324,11 @@ namespace Jwl
 		std::string result;
 
 		// Rough estimate of total length.
-		result.reserve(defines.size() * 10);
+		result.reserve(defines.size() * 12);
 		
 		for (auto& define : defines)
 		{
-			result += "#define " + define + '\n';
+			result += "#define " + define.name + ' ' + define.value + '\n';
 		}
 
 		return result;
@@ -326,27 +339,40 @@ namespace Jwl
 		return hash;
 	}
 
-	bool ShaderVariantControl::operator==(const ShaderVariantControl& svc) const
+	bool ShaderVariantControl::operator==(const ShaderVariantControl& other) const
 	{
-		return defines == svc.defines;
+		if (defines.size() != other.defines.size())
+			return false;
+
+		for (unsigned i = 0; i < defines.size(); ++i)
+		{
+			if (defines[i].name != other.defines[i].name ||
+				defines[i].value != other.defines[i].value)
+				return false;
+		}
+
+		return true;
 	}
 
-	bool ShaderVariantControl::operator!=(const ShaderVariantControl& svc) const
+	bool ShaderVariantControl::operator!=(const ShaderVariantControl& other) const
 	{
-		return defines != svc.defines;
+		return !operator==(other);
 	}
 
 	void ShaderVariantControl::UpdateHash()
 	{
 		// Sort alphabetically to eliminate order of defines creating different hashes.
-		std::sort(defines.begin(), defines.end());
+		std::sort(defines.begin(), defines.end(), [](const auto& lhs, const auto& rhs)
+		{
+			return lhs.name < rhs.name;
+		});
 
 		std::hash<std::string> str_hash;
 		hash = 0;
 
 		for (auto& define : defines)
 		{
-			hash = hash ^ str_hash(define);
+			hash = hash ^ str_hash(define.name) ^ str_hash(define.value);
 		}
 	}
 
