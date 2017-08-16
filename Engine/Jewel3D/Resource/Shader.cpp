@@ -1253,16 +1253,16 @@ namespace Jwl
 			// This shader variant is new and needs to be created.
 			auto& variant = variants.emplace(definitions, ShaderVariant()).first->second;
 
+			const std::string defines = definitions.GetString();
+			bool postError = false;
+
 			if (!variant.Load(
-				commonHeader + uniformBuffers + samplers + definitions.GetString(),
+				commonHeader + uniformBuffers + samplers + defines,
 				attributes + vertexSource,
 				geometrySource,
 				fragmentSrouce))
 			{
-				if (!definitions.IsEmpty())
-				{
-					Error("Active variant definitions:\n%s", definitions.GetString().c_str());
-				}
+				postError = true;
 
 				// Instead of doing nothing, we load a hard-coded pink shader on failure.
 				if (!variant.Load(
@@ -1286,7 +1286,11 @@ namespace Jwl
 				for (auto& binding : textureBindings)
 				{
 					unsigned location = glGetUniformLocation(variant.hProgram, binding.name.c_str());
-					ASSERT(location != GL_INVALID_INDEX, "Sampler location of ( %s ) for shader variant could not be found.", binding.name.c_str());
+					if (location == GL_INVALID_INDEX)
+					{
+						postError = true;
+						Error("Sampler location of ( %s ) for shader variant could not be found.", binding.name.c_str());
+					}
 
 					glProgramUniform1i(variant.hProgram, location, binding.unit);
 				}
@@ -1295,11 +1299,20 @@ namespace Jwl
 				for (auto& binding : bufferBindings)
 				{
 					unsigned block = glGetUniformBlockIndex(variant.hProgram, ("Jwl_User_" + binding.name).c_str());
-					ASSERT(block != GL_INVALID_INDEX, "Block index of ( %s ) for shader variant could not be found.", binding.name.c_str());
+					if (block == GL_INVALID_INDEX)
+					{
+						postError = true;
+						Error("Block index of ( %s ) for shader variant could not be found.", binding.name.c_str());
+					}
 
 					// We offset the binding unit to make room for the engine defined binding points.
 					glUniformBlockBinding(variant.hProgram, block, binding.unit);
 				}
+			}
+
+			if (postError && !defines.empty())
+			{
+				Error("With variant definitions:\n%s", defines.c_str());
 			}
 
 			variant.Bind();
