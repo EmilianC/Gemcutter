@@ -35,12 +35,13 @@ namespace Jwl
 		ASSERT(child, "Hierarchy cannot add null node as child.");
 		ASSERT(this != child.get(), "Hierarchy cannot add itself as a child.");
 
-		// Check if this node is already our child.
-		if (!IsChild(*child))
+		if (auto lock = child->parent.lock())
 		{
-			child->parent = GetWeakPtr();
-			children.push_back(child);
+			lock->RemoveChild(*child);
 		}
+
+		child->parent = GetWeakPtr();
+		children.push_back(child);
 	}
 
 	template<class Node>
