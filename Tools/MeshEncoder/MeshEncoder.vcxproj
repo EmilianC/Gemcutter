@@ -80,7 +80,8 @@
       <AdditionalLibraryDirectories>$(Jewel3D_Path)Build\lib\;$(Jewel3D_Path)Build\lib\$(Configuration)_$(Platform)\</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /D /Y /S "$(Jewel3D_path)Build\bin\freetype6.dll" "$(ProjectDir)bin\$(Configuration)_$(Platform)\"</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseWithExceptions|Win32'">
@@ -107,7 +108,8 @@
       <AdditionalLibraryDirectories>$(Jewel3D_Path)Build\lib\;$(Jewel3D_Path)Build\lib\$(Configuration)_$(Platform)\</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /D /Y /S "$(Jewel3D_path)Build\bin\freetype6.dll" "$(ProjectDir)bin\$(Configuration)_$(Platform)\"</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
