@@ -61,6 +61,7 @@ namespace Jwl
 
 			// Enable all color attachments as write-able targets.
 			GLenum* bufs = reinterpret_cast<GLenum*>(malloc(sizeof(GLenum) * numColorAttachments));
+			defer{ free(bufs); };
 			for (unsigned i = 0; i < numColorAttachments; i++)
 			{
 				bufs[i] = GL_COLOR_ATTACHMENT0 + i;
@@ -68,8 +69,6 @@ namespace Jwl
 			}
 
 			glDrawBuffers(numColorAttachments, bufs);
-
-			free(bufs);
 		}
 		else
 		{
@@ -265,44 +264,56 @@ namespace Jwl
 		glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
 	}
 
-	bool RenderTarget::Resize(unsigned pixelWidth, unsigned pixelHeight)
+	bool RenderTarget::Resize(unsigned newWidth, unsigned newHeight)
 	{
 		ASSERT(FBO != GL_NONE, "RenderTarget must be initialized before use.");
-		ASSERT(pixelWidth > 0, "'width' must be greater than 0.");
-		ASSERT(pixelHeight > 0, "'height' must be greater than 0.");
+		ASSERT(newWidth > 0, "'newWidth' must be greater than 0.");
+		ASSERT(newHeight > 0, "'newHeight' must be greater than 0.");
 
-		if (width == pixelWidth && height == pixelHeight)
-		{
+		if (width == newWidth && height == newHeight)
 			return true;
-		}
 
-		// Save information to recreate textures.
-		unsigned numColorTextures = numColorAttachments;
-		unsigned samples = numSamples;
-		bool hasDepth = HasDepth();
-		TextureFormat* formats = nullptr;
-		defer {
-			delete[] formats;
-		};
+		width = newWidth;
+		height = newHeight;
 
-		if (numColorTextures > 0)
+		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+
+		if (depthAttachment)
 		{
-			formats = new TextureFormat[numColorTextures];
+			depthAttachment->Unload();
+			depthAttachment->CreateTexture(
+				newWidth, newHeight,
+				TextureFormat::DEPTH_24, TextureFilterMode::Point,
+				TextureWrapMode::Clamp, 1.0f, numSamples);
 
-			for (unsigned i = 0; i < numColorTextures; i++)
-			{
-				formats[i] = colorAttachments[i]->GetTextureFormat();
-			}
+			glFramebufferTexture2D(
+				GL_FRAMEBUFFER,
+				GL_DEPTH_ATTACHMENT,
+				numSamples > 1 ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D,
+				depthAttachment->GetHandle(),
+				0);
 		}
 
-		Unload();
-
-		Init(pixelWidth, pixelHeight, numColorTextures, hasDepth, samples);
-		for (unsigned i = 0; i < numColorTextures; i++)
+		for (unsigned i = 0; i < numColorAttachments; ++i)
 		{
-			CreateAttachment(i, formats[i], TextureFilterMode::Point);
+			// Preserve the states of the texture, just in case the user changed them.
+			const TextureFormat oldFormat = colorAttachments[i]->GetTextureFormat();
+			const TextureFilterMode oldFilter = colorAttachments[i]->GetFilterMode();
+			const TextureWrapModes oldWrap = colorAttachments[i]->GetWrapModes();
+			const float oldAnisotropicLevel = colorAttachments[i]->GetAnisotropicLevel();
+			colorAttachments[i]->Unload();
+
+			colorAttachments[i]->CreateTexture(newWidth, newHeight, oldFormat, oldFilter, oldWrap, oldAnisotropicLevel, numSamples);
+
+			glFramebufferTexture2D(
+				GL_FRAMEBUFFER,
+				GL_COLOR_ATTACHMENT0 + i,
+				numSamples > 1 ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D,
+				colorAttachments[i]->GetHandle(),
+				0);
 		}
 
+		// Validate will also unbind the buffer for us.
 		return Validate();
 	}
 

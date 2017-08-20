@@ -50,8 +50,8 @@ namespace Jwl
 		void Bind() const;
 		static void UnBind();
 
-		// Recreates the render target with different sized textures. Textures data will be lost and all filters will be set to point.
-		bool Resize(unsigned pixelWidth, unsigned pixelHeight);
+		// Resizes all internal textures to the new resolution. Texture data will be lost.
+		bool Resize(unsigned newWidth, unsigned newHeight);
 		void ResolveMultisampling(const RenderTarget& target) const;
 
 		void CopyDepth(const RenderTarget& target) const;
