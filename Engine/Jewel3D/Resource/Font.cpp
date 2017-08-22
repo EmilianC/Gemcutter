@@ -110,7 +110,7 @@ namespace Jwl
 		}
 
 		// Load bitmap data.
-		TextureFilterMode filter;
+		TextureFilter filter;
 		unsigned long int bitmapSize = 0;
 		unsigned char* bitmap = nullptr;
 		defer{ free(bitmap); };
@@ -119,7 +119,7 @@ namespace Jwl
 		fread(&bitmapSize, sizeof(unsigned long int), 1, fontFile);
 		fread(&width, sizeof(unsigned), 1, fontFile);
 		fread(&height, sizeof(unsigned), 1, fontFile);
-		fread(&filter, sizeof(TextureFilterMode), 1, fontFile);
+		fread(&filter, sizeof(TextureFilter), 1, fontFile);
 
 		// Load Data.
 		bitmap = static_cast<unsigned char*>(malloc(sizeof(unsigned char) * bitmapSize));
@@ -142,8 +142,8 @@ namespace Jwl
 				continue;
 
 			glBindTexture(GL_TEXTURE_2D, textures[i]);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, ResolveFilterMagMode(filter));
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, ResolveFilterMinMode(filter));
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, ResolveFilterMag(filter));
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, ResolveFilterMin(filter));
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 

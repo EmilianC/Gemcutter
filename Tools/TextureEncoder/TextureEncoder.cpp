@@ -120,9 +120,9 @@ bool TextureEncoder::Convert(const std::string& source, const std::string& desti
 	const std::string outputFile = destination + Jwl::ExtractFilename(source) + ".texture";
 	const float anisotropicLevel = metadata.GetFloat("anisotropic_level");
 	const bool isCubemap = metadata.GetBool("cubemap");
-	const Jwl::TextureFilterMode filter = Jwl::StringToFilterMode(metadata.GetString("filter"));
-	const Jwl::TextureWrapMode wrapModeX = Jwl::StringToWrapMode(metadata.GetString("wrap_x"));
-	const Jwl::TextureWrapMode wrapModeY = Jwl::StringToWrapMode(metadata.GetString("wrap_y"));
+	const Jwl::TextureFilter filter = Jwl::StringToTextureFilter(metadata.GetString("filter"));
+	const Jwl::TextureWrap wrapX = Jwl::StringToTextureWrap(metadata.GetString("wrap_x"));
+	const Jwl::TextureWrap wrapY = Jwl::StringToTextureWrap(metadata.GetString("wrap_y"));
 
 	auto image = Jwl::Image::Load(source, !isCubemap);
 	if (image.data == nullptr)
@@ -146,22 +146,22 @@ bool TextureEncoder::Convert(const std::string& source, const std::string& desti
 			return false;
 		}
 
-		if (wrapModeX != Jwl::TextureWrapMode::Clamp ||
-			wrapModeY != Jwl::TextureWrapMode::Clamp)
+		if (wrapX != Jwl::TextureWrap::Clamp ||
+			wrapY != Jwl::TextureWrap::Clamp)
 		{
 			Jwl::Warning("Cubemaps must have \"clamp\" wrap modes. Forcing wrap modes to \"clamp\".");
 		}
 
 		const unsigned faceSize = image.width / 4;
-		const Jwl::TextureWrapMode cubeMapWrapMode = Jwl::TextureWrapMode::Clamp;
+		const Jwl::TextureWrap cubeMapWrapMode = Jwl::TextureWrap::Clamp;
 
 		fwrite(&isCubemap, sizeof(bool), 1, fontFile);
 		fwrite(&faceSize, sizeof(unsigned), 1, fontFile);
 		fwrite(&faceSize, sizeof(unsigned), 1, fontFile);
 		fwrite(&image.format, sizeof(Jwl::TextureFormat), 1, fontFile);
-		fwrite(&filter, sizeof(Jwl::TextureFilterMode), 1, fontFile);
-		fwrite(&cubeMapWrapMode, sizeof(Jwl::TextureWrapMode), 1, fontFile);
-		fwrite(&cubeMapWrapMode, sizeof(Jwl::TextureWrapMode), 1, fontFile);
+		fwrite(&filter, sizeof(Jwl::TextureFilter), 1, fontFile);
+		fwrite(&cubeMapWrapMode, sizeof(Jwl::TextureWrap), 1, fontFile);
+		fwrite(&cubeMapWrapMode, sizeof(Jwl::TextureWrap), 1, fontFile);
 		fwrite(&anisotropicLevel, sizeof(float), 1, fontFile);
 
 		// Write faces.
@@ -201,9 +201,9 @@ bool TextureEncoder::Convert(const std::string& source, const std::string& desti
 		fwrite(&image.width, sizeof(unsigned), 1, fontFile);
 		fwrite(&image.height, sizeof(unsigned), 1, fontFile);
 		fwrite(&image.format, sizeof(Jwl::TextureFormat), 1, fontFile);
-		fwrite(&filter, sizeof(Jwl::TextureFilterMode), 1, fontFile);
-		fwrite(&wrapModeX, sizeof(Jwl::TextureWrapMode), 1, fontFile);
-		fwrite(&wrapModeY, sizeof(Jwl::TextureWrapMode), 1, fontFile);
+		fwrite(&filter, sizeof(Jwl::TextureFilter), 1, fontFile);
+		fwrite(&wrapX, sizeof(Jwl::TextureWrap), 1, fontFile);
+		fwrite(&wrapY, sizeof(Jwl::TextureWrap), 1, fontFile);
 		fwrite(&anisotropicLevel, sizeof(float), 1, fontFile);
 
 		// Write Data.

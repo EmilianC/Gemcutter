@@ -16,7 +16,7 @@ namespace Jwl
 		Unload();
 	}
 
-	void Texture::CreateTexture(unsigned _width, unsigned _height, TextureFormat _format, TextureFilterMode _filter, TextureWrapModes _wrapModes, float _anisotropicLevel, unsigned _numSamples)
+	void Texture::CreateTexture(unsigned _width, unsigned _height, TextureFormat _format, TextureFilter _filter, TextureWraps _wraps, float _anisotropicLevel, unsigned _numSamples)
 	{
 		ASSERT(hTex == 0, "Texture already has a texture loaded.");
 		ASSERT(_anisotropicLevel >= 1.0f && _anisotropicLevel <= 16.0f, "'anisotropicLevel' must be in the range of [1, 16].");
@@ -26,7 +26,7 @@ namespace Jwl
 		height = static_cast<int>(_height);
 		format = _format;
 		filter = _filter;
-		wrapModes = _wrapModes;
+		wraps = _wraps;
 		anisotropicLevel = _anisotropicLevel;
 		numSamples = _numSamples;
 
@@ -36,10 +36,10 @@ namespace Jwl
 		{
 			glBindTexture(GL_TEXTURE_2D, hTex);
 
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, ResolveFilterMagMode(filter));
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, ResolveFilterMinMode(filter));
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, ResolveWrapMode(wrapModes.x));
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, ResolveWrapMode(wrapModes.y));
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, ResolveFilterMag(filter));
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, ResolveFilterMin(filter));
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, ResolveWrap(wraps.x));
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, ResolveWrap(wraps.y));
 			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, anisotropicLevel);
 
 			unsigned numLevels = CountMipLevels(width, height, filter);
@@ -89,9 +89,9 @@ namespace Jwl
 			fread(&width, sizeof(unsigned), 1, fontFile);
 			fread(&height, sizeof(unsigned), 1, fontFile);
 			fread(&format, sizeof(TextureFormat), 1, fontFile);
-			fread(&filter, sizeof(TextureFilterMode), 1, fontFile);
-			fread(&wrapModes.x, sizeof(TextureWrapMode), 1, fontFile);
-			fread(&wrapModes.y, sizeof(TextureWrapMode), 1, fontFile);
+			fread(&filter, sizeof(TextureFilter), 1, fontFile);
+			fread(&wraps.x, sizeof(TextureWrap), 1, fontFile);
+			fread(&wraps.y, sizeof(TextureWrap), 1, fontFile);
 			fread(&anisotropicLevel, sizeof(float), 1, fontFile);
 
 			unsigned textureSize = width * height;
@@ -118,8 +118,8 @@ namespace Jwl
 
 				glGenTextures(1, &hTex);
 				glBindTexture(GL_TEXTURE_CUBE_MAP, hTex);
-				glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, ResolveFilterMagMode(filter));
-				glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, ResolveFilterMinMode(filter));
+				glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, ResolveFilterMag(filter));
+				glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, ResolveFilterMin(filter));
 				glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 				glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 				glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
@@ -161,10 +161,10 @@ namespace Jwl
 
 				glGenTextures(1, &hTex);
 				glBindTexture(GL_TEXTURE_2D, hTex);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, ResolveFilterMagMode(filter));
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, ResolveFilterMinMode(filter));
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, ResolveWrapMode(wrapModes.x));
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, ResolveWrapMode(wrapModes.y));
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, ResolveFilterMag(filter));
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, ResolveFilterMin(filter));
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, ResolveWrap(wraps.x));
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, ResolveWrap(wraps.y));
 				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, anisotropicLevel);
 
 				unsigned numLevels = CountMipLevels(width, height, filter);
@@ -199,10 +199,10 @@ namespace Jwl
 
 			glGenTextures(1, &hTex);
 			glBindTexture(GL_TEXTURE_2D, hTex);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, ResolveFilterMagMode(filter));
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, ResolveFilterMinMode(filter));
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, ResolveWrapMode(wrapModes.x));
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, ResolveWrapMode(wrapModes.y));
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, ResolveFilterMag(filter));
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, ResolveFilterMin(filter));
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, ResolveWrap(wraps.x));
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, ResolveWrap(wraps.y));
 			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, anisotropicLevel);
 
 			unsigned numLevels = CountMipLevels(width, height, filter);
@@ -230,30 +230,30 @@ namespace Jwl
 		return true;
 	}
 
-	void Texture::SetFilterMode(TextureFilterMode _filter)
+	void Texture::SetFilter(TextureFilter _filter)
 	{
 		ASSERT(hTex != 0, "A texture must be loaded to call this function.");
 		ASSERT(numSamples == 1, "It is illegal to change the filter mode of a multisampled texture.");
 
 		glBindTexture(target, hTex);
-		glTexParameteri(target, GL_TEXTURE_MAG_FILTER, ResolveFilterMagMode(_filter));
-		glTexParameteri(target, GL_TEXTURE_MIN_FILTER, ResolveFilterMinMode(_filter));
+		glTexParameteri(target, GL_TEXTURE_MAG_FILTER, ResolveFilterMag(_filter));
+		glTexParameteri(target, GL_TEXTURE_MIN_FILTER, ResolveFilterMin(_filter));
 		glBindTexture(target, GL_NONE);
 
 		filter = _filter;
 	}
 
-	void Texture::SetWrapModes(TextureWrapModes _wrapModes)
+	void Texture::SetWrap(TextureWraps _wraps)
 	{
 		ASSERT(hTex != 0, "A texture must be loaded to call this function.");
 		ASSERT(numSamples == 1, "It is illegal to change the wrap mode of a multisampled texture.");
 
 		glBindTexture(target, hTex);
-		glTexParameteri(target, GL_TEXTURE_WRAP_S, ResolveWrapMode(_wrapModes.x));
-		glTexParameteri(target, GL_TEXTURE_WRAP_T, ResolveWrapMode(_wrapModes.y));
+		glTexParameteri(target, GL_TEXTURE_WRAP_S, ResolveWrap(_wraps.x));
+		glTexParameteri(target, GL_TEXTURE_WRAP_T, ResolveWrap(_wraps.y));
 		glBindTexture(target, GL_NONE);
 
-		wrapModes = _wrapModes;
+		wraps = _wraps;
 	}
 
 	void Texture::SetAnisotropicLevel(float level)
@@ -326,21 +326,21 @@ namespace Jwl
 		return height;
 	}
 
-	TextureFormat Texture::GetTextureFormat() const
+	TextureFormat Texture::GetFormat() const
 	{
 		ASSERT(hTex != 0, "A texture must be loaded to call this function.");
 
 		return format;
 	}
 
-	TextureFilterMode Texture::GetFilterMode() const
+	TextureFilter Texture::GetFilter() const
 	{
 		return filter;
 	}
 
-	TextureWrapModes Texture::GetWrapModes() const
+	TextureWraps Texture::GetWrap() const
 	{
-		return wrapModes;
+		return wraps;
 	}
 
 	float Texture::GetAnisotropicLevel() const

@@ -21,9 +21,9 @@ namespace Jwl
 		// Must be called first. Implicitly calls Unload().
 		void Init(unsigned pixelWidth, unsigned pixelHeight, unsigned numColorTextures, bool hasDepth, unsigned samples = 1);
 		// Initialize this RenderTarget as a non multi-sampled version of the provided RenderTarget. Implicitly calls Unload() and Validate().
-		bool InitAsResolve(const RenderTarget& multisampleBuffer, TextureFilterMode filter);
+		bool InitAsResolve(const RenderTarget& multisampleBuffer, TextureFilter filter);
 		// Allocates and initializes the texture slot specified by index. Must be called on each slot before use.
-		void CreateAttachment(unsigned index, TextureFormat format, TextureFilterMode filter);
+		void CreateAttachment(unsigned index, TextureFormat format, TextureFilter filter);
 		// Should be called once after all texture slots are created. Returns true if the RenderTarget was created successfully.
 		bool Validate() const;
 

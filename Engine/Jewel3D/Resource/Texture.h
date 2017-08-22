@@ -19,8 +19,8 @@ namespace Jwl
 		void CreateTexture(
 			unsigned width, unsigned height,
 			TextureFormat format,
-			TextureFilterMode filter = TextureFilterMode::Point,
-			TextureWrapModes wrapModes = TextureWrapMode::Clamp,
+			TextureFilter filter = TextureFilter::Point,
+			TextureWraps wraps = TextureWrap::Clamp,
 			float anisotropicLevel = 1.0f,
 			unsigned numSamples = 1);
 
@@ -31,8 +31,8 @@ namespace Jwl
 		void Bind(unsigned slot);
 		void UnBind(unsigned slot);
 
-		void SetFilterMode(TextureFilterMode filter);
-		void SetWrapModes(TextureWrapModes wrapModes);
+		void SetFilter(TextureFilter filter);
+		void SetWrap(TextureWraps wraps);
 		// Must be in the range of [1, 16].
 		void SetAnisotropicLevel(float level);
 
@@ -41,9 +41,9 @@ namespace Jwl
 		unsigned GetBindingTarget() const;
 		unsigned GetWidth() const;
 		unsigned GetHeight() const;
-		TextureFormat GetTextureFormat() const;
-		TextureFilterMode GetFilterMode() const;
-		TextureWrapModes GetWrapModes() const;
+		TextureFormat GetFormat() const;
+		TextureFilter GetFilter() const;
+		TextureWraps GetWrap() const;
 		float GetAnisotropicLevel() const;
 
 		bool IsCubeMap() const;
@@ -57,8 +57,8 @@ namespace Jwl
 		int width			= 0;
 		int height			= 0;
 		TextureFormat format = TextureFormat::RGB_8;
-		TextureFilterMode filter = TextureFilterMode::Point;
-		TextureWrapModes wrapModes = TextureWrapMode::Clamp;
+		TextureFilter filter = TextureFilter::Point;
+		TextureWraps wraps = TextureWrap::Clamp;
 		float anisotropicLevel = 1.0f;
 	};
 

@@ -36,8 +36,8 @@ namespace Jwl
 			depthAttachment = Texture::MakeNew();
 			depthAttachment->CreateTexture(
 				width, height,
-				TextureFormat::DEPTH_24, TextureFilterMode::Point,
-				TextureWrapMode::Clamp, 1.0f, numSamples);
+				TextureFormat::DEPTH_24, TextureFilter::Point,
+				TextureWrap::Clamp, 1.0f, numSamples);
 			
 			glFramebufferTexture2D(
 				GL_FRAMEBUFFER,
@@ -79,7 +79,7 @@ namespace Jwl
 		glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
 	}
 
-	bool RenderTarget::InitAsResolve(const RenderTarget& multisampleBuffer, TextureFilterMode filter)
+	bool RenderTarget::InitAsResolve(const RenderTarget& multisampleBuffer, TextureFilter filter)
 	{
 		ASSERT(FBO == GL_NONE, "RenderTarget is already initialized. Must call Unload() before initializing it again.");
 		ASSERT(multisampleBuffer.numSamples != 1, "'multisampleBuffer' must have a sample count above 1 in order to create a resolve buffer.");
@@ -89,13 +89,13 @@ namespace Jwl
 		// Mirror all color attachments, but with just one sample.
 		for (unsigned i = 0; i < multisampleBuffer.numColorAttachments; i++)
 		{
-			CreateAttachment(i, multisampleBuffer.GetColorTexture(i)->GetTextureFormat(), filter);
+			CreateAttachment(i, multisampleBuffer.GetColorTexture(i)->GetFormat(), filter);
 		}
 
 		return Validate();
 	}
 
-	void RenderTarget::CreateAttachment(unsigned index, TextureFormat format, TextureFilterMode filter)
+	void RenderTarget::CreateAttachment(unsigned index, TextureFormat format, TextureFilter filter)
 	{
 		ASSERT(FBO != GL_NONE, "Must call Init() or InitAsResolve() before the RenderTarget can be used.");
 		ASSERT(numColorAttachments > 0, "RenderTarget does not have any color attachments.");
@@ -103,7 +103,7 @@ namespace Jwl
 		ASSERT(format != TextureFormat::DEPTH_24, "'format' cannot be DEPTH_24 for a color attachment.");
 
 		colorAttachments[index] = Texture::MakeNew();
-		colorAttachments[index]->CreateTexture(width, height, format, filter, TextureWrapMode::Clamp, 1.0f, numSamples);
+		colorAttachments[index]->CreateTexture(width, height, format, filter, TextureWrap::Clamp, 1.0f, numSamples);
 
 		// Attach to framebuffer.
 		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
@@ -138,7 +138,7 @@ namespace Jwl
 		ASSERT(FBO != GL_NONE, "RenderTarget must be initialized before use.");
 		ASSERT(tex->GetHandle() != GL_NONE, "'tex' is not initialized.");
 		ASSERT(tex->GetNumSamples() == numSamples, "'tex' must have the same per-texel sample count as the RenderTarget.");
-		ASSERT(tex->GetTextureFormat() == TextureFormat::DEPTH_24, "Format of 'tex' must be a 24 bit depth texture.");
+		ASSERT(tex->GetFormat() == TextureFormat::DEPTH_24, "Format of 'tex' must be a 24 bit depth texture.");
 		ASSERT(tex->GetWidth() == width, "Dimensions of 'tex' must match the dimensions of the RenderTarget.");
 		ASSERT(tex->GetHeight() == height, "Dimensions of 'tex' must match the dimensions of the RenderTarget.");
 
@@ -283,8 +283,8 @@ namespace Jwl
 			depthAttachment->Unload();
 			depthAttachment->CreateTexture(
 				newWidth, newHeight,
-				TextureFormat::DEPTH_24, TextureFilterMode::Point,
-				TextureWrapMode::Clamp, 1.0f, numSamples);
+				TextureFormat::DEPTH_24, TextureFilter::Point,
+				TextureWrap::Clamp, 1.0f, numSamples);
 
 			glFramebufferTexture2D(
 				GL_FRAMEBUFFER,
@@ -297,9 +297,9 @@ namespace Jwl
 		for (unsigned i = 0; i < numColorAttachments; ++i)
 		{
 			// Preserve the states of the texture, just in case the user changed them.
-			const TextureFormat oldFormat = colorAttachments[i]->GetTextureFormat();
-			const TextureFilterMode oldFilter = colorAttachments[i]->GetFilterMode();
-			const TextureWrapModes oldWrap = colorAttachments[i]->GetWrapModes();
+			const TextureFormat oldFormat = colorAttachments[i]->GetFormat();
+			const TextureFilter oldFilter = colorAttachments[i]->GetFilter();
+			const TextureWraps oldWrap = colorAttachments[i]->GetWrap();
 			const float oldAnisotropicLevel = colorAttachments[i]->GetAnisotropicLevel();
 			colorAttachments[i]->Unload();
 
@@ -428,7 +428,7 @@ namespace Jwl
 		glReadBuffer(GL_COLOR_ATTACHMENT0 + index);
 
 		unsigned format = 0;
-		switch (CountChannels(colorAttachments[index]->GetTextureFormat()))
+		switch (CountChannels(colorAttachments[index]->GetFormat()))
 		{
 		case 4: format = GL_RGBA;
 			break;
@@ -441,7 +441,7 @@ namespace Jwl
 		}
 
 		vec4 result;
-		switch (colorAttachments[index]->GetTextureFormat())
+		switch (colorAttachments[index]->GetFormat())
 		{
 		case TextureFormat::RGB_8:
 		case TextureFormat::RGBA_8:

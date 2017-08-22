@@ -137,15 +137,15 @@ bool FontEncoder::Convert(const std::string& source, const std::string& destinat
 	const unsigned width = static_cast<unsigned>(metadata.GetInt("width"));
 	const unsigned height = static_cast<unsigned>(metadata.GetInt("height"));
 	
-	Jwl::TextureFilterMode filter = Jwl::TextureFilterMode::Point;
+	Jwl::TextureFilter filter = Jwl::TextureFilter::Point;
 	{
 		std::string str = metadata.GetString("texture_filter");
 		if (Jwl::CompareLowercase(str, "linear"))
-			filter = Jwl::TextureFilterMode::Linear;
+			filter = Jwl::TextureFilter::Linear;
 		else if (Jwl::CompareLowercase(str, "bilinear"))
-			filter = Jwl::TextureFilterMode::Bilinear;
+			filter = Jwl::TextureFilter::Bilinear;
 		else if (Jwl::CompareLowercase(str, "trilinear"))
-			filter = Jwl::TextureFilterMode::Trilinear;
+			filter = Jwl::TextureFilter::Trilinear;
 	}
 
 	// File preparation.
@@ -238,7 +238,7 @@ bool FontEncoder::Convert(const std::string& source, const std::string& destinat
 	fwrite(&bitmapSize, sizeof(unsigned long int), 1, fontFile);
 	fwrite(&width, sizeof(unsigned), 1, fontFile);
 	fwrite(&height, sizeof(unsigned), 1, fontFile);
-	fwrite(&filter, sizeof(Jwl::TextureFilterMode), 1, fontFile);
+	fwrite(&filter, sizeof(Jwl::TextureFilter), 1, fontFile);
 
 	// Write Data.
 	fwrite(bitmapBuffer.data(), sizeof(unsigned char), bitmapSize, fontFile);

@@ -33,7 +33,7 @@ namespace Jwl
 		DEPTH_24
 	};
 
-	enum class TextureWrapMode
+	enum class TextureWrap
 	{
 		Clamp,
 		ClampWithBorder,
@@ -42,17 +42,17 @@ namespace Jwl
 		RepeatMirroredOnce
 	};
 
-	struct TextureWrapModes
+	struct TextureWraps
 	{
-		TextureWrapModes() = default;
-		TextureWrapModes(TextureWrapMode xy);
-		TextureWrapModes(TextureWrapMode x, TextureWrapMode y);
+		TextureWraps() = default;
+		TextureWraps(TextureWrap xy);
+		TextureWraps(TextureWrap x, TextureWrap y);
 
-		TextureWrapMode x = TextureWrapMode::Clamp;
-		TextureWrapMode y = TextureWrapMode::Clamp;
+		TextureWrap x = TextureWrap::Clamp;
+		TextureWrap y = TextureWrap::Clamp;
 	};
 
-	enum class TextureFilterMode
+	enum class TextureFilter
 	{
 		Point,
 		Linear,
@@ -105,16 +105,16 @@ namespace Jwl
 		Adaptive = -1
 	};
 
-	int ResolveFilterMagMode(TextureFilterMode filter);
-	int ResolveFilterMinMode(TextureFilterMode filter);
-	bool ResolveMipMapping(TextureFilterMode filter);
-	int ResolveWrapMode(TextureWrapMode wrapMode);
+	int ResolveFilterMag(TextureFilter filter);
+	int ResolveFilterMin(TextureFilter filter);
+	bool ResolveMipMapping(TextureFilter filter);
+	int ResolveWrap(TextureWrap wrap);
 	unsigned ResolveFormat(TextureFormat format);
 
-	TextureFilterMode StringToFilterMode(const std::string&);
-	TextureWrapMode StringToWrapMode(const std::string&);
+	TextureFilter StringToTextureFilter(const std::string&);
+	TextureWrap StringToTextureWrap(const std::string&);
 
-	unsigned CountMipLevels(unsigned width, unsigned height, TextureFilterMode filter);
+	unsigned CountMipLevels(unsigned width, unsigned height, TextureFilter filter);
 	unsigned CountChannels(TextureFormat format);
 
 	void ClearBackBuffer();

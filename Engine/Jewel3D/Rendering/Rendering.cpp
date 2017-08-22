@@ -11,14 +11,14 @@
 
 namespace
 {
-	const int filterMinMode_Resolve[] = {
+	const int filterMin_Resolve[] = {
 		GL_NEAREST,
 		GL_LINEAR,
 		GL_LINEAR_MIPMAP_NEAREST,
 		GL_LINEAR_MIPMAP_LINEAR
 	};
 
-	const int wrapMode_Resolve[] = {
+	const int wrap_Resolve[] = {
 		GL_CLAMP_TO_EDGE,
 		GL_CLAMP_TO_BORDER,
 		GL_REPEAT,
@@ -43,19 +43,19 @@ namespace
 
 namespace Jwl
 {
-	TextureWrapModes::TextureWrapModes(TextureWrapMode xy)
+	TextureWraps::TextureWraps(TextureWrap xy)
 		: x(xy), y(xy)
 	{
 	}
 
-	TextureWrapModes::TextureWrapModes(TextureWrapMode _x, TextureWrapMode _y)
+	TextureWraps::TextureWraps(TextureWrap _x, TextureWrap _y)
 		: x(_x), y(_y)
 	{
 	}
 
-	int ResolveFilterMagMode(TextureFilterMode filter)
+	int ResolveFilterMag(TextureFilter filter)
 	{
-		if (filter == TextureFilterMode::Point)
+		if (filter == TextureFilter::Point)
 		{
 			return GL_NEAREST;
 		}
@@ -65,19 +65,19 @@ namespace Jwl
 		}
 	}
 
-	int ResolveFilterMinMode(TextureFilterMode filter)
+	int ResolveFilterMin(TextureFilter filter)
 	{
-		return filterMinMode_Resolve[static_cast<unsigned>(filter)];
+		return filterMin_Resolve[static_cast<unsigned>(filter)];
 	}
 
-	bool ResolveMipMapping(TextureFilterMode filter)
+	bool ResolveMipMapping(TextureFilter filter)
 	{
-		return filter == TextureFilterMode::Trilinear || filter == TextureFilterMode::Bilinear;
+		return filter == TextureFilter::Trilinear || filter == TextureFilter::Bilinear;
 	}
 
-	int ResolveWrapMode(TextureWrapMode wrapMode)
+	int ResolveWrap(TextureWrap wrap)
 	{
-		return wrapMode_Resolve[static_cast<unsigned>(wrapMode)];
+		return wrap_Resolve[static_cast<unsigned>(wrap)];
 	}
 
 	unsigned ResolveFormat(TextureFormat format)
@@ -85,33 +85,33 @@ namespace Jwl
 		return format_Resolve[static_cast<unsigned>(format)];
 	}
 
-	TextureFilterMode StringToFilterMode(const std::string& str)
+	TextureFilter StringToTextureFilter(const std::string& str)
 	{
 		if (CompareLowercase(str, "linear"))
-			return TextureFilterMode::Linear;
+			return TextureFilter::Linear;
 		else if (CompareLowercase(str, "bilinear"))
-			return TextureFilterMode::Bilinear;
+			return TextureFilter::Bilinear;
 		else if (CompareLowercase(str, "trilinear"))
-			return TextureFilterMode::Trilinear;
+			return TextureFilter::Trilinear;
 		else
-			return TextureFilterMode::Point;
+			return TextureFilter::Point;
 	}
 
-	TextureWrapMode StringToWrapMode(const std::string& str)
+	TextureWrap StringToTextureWrap(const std::string& str)
 	{
 		if (CompareLowercase(str, "clampwithborder"))
-			return TextureWrapMode::ClampWithBorder;
+			return TextureWrap::ClampWithBorder;
 		else if (CompareLowercase(str, "repeat"))
-			return TextureWrapMode::Repeat;
+			return TextureWrap::Repeat;
 		else if (CompareLowercase(str, "repeatmirrored"))
-			return TextureWrapMode::RepeatMirrored;
+			return TextureWrap::RepeatMirrored;
 		else if (CompareLowercase(str, "repeatmirroredonce"))
-			return TextureWrapMode::RepeatMirroredOnce;
+			return TextureWrap::RepeatMirroredOnce;
 		else
-			return TextureWrapMode::Clamp;
+			return TextureWrap::Clamp;
 	}
 
-	unsigned CountMipLevels(unsigned width, unsigned height, TextureFilterMode filter)
+	unsigned CountMipLevels(unsigned width, unsigned height, TextureFilter filter)
 	{
 		unsigned numLevels = 1;
 		if (ResolveMipMapping(filter))
