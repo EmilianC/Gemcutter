@@ -74,13 +74,15 @@ be attached to the Material Component for per-object control. When rendering, Je
 If both the shader and Material bind a buffer or texture to the same ID, the Material's per-object data is used.
 
 # System Uniforms, Functions, and Variables
-A series of matrices are available for all GLSL shader blocks.
+A series of uniforms are available for all GLSL shader blocks.
 ```cpp
 mat4 Jwl_View;
 mat4 Jwl_Proj;
 mat4 Jwl_ViewProj;
 mat4 Jwl_InvView;
 mat4 Jwl_InvProj;
+vec3 Jwl_CameraPosition; // World space.
+
 mat4 Jwl_MVP;
 mat4 Jwl_ModelView;
 mat4 Jwl_Model;
@@ -101,12 +103,12 @@ bool is_spot_light(Light light);
 
 The standard math definitions from Jewel3D/Math/Math.h are also defined in all GLSL shader blocks.
 ```cpp
-#define M_PI     = 3.14159265358979323846
-#define M_E      = 2.71828182845904523536
-#define M_LOG2E  = 1.44269504088896340736
-#define M_LOG10E = 0.434294481903251827651
-#define M_LN2    = 0.693147180559945309417
-#define M_LN10   = 2.30258509299404568402
+#define M_PI     3.14159265358979323846
+#define M_E      2.71828182845904523536
+#define M_LOG2E  1.44269504088896340736
+#define M_LOG10E 0.434294481903251827651
+#define M_LN2    0.693147180559945309417
+#define M_LN10   2.30258509299404568402
 ```
 
 # Lighting Example

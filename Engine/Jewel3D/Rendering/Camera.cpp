@@ -64,6 +64,7 @@ namespace Jwl
 		uniformView.Set(view);
 		uniformViewProj.Set(projection * view);
 		uniformInvView.Set(InvView);
+		uniformCameraPosition.Set(InvView.GetTranslation());
 
 		buffer.Bind(static_cast<unsigned>(UniformBufferSlot::Camera));
 	}
@@ -434,6 +435,7 @@ namespace Jwl
 		buffer.AddUniform("ViewProj", sizeof(mat4));
 		buffer.AddUniform("InvView", sizeof(mat4));
 		buffer.AddUniform("InvProj", sizeof(mat4));
+		buffer.AddUniform("CameraPosition", sizeof(vec3));
 		buffer.InitBuffer();
 	}
 
@@ -444,5 +446,6 @@ namespace Jwl
 		uniformViewProj = buffer.MakeHandle<mat4>("ViewProj");
 		uniformInvView = buffer.MakeHandle<mat4>("InvView");
 		uniformInvProj = buffer.MakeHandle<mat4>("InvProj");
+		uniformCameraPosition = buffer.MakeHandle<vec3>("CameraPosition");
 	}
 }

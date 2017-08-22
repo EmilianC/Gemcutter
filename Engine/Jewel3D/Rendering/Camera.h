@@ -2,11 +2,11 @@
 #pragma once
 #include "Jewel3D/Entity/Entity.h"
 #include "Jewel3D/Math/Matrix.h"
+#include "Jewel3D/Math/Vector.h"
 #include "Jewel3D/Resource/UniformBuffer.h"
 
 namespace Jwl
 {
-	class vec3;
 	class Viewport;
 
 	class Camera : public Component<Camera>
@@ -93,6 +93,7 @@ namespace Jwl
 		mutable UniformHandle<mat4> uniformViewProj;
 		mutable UniformHandle<mat4> uniformInvView;
 		mutable UniformHandle<mat4> uniformInvProj;
+		mutable UniformHandle<vec3> uniformCameraPosition;
 
 		bool isPerspective	= true;
 		float fovyDegrees	= 50.0f;

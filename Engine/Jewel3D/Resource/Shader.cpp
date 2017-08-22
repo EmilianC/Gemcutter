@@ -76,6 +76,7 @@ namespace
 		"	mat4 Jwl_ViewProj;\n"
 		"	mat4 Jwl_InvView;\n"
 		"	mat4 Jwl_InvProj;\n"
+		"	vec3 Jwl_CameraPosition;\n"
 		"};"
 		"\n"
 		"layout(std140) uniform Jwl_Model_Uniforms\n"
