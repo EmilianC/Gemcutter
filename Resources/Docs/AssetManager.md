@@ -22,8 +22,3 @@ Metadata files are automatically updated and added to the workspace while the As
 Packing the workspace will prepare all assets for use by the game. By default, an output folder called ```Assets``` will be created adjacent to the Workspace.
 All assets with an associated Encoder will be converted using the DLL and saved to the Assets folder. Any remaining assets are copied 1:1 to the folder.
 The output folder is populated with the same folder structure as the workspace.
-
-# Folder Structure
-When assets are packing, the output directory is re-created from scratch. This directory should be completely driven
-by the AssetManager. For this reason, persistent game data should be kept outside this directory during development. This also means
-that the output directory should be ignored from source control.

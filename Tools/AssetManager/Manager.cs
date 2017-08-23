@@ -142,28 +142,12 @@ namespace AssetManager
 
 			LoadEncoders();
 
-			// Clear and duplicate the directory structure in the output folder.
-			if (Directory.Exists(outputRoot))
-			{
-				Directory.Delete(outputRoot, true);
-
-				// Wait for deletion.
-				var watch = new Stopwatch();
-				watch.Start();
-				while (Directory.Exists(outputRoot) && watch.Elapsed < TimeSpan.FromSeconds(2))
-				{};
-
-				if (Directory.Exists(outputRoot))
-				{
-					Log($"ERROR:   Failed to delete output folder.", ConsoleColor.Red);
-					return false;
-				}
-			}
-
+			// Duplicate the directory structure in the output folder.
 			Directory.CreateDirectory(outputRoot);
-
 			foreach (var path in Directory.GetDirectories(inputRoot, "*", SearchOption.AllDirectories))
+			{
 				Directory.CreateDirectory(path.Replace(inputRoot, outputRoot));
+			}
 
 			bool result = false;
 			var workspaceFiles = GetWorkspaceFiles();
