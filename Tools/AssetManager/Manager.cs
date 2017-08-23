@@ -171,9 +171,22 @@ namespace AssetManager
 				foreach (string file in workspaceFiles.Where(file =>
 					!encoders.Any(x => file.EndsWith(x.Key, StringComparison.InvariantCultureIgnoreCase))))
 				{
-					Log($"Copying  [{file.Substring(inputRoot.Length + 1)}]");
-
 					var outFile = file.Replace(inputRoot, outputRoot);
+
+					// Don't bother copying the file if it already exists, unchanged, in the destination folder.
+					if (File.Exists(outFile))
+					{
+						var destinationFileInfo = new FileInfo(outFile);
+						var sourceFileInfo = new FileInfo(file);
+
+						if (destinationFileInfo.Length == sourceFileInfo.Length &&
+							File.GetLastWriteTime(outFile) == File.GetLastWriteTime(file))
+							continue;
+
+						File.Delete(outFile);
+					}
+
+					Log($"Copying  [{file.Substring(inputRoot.Length + 1)}]");
 					File.Copy(file, outFile);
 				}
 
