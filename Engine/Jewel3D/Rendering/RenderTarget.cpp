@@ -320,9 +320,9 @@ namespace Jwl
 	void RenderTarget::ResolveMultisampling(const RenderTarget& target) const
 	{
 		ASSERT(FBO != GL_NONE, "RenderTarget must be initialized before use.");
+		ASSERT(target.FBO != GL_NONE, "'target' is not an initialized RenderTarget.");
 		ASSERT(numColorAttachments == target.numColorAttachments, "RenderTargets must have the same number of attachments.");
 		ASSERT(HasDepth() == target.HasDepth(), "One RenderTarget has a depth buffer but the other does not.");
-		ASSERT(target.FBO != GL_NONE, "'target' is not an initialized RenderTarget.");
 		ASSERT(target.numSamples == 1, "'target' must have a sample count of 1.");
 
 		GLenum filter = (width == target.width) && (height == target.height) ? GL_NEAREST : GL_LINEAR;

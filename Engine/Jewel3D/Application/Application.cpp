@@ -747,23 +747,12 @@ namespace Jwl
 			int attribs[] = {
 				WGL_CONTEXT_MAJOR_VERSION_ARB, static_cast<int>(app.glMajorVersion),
 				WGL_CONTEXT_MINOR_VERSION_ARB, static_cast<int>(app.glMinorVersion),
-				WGL_CONTEXT_PROFILE_MASK_ARB,
-				WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
-				WGL_CONTEXT_FLAGS_ARB,
+				WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
 #ifdef _DEBUG
-				WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB | WGL_CONTEXT_DEBUG_BIT_ARB,
+				WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB | WGL_CONTEXT_DEBUG_BIT_ARB,
 #else
-				WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
+				WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
 #endif
-				//WGL_DRAW_TO_WINDOW_ARB, GL_TRUE,
-				//WGL_SUPPORT_OPENGL_ARB, GL_TRUE,
-				//WGL_DOUBLE_BUFFER_ARB, GL_TRUE,
-				//WGL_PIXEL_TYPE_ARB, WGL_TYPE_RGBA_ARB,
-				//WGL_COLOR_BITS_ARB, 32,
-				//WGL_DEPTH_BITS_ARB, 24,
-				//WGL_STENCIL_BITS_ARB, 8,
-				//WGL_SAMPLE_BUFFERS_ARB, GL_TRUE,
-				//WGL_SAMPLES_ARB, 16,
 				0 }; // zero indicates the end of the array
 
 			// Create a temporary context so we can get a pointer to our newer context
@@ -776,8 +765,7 @@ namespace Jwl
 			}
 
 			// Get the function we can use to generate a modern context.
-			PFNWGLCREATECONTEXTATTRIBSARBPROC wglCreateContextAttribsARB = reinterpret_cast<PFNWGLCREATECONTEXTATTRIBSARBPROC>(wglGetProcAddress("wglCreateContextAttribsARB"));
-
+			auto wglCreateContextAttribsARB = reinterpret_cast<PFNWGLCREATECONTEXTATTRIBSARBPROC>(wglGetProcAddress("wglCreateContextAttribsARB"));
 			if (wglCreateContextAttribsARB)
 			{
 				// Create modern OpenGL context using the new function and delete the old one.
@@ -809,7 +797,7 @@ namespace Jwl
 				return -1;
 			}
 
-			// GLEW can sometimes cause a GL_INVALID_ENUM error. 
+			// GLEW can sometimes cause a GL_INVALID_ENUM error.
 			// We pop it off the error stack here.
 			glGetError();
 

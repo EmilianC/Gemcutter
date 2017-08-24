@@ -97,11 +97,8 @@ bool FontEncoder::Validate(const Jwl::ConfigTable& metadata, unsigned loadedVers
 	switch (loadedVersion)
 	{
 	case 1:
-		if (!checkWidth(metadata))
-			return false;
-
-		if (!checkHeight(metadata))
-			return false;
+		if (!checkWidth(metadata)) return false;
+		if (!checkHeight(metadata)) return false;
 
 		if (metadata.GetSize() != 3)
 		{
@@ -111,14 +108,9 @@ bool FontEncoder::Validate(const Jwl::ConfigTable& metadata, unsigned loadedVers
 		break;
 
 	case 2:
-		if (!checkWidth(metadata))
-			return false;
-
-		if (!checkHeight(metadata))
-			return false;
-
-		if (!checkTextureFilter(metadata))
-			return false;
+		if (!checkWidth(metadata)) return false;
+		if (!checkHeight(metadata)) return false;
+		if (!checkTextureFilter(metadata)) return false;
 
 		if (metadata.GetSize() != 4)
 		{
