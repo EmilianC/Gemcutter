@@ -89,8 +89,15 @@ mat4 Jwl_Model;
 mat4 Jwl_InvModel;
 ```
 
-The following lighting functions are available to use in all GLSL shader blocks.
+The following functions are available to use in all GLSL shader blocks.
 ```cpp
+// Converts between color spaces.
+float sRGB_to_linear(float x);
+vec3 sRGB_to_linear(vec3 v);
+
+float linear_to_sRGB(float x);
+vec3 linear_to_sRGB(vec3 v);
+
 // Computes the surface contribution from any type of light and its parameters.
 // The first parameter should be a Light's Uniform Buffer.
 // 'normal' and 'pos' should be view space vectors describing the surface.
