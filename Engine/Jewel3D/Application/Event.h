@@ -30,8 +30,11 @@ namespace Jwl
 	template <class EventObj>
 	class Listener
 	{
+		template<class T> friend class Event;
 		static_assert(std::is_base_of<EventBase, EventObj>::value, "Template argument must inherit from Event.");
 	public:
+		using EventFunc = void(const EventObj&);
+
 		// Constructs the listener without a connection to a callback function.
 		Listener()
 		{
@@ -39,8 +42,8 @@ namespace Jwl
 		}
 
 		// Constructs the listener with a callback function.
-		Listener(std::function<void(const EventObj&)> callbackFunc)
-			: callback(callbackFunc)
+		Listener(std::function<EventFunc> callbackFunc)
+			: callback(std::move(callbackFunc))
 		{
 			EventObj::Subscribe(*this);
 		}
@@ -51,8 +54,14 @@ namespace Jwl
 			EventObj::Unsubscribe(*this);
 		}
 
+		void operator=(std::function<EventFunc> callbackFunc)
+		{
+			callback = std::move(callbackFunc);
+		}
+
+	private:
 		// The callback function invoked when an event of the templated type is dispatched.
-		std::function<void(const EventObj&)> callback;
+		std::function<EventFunc> callback;
 	};
 
 	// You can inherit from this class to create your own custom events.

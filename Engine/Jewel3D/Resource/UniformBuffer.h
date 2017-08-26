@@ -13,8 +13,7 @@ namespace Jwl
 	// shader directly, or to a Material component.
 	class UniformBuffer : public Shareable<UniformBuffer>
 	{
-		template<class T>
-		friend class UniformHandle;
+		template<class T> friend class UniformHandle;
 	public:
 		UniformBuffer() = default;
 		~UniformBuffer();
