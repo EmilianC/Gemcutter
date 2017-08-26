@@ -109,18 +109,17 @@ namespace Jwl
 
 	void RenderPass::Bind()
 	{
-		if (viewport != nullptr)
+		if (target)
+		{
+			target->Bind();
+		}
+
+		if (viewport)
 		{
 			viewport->bind();
-
-			if (target)
-			{
-				target->Bind();
-			}
 		}
 		else if (target)
 		{
-			target->Bind();
 			target->GetViewport().bind();
 		}
 		else

@@ -67,6 +67,8 @@ namespace Jwl
 	{
 		ASSERT(hTex == 0, "Texture already has a texture loaded.");
 
+		unsigned numLevels = 0;
+
 		auto ext = ExtractFileExtension(filePath);
 		if (ext.empty() || CompareLowercase(ext, ".texture"))
 		{
@@ -94,21 +96,9 @@ namespace Jwl
 			fread(&wraps.y, sizeof(TextureWrap), 1, fontFile);
 			fread(&anisotropicLevel, sizeof(float), 1, fontFile);
 
-			unsigned textureSize = width * height;
-			if (format == TextureFormat::RGB_8)
-			{
-				textureSize *= 3;
-			}
-			else if (format == TextureFormat::RGBA_8)
-			{
-				textureSize *= 4;
-			}
-			else
-			{
-				Error("Texture: ( %s )\nUnsupported format. Must have 3 or 4 color channels.", filePath.c_str());
-				return false;
-			}
-
+			numLevels = CountMipLevels(width, height, filter);
+			const unsigned textureSize = width * height * CountChannels(format);
+			const unsigned dataFormat = CountChannels(format) == 3 ? GL_RGB : GL_RGBA;
 			if (isCubeMap)
 			{
 				unsigned char* image = static_cast<unsigned char*>(malloc(sizeof(unsigned char) * textureSize * 6));
@@ -125,29 +115,11 @@ namespace Jwl
 				glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 				glTexParameterf(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAX_ANISOTROPY_EXT, anisotropicLevel);
 
-				unsigned numLevels = CountMipLevels(width, height, filter);
-				if (CountChannels(format) == 3)
-				{
-					glTexStorage2D(GL_TEXTURE_CUBE_MAP, numLevels, GL_RGB8, width, height);
+				glTexStorage2D(GL_TEXTURE_CUBE_MAP, numLevels, ResolveFormat(format), width, height);
 
-					for (unsigned i = 0; i < 6; i++)
-					{
-						glTexSubImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, 0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, image + (textureSize * i));
-					}
-				}
-				else
+				for (unsigned i = 0; i < 6; i++)
 				{
-					glTexStorage2D(GL_TEXTURE_CUBE_MAP, numLevels, GL_RGBA8, width, height);
-
-					for (unsigned i = 0; i < 6; i++)
-					{
-						glTexSubImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, image + (textureSize * i));
-					}
-				}
-
-				if (numLevels > 1)
-				{
-					glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+					glTexSubImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, 0, 0, width, height, dataFormat, GL_UNSIGNED_BYTE, image + (textureSize * i));
 				}
 
 				target = GL_TEXTURE_CUBE_MAP;
@@ -167,35 +139,22 @@ namespace Jwl
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, ResolveWrap(wraps.y));
 				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, anisotropicLevel);
 
-				unsigned numLevels = CountMipLevels(width, height, filter);
-				if (CountChannels(format) == 3)
-				{
-					glTexStorage2D(GL_TEXTURE_2D, numLevels, GL_RGB8, width, height);
-					glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, image);
-				}
-				else
-				{
-					glTexStorage2D(GL_TEXTURE_2D, numLevels, GL_RGBA8, width, height);
-					glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, image);
-				}
-
-				if (numLevels > 1)
-				{
-					glGenerateMipmap(GL_TEXTURE_2D);
-				}
+				glTexStorage2D(GL_TEXTURE_2D, numLevels, ResolveFormat(format), width, height);
+				glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, dataFormat, GL_UNSIGNED_BYTE, image);
 
 				target = GL_TEXTURE_2D;
 			}
 		}
 		else
 		{
-			auto image = Image::Load(filePath);
+			auto image = Image::Load(filePath, true, false);
 			if (image.data == nullptr)
 				return false;
 
 			width = image.width;
 			height = image.height;
 			format = image.format;
+			numLevels = CountMipLevels(width, height, filter);
 
 			glGenTextures(1, &hTex);
 			glBindTexture(GL_TEXTURE_2D, hTex);
@@ -205,24 +164,17 @@ namespace Jwl
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, ResolveWrap(wraps.y));
 			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, anisotropicLevel);
 
-			unsigned numLevels = CountMipLevels(width, height, filter);
-			if (CountChannels(format) == 3)
-			{
-				glTexStorage2D(GL_TEXTURE_2D, numLevels, GL_RGB8, width, height);
-				glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, image.data);
-			}
-			else
-			{
-				glTexStorage2D(GL_TEXTURE_2D, numLevels, GL_RGBA8, width, height);
-				glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, image.data);
-			}
-
-			if (numLevels > 1)
-			{
-				glGenerateMipmap(GL_TEXTURE_2D);
-			}
+			const unsigned dataFormat = CountChannels(format) == 3 ? GL_RGB : GL_RGBA;
+			
+			glTexStorage2D(GL_TEXTURE_2D, numLevels, ResolveFormat(format), width, height);
+			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, dataFormat, GL_UNSIGNED_BYTE, image.data);
 
 			target = GL_TEXTURE_2D;
+		}
+
+		if (numLevels > 1)
+		{
+			glGenerateMipmap(target);
 		}
 
 		glBindTexture(target, GL_NONE);
@@ -449,7 +401,7 @@ namespace Jwl
 		free(const_cast<unsigned char*>(data));
 	}
 
-	Image Image::Load(const std::string& file, bool flipY)
+	Image Image::Load(const std::string& file, bool flipY, bool sRGB)
 	{
 		int width = 0;
 		int height = 0;
@@ -459,7 +411,7 @@ namespace Jwl
 		if (data == nullptr)
 		{
 			Jwl::Error("Texture: ( %s )\n%s", file.c_str(), SOIL_last_result());
-			return Image();
+			return Image(0, 0, TextureFormat::RGB_8, nullptr);
 		}
 
 		// Invert the Y axis for OpenGL texture addressing.
@@ -479,16 +431,16 @@ namespace Jwl
 
 		if (numChannels == 3)
 		{
-			return Image(width, height, TextureFormat::RGB_8, data);
+			return Image(width, height, sRGB ? TextureFormat::sRGB_8 : TextureFormat::RGB_8, data);
 		}
 		else if (numChannels == 4)
 		{
-			return Image(width, height, TextureFormat::RGBA_8, data);
+			return Image(width, height, sRGB ? TextureFormat::sRGBA_8 : TextureFormat::RGBA_8, data);
 		}
 		else
 		{
 			Jwl::Error("Texture: ( %s )\nUnsupported format. Must have 3 or 4 color channels.", file.c_str());
-			return Image();
+			return Image(0, 0, TextureFormat::RGB_8, nullptr);
 		}
 	}
 }

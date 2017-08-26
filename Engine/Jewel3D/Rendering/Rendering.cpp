@@ -37,7 +37,9 @@ namespace
 		GL_RGBA16F,
 		GL_RGBA32UI,
 		GL_RGBA32F,
-		GL_DEPTH_COMPONENT24
+		GL_DEPTH_COMPONENT24,
+		GL_SRGB8,
+		GL_SRGB8_ALPHA8
 	};
 }
 
@@ -132,12 +134,14 @@ namespace Jwl
 		case TextureFormat::RGB_16F:
 		case TextureFormat::RGB_32:
 		case TextureFormat::RGB_32F:
+		case TextureFormat::sRGB_8:
 			return 3;
 		case TextureFormat::RGBA_8:
 		case TextureFormat::RGBA_16:
 		case TextureFormat::RGBA_16F:
 		case TextureFormat::RGBA_32:
 		case TextureFormat::RGBA_32F:
+		case TextureFormat::sRGBA_8:
 			return 4;
 		case TextureFormat::DEPTH_24:
 			return 1;

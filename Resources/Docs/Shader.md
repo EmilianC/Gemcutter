@@ -220,6 +220,16 @@ material.variantDefinitions.Undefine("Use_Feature_X");
 material.SetBlendMode(BlendFunc::CutOut);
 ```
 
+# sRGB Conversions
+It is recommended to use sRGB textures and to composite your final scene into a RenderTarget with an sRGB color buffer.
+This will preserve the color balance of your original textures and will improve the accuracy of lighting effects.
+
+When reading from an sRGB texture in a shader the texture fetch will automatically convert the color to linear space.
+When rendering to a RenderTarget with an sRGB color buffer, a linear->sRGB conversion will automatically be done for you.
+
+However, when rendering directly to the backbuffer, a linear->sRGB conversion does NOT take place and textures will appear too dark.
+In this case, you can call linear_to_sRGB() on your shader's output color.
+
 # Notes
 * Uniform Buffer values are seamlessly used between all variants of a shader. 
 * A particular shader variant is only compiled the first time that it is used.

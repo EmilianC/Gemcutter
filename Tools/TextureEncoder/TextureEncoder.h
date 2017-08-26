@@ -13,4 +13,6 @@ public:
 	virtual bool Validate(const Jwl::ConfigTable& metadata, unsigned loadedVersion) const override;
 
 	virtual bool Convert(const std::string& source, const std::string& destination, const Jwl::ConfigTable& metadata) const override;
+
+	virtual bool Upgrade(Jwl::ConfigTable& metadata, unsigned loadedVersion) const override;
 };

@@ -30,7 +30,9 @@ namespace Jwl
 		RGBA_16F,
 		RGBA_32,
 		RGBA_32F,
-		DEPTH_24
+		DEPTH_24,
+		sRGB_8,
+		sRGBA_8
 	};
 
 	enum class TextureWrap

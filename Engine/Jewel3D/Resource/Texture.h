@@ -101,16 +101,15 @@ namespace Jwl
 	class Image
 	{
 	public:
-		Image() = default;
 		~Image();
 
 		// Loads *.png, *.jpg, *.tga, and *.bmp.
-		static Image Load(const std::string& file, bool flipY = true);
+		static Image Load(const std::string& file, bool flipY, bool sRGB);
 
-		const int width = 0;
-		const int height = 0;
-		const TextureFormat format = TextureFormat::RGB_8;
-		const unsigned char* data = nullptr;
+		const int width;
+		const int height;
+		const TextureFormat format;
+		const unsigned char* data;
 
 	private:
 		Image(int width, int height, TextureFormat format, unsigned char* data);

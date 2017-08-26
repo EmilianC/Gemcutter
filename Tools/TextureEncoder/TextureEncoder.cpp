@@ -3,7 +3,7 @@
 #include "Jewel3D/Resource/Texture.h"
 #include "Jewel3D/Utilities/String.h"
 
-#define CURRENT_VERSION 1
+#define CURRENT_VERSION 2
 
 std::unique_ptr<Jwl::Encoder> GetEncoder()
 {
@@ -25,12 +25,31 @@ Jwl::ConfigTable TextureEncoder::GetDefault() const
 	defaultConfig.SetValue("filter", "linear");
 	defaultConfig.SetValue("wrap_x", "clamp");
 	defaultConfig.SetValue("wrap_y", "clamp");
+	defaultConfig.SetValue("s_rgb", "true");
 
 	return defaultConfig;
 }
 
 bool TextureEncoder::Validate(const Jwl::ConfigTable& metadata, unsigned loadedVersion) const
 {
+	auto validateAnisotropicLevel = [](const Jwl::ConfigTable& data)
+	{
+		if (!data.HasSetting("anisotropic_level"))
+		{
+			Jwl::Error("Missing \"anisotropic_level\" value.");
+			return false;
+		}
+
+		float anisotropicLevel = data.GetFloat("anisotropic_level");
+		if (anisotropicLevel < 1.0f || anisotropicLevel > 16.0f)
+		{
+			Jwl::Error("\"anisotropic_level\" must be in the range of [1, 16].");
+			return false;
+		}
+
+		return true;
+	};
+
 	auto validateTextureFilter = [](const Jwl::ConfigTable& data)
 	{
 		if (!data.HasSetting("filter"))
@@ -52,7 +71,7 @@ bool TextureEncoder::Validate(const Jwl::ConfigTable& metadata, unsigned loadedV
 		return true;
 	};
 
-	auto validateWrapMode = [](const Jwl::ConfigTable& data, const char* mode)
+	auto validateWrap = [](const Jwl::ConfigTable& data, const char* mode)
 	{
 		if (!data.HasSetting(mode))
 		{
@@ -77,35 +96,44 @@ bool TextureEncoder::Validate(const Jwl::ConfigTable& metadata, unsigned loadedV
 	switch (loadedVersion)
 	{
 	case 1:
-		if (!metadata.HasSetting("anisotropic_level"))
-		{
-			Jwl::Error("Missing \"anisotropic_level\" value.");
-			return false;
-		}
-
 		if (!metadata.HasSetting("cubemap"))
 		{
 			Jwl::Error("Missing \"cubemap\" value.");
 			return false;
 		}
 
-		float anisotropicLevel = metadata.GetFloat("anisotropic_level");
-		if (anisotropicLevel < 1.0f || anisotropicLevel > 16.0f)
+		if (!validateAnisotropicLevel(metadata)) return false;
+		if (!validateTextureFilter(metadata)) return false;
+		if (!validateWrap(metadata, "wrap_x")) return false;
+		if (!validateWrap(metadata, "wrap_y")) return false;
+
+		if (metadata.GetSize() != 6)
 		{
-			Jwl::Error("\"anisotropic_level\" must be in the range of [1, 16].");
+			Jwl::Error("Incorrect number of value entries.");
 			return false;
 		}
 
-		if (!validateTextureFilter(metadata))
-			return false;
+		break;
 
-		if (!validateWrapMode(metadata, "wrap_x"))
+	case 2:
+		if (!metadata.HasSetting("cubemap"))
+		{
+			Jwl::Error("Missing \"cubemap\" value.");
 			return false;
+		}
 
-		if (!validateWrapMode(metadata, "wrap_y"))
+		if (!metadata.HasSetting("s_rgb"))
+		{
+			Jwl::Error("Missing \"s_rgb\" value.");
 			return false;
+		}
 
-		if (metadata.GetSize() != 6)
+		if (!validateAnisotropicLevel(metadata)) return false;
+		if (!validateTextureFilter(metadata)) return false;
+		if (!validateWrap(metadata, "wrap_x")) return false;
+		if (!validateWrap(metadata, "wrap_y")) return false;
+
+		if (metadata.GetSize() != 7)
 		{
 			Jwl::Error("Incorrect number of value entries.");
 			return false;
@@ -120,13 +148,16 @@ bool TextureEncoder::Convert(const std::string& source, const std::string& desti
 	const std::string outputFile = destination + Jwl::ExtractFilename(source) + ".texture";
 	const float anisotropicLevel = metadata.GetFloat("anisotropic_level");
 	const bool isCubemap = metadata.GetBool("cubemap");
+	const bool isSRGB = metadata.GetBool("s_rgb");
 	const Jwl::TextureFilter filter = Jwl::StringToTextureFilter(metadata.GetString("filter"));
 	const Jwl::TextureWrap wrapX = Jwl::StringToTextureWrap(metadata.GetString("wrap_x"));
 	const Jwl::TextureWrap wrapY = Jwl::StringToTextureWrap(metadata.GetString("wrap_y"));
 
-	auto image = Jwl::Image::Load(source, !isCubemap);
+	auto image = Jwl::Image::Load(source, !isCubemap, isSRGB);
 	if (image.data == nullptr)
 		return false;
+
+	const unsigned elementCount = Jwl::CountChannels(image.format);
 
 	// Save file.
 	FILE* fontFile = fopen(outputFile.c_str(), "wb");
@@ -155,6 +186,7 @@ bool TextureEncoder::Convert(const std::string& source, const std::string& desti
 		const unsigned faceSize = image.width / 4;
 		const Jwl::TextureWrap cubeMapWrapMode = Jwl::TextureWrap::Clamp;
 
+		// Write header.
 		fwrite(&isCubemap, sizeof(bool), 1, fontFile);
 		fwrite(&faceSize, sizeof(unsigned), 1, fontFile);
 		fwrite(&faceSize, sizeof(unsigned), 1, fontFile);
@@ -165,7 +197,6 @@ bool TextureEncoder::Convert(const std::string& source, const std::string& desti
 		fwrite(&anisotropicLevel, sizeof(float), 1, fontFile);
 
 		// Write faces.
-		const unsigned elementCount = image.format == Jwl::TextureFormat::RGB_8 ? 3 : 4;
 		const unsigned textureSize = faceSize * faceSize * elementCount;
 		unsigned char* data = static_cast<unsigned char*>(malloc(sizeof(unsigned char) * textureSize * 6));
 		defer { free(data); };
@@ -207,7 +238,7 @@ bool TextureEncoder::Convert(const std::string& source, const std::string& desti
 		fwrite(&anisotropicLevel, sizeof(float), 1, fontFile);
 
 		// Write Data.
-		const unsigned textureSize = image.width * image.height * (image.format == Jwl::TextureFormat::RGB_8 ? 3 : 4);
+		const unsigned textureSize = image.width * image.height * elementCount;
 		fwrite(image.data, sizeof(unsigned char), textureSize, fontFile);
 	}
 
@@ -216,6 +247,19 @@ bool TextureEncoder::Convert(const std::string& source, const std::string& desti
 	{
 		Jwl::Error("Failed to generate Texture Binary\nOutput file could not be saved.");
 		return false;
+	}
+
+	return true;
+}
+
+bool TextureEncoder::Upgrade(Jwl::ConfigTable& metadata, unsigned loadedVersion) const
+{
+	switch (loadedVersion)
+	{
+	case 1:
+		// Added s_rgb field.
+		metadata.SetValue("s_rgb", "true");
+		break;
 	}
 
 	return true;

@@ -257,11 +257,17 @@ namespace Jwl
 		ASSERT(FBO != GL_NONE, "RenderTarget must be initialized before use.");
 
 		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+		glEnable(GL_FRAMEBUFFER_SRGB);
 	}
 
 	void RenderTarget::UnBind()
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
+
+		// Weather or not the backbuffer will be considered an sRGB buffer is not well defined.
+		// For this reason we disable the automatic linear->SRGB conversions when targeting the backbuffer.
+		// This allows us to maintain consistent behaviour across all graphics drivers.
+		glDisable(GL_FRAMEBUFFER_SRGB);
 	}
 
 	bool RenderTarget::Resize(unsigned newWidth, unsigned newHeight)
