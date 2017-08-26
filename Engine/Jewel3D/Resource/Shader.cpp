@@ -118,7 +118,7 @@ namespace
 		"bool JWL_IS_DIRECTIONAL_LIGHT(uint type) { return type == 1u; }\n"
 		"bool JWL_IS_SPOT_LIGHT(uint type) { return type == 2u; }\n"
 		"\n"
-		"vec3 JWL_COMPUTE_LIGHT(vec3 normal, vec3 surfacePos, vec3 color, vec3 lightPos, vec3 direction, float attenConstant, float attenLinear, float attenQuadratic, float angle, uint type)\n"
+		"vec3 JWL_COMPUTE_LIGHT(vec3 normal, vec3 surfacePos, vec3 color, vec3 lightPos, vec3 direction, float attenLinear, float attenQuadratic, float angle, uint type)\n"
 		"{\n"
 		"	if (JWL_IS_POINT_LIGHT(type))\n"
 		"	{\n"
@@ -130,7 +130,7 @@ namespace
 		""
 		"		if (NdotL > 0.0)\n"
 		"		{\n"
-		"			float attenuation = 1.0 / (attenConstant + attenLinear * dist + attenQuadratic * dist * dist);\n"
+		"			float attenuation = 1.0 / (0.75 + attenLinear * dist + attenQuadratic * dist * dist);\n"
 		"			return color * NdotL * attenuation;\n"
 		"		}\n"
 		"	}\n"
@@ -151,7 +151,7 @@ namespace
 		""
 		"		if (NdotL > 0.0)\n"
 		"		{\n"
-		"			float attenuation = 1.0 / (attenConstant + attenLinear * dist + attenQuadratic * dist * dist);\n"
+		"			float attenuation = 1.0 / (0.75 + attenLinear * dist + attenQuadratic * dist * dist);\n"
 		"			vec3 coneDir = mat3(Jwl_View) * -direction;\n"
 		"			float coneCos = dot(lightDir, coneDir);\n"
 		"			if (coneCos > angle)\n"
@@ -168,7 +168,7 @@ namespace
 		"#define is_point_light(light) JWL_IS_POINT_LIGHT(light##.Type)\n"
 		"#define is_directional_light(light) JWL_IS_DIRECTIONAL_LIGHT(light##.Type)\n"
 		"#define is_spot_light(light) JWL_IS_SPOT_LIGHT(light##.Type)\n"
-		"#define compute_light(light, normal, pos) JWL_COMPUTE_LIGHT(normal, pos, light##.Color, light##.Position, light##.Direction, light##.AttenuationConstant, light##.AttenuationLinear, light##.AttenuationQuadratic, light##.Angle, light##.Type)\n";
+		"#define compute_light(light, normal, pos) JWL_COMPUTE_LIGHT(normal, pos, light##.Color, light##.Position, light##.Direction, light##.AttenuationLinear, light##.AttenuationQuadratic, light##.Angle, light##.Type)\n";
 }
 
 namespace Jwl

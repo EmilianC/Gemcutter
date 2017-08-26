@@ -17,7 +17,6 @@ Uniforms
 		vec3 Color;
 		vec3 Position;
 		vec3 Direction;
-		float AttenuationConstant;
 		float AttenuationLinear;
 		float AttenuationQuadratic;
 		float Angle;

@@ -48,7 +48,6 @@ namespace Jwl
 		// Copy the remaining data.
 		type.Set(other.type.Get());
 		color.Set(other.color.Get());
-		attenuationConstant.Set(other.attenuationConstant.Get());
 		attenuationLinear.Set(other.attenuationLinear.Get());
 		attenuationQuadratic.Set(other.attenuationQuadratic.Get());
 		position.Set(other.position.Get());
@@ -93,7 +92,6 @@ namespace Jwl
 		lightBuffer->AddUniform("Color", sizeof(vec3));
 		lightBuffer->AddUniform("Position", sizeof(vec3));
 		lightBuffer->AddUniform("Direction", sizeof(vec3));
-		lightBuffer->AddUniform("AttenuationConstant", sizeof(float));
 		lightBuffer->AddUniform("AttenuationLinear", sizeof(float));
 		lightBuffer->AddUniform("AttenuationQuadratic", sizeof(float));
 		lightBuffer->AddUniform("Angle", sizeof(float));
@@ -108,7 +106,6 @@ namespace Jwl
 		color = lightBuffer->MakeHandle<vec3>("Color");
 		position = lightBuffer->MakeHandle<vec3>("Position");
 		direction = lightBuffer->MakeHandle<vec3>("Direction");
-		attenuationConstant = lightBuffer->MakeHandle<float>("AttenuationConstant");
 		attenuationLinear = lightBuffer->MakeHandle<float>("AttenuationLinear");
 		attenuationQuadratic = lightBuffer->MakeHandle<float>("AttenuationQuadratic");
 		cosAngle = lightBuffer->MakeHandle<float>("Angle");
@@ -117,7 +114,6 @@ namespace Jwl
 
 	void Light::InitializeUniformValues()
 	{
-		attenuationConstant.Set(0.1f);
 		attenuationLinear.Set(0.0f);
 		attenuationQuadratic.Set(1.0f);
 		cosAngle.Set(cos(ToRadian(angle)));

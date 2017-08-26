@@ -26,8 +26,6 @@ namespace Jwl
 		// Defaults to a white light.
 		UniformHandle<vec3> color;
 		// Defaults to zero.
-		UniformHandle<float> attenuationConstant;
-		// Defaults to zero.
 		UniformHandle<float> attenuationLinear;
 		// Defaults to one.
 		UniformHandle<float> attenuationQuadratic;
