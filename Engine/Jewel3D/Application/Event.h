@@ -36,12 +36,14 @@ namespace Jwl
 
 		// Subscribes to the event.
 		Listener();
-		Listener(std::function<EventFunc> callbackFunc);
+		Listener(const std::function<EventFunc>& callback);
+		Listener(std::function<EventFunc>&& callbac);
 
 		// Unsubscribes from the event.
 		~Listener();
 
-		void operator=(std::function<EventFunc> callbackFunc);
+		void operator=(const std::function<EventFunc>& callback);
+		void operator=(std::function<EventFunc>&& callback);
 
 	private:
 		std::function<EventFunc> callback;

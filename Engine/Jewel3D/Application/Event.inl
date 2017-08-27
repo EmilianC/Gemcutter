@@ -10,8 +10,15 @@ namespace Jwl
 	}
 
 	template<class EventObj>
-	Listener<EventObj>::Listener(std::function<EventFunc> callbackFunc)
-		: callback(std::move(callbackFunc))
+	Listener<EventObj>::Listener(const std::function<EventFunc>& _callback)
+		: callback(_callback)
+	{
+		EventObj::Subscribe(*this);
+	}
+
+	template<class EventObj>
+	Listener<EventObj>::Listener(std::function<EventFunc>&& _callback)
+		: callback(std::move(_callback))
 	{
 		EventObj::Subscribe(*this);
 	}
@@ -23,9 +30,15 @@ namespace Jwl
 	}
 
 	template<class EventObj>
-	void Listener<EventObj>::operator=(std::function<EventFunc> callbackFunc)
+	void Listener<EventObj>::operator=(const std::function<EventFunc>& _callback)
 	{
-		callback = std::move(callbackFunc);
+		callback = _callback;
+	}
+
+	template<class EventObj>
+	void Listener<EventObj>::operator=(std::function<EventFunc>&& _callback)
+	{
+		callback = std::move(_callback);
 	}
 
 	template<class derived>
