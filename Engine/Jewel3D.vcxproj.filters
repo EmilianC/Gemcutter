@@ -357,5 +357,8 @@
     <None Include="Jewel3D\Resource\UniformBuffer.inl">
       <Filter>Resource</Filter>
     </None>
+    <None Include="Jewel3D\Application\Event.inl">
+      <Filter>Application</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -311,6 +311,7 @@
     <ClInclude Include="Jewel3D\Utilities\String.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Jewel3D\Application\Event.inl" />
     <None Include="Jewel3D\Entity\Entity.inl" />
     <None Include="Jewel3D\Entity\Query.inl" />
     <None Include="Jewel3D\Resource\UniformBuffer.inl" />

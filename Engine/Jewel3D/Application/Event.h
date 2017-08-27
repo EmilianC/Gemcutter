@@ -23,11 +23,10 @@ namespace Jwl
 		virtual void Raise() const = 0;
 	};
 
-	// Base class for event listeners. 
-	// Invokes the callback function when an instance of the respective event is dispatched.
+	// Invokes a callback function when an instance of the respective event is dispatched.
 	// The template parameter must be the event object that the listener will subscribe to.
 	//	For example: Listener<PlayerDeath> OnPlayerDeath(&myFunc);
-	template <class EventObj>
+	template<class EventObj>
 	class Listener
 	{
 		template<class T> friend class Event;
@@ -35,39 +34,23 @@ namespace Jwl
 	public:
 		using EventFunc = void(const EventObj&);
 
-		// Constructs the listener without a connection to a callback function.
-		Listener()
-		{
-			EventObj::Subscribe(*this);
-		}
+		// Subscribes to the event.
+		Listener();
+		Listener(std::function<EventFunc> callbackFunc);
 
-		// Constructs the listener with a callback function.
-		Listener(std::function<EventFunc> callbackFunc)
-			: callback(std::move(callbackFunc))
-		{
-			EventObj::Subscribe(*this);
-		}
+		// Unsubscribes from the event.
+		~Listener();
 
-		// The destructor unsubscribes from the event for you.
-		~Listener()
-		{
-			EventObj::Unsubscribe(*this);
-		}
-
-		void operator=(std::function<EventFunc> callbackFunc)
-		{
-			callback = std::move(callbackFunc);
-		}
+		void operator=(std::function<EventFunc> callbackFunc);
 
 	private:
-		// The callback function invoked when an event of the templated type is dispatched.
 		std::function<EventFunc> callback;
 	};
 
 	// You can inherit from this class to create your own custom events.
 	// The template parameter must be the derived class. For example:
 	//	class PlayerDeath : public Event<PlayerDeath> {};
-	template <class derived>
+	template<class derived>
 	class Event : public EventBase
 	{
 		friend Listener<derived>;
@@ -75,52 +58,23 @@ namespace Jwl
 		virtual ~Event() = default;
 
 		// Returns true if at least one listener responds to this event.
-		virtual bool HasListeners() const final override
-		{
-			return HasListenersStatic();
-		}
+		virtual bool HasListeners() const final override;
+		static bool HasListenersStatic();
 
 		// Returns a vector of all objects currently listening for this type of event.
-		static const auto& GetListenersStatic()
-		{
-			return listeners;
-		}
-
-		// Returns true if at least one listener responds to this type of event.
-		static bool HasListenersStatic()
-		{
-			return !listeners.empty();
-		}
+		static const auto& GetListenersStatic() { return listeners; }
 
 	private:
-		// Notifies all listeners of this event by invoking their callback functions.
-		virtual void Raise() const final override
-		{
-			for (unsigned i = 0; i < listeners.size(); i++)
-			{
-				if (listeners[i]->callback)
-				{
-					listeners[i]->callback(*static_cast<const derived*>(this));
-				}
-			}
-		}
+		virtual void Raise() const final override;
 
-		// Subscribes a listener to receive callbacks from this type of event.
-		static void Subscribe(Listener<derived>& listener)
-		{
-			listeners.push_back(&listener);
-		}
-
-		// Stops a listener from receiving callbacks from this type of event.
-		static void Unsubscribe(Listener<derived>& listener)
-		{
-			listeners.erase(std::find(listeners.begin(), listeners.end(), &listener));
-		}
+		// Subscribes a listener to be notified from this type of event.
+		static void Subscribe(Listener<derived>& listener);
+		// Stops a listener from being notified callbacks from this type of event.
+		static void Unsubscribe(Listener<derived>& listener);
 
 		// All Listeners of the derived class event.
 		static std::vector<Listener<derived>*> listeners;
 	};
-	template<class derived> std::vector<Listener<derived>*> Event<derived>::listeners;
 	
 	// This singleton class handles queuing and distribution of events.
 	static class EventQueue : public Singleton<class EventQueue>
@@ -147,3 +101,5 @@ namespace Jwl
 #endif
 	} &EventQueue = Singleton<class EventQueue>::instanceRef;
 }
+
+#include "Event.inl"
