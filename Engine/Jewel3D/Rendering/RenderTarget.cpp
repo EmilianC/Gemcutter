@@ -236,19 +236,12 @@ namespace Jwl
 
 	void RenderTarget::ClearColor(unsigned index, const vec4& color) const
 	{
-		ClearColor(index, color.x, color.y, color.z, color.w);
-	}
-
-	void RenderTarget::ClearColor(unsigned index, float red, float green, float blue, float alpha) const
-	{
 		ASSERT(FBO != GL_NONE, "RenderTarget must be initialized before use.");
 		ASSERT(numColorAttachments > 0, "RenderTarget does not have a color attachment to clear");
 		ASSERT(index < numColorAttachments, "'index' must specify a valid color attachment.");
 
-		float color[4] = { red, green, blue, alpha };
-		
 		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
-		glClearBufferfv(GL_COLOR, static_cast<int>(index), color);
+		glClearBufferfv(GL_COLOR, static_cast<int>(index), &color.x);
 		glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
 	}
 
@@ -451,6 +444,8 @@ namespace Jwl
 		{
 		case TextureFormat::RGB_8:
 		case TextureFormat::RGBA_8:
+		case TextureFormat::sRGB_8:
+		case TextureFormat::sRGBA_8:
 			{
 				unsigned char pixel[4] = { 0 };
 				glReadPixels(static_cast<int>(position.x), static_cast<int>(position.y), 1, 1, format, GL_UNSIGNED_BYTE, pixel);

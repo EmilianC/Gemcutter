@@ -45,7 +45,6 @@ namespace Jwl
 		void ClearColor(unsigned index) const;
 		// Clears all textures to [color].
 		void ClearColor(unsigned index, const vec4& color) const;
-		void ClearColor(unsigned index, float red, float green, float blue, float alpha) const;
 
 		void Bind() const;
 		static void UnBind();
