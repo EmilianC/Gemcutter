@@ -709,11 +709,17 @@ namespace Jwl
 		case WM_SIZE:
 		{
 			// Adjust screen data.
-			app.screenViewport.width = LOWORD(lParam);
-			app.screenViewport.height = HIWORD(lParam);
-			app.screenViewport.bind();
+			const unsigned width = LOWORD(lParam);
+			const unsigned height = HIWORD(lParam);
 
-			EventQueue.Push(std::make_unique<Resize>(app.screenViewport.width, app.screenViewport.height));
+			if (width > 0 && height > 0)
+			{
+				app.screenViewport.width = width;
+				app.screenViewport.height = height;
+				app.screenViewport.bind();
+
+				EventQueue.Push(std::make_unique<Resize>(app.screenViewport.width, app.screenViewport.height));
+			}
 			return 0;
 		}
 
