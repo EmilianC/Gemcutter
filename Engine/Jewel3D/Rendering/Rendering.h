@@ -123,7 +123,6 @@ namespace Jwl
 	void ClearBackBufferDepth();
 	void ClearBackBufferColor();
 
-	void SetActiveTextureUnit(unsigned unit);
 	void SetClearColor(const vec4& color);
 	void SetClearColor(float r, float g, float b, float a);
 	void SetWireframe(bool enabled);

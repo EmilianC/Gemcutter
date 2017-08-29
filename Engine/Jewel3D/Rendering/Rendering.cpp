@@ -170,11 +170,6 @@ namespace Jwl
 		glClear(GL_COLOR_BUFFER_BIT);
 	}
 
-	void SetActiveTextureUnit(unsigned unit)
-	{
-		glActiveTexture(GL_TEXTURE0 + unit);
-	}
-
 	void SetClearColor(const vec4& color)
 	{
 		glClearColor(color.x, color.y, color.z, color.w);
