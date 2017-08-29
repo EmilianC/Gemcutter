@@ -9,32 +9,45 @@
 
 #include <GLEW/GL/glew.h>
 
+namespace
+{
+	GLenum* drawBuffers = nullptr;
+}
+
 namespace Jwl
 {
-	RenderTarget::~RenderTarget()
+	RenderTarget::RenderTarget(unsigned _width, unsigned _height, unsigned _numColorTextures, bool hasDepth, unsigned _numSamples)
+		: numColorTextures(_numColorTextures)
+		, numSamples(_numSamples)
+		, width(_width)
+		, height(_height)
 	{
-		Unload();
-	}
+		ASSERT(width != 0, "'width' must be greater than 0.");
+		ASSERT(height != 0, "'height' must be greater than 0.");
+		ASSERT(numSamples == 1 || numSamples == 2 || numSamples == 4 || numSamples == 8 || numSamples == 16, 
+			"'numSamples' must be 1, 2, 4, 8, or 16.");
+		ASSERT(_numColorTextures > 0 || hasDepth, "A RenderTarget cannot be made without any textures.");
 
-	void RenderTarget::Init(unsigned pixelWidth, unsigned pixelHeight, unsigned numColorTextures, bool hasDepth, unsigned samples)
-	{
-		ASSERT(FBO == GL_NONE, "RenderTarget is already initialized. Must call Unload() before initializing it again.");
-		ASSERT(pixelWidth != 0, "'pixelWidth' must be greater than 0.");
-		ASSERT(pixelHeight != 0, "'pixelHeight' must be greater than 0.");
-		ASSERT(samples == 1 || samples == 2 || samples == 4 || samples == 8 || samples == 16, "'samples' must be a power of 2 between 1 and 16.");
+		// First time setup.
+		if (!drawBuffers)
+		{
+			unsigned maxTextureAttachments = GPUInfo.GetMaxRenderTargetTextures();
+			drawBuffers = reinterpret_cast<GLenum*>(malloc(sizeof(GLenum) * maxTextureAttachments));
 
-		width = pixelWidth;
-		height = pixelHeight;
-		numColorAttachments = numColorTextures;
-		numSamples = samples;
+			for (unsigned i = 0; i < maxTextureAttachments; ++i)
+			{
+				drawBuffers[i] = GL_COLOR_ATTACHMENT0 + i;
+			}
+		}
 
 		glGenFramebuffers(1, &FBO);
 		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+		defer { glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE); };
 
 		if (hasDepth)
 		{
-			depthAttachment = Texture::MakeNew();
-			depthAttachment->CreateTexture(
+			depth = Texture::MakeNew();
+			depth->CreateTexture(
 				width, height,
 				TextureFormat::DEPTH_24, TextureFilter::Point,
 				TextureWrap::Clamp, 1.0f, numSamples);
@@ -42,77 +55,71 @@ namespace Jwl
 			glFramebufferTexture2D(
 				GL_FRAMEBUFFER,
 				GL_DEPTH_ATTACHMENT,
-				numSamples > 1 ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D,
-				depthAttachment->GetHandle(),
+				IsMultisampled() ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D,
+				depth->GetHandle(),
 				0);
 		}
 
-		if (numColorAttachments > 0)
+		if (numColorTextures > 0)
 		{
-			if (numColorAttachments > GPUInfo.GetMaxRenderTargetAttachments() ||
-				numColorAttachments > GPUInfo.GetMaxDrawBuffers())
+			if (numColorTextures > GPUInfo.GetMaxRenderTargetTextures() ||
+				numColorTextures > GPUInfo.GetMaxDrawBuffers())
 			{
-				Error("RenderTarget: Number of color attachments exceeds amount supported by the OpenGL drivers.");
-				glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
+				Error("RenderTarget: Number of color textures exceeds amount supported by the OpenGL drivers.");
 				return;
 			}
 
-			colorAttachments = new Texture::Ptr[numColorAttachments];
-
-			// Enable all color attachments as write-able targets.
-			GLenum* bufs = reinterpret_cast<GLenum*>(malloc(sizeof(GLenum) * numColorAttachments));
-			defer{ free(bufs); };
-			for (unsigned i = 0; i < numColorAttachments; i++)
-			{
-				bufs[i] = GL_COLOR_ATTACHMENT0 + i;
-				colorAttachments[i] = Texture::MakeNew();
-			}
-
-			glDrawBuffers(numColorAttachments, bufs);
-		}
-		else
-		{
-			// No color targets.
-			glDrawBuffers(0, GL_NONE);
+			colors = new Texture::Ptr[numColorTextures];
 		}
 
-		glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
+		// Set any color textures as write-able targets.
+		glDrawBuffers(numColorTextures, drawBuffers);
 	}
 
-	bool RenderTarget::InitAsResolve(const RenderTarget& multisampleBuffer, TextureFilter filter)
+	RenderTarget::~RenderTarget()
 	{
-		ASSERT(FBO == GL_NONE, "RenderTarget is already initialized. Must call Unload() before initializing it again.");
-		ASSERT(multisampleBuffer.numSamples != 1, "'multisampleBuffer' must have a sample count above 1 in order to create a resolve buffer.");
+		delete[] colors;
 
-		Init(multisampleBuffer.width, multisampleBuffer.height, multisampleBuffer.numColorAttachments, multisampleBuffer.HasDepth());
-
-		// Mirror all color attachments, but with just one sample.
-		for (unsigned i = 0; i < multisampleBuffer.numColorAttachments; i++)
-		{
-			CreateAttachment(i, multisampleBuffer.GetColorTexture(i)->GetFormat(), filter);
-		}
-
-		return Validate();
+		glDeleteFramebuffers(1, &FBO);
 	}
 
-	void RenderTarget::CreateAttachment(unsigned index, TextureFormat format, TextureFilter filter)
+	RenderTarget::Ptr RenderTarget::MakeResolve() const
 	{
-		ASSERT(FBO != GL_NONE, "Must call Init() or InitAsResolve() before the RenderTarget can be used.");
-		ASSERT(numColorAttachments > 0, "RenderTarget does not have any color attachments.");
-		ASSERT(index < numColorAttachments, "'index' must specify a valid color attachment.");
-		ASSERT(format != TextureFormat::DEPTH_24, "'format' cannot be DEPTH_24 for a color attachment.");
+		ASSERT(IsMultisampled(), "Must be multisampled to create a resolve RenderTarget.");
 
-		colorAttachments[index] = Texture::MakeNew();
-		colorAttachments[index]->CreateTexture(width, height, format, filter, TextureWrap::Clamp, 1.0f, numSamples);
+		// Mirror all textures, but with just one sample.
+		RenderTarget::Ptr resolve = RenderTarget::MakeNew(width, height, numColorTextures, HasDepth(), 1);
 
-		// Attach to framebuffer.
+		for (unsigned i = 0; i < numColorTextures; ++i)
+		{
+			resolve->InitTexture(i, colors[i]->GetFormat(), colors[i]->GetFilter());
+		}
+
+		if (!resolve->Validate())
+		{
+			resolve.reset();
+		}
+
+		return resolve;
+	}
+
+	void RenderTarget::InitTexture(unsigned index, TextureFormat format, TextureFilter filter)
+	{
+		ASSERT(numColorTextures > 0, "RenderTarget does not have any color textures to initialize.");
+		ASSERT(index < numColorTextures, "'index' must specify a valid color texture.");
+		ASSERT(format != TextureFormat::DEPTH_24, "'format' cannot be DEPTH_24 for a color texture.");
+		ASSERT(!colors[index], "'index' is already initialized.");
+
+		colors[index] = Texture::MakeNew();
+		colors[index]->CreateTexture(width, height, format, filter, TextureWrap::Clamp, 1.0f, numSamples);
+
 		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
 
 		glFramebufferTexture2D(
 			GL_FRAMEBUFFER,
 			GL_COLOR_ATTACHMENT0 + index,
-			numSamples > 1 ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D,
-			colorAttachments[index]->GetHandle(),
+			IsMultisampled() ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D,
+			colors[index]->GetHandle(),
 			0);
 
 		glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
@@ -121,6 +128,7 @@ namespace Jwl
 	bool RenderTarget::Validate() const
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+		defer { glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE); };
 
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		{
@@ -128,60 +136,44 @@ namespace Jwl
 			return false;
 		}
 
-		glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
-
 		return true;
 	}
 
-	void RenderTarget::AttachDepthTexture(Texture::Ptr& tex)
+	void RenderTarget::AttachDepthTexture(const Texture::Ptr& texture)
 	{
-		ASSERT(FBO != GL_NONE, "RenderTarget must be initialized before use.");
-		ASSERT(tex->GetHandle() != GL_NONE, "'tex' is not initialized.");
-		ASSERT(tex->GetNumSamples() == numSamples, "'tex' must have the same per-texel sample count as the RenderTarget.");
-		ASSERT(tex->GetFormat() == TextureFormat::DEPTH_24, "Format of 'tex' must be a 24 bit depth texture.");
-		ASSERT(tex->GetWidth() == width, "Dimensions of 'tex' must match the dimensions of the RenderTarget.");
-		ASSERT(tex->GetHeight() == height, "Dimensions of 'tex' must match the dimensions of the RenderTarget.");
+		ASSERT(texture, "'texture' cannot be null.");
+		ASSERT(texture->GetHandle() != GL_NONE, "'texture' must be initialized.");
+		ASSERT(texture->GetNumSamples() == numSamples, "'texture' must have the same per-texel sample count as the RenderTarget.");
+		ASSERT(texture->GetFormat() == TextureFormat::DEPTH_24, "Format of 'texture' must be a 24 bit depth texture.");
+		ASSERT(texture->GetWidth() == width, "Dimensions of 'texture' must match the dimensions of the RenderTarget.");
+		ASSERT(texture->GetHeight() == height, "Dimensions of 'texture' must match the dimensions of the RenderTarget.");
+		ASSERT(!texture->IsCubeMap(), "'texture' cannot be a cubemap.");
 
 		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, numSamples > 1 ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D, tex->GetHandle(), 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, IsMultisampled() ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D, texture->GetHandle(), 0);
 		glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
 
-		depthAttachment = tex;
+		depth = texture;
 	}
 
 	void RenderTarget::DetachDepthTexture()
 	{
-		ASSERT(FBO != GL_NONE, "RenderTarget must be initialized before use.");
-
 		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, numSamples > 1 ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D, GL_NONE, 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, IsMultisampled() ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D, GL_NONE, 0);
 		glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
 
-		depthAttachment.reset();
-	}
-
-	void RenderTarget::Unload()
-	{
-		depthAttachment.reset();
-
-		delete[] colorAttachments;
-		colorAttachments = nullptr;
-
-		glDeleteFramebuffers(1, &FBO);
-		FBO = GL_NONE;
+		depth.reset();
 	}
 
 	void RenderTarget::Clear() const
 	{
-		ASSERT(FBO != GL_NONE, "RenderTarget must be initialized before use.");
-
-		GLbitfield clearFlags = 0x0000;
+		GLbitfield clearFlags = 0x0;
 		if (HasDepth())
 		{
 			clearFlags |= GL_DEPTH_BUFFER_BIT;
 		}
 
-		if (colorAttachments != nullptr)
+		if (colors)
 		{
 			clearFlags |= GL_COLOR_BUFFER_BIT;
 		}
@@ -193,26 +185,26 @@ namespace Jwl
 
 	void RenderTarget::ClearDepth() const
 	{
-		ASSERT(FBO != GL_NONE, "RenderTarget must be initialized before use.");
+		ASSERT(HasDepth(), "RenderTarget does not have a depth texture to clear.");
 
 		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
 	}
 
-	void RenderTarget::ClearDepth(float depth) const
+	void RenderTarget::ClearDepth(float _depth) const
 	{
-		ASSERT(FBO != GL_NONE, "RenderTarget must be initialized before use.");
-		ASSERT(depth >= 0.0f && depth <= 1.0f, "'depth' must be in the range of [0, 1].");
+		ASSERT(HasDepth(), "RenderTarget does not have a depth texture to clear.");
+		ASSERT(_depth >= 0.0f && _depth <= 1.0f, "'depth' must be in the range of [0, 1].");
 
 		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
-		glClearBufferfv(GL_DEPTH, 0, &depth);
+		glClearBufferfv(GL_DEPTH, 0, &_depth);
 		glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
 	}
 
 	void RenderTarget::ClearColor() const
 	{
-		ASSERT(FBO != GL_NONE, "RenderTarget must be initialized before use.");
+		ASSERT(numColorTextures > 0, "RenderTarget does not have a color texture to clear.");
 
 		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
 		glClear(GL_COLOR_BUFFER_BIT);
@@ -221,24 +213,17 @@ namespace Jwl
 
 	void RenderTarget::ClearColor(unsigned index) const
 	{
-		ASSERT(FBO != GL_NONE, "RenderTarget must be initialized before use.");
-		ASSERT(numColorAttachments > 0 , "RenderTarget does not have a color attachment to clear.");
-		ASSERT(index < numColorAttachments, "'index' must specify a valid color attachment.");
-
 		// Use the current clear color.
-		float color[4];
-		glGetFloatv(GL_COLOR_CLEAR_VALUE, color);
+		vec4 color;
+		glGetFloatv(GL_COLOR_CLEAR_VALUE, &color.x);
 
-		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
-		glClearBufferfv(GL_COLOR, static_cast<int>(index), color);
-		glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
+		ClearColor(index, color);
 	}
 
 	void RenderTarget::ClearColor(unsigned index, const vec4& color) const
 	{
-		ASSERT(FBO != GL_NONE, "RenderTarget must be initialized before use.");
-		ASSERT(numColorAttachments > 0, "RenderTarget does not have a color attachment to clear");
-		ASSERT(index < numColorAttachments, "'index' must specify a valid color attachment.");
+		ASSERT(numColorTextures > 0, "RenderTarget does not have a color texture to clear.");
+		ASSERT(index < numColorTextures, "'index' must specify a valid color texture.");
 
 		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
 		glClearBufferfv(GL_COLOR, static_cast<int>(index), &color.x);
@@ -247,8 +232,6 @@ namespace Jwl
 
 	void RenderTarget::Bind() const
 	{
-		ASSERT(FBO != GL_NONE, "RenderTarget must be initialized before use.");
-
 		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
 		glEnable(GL_FRAMEBUFFER_SRGB);
 	}
@@ -263,9 +246,51 @@ namespace Jwl
 		glDisable(GL_FRAMEBUFFER_SRGB);
 	}
 
+	void RenderTarget::ResolveMultisampling(const RenderTarget& target) const
+	{
+		ResolveMultisamplingDepth(target);
+		ResolveMultisamplingColor(target);
+	}
+
+	void RenderTarget::ResolveMultisamplingDepth(const RenderTarget& target) const
+	{
+		ASSERT(HasDepth() && target.HasDepth(), "Both RenderTargets must have depth textures.");
+		ASSERT(IsMultisampled(), "Cannot resolve from a RenderTarget that is not multisampled.");
+		ASSERT(target.numSamples == 1, "'target' must not be multisampled.");
+		ASSERT(width == target.width && height == target.height, "RenderTargets must have the same dimensions to resolve a depth texture.");
+
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, FBO);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, target.FBO);
+
+		glBlitFramebuffer(0, 0, width, height, 0, 0, target.width, target.height, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+
+		glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
+	}
+
+	void RenderTarget::ResolveMultisamplingColor(const RenderTarget& target) const
+	{
+		ASSERT(numColorTextures == target.numColorTextures, "Both RenderTargets must have the same number of color textures.");
+		ASSERT(IsMultisampled(), "Cannot resolve from a RenderTarget that is not multisampled.");
+		ASSERT(target.numSamples == 1, "'target' must not be multisampled.");
+
+		const GLenum filter = (width == target.width) && (height == target.height) ? GL_NEAREST : GL_LINEAR;
+
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, FBO);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, target.FBO);
+
+		for (unsigned i = 0; i < numColorTextures; ++i)
+		{
+			glReadBuffer(GL_COLOR_ATTACHMENT0 + i);
+			glDrawBuffer(GL_COLOR_ATTACHMENT0 + i);
+			glBlitFramebuffer(0, 0, width, height, 0, 0, target.width, target.height, GL_COLOR_BUFFER_BIT, filter);
+		}
+
+		glDrawBuffer(GL_COLOR_ATTACHMENT0);
+		glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
+	}
+
 	bool RenderTarget::Resize(unsigned newWidth, unsigned newHeight)
 	{
-		ASSERT(FBO != GL_NONE, "RenderTarget must be initialized before use.");
 		ASSERT(newWidth > 0, "'newWidth' must be greater than 0.");
 		ASSERT(newHeight > 0, "'newHeight' must be greater than 0.");
 
@@ -277,10 +302,10 @@ namespace Jwl
 
 		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
 
-		if (depthAttachment)
+		if (depth)
 		{
-			depthAttachment->Unload();
-			depthAttachment->CreateTexture(
+			depth->Unload();
+			depth->CreateTexture(
 				newWidth, newHeight,
 				TextureFormat::DEPTH_24, TextureFilter::Point,
 				TextureWrap::Clamp, 1.0f, numSamples);
@@ -288,27 +313,27 @@ namespace Jwl
 			glFramebufferTexture2D(
 				GL_FRAMEBUFFER,
 				GL_DEPTH_ATTACHMENT,
-				numSamples > 1 ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D,
-				depthAttachment->GetHandle(),
+				IsMultisampled() ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D,
+				depth->GetHandle(),
 				0);
 		}
 
-		for (unsigned i = 0; i < numColorAttachments; ++i)
+		for (unsigned i = 0; i < numColorTextures; ++i)
 		{
 			// Preserve the states of the texture, just in case the user changed them.
-			const TextureFormat oldFormat = colorAttachments[i]->GetFormat();
-			const TextureFilter oldFilter = colorAttachments[i]->GetFilter();
-			const TextureWraps oldWrap = colorAttachments[i]->GetWrap();
-			const float oldAnisotropicLevel = colorAttachments[i]->GetAnisotropicLevel();
-			colorAttachments[i]->Unload();
+			const TextureFormat oldFormat = colors[i]->GetFormat();
+			const TextureFilter oldFilter = colors[i]->GetFilter();
+			const TextureWraps oldWrap = colors[i]->GetWrap();
+			const float oldAnisotropicLevel = colors[i]->GetAnisotropicLevel();
+			colors[i]->Unload();
 
-			colorAttachments[i]->CreateTexture(newWidth, newHeight, oldFormat, oldFilter, oldWrap, oldAnisotropicLevel, numSamples);
+			colors[i]->CreateTexture(newWidth, newHeight, oldFormat, oldFilter, oldWrap, oldAnisotropicLevel, numSamples);
 
 			glFramebufferTexture2D(
 				GL_FRAMEBUFFER,
 				GL_COLOR_ATTACHMENT0 + i,
-				numSamples > 1 ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D,
-				colorAttachments[i]->GetHandle(),
+				IsMultisampled() ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D,
+				colors[i]->GetHandle(),
 				0);
 		}
 
@@ -316,40 +341,8 @@ namespace Jwl
 		return Validate();
 	}
 
-	void RenderTarget::ResolveMultisampling(const RenderTarget& target) const
-	{
-		ASSERT(FBO != GL_NONE, "RenderTarget must be initialized before use.");
-		ASSERT(target.FBO != GL_NONE, "'target' is not an initialized RenderTarget.");
-		ASSERT(numColorAttachments == target.numColorAttachments, "RenderTargets must have the same number of attachments.");
-		ASSERT(HasDepth() == target.HasDepth(), "One RenderTarget has a depth buffer but the other does not.");
-		ASSERT(target.numSamples == 1, "'target' must have a sample count of 1.");
-
-		GLenum filter = (width == target.width) && (height == target.height) ? GL_NEAREST : GL_LINEAR;
-		
-		glBindFramebuffer(GL_READ_FRAMEBUFFER, FBO);
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, target.FBO);
-
-		if (HasDepth())
-		{
-			ASSERT(width == target.width && height == target.height, "Source and target RenderTargets must have the same dimensions to resolve a depth buffer.");
-			glBlitFramebuffer(0, 0, width, height, 0, 0, target.width, target.height, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
-		}
-
-		for (unsigned i = 0; i < numColorAttachments; i++)
-		{
-			glReadBuffer(GL_COLOR_ATTACHMENT0 + i);
-			glDrawBuffer(GL_COLOR_ATTACHMENT0 + i);
-			glBlitFramebuffer(0, 0, width, height, 0, 0, target.width, target.height, GL_COLOR_BUFFER_BIT, filter);
-		}
-
-		glDrawBuffer(GL_COLOR_ATTACHMENT0);
-		glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
-	}
-
 	void RenderTarget::CopyDepth(const RenderTarget& target) const
 	{
-		ASSERT(FBO != GL_NONE, "RenderTarget must be initialized before use.");
-		ASSERT(target.FBO != GL_NONE, "'target' is not an initialized RenderTarget.");
 		ASSERT(HasDepth(), "RenderTarget must have depth texture to copy.");
 		ASSERT(target.HasDepth(), "'target' must have depth texture.");
 		ASSERT(numSamples == target.numSamples, "Source and target RenderTargets must have the same sample count.");
@@ -365,14 +358,12 @@ namespace Jwl
 
 	void RenderTarget::CopyColor(const RenderTarget& target, unsigned index) const
 	{
-		ASSERT(FBO != GL_NONE, "RenderTarget must be initialized before use.");
-		ASSERT(target.FBO != GL_NONE, "'target' is not an initialized RenderTarget.");
-		ASSERT(numColorAttachments > 0, "RenderTarget does not have a color attachment to copy.");
-		ASSERT(target.numColorAttachments > 0, "'target' RenderTarget does not have a color attachment to copy.");
-		ASSERT(index < numColorAttachments, "'index' must specify a valid color attachment.");
-		ASSERT(index < target.numColorAttachments, "'target' does not have a color attachment at index %u", index);
+		ASSERT(numColorTextures > 0, "RenderTarget does not have a color texture to copy.");
+		ASSERT(target.numColorTextures > 0, "'target' RenderTarget does not have a color texture to copy.");
+		ASSERT(index < numColorTextures, "'index' must specify a valid color texture.");
+		ASSERT(index < target.numColorTextures, "'target' does not have a color texture at index %u", index);
 
-		GLenum filter = (width == target.width) && (height == target.height) ? GL_NEAREST : GL_LINEAR;
+		const GLenum filter = (width == target.width) && (height == target.height) ? GL_NEAREST : GL_LINEAR;
 
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, FBO);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, target.FBO);
@@ -387,26 +378,25 @@ namespace Jwl
 
 	void RenderTarget::CopyDepthToBackBuffer() const
 	{
-		ASSERT(FBO != GL_NONE, "RenderTarget must be initialized before use.");
 		ASSERT(HasDepth(), "RenderTarget does not have a depth texture to copy.");
 		ASSERT(width == static_cast<unsigned>(Application.GetScreenWidth()) && height == static_cast<unsigned>(Application.GetScreenHeight()), 
-			"RenderTarget and Backbuffer must have the same dimensions.");
+			"RenderTarget and BackBuffer must have the same dimensions.");
 
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, FBO);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, GL_NONE);
 
-		glBlitFramebuffer(0, 0, width, height, 0, 0, Application.GetScreenWidth(), Application.GetScreenHeight(), GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+		glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
 
 		glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
 	}
 
 	void RenderTarget::CopyColorToBackBuffer(unsigned index) const
 	{
-		ASSERT(FBO != GL_NONE, "RenderTarget must be initialized before use.");
-		ASSERT(numColorAttachments > 0, "RenderTarget does not have a color attachment to copy.");
-		ASSERT(index < numColorAttachments, "'index' must specify a valid color attachment.");
+		ASSERT(numColorTextures > 0, "RenderTarget does not have a color texture to copy.");
+		ASSERT(index < numColorTextures, "'index' must specify a valid color texture.");
 
-		GLenum filter = (width == static_cast<unsigned>(Application.GetScreenWidth())) && (height == static_cast<unsigned>(Application.GetScreenHeight())) ? GL_NEAREST : GL_LINEAR;
+		const GLenum filter = (width == static_cast<unsigned>(Application.GetScreenWidth())) &&
+			(height == static_cast<unsigned>(Application.GetScreenHeight())) ? GL_NEAREST : GL_LINEAR;
 
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, FBO);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, GL_NONE);
@@ -419,15 +409,14 @@ namespace Jwl
 
 	vec4 RenderTarget::ReadPixel(unsigned index, const vec2& position) const
 	{
-		ASSERT(FBO != GL_NONE, "RenderTarget must be initialized before use.");
-		ASSERT(index < numColorAttachments, "'index' must specify a valid color attachment.");
+		ASSERT(index < numColorTextures, "'index' must specify a valid color texture.");
 		ASSERT(numSamples == 1, "RenderTarget must not be multi-sampled.");
 
 		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
 		glReadBuffer(GL_COLOR_ATTACHMENT0 + index);
 
 		unsigned format = 0;
-		switch (CountChannels(colorAttachments[index]->GetFormat()))
+		switch (CountChannels(colors[index]->GetFormat()))
 		{
 		case 4: format = GL_RGBA;
 			break;
@@ -440,7 +429,7 @@ namespace Jwl
 		}
 
 		vec4 result;
-		switch (colorAttachments[index]->GetFormat())
+		switch (colors[index]->GetFormat())
 		{
 		case TextureFormat::RGB_8:
 		case TextureFormat::RGBA_8:
@@ -493,7 +482,7 @@ namespace Jwl
 
 	bool RenderTarget::HasDepth() const
 	{
-		return depthAttachment != nullptr;
+		return !!depth;
 	}
 
 	bool RenderTarget::IsMultisampled() const
@@ -501,9 +490,9 @@ namespace Jwl
 		return numSamples != 1;
 	}
 
-	unsigned RenderTarget::GetNumColorAttachments() const
+	unsigned RenderTarget::GetNumColorTextures() const
 	{
-		return numColorAttachments;
+		return numColorTextures;
 	}
 
 	unsigned RenderTarget::GetNumSamples() const
@@ -513,15 +502,15 @@ namespace Jwl
 
 	Texture::Ptr RenderTarget::GetDepthTexture() const
 	{
-		return depthAttachment;
+		return depth;
 	}
 
 	Texture::Ptr RenderTarget::GetColorTexture(unsigned index) const
 	{
-		ASSERT(numColorAttachments > 0, "RenderTarget does not have any color attachments.");
-		ASSERT(index < numColorAttachments, "'index' must specify a valid color attachment.");
+		ASSERT(numColorTextures > 0, "RenderTarget does not have any color textures.");
+		ASSERT(index < numColorTextures, "'index' must specify a valid color texture.");
 
-		return colorAttachments[index];
+		return colors[index];
 	}
 
 	Viewport RenderTarget::GetViewport() const

@@ -297,29 +297,29 @@ namespace Jwl
 
 	void GPUInfo::ScanDevice()
 	{
-		glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, reinterpret_cast<int*>(&MaxTextureSlots));
-		glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, reinterpret_cast<int*>(&MaxUniformBufferSlots));
-		glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS, reinterpret_cast<int*>(&MaxRenderTargetAttachments));
-		glGetIntegerv(GL_MAX_DRAW_BUFFERS, reinterpret_cast<int*>(&MaxDrawBuffers));
+		glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, reinterpret_cast<int*>(&maxTextureSlots));
+		glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, reinterpret_cast<int*>(&maxUniformBufferSlots));
+		glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS, reinterpret_cast<int*>(&maxRenderTargetTextures));
+		glGetIntegerv(GL_MAX_DRAW_BUFFERS, reinterpret_cast<int*>(&maxDrawBuffers));
 	}
 
 	unsigned GPUInfo::GetMaxTextureSlots() const
 	{
-		return MaxTextureSlots;
+		return maxTextureSlots;
 	}
 
 	unsigned GPUInfo::GetMaxUniformBufferSlots() const
 	{
-		return MaxUniformBufferSlots;
+		return maxUniformBufferSlots;
 	}
 
-	unsigned GPUInfo::GetMaxRenderTargetAttachments() const
+	unsigned GPUInfo::GetMaxRenderTargetTextures() const
 	{
-		return MaxRenderTargetAttachments;
+		return maxRenderTargetTextures;
 	}
 
 	unsigned GPUInfo::GetMaxDrawBuffers() const
 	{
-		return MaxDrawBuffers;
+		return maxDrawBuffers;
 	}
 }

@@ -8,30 +8,28 @@ namespace Jwl
 	class vec4;
 	class Viewport;
 
+	// Contains a series of textures that can be rendered into.
 	class RenderTarget : public Shareable<RenderTarget>
 	{
 		friend ShareableAlloc;
-		RenderTarget() = default;
 		RenderTarget(const RenderTarget&) = delete;
+		RenderTarget& operator=(const RenderTarget&) = delete;
 		~RenderTarget();
 
 	public:
-		RenderTarget& operator=(const RenderTarget&) = delete;
-
-		// Must be called first. Implicitly calls Unload().
-		void Init(unsigned pixelWidth, unsigned pixelHeight, unsigned numColorTextures, bool hasDepth, unsigned samples = 1);
-		// Initialize this RenderTarget as a non multi-sampled version of the provided RenderTarget. Implicitly calls Unload() and Validate().
-		bool InitAsResolve(const RenderTarget& multisampleBuffer, TextureFilter filter);
+		RenderTarget(unsigned width, unsigned height, unsigned numColorTextures, bool hasDepth, unsigned numSamples = 1);
 		// Allocates and initializes the texture slot specified by index. Must be called on each slot before use.
-		void CreateAttachment(unsigned index, TextureFormat format, TextureFilter filter);
+		void InitTexture(unsigned index, TextureFormat format, TextureFilter filter);
+
+		// Creates a non multisampled version of this RenderTarget to be used with the ResolveMultisampling() functions.
+		RenderTarget::Ptr MakeResolve() const;
+
 		// Should be called once after all texture slots are created. Returns true if the RenderTarget was created successfully.
 		bool Validate() const;
 
 		// Attach an existing texture.
-		void AttachDepthTexture(Texture::Ptr& tex);
+		void AttachDepthTexture(const Texture::Ptr& texture);
 		void DetachDepthTexture();
-		// Releases all VRAM.
-		void Unload();
 
 		// Clears all textures to the current global clear color/depth.
 		void Clear() const;
@@ -49,9 +47,15 @@ namespace Jwl
 		void Bind() const;
 		static void UnBind();
 
+		// Copies the internal multisampled textures to the target while also consolidating the samples.
+		// This must be done because multisample textures cannot be used directly.
+		// target should be a RenderTarget created with MakeResolve().
+		void ResolveMultisampling(const RenderTarget& target) const;
+		void ResolveMultisamplingDepth(const RenderTarget& target) const;
+		void ResolveMultisamplingColor(const RenderTarget& target) const;
+
 		// Resizes all internal textures to the new resolution. Texture data will be lost.
 		bool Resize(unsigned newWidth, unsigned newHeight);
-		void ResolveMultisampling(const RenderTarget& target) const;
 
 		void CopyDepth(const RenderTarget& target) const;
 		void CopyColor(const RenderTarget& target, unsigned index) const;
@@ -65,7 +69,7 @@ namespace Jwl
 
 		bool HasDepth() const;
 		bool IsMultisampled() const;
-		unsigned GetNumColorAttachments() const;
+		unsigned GetNumColorTextures() const;
 		unsigned GetNumSamples() const;
 
 		Texture::Ptr GetDepthTexture() const;
@@ -77,13 +81,13 @@ namespace Jwl
 		unsigned GetHeight() const;
 
 	private:
-		unsigned FBO				 = 0;
-		unsigned numColorAttachments = 0;
-		unsigned numSamples			 = 0;
-		unsigned width				 = 0;
-		unsigned height				 = 0;
+		unsigned FBO;
+		unsigned numColorTextures;
+		unsigned numSamples;
+		unsigned width;
+		unsigned height;
 
-		Texture::Ptr depthAttachment;
-		Texture::Ptr* colorAttachments = nullptr;
+		Texture::Ptr depth;
+		Texture::Ptr* colors = nullptr;
 	};
 }

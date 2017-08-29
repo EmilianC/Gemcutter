@@ -138,15 +138,15 @@ namespace Jwl
 	public:
 		unsigned GetMaxTextureSlots() const;
 		unsigned GetMaxUniformBufferSlots() const;
-		unsigned GetMaxRenderTargetAttachments() const;
+		unsigned GetMaxRenderTargetTextures() const;
 		unsigned GetMaxDrawBuffers() const;
 
 	private:
 		void ScanDevice();
 
-		unsigned MaxTextureSlots = 0;
-		unsigned MaxUniformBufferSlots = 0;
-		unsigned MaxRenderTargetAttachments = 0;
-		unsigned MaxDrawBuffers = 0;
+		unsigned maxTextureSlots = 0;
+		unsigned maxUniformBufferSlots = 0;
+		unsigned maxRenderTargetTextures = 0;
+		unsigned maxDrawBuffers = 0;
 	} &GPUInfo = Singleton<class GPUInfo>::instanceRef;
 }

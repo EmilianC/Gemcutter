@@ -703,7 +703,7 @@ TEST_CASE("Entity-Component-System")
 				// Query the Entity Database. We expect only our target Entities as a result.
 				auto results = CaptureWith<Comp1, Comp2>();
 
-				// The targets no longer match the query, but it they have already been captured.
+				// The targets no longer match the query, but they have already been captured.
 				ent1->RemoveAllComponents();
 				ent2->RemoveAllComponents();
 
