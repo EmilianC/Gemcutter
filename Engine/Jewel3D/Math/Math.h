@@ -21,10 +21,16 @@ namespace Jwl
 		return radians * (180.0f / M_PI);
 	}
 
-	template<typename T0>
-	auto Abs(T0&& val)
+	template<typename T>
+	auto Abs(T val)
 	{
 		return std::abs(val);
+	}
+
+	template<typename T>
+	bool Equals(T a, T b)
+	{
+		return Abs(a - b) <= std::numeric_limits<std::decay_t<T>>::epsilon();
 	}
 
 	// Returns the lesser of all arguments.
@@ -50,34 +56,34 @@ namespace Jwl
 	}
 
 	// Clamps data to the range [low, high]
-	template<class T>
-	constexpr T Clamp(const T& data, const T& low, const T& high)
+	template<typename T0, typename T1, typename T2>
+	constexpr auto Clamp(T0&& data, T1&& low, T2&& high)
 	{
 		return Min(Max(data, low), high);
 	}
 
-	template<class T>
-	constexpr T SmoothStep(const T& edge0, const T& edge1, T val)
+	template<typename T0, typename T1, typename Common = std::common_type_t<T0, T1>>
+	constexpr Common SmoothStep(T0&& edge0, T1&& edge1, Common val)
 	{
 		val = Clamp((val - edge0) / (edge1 - edge0), 0.0f, 1.0f);
 		return val * val * (3.0f - 2.0f * val);
 	}
 
-	template<class T>
-	constexpr T SmootherStep(const T& edge0, const T& edge1, T val)
+	template<typename T0, typename T1, typename Common = std::common_type_t<T0, T1>>
+	constexpr Common SmootherStep(T0& edge0, T1& edge1, Common val)
 	{
 		val = Clamp((val - edge0) / (edge1 - edge0), 0.0f, 1.0f);
 		return val * val * val * (val * (val * 6.0f - 15.0f) + 10.0f);
 	}
 
-	template<class T>
-	constexpr T Lerp(const T& data1, const T& data2, float percent)
+	template<typename T0, typename T1>
+	constexpr auto Lerp(T0&& data1, T1&& data2, float percent)
 	{
 		return data1 * (1.0f - percent) + data2 * percent;
 	}
 
-	template<class T>
-	constexpr T CatMull(const T& data1, const T& data2, const T& data3, const T& data4, float percent)
+	template<typename T0, typename T1, typename T2, typename T3>
+	constexpr auto CatMull(T0&& data1, T1&& data2, T2&& data3, T3&& data4, float percent)
 	{
 		return 0.5f * (percent * (percent * (percent * (-data1 + 3.0f * data2 - 3.0f * data3 + data4) +
 			(2.0f * data1 - 5.0f * data2 + 4.0f * data3 - data4)) +
@@ -85,8 +91,8 @@ namespace Jwl
 			2.0f * data2);
 	}
 
-	template<class T>
-	constexpr T Bezier(const T& data1, const T& handle1, const T& handle2, const T& data2, float percent)
+	template<typename T0, typename T1, typename T2, typename T3>
+	constexpr auto Bezier(T0&& data1, T1&& handle1, T2&& handle2, T3&& data2, float percent)
 	{
 		return percent * (percent * (percent * (-data1 + 3.0f * handle1 - 3.0f * handle2 + data2) +
 			(3.0f * data1 - 6.0f * handle1 + 3.0f * handle2 + data2)) +

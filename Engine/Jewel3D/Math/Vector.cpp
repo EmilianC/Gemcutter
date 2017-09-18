@@ -26,12 +26,16 @@ namespace Jwl
 
 	bool vec2::operator==(const vec2 &RHS) const
 	{
-		return (this->x == RHS.x) && (this->y == RHS.y);
+		return 
+			Equals(x, RHS.x) && 
+			Equals(y, RHS.y);
 	}
 
 	bool vec2::operator!=(const vec2 &RHS) const
 	{
-		return (this->x != RHS.x) || (this->y != RHS.y);
+		return 
+			!Equals(x, RHS.x) || 
+			!Equals(y, RHS.y);
 	}
 
 	vec2& vec2::operator=(const vec2 &RHS)
@@ -199,12 +203,18 @@ namespace Jwl
 
 	bool vec3::operator==(const vec3 &RHS) const
 	{
-		return (this->x == RHS.x) && (this->y == RHS.y) && (this->z == RHS.z);
+		return 
+			Equals(x, RHS.x) && 
+			Equals(y, RHS.y) && 
+			Equals(z, RHS.z);
 	}
 
 	bool vec3::operator!=(const vec3 &RHS) const
 	{
-		return (this->x != RHS.x) || (this->y != RHS.y) || (this->z != RHS.z);
+		return 
+			!Equals(x, RHS.x) || 
+			!Equals(y, RHS.y) || 
+			!Equals(z, RHS.z);
 	}
 
 	vec3& vec3::operator=(const vec3 &RHS)
@@ -395,12 +405,20 @@ namespace Jwl
 
 	bool vec4::operator==(const vec4 &RHS) const
 	{
-		return (this->x == RHS.x) && (this->y == RHS.y) && (this->z == RHS.z) && (this->w == RHS.w);
+		return 
+			Equals(x, RHS.x) && 
+			Equals(y, RHS.y) && 
+			Equals(z, RHS.z) && 
+			Equals(w, RHS.w);
 	}
 
 	bool vec4::operator!=(const vec4 &RHS) const
 	{
-		return (this->x != RHS.x) || (this->y != RHS.y) || (this->z != RHS.z) || (this->w != RHS.w);
+		return 
+			!Equals(x, RHS.x) || 
+			!Equals(y, RHS.y) || 
+			!Equals(z, RHS.z) || 
+			!Equals(w, RHS.w);
 	}
 
 	vec4& vec4::operator=(const vec4 &RHS)

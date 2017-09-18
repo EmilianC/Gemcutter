@@ -23,6 +23,9 @@ namespace Jwl
 		mat2(float f0, float f2,
 			float f1, float f3);
 
+		bool operator==(const mat2&) const;
+		bool operator!=(const mat2&) const;
+
 		mat2& operator=(const mat2&);
 		mat2& operator*=(const mat2&);
 		mat2& operator*=(float scalar);
@@ -80,6 +83,9 @@ namespace Jwl
 		mat3(float f0, float f3, float f6,
 			float f1, float f4, float f7,
 			float f2, float f5, float f8);
+
+		bool operator==(const mat3&) const;
+		bool operator!=(const mat3&) const;
 
 		mat3& operator=(const mat3&);
 		mat3& operator*=(const mat3&);
@@ -146,6 +152,9 @@ namespace Jwl
 			float f1, float f5, float f9, float f13,
 			float f2, float f6, float f10, float f14,
 			float f3, float f7, float f11, float f15);
+
+		bool operator==(const mat4&) const;
+		bool operator!=(const mat4&) const;
 
 		mat4& operator=(const mat4&);
 		mat4& operator*=(const mat4&);

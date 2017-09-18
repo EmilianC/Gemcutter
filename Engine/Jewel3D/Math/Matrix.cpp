@@ -40,6 +40,24 @@ namespace Jwl
 		data[3] = f3;
 	}
 
+	bool mat2::operator==(const mat2& M) const
+	{
+		return 
+			Equals(data[0], M.data[0]) && 
+			Equals(data[1], M.data[1]) && 
+			Equals(data[2], M.data[2]) && 
+			Equals(data[3], M.data[3]);
+	}
+
+	bool mat2::operator!=(const mat2& M) const
+	{
+		return 
+			!Equals(data[0], M.data[0]) || 
+			!Equals(data[1], M.data[1]) || 
+			!Equals(data[2], M.data[2]) || 
+			!Equals(data[3], M.data[3]);
+	}
+
 	mat2& mat2::operator=(const mat2& M)
 	{
 		memcpy(data, M.data, sizeof(float) * 4);
@@ -324,6 +342,28 @@ namespace Jwl
 		data[6] = f6;
 		data[7] = f7;
 		data[8] = f8;
+	}
+
+	bool mat3::operator==(const mat3& M) const
+	{
+		for (int i = 0; i < 9; ++i)
+		{
+			if (!Equals(data[i], M.data[i]))
+				return false;
+		}
+
+		return true;
+	}
+
+	bool mat3::operator!=(const mat3& M) const
+	{
+		for (int i = 0; i < 9; ++i)
+		{
+			if (!Equals(data[i], M.data[i]))
+				return true;
+		}
+
+		return false;
 	}
 
 	mat3& mat3::operator=(const mat3& M)
@@ -797,6 +837,28 @@ namespace Jwl
 		data[13] = f13;
 		data[14] = f14;
 		data[15] = f15;
+	}
+
+	bool mat4::operator==(const mat4& M) const
+	{
+		for (int i = 0; i < 16; ++i)
+		{
+			if (!Equals(data[i], M.data[i]))
+				return false;
+		}
+
+		return true;
+	}
+
+	bool mat4::operator!=(const mat4& M) const
+	{
+		for (int i = 0; i < 16; ++i)
+		{
+			if (!Equals(data[i], M.data[i]))
+				return true;
+		}
+
+		return false;
 	}
 	
 	mat4& mat4::operator=(const mat4& M)

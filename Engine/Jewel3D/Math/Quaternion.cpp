@@ -60,6 +60,24 @@ namespace Jwl
 		Normalize();
 	}
 
+	bool quat::operator==(const quat& other) const
+	{
+		return 
+			Equals(x, other.x) && 
+			Equals(y, other.y) && 
+			Equals(z, other.z) && 
+			Equals(w, other.w);
+	}
+
+	bool quat::operator!=(const quat& other) const
+	{
+		return 
+			!Equals(x, other.x) || 
+			!Equals(y, other.y) || 
+			!Equals(z, other.z) || 
+			!Equals(w, other.w);
+	}
+
 	quat quat::operator*(const quat& other) const
 	{
 		return quat(
