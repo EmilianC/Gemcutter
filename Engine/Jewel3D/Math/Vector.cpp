@@ -24,35 +24,35 @@ namespace Jwl
 	{
 	}
 
-	bool vec2::operator==(const vec2 &RHS) const
+	bool vec2::operator==(const vec2& RHS) const
 	{
 		return 
 			Equals(x, RHS.x) && 
 			Equals(y, RHS.y);
 	}
 
-	bool vec2::operator!=(const vec2 &RHS) const
+	bool vec2::operator!=(const vec2& RHS) const
 	{
 		return 
 			!Equals(x, RHS.x) || 
 			!Equals(y, RHS.y);
 	}
 
-	vec2& vec2::operator=(const vec2 &RHS)
+	vec2& vec2::operator=(const vec2& RHS)
 	{
 		this->x = RHS.x;
 		this->y = RHS.y;
 		return *this;
 	}
 
-	vec2& vec2::operator-=(const vec2 &RHS)
+	vec2& vec2::operator-=(const vec2& RHS)
 	{
 		this->x -= RHS.x;
 		this->y -= RHS.y;
 		return *this;
 	}
 
-	vec2& vec2::operator+=(const vec2 &RHS)
+	vec2& vec2::operator+=(const vec2& RHS)
 	{
 		this->x += RHS.x;
 		this->y += RHS.y;
@@ -93,22 +93,22 @@ namespace Jwl
 		return vec2(-x, -y);
 	}
 
-	vec2 vec2::operator-(const vec2 &RHS) const
+	vec2 vec2::operator-(const vec2& RHS) const
 	{
 		return vec2(x - RHS.x, y - RHS.y);
 	}
 
-	vec2 vec2::operator+(const vec2 &RHS) const
+	vec2 vec2::operator+(const vec2& RHS) const
 	{
 		return vec2(x + RHS.x, y + RHS.y);
 	}
 
-	vec2 vec2::operator*(const vec2 &RHS) const
+	vec2 vec2::operator*(const vec2& RHS) const
 	{
 		return vec2(x * RHS.x, y * RHS.y);
 	}
 
-	vec2 vec2::operator/(const vec2 &RHS) const
+	vec2 vec2::operator/(const vec2& RHS) const
 	{
 		return vec2(x / RHS.x, y / RHS.y);
 	}
@@ -130,7 +130,7 @@ namespace Jwl
 		return *(&x + index);
 	}
 
-	float &vec2::operator[](unsigned index)
+	float& vec2::operator[](unsigned index)
 	{
 		ASSERT(index >= 0 && index < 2, "'index' must be in the range of [0, 1].");
 		return *(&x + index);
@@ -186,7 +186,7 @@ namespace Jwl
 	const vec3 vec3::Up = vec3(0.0f, 1.0f, 0.0f);
 	const vec3 vec3::Forward = vec3(0.0f, 0.0f, 1.0f);
 
-	vec3::vec3(const vec2 &xy, float z)
+	vec3::vec3(const vec2& xy, float z)
 		: x(xy[0]), y(xy[1]), z(z)
 	{
 	}
@@ -201,7 +201,7 @@ namespace Jwl
 	{
 	}
 
-	bool vec3::operator==(const vec3 &RHS) const
+	bool vec3::operator==(const vec3& RHS) const
 	{
 		return 
 			Equals(x, RHS.x) && 
@@ -209,7 +209,7 @@ namespace Jwl
 			Equals(z, RHS.z);
 	}
 
-	bool vec3::operator!=(const vec3 &RHS) const
+	bool vec3::operator!=(const vec3& RHS) const
 	{
 		return 
 			!Equals(x, RHS.x) || 
@@ -217,7 +217,7 @@ namespace Jwl
 			!Equals(z, RHS.z);
 	}
 
-	vec3& vec3::operator=(const vec3 &RHS)
+	vec3& vec3::operator=(const vec3& RHS)
 	{
 		this->x = RHS.x;
 		this->y = RHS.y;
@@ -225,7 +225,7 @@ namespace Jwl
 		return *this;
 	}
 
-	vec3& vec3::operator-=(const vec3 &RHS)
+	vec3& vec3::operator-=(const vec3& RHS)
 	{
 		this->x -= RHS.x;
 		this->y -= RHS.y;
@@ -233,7 +233,7 @@ namespace Jwl
 		return *this;
 	}
 
-	vec3& vec3::operator+=(const vec3 &RHS)
+	vec3& vec3::operator+=(const vec3& RHS)
 	{
 		this->x += RHS.x;
 		this->y += RHS.y;
@@ -241,7 +241,7 @@ namespace Jwl
 		return *this;
 	}
 
-	vec3& vec3::operator*=(const vec3 &RHS)
+	vec3& vec3::operator*=(const vec3& RHS)
 	{
 		this->x *= RHS.x;
 		this->y *= RHS.y;
@@ -249,7 +249,7 @@ namespace Jwl
 		return *this;
 	}
 
-	vec3& vec3::operator/=(const vec3 &RHS)
+	vec3& vec3::operator/=(const vec3& RHS)
 	{
 		this->x /= RHS.x;
 		this->y /= RHS.y;
@@ -279,22 +279,22 @@ namespace Jwl
 		return vec3(-x, -y, -z);
 	}
 
-	vec3 vec3::operator-(const vec3 &RHS) const
+	vec3 vec3::operator-(const vec3& RHS) const
 	{
 		return vec3(x - RHS.x, y - RHS.y, z - RHS.z);
 	}
 
-	vec3 vec3::operator+(const vec3 &RHS) const
+	vec3 vec3::operator+(const vec3& RHS) const
 	{
 		return vec3(x + RHS.x, y + RHS.y, z + RHS.z);
 	}
 
-	vec3 vec3::operator*(const vec3 &RHS) const
+	vec3 vec3::operator*(const vec3& RHS) const
 	{
 		return vec3(x * RHS.x, y * RHS.y, z * RHS.z);
 	}
 
-	vec3 vec3::operator/(const vec3 &RHS) const
+	vec3 vec3::operator/(const vec3& RHS) const
 	{
 		return vec3(x / RHS.x, y / RHS.y, z / RHS.z);
 	}
@@ -316,7 +316,7 @@ namespace Jwl
 		return *(&x + index);
 	}
 
-	float &vec3::operator[](unsigned index)
+	float& vec3::operator[](unsigned index)
 	{
 		ASSERT(index >= 0 && index < 3, "'index' must be in the range of [0, 2].");
 		return *(&x + index);
@@ -378,7 +378,7 @@ namespace Jwl
 	const vec4 vec4::Up = vec4(0.0f, 1.0f, 0.0f, 0.0f);
 	const vec4 vec4::Forward = vec4(0.0f, 0.0f, 1.0f, 0.0f);
 
-	vec4::vec4(const vec2 &xy, float z, float w)
+	vec4::vec4(const vec2& xy, float z, float w)
 		: x(xy[0]), y(xy[1]), z(z), w(w)
 	{
 	}
@@ -388,7 +388,7 @@ namespace Jwl
 	{
 	}
 
-	vec4::vec4(const vec3 &xyz, float w)
+	vec4::vec4(const vec3& xyz, float w)
 		: x(xyz[0]), y(xyz[1]), z(xyz[2]), w(w)
 	{
 	}
@@ -403,7 +403,7 @@ namespace Jwl
 	{
 	}
 
-	bool vec4::operator==(const vec4 &RHS) const
+	bool vec4::operator==(const vec4& RHS) const
 	{
 		return 
 			Equals(x, RHS.x) && 
@@ -412,7 +412,7 @@ namespace Jwl
 			Equals(w, RHS.w);
 	}
 
-	bool vec4::operator!=(const vec4 &RHS) const
+	bool vec4::operator!=(const vec4& RHS) const
 	{
 		return 
 			!Equals(x, RHS.x) || 
@@ -421,7 +421,7 @@ namespace Jwl
 			!Equals(w, RHS.w);
 	}
 
-	vec4& vec4::operator=(const vec4 &RHS)
+	vec4& vec4::operator=(const vec4& RHS)
 	{
 		this->x = RHS.x;
 		this->y = RHS.y;
@@ -430,7 +430,7 @@ namespace Jwl
 		return *this;
 	}
 
-	vec4& vec4::operator-=(const vec4 &RHS)
+	vec4& vec4::operator-=(const vec4& RHS)
 	{
 		this->x -= RHS.x;
 		this->y -= RHS.y;
@@ -439,7 +439,7 @@ namespace Jwl
 		return *this;
 	}
 
-	vec4& vec4::operator+=(const vec4 &RHS)
+	vec4& vec4::operator+=(const vec4& RHS)
 	{
 		this->x += RHS.x;
 		this->y += RHS.y;
@@ -448,7 +448,7 @@ namespace Jwl
 		return *this;
 	}
 
-	vec4& vec4::operator*=(const vec4 &RHS)
+	vec4& vec4::operator*=(const vec4& RHS)
 	{
 		this->x *= RHS.x;
 		this->y *= RHS.y;
@@ -457,7 +457,7 @@ namespace Jwl
 		return *this;
 	}
 
-	vec4& vec4::operator/=(const vec4 &RHS)
+	vec4& vec4::operator/=(const vec4& RHS)
 	{
 		this->x /= RHS.x;
 		this->y /= RHS.y;
@@ -490,22 +490,22 @@ namespace Jwl
 		return vec4(-x, -y, -z, -w);
 	}
 
-	vec4 vec4::operator-(const vec4 &RHS) const
+	vec4 vec4::operator-(const vec4& RHS) const
 	{
 		return vec4(x - RHS.x, y - RHS.y, z - RHS.z, w - RHS.w);
 	}
 
-	vec4 vec4::operator+(const vec4 &RHS) const
+	vec4 vec4::operator+(const vec4& RHS) const
 	{
 		return vec4(x + RHS.x, y + RHS.y, z + RHS.z, w + RHS.w);
 	}
 
-	vec4 vec4::operator*(const vec4 &RHS) const
+	vec4 vec4::operator*(const vec4& RHS) const
 	{
 		return vec4(x * RHS.x, y * RHS.y, z * RHS.z, w * RHS.w);
 	}
 
-	vec4 vec4::operator/(const vec4 &RHS) const
+	vec4 vec4::operator/(const vec4& RHS) const
 	{
 		return vec4(x / RHS.x, y / RHS.y, z / RHS.z, w / RHS.w);
 	}
@@ -527,7 +527,7 @@ namespace Jwl
 		return *(&x + index);
 	}
 
-	float &vec4::operator[](unsigned index)
+	float& vec4::operator[](unsigned index)
 	{
 		ASSERT(index >= 0 && index < 4, "'index' must be in the range of [0, 3].");
 		return *(&x + index);
@@ -582,37 +582,37 @@ namespace Jwl
 
 #pragma endregion
 
-	float Distance(const vec2 &v1, const vec2 &v2)
+	float Distance(const vec2& v1, const vec2& v2)
 	{
 		return (v1 - v2).Length();
 	}
 
-	float Distance(const vec3 &v1, const vec3 &v2)
+	float Distance(const vec3& v1, const vec3& v2)
 	{
 		return (v1 - v2).Length();
 	}
 
-	float Distance(const vec4 &v1, const vec4 &v2)
+	float Distance(const vec4& v1, const vec4& v2)
 	{
 		return (v1 - v2).Length();
 	}
 
-	float Dot(const vec2 &v1, const vec2 &v2)
+	float Dot(const vec2& v1, const vec2& v2)
 	{
 		return (v1.x * v2.x) + (v1.y * v2.y);
 	}
 
-	float Dot(const vec3 &v1, const vec3 &v2)
+	float Dot(const vec3& v1, const vec3& v2)
 	{
 		return (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z);
 	}
 
-	float Dot(const vec4 &v1, const vec4 &v2)
+	float Dot(const vec4& v1, const vec4& v2)
 	{
 		return (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z) + (v1.w * v2.w);
 	}
 
-	vec3 Cross(const vec3 &v1, const vec3 &v2)
+	vec3 Cross(const vec3& v1, const vec3& v2)
 	{
 		return vec3(
 			v1.y * v2.z - v1.z * v2.y,
