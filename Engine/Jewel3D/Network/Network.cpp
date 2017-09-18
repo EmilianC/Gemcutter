@@ -633,7 +633,7 @@ namespace Jwl
 	bool NetworkServer::SendUDP(const std::string& packet)
 	{
 		bool okay = true;
-		for (unsigned i = 0; i < clients.size(); i++)
+		for (unsigned i = 0; i < clients.size(); ++i)
 		{
 			bool result = sendto(UDPSendSocket, packet.c_str(), packet.size(), 0, reinterpret_cast<sockaddr*>(&clients[i].UDPAddress), clients[i].UDPAddressSize) != SOCKET_ERROR;
 			okay = okay && result;
@@ -645,7 +645,7 @@ namespace Jwl
 	bool NetworkServer::SendToAllButOneUDP(const std::string& packet, int excludedID)
 	{
 		bool okay = true;
-		for (unsigned i = 0; i < clients.size(); i++)
+		for (unsigned i = 0; i < clients.size(); ++i)
 		{
 			if (clients[i].ID == excludedID)
 				continue;
@@ -678,7 +678,7 @@ namespace Jwl
 			out_packet = receiveBuffer;
 
 			// Identify the client.
-			for (unsigned i = 0; i < clients.size(); i++)
+			for (unsigned i = 0; i < clients.size(); ++i)
 			{
 				// Clients are assumed to have unique IP addresses.
 				if (clients[i].UDPAddress.sin_addr.S_un.S_addr == addr.sin_addr.S_un.S_addr)
@@ -702,7 +702,7 @@ namespace Jwl
 	bool NetworkServer::SendTCP(const std::string& packet)
 	{
 		bool okay = true;
-		for (unsigned i = 0; i < clients.size(); i++)
+		for (unsigned i = 0; i < clients.size(); ++i)
 		{
 			bool result = send(clients[i].TCPSocket, packet.c_str(), packet.size(), 0) != SOCKET_ERROR;
 			okay = okay && result;
@@ -714,7 +714,7 @@ namespace Jwl
 	bool NetworkServer::SendToAllButOneTCP(const std::string& packet, int excludedID)
 	{
 		bool okay = true;
-		for (unsigned i = 0; i < clients.size(); i++)
+		for (unsigned i = 0; i < clients.size(); ++i)
 		{
 			if (clients[i].ID == excludedID)
 				continue;
@@ -733,7 +733,7 @@ namespace Jwl
 		memset(receiveBuffer, '\0', PACKET_LENGTH);
 
 		// Look through all clients for packets.
-		for (unsigned i = 0; i < clients.size(); i++)
+		for (unsigned i = 0; i < clients.size(); ++i)
 		{
 			int length = recv(clients[i].TCPSocket, receiveBuffer, PACKET_LENGTH, 0);
 	
@@ -755,7 +755,7 @@ namespace Jwl
 
 	unsigned NetworkServer::GetClientIndex(int ID) const
 	{
-		for (unsigned i = 0; i < clients.size(); i++)
+		for (unsigned i = 0; i < clients.size(); ++i)
 		{
 			if (clients[i].ID == ID)
 			{

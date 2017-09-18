@@ -47,7 +47,7 @@ namespace Jwl
 	template<class Node>
 	void Hierarchy<Node>::RemoveChild(Node& child)
 	{
-		for (unsigned i = 0; i < children.size(); i++)
+		for (unsigned i = 0; i < children.size(); ++i)
 		{
 			if (children[i].get() == &child)
 			{

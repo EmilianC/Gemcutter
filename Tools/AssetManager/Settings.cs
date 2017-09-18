@@ -31,7 +31,7 @@ namespace AssetManager
 		// Reorganizes the spacing of the list.
 		private void RepositionList()
 		{
-			for (int i = 0; i < entries.Count; i++)
+			for (int i = 0; i < entries.Count; ++i)
 			{
 				entries[i].SetPosition(EncoderEntry.ItemHeight * i);
 			}

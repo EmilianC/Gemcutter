@@ -35,7 +35,7 @@ namespace Jwl
 	{
 		ASSERT(startIndex + count <= particles.GetNumParticles(), "Indices out of range.");
 
-		for (unsigned i = startIndex, end = startIndex + count; i < end; i++)
+		for (unsigned i = startIndex, end = startIndex + count; i < end; ++i)
 		{
 			particles.rotations[i] = initialRotation.Random();
 		}
@@ -44,7 +44,7 @@ namespace Jwl
 	void RotationFunc::Update(ParticleBuffer& particles, ParticleEmitter& emitter, float deltaTime)
 	{
 		float rotation = rotationSpeed * deltaTime;
-		for (unsigned i = 0; i < emitter.GetNumAliveParticles(); i++)
+		for (unsigned i = 0; i < emitter.GetNumAliveParticles(); ++i)
 		{
 			particles.rotations[i] += rotation;
 		}

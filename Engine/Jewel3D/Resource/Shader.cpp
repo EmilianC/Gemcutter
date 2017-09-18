@@ -284,7 +284,7 @@ namespace Jwl
 
 		defer { UpdateHash(); };
 
-		for (unsigned i = 0; i < defines.size(); i++)
+		for (unsigned i = 0; i < defines.size(); ++i)
 		{
 			if (defines[i].name == name)
 			{
@@ -316,7 +316,7 @@ namespace Jwl
 
 	void ShaderVariantControl::Undefine(const std::string& name)
 	{
-		for (unsigned i = 0; i < defines.size(); i++)
+		for (unsigned i = 0; i < defines.size(); ++i)
 		{
 			if (defines[i].name == name)
 			{
@@ -905,7 +905,7 @@ namespace Jwl
 			std::vector<uniformMember> uniforms;
 
 			// Find all uniforms and parse their information.
-			for (unsigned i = 0; i < rawStruct.size(); i++)
+			for (unsigned i = 0; i < rawStruct.size(); ++i)
 			{
 				if (!std::isspace(rawStruct[i]))
 				{
@@ -1009,7 +1009,7 @@ namespace Jwl
 			}
 
 			// Add all members to the buffer.
-			for (unsigned i = 0; i < uniforms.size(); i++)
+			for (unsigned i = 0; i < uniforms.size(); ++i)
 			{
 				buffer->AddUniform(uniforms[i].name, uniforms[i].size);
 			}
@@ -1017,7 +1017,7 @@ namespace Jwl
 			buffer->InitBuffer();
 
 			/* Resolve Default set values */
-			for (unsigned i = 0; i < uniforms.size(); i++)
+			for (unsigned i = 0; i < uniforms.size(); ++i)
 			{
 				if (uniforms[i].value.empty())
 					continue;

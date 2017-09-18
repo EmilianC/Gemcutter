@@ -232,9 +232,9 @@ bool MeshEncoder::Convert(const std::string& source, const std::string& destinat
 
 	// Unpack the data.
 	unsigned pen = 0;
-	for (unsigned i = 0; i < faceData.size(); i++)
+	for (unsigned i = 0; i < faceData.size(); ++i)
 	{
-		for (unsigned j = 0; j < 3; j++)
+		for (unsigned j = 0; j < 3; ++j)
 		{
 			data[pen++] = vertexData[faceData[i].vertices[j] - 1].x;
 			data[pen++] = vertexData[faceData[i].vertices[j] - 1].y;

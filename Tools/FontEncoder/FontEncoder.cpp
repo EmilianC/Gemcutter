@@ -194,7 +194,7 @@ bool FontEncoder::Convert(const std::string& source, const std::string& destinat
 			// Save the bitmap as a flipped image.
 			for (int i = face->glyph->bitmap.rows - 1; i >= 0; i--)
 			{
-				for (int j = 0; j < face->glyph->bitmap.width; j++)
+				for (int j = 0; j < face->glyph->bitmap.width; ++j)
 				{
 					bitmapBuffer.push_back(face->glyph->bitmap.buffer[face->glyph->bitmap.width * i + j]);
 				}

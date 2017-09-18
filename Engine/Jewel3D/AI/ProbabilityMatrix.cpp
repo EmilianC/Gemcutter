@@ -46,16 +46,16 @@ namespace Jwl
 	void ProbabilityMatrix::Normalize()
 	{
 		// Accumulate sum for each row in order to normalize.
-		for (unsigned i = 0; i < numStates; i++)
+		for (unsigned i = 0; i < numStates; ++i)
 		{
 			float sum = 0.0f;
 
-			for (unsigned j = 0; j < numActions; j++)
+			for (unsigned j = 0; j < numActions; ++j)
 			{
 				sum += GetValue(i, j);
 			}
 
-			for (unsigned j = 0; j < numActions; j++)
+			for (unsigned j = 0; j < numActions; ++j)
 			{
 				float value = GetValue(i, j);
 				SetValue(i, j, value / sum);
@@ -67,7 +67,7 @@ namespace Jwl
 	{
 		float value = 1.0f / numActions;
 
-		for (unsigned i = 0; i < numStates * numActions; i++)
+		for (unsigned i = 0; i < numStates * numActions; ++i)
 		{
 			data[i] = value;
 		}
@@ -81,7 +81,7 @@ namespace Jwl
 		// Cascade through all the actions until our random value is larger.
 		// This effectively incorporates the weight of each option.
 		float sum = 0.0f;
-		for (unsigned i = 0; i < numActions; i++)
+		for (unsigned i = 0; i < numActions; ++i)
 		{
 			sum += GetValue(state, i);
 			if (randomVal <= sum)

@@ -117,7 +117,7 @@ namespace Jwl
 
 				glTexStorage2D(GL_TEXTURE_CUBE_MAP, numLevels, ResolveFormat(format), width, height);
 
-				for (unsigned i = 0; i < 6; i++)
+				for (unsigned i = 0; i < 6; ++i)
 				{
 					glTexSubImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, 0, 0, width, height, dataFormat, GL_UNSIGNED_BYTE, image + (textureSize * i));
 				}

@@ -175,7 +175,7 @@ namespace Jwl
 		static_assert(std::is_base_of<ComponentBase, T>::value, "Template argument must inherit from Component.");
 		static_assert(!std::is_base_of<TagBase, T>::value, "Template argument cannot be a Tag");
 
-		for (unsigned i = 0; i < components.size(); i++)
+		for (unsigned i = 0; i < components.size(); ++i)
 		{
 			if (components[i]->componentId == T::GetComponentId())
 			{

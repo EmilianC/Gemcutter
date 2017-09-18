@@ -1190,7 +1190,7 @@ namespace Jwl
 			data[8] * data[2] * data[5];
 
 		det = 1.0f / det;
-		for (unsigned i = 0; i < 16u; i++)
+		for (unsigned i = 0; i < 16u; ++i)
 		{
 			data[i] = inv[i] * det;
 		}

@@ -153,7 +153,7 @@ namespace Jwl
 			transform = owner.GetWorldTransform().GetTranslation();
 		}
 
-		for (unsigned i = 0; i < numCurrentParticles; i++)
+		for (unsigned i = 0; i < numCurrentParticles; ++i)
 		{
 			data.positions[i] += transform;
 		}
@@ -243,7 +243,7 @@ namespace Jwl
 		}
 
 		/* Update existing particles */
-		for (unsigned i = 0; i < numCurrentParticles; i++)
+		for (unsigned i = 0; i < numCurrentParticles; ++i)
 		{
 			data.ages[i] += deltaTime;
 
@@ -298,7 +298,7 @@ namespace Jwl
 		{
 			vec3 transform = owner.GetWorldTransform().GetTranslation();
 		
-			for (unsigned i = initialCount; i < numCurrentParticles; i++)
+			for (unsigned i = initialCount; i < numCurrentParticles; ++i)
 			{
 				data.positions[i] += transform;
 			}
@@ -313,7 +313,7 @@ namespace Jwl
 		// Percentage of lifespan calculated here.
 		if (requiresAgeRatio)
 		{
-			for (unsigned i = 0; i < numCurrentParticles; i++)
+			for (unsigned i = 0; i < numCurrentParticles; ++i)
 			{
 				data.ageRatios[i] = data.ages[i] / data.lifetimes[i];
 			}

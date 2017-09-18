@@ -97,7 +97,7 @@ namespace Jwl
 
 		const auto& bindings = shader->GetBufferBindings();
 
-		for (unsigned i = 0; i < bindings.size(); i++)
+		for (unsigned i = 0; i < bindings.size(); ++i)
 		{
 			if (bindings[i].templateBuff)
 			{

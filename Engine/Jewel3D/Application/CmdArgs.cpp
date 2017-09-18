@@ -18,7 +18,7 @@ namespace Jwl
 
 	bool ArgumentExists(const char* name)
 	{
-		for (int i = 1; i < __argc; i++)
+		for (int i = 1; i < __argc; ++i)
 		{
 			// Search for the string.
 			if (strcmp(__argv[i], name) == 0)
@@ -32,7 +32,7 @@ namespace Jwl
 
 	int FindCommandLineArgument(const char* name)
 	{
-		for (int i = 1; i < __argc; i++)
+		for (int i = 1; i < __argc; ++i)
 		{
 			// Search for the string.
 			if (strcmp(__argv[i], name) == 0)

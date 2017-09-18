@@ -322,7 +322,7 @@ namespace Jwl
 			glBindVertexArray(Font::GetVAO());
 			glBindBuffer(GL_ARRAY_BUFFER, Font::GetVBO());
 
-			for (unsigned i = 0; i < text->text.size(); i++)
+			for (unsigned i = 0; i < text->text.size(); ++i)
 			{
 				char character = text->text[i];
 				unsigned charIndex = static_cast<unsigned>(character) - '!';

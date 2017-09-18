@@ -731,14 +731,14 @@ namespace Jwl
 
 		// Draw grid lines.
 		vec3 step = (p2 - p1) / static_cast<float>(numDivisions + 1);
-		for (unsigned i = 1; i <= numDivisions; i++)
+		for (unsigned i = 1; i <= numDivisions; ++i)
 		{
 			float num = static_cast<float>(i);
 			DrawLine(p4 + step * num, p1 + step * num, color);
 		}
 
 		step = (p3 - p2) / static_cast<float>(numDivisions + 1);
-		for (unsigned i = 1; i <= numDivisions; i++)
+		for (unsigned i = 1; i <= numDivisions; ++i)
 		{
 			float num = static_cast<float>(i);
 			DrawLine(p1 + step * num, p2 + step * num, color);

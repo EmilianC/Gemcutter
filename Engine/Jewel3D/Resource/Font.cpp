@@ -136,7 +136,7 @@ namespace Jwl
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
 		unsigned char* bitmapItr = bitmap;
-		for (unsigned i = 0; i < 94; i++)
+		for (unsigned i = 0; i < 94; ++i)
 		{
 			if (!masks[i])
 				continue;

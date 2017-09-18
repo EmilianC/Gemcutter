@@ -69,7 +69,7 @@ namespace Jwl
 		{
 			size_t start = std::string::npos;
 			unsigned count = 1;
-			for (unsigned i = 0; i < text.size(); i++)
+			for (unsigned i = 0; i < text.size(); ++i)
 			{
 				if (text[i] == '\n')
 				{
@@ -83,7 +83,7 @@ namespace Jwl
 			}
 
 			size_t end = std::string::npos;
-			for (unsigned i = start + 1; i < text.size(); i++)
+			for (unsigned i = start + 1; i < text.size(); ++i)
 			{
 				if (text[i] == '\n')
 				{

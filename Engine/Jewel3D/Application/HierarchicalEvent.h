@@ -52,7 +52,7 @@ namespace Jwl
 		{
 			auto& children = ent.GetChildren();
 
-			for (unsigned i = 0; i < children.size(); i++)
+			for (unsigned i = 0; i < children.size(); ++i)
 			{
 				if (auto comp = children[i]->owner.GetComponent<ProxyListener<EventObj>>())
 				{
@@ -63,7 +63,7 @@ namespace Jwl
 				}
 			}
 
-			for (unsigned i = 0; i < children.size(); i++)
+			for (unsigned i = 0; i < children.size(); ++i)
 			{
 				if (Distribute(children[i]->owner, e))
 				{

@@ -138,7 +138,7 @@ Geometry
 		#endif
 
 		/* Emit Vertices */
-		for (int i = 0; i < 4; i++)
+		for (int i = 0; i < 4; ++i)
 		{
 			vec2 offset = OFFSETS[i] * Size;
 			#if defined(JWL_PARTICLE_ROTATION)
