@@ -50,7 +50,7 @@ namespace Jwl
 			: func(std::move(rhs.func))
 			, active(rhs.active)
 		{
-			rhs.Disable();
+			rhs.Dismiss();
 		}
 		
 		ScopeGuard(LambdaFunc func)
@@ -68,11 +68,11 @@ namespace Jwl
 		void Execute()
 		{
 			func();
-			Disable();
+			Dismiss();
 		}
 
 		// Stops the guard from activating when the scope is terminated.
-		void Disable()
+		void Dismiss()
 		{
 			active = false;
 		}
