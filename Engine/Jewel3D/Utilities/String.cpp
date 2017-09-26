@@ -124,4 +124,24 @@ namespace Jwl
 
 		return true;
 	}
+
+	bool StartsWith(const std::string& base, const std::string& start)
+	{
+		if (base.size() < start.size())
+		{
+			return false;
+		}
+
+		return strncmp(base.c_str(), start.c_str(), start.size()) == 0;
+	}
+
+	bool EndsWith(const std::string& base, const std::string& end)
+	{
+		if (base.size() < end.size())
+		{
+			return false;
+		}
+
+		return strncmp(&base[base.size() - end.size()], end.c_str(), end.size()) == 0;
+	}
 }

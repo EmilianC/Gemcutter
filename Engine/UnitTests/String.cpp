@@ -43,4 +43,31 @@ TEST_CASE("String")
 
 		CHECK(input == "int temp = 10 ;\n");
 	}
+
+	SECTION("Starts With")
+	{
+		CHECK(StartsWith("", ""));
+		CHECK(StartsWith(" ", ""));
+		CHECK(StartsWith(" ", " "));
+		CHECK(StartsWith("123", "1"));
+		CHECK(StartsWith("a b c", "a b"));
+
+		CHECK_FALSE(StartsWith("", " "));
+		CHECK_FALSE(StartsWith("", "1"));
+		CHECK_FALSE(StartsWith(" ", "12"));
+	}
+
+	SECTION("Ends With")
+	{
+		CHECK(EndsWith("", ""));
+		CHECK(EndsWith(" ", ""));
+		CHECK(EndsWith(" ", " "));
+		CHECK(EndsWith("123", ""));
+		CHECK(EndsWith("123", "3"));
+		CHECK(EndsWith("321", "321"));
+
+		CHECK_FALSE(EndsWith("321", "123321"));
+		CHECK_FALSE(EndsWith("", "1"));
+		CHECK_FALSE(EndsWith(" ", "1"));
+	}
 }

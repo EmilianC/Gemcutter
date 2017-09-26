@@ -23,4 +23,10 @@ namespace Jwl
 
 	// Compares two strings for equality while ignore capitalization.
 	bool CompareLowercase(const std::string&, const std::string&);
+
+	// Returns true if the first characters of base are equal to start.
+	bool StartsWith(const std::string& base, const std::string& start);
+
+	// Returns true if the last characters of base are equal to end.
+	bool EndsWith(const std::string& base, const std::string& end);
 }
