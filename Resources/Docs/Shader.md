@@ -87,6 +87,7 @@ mat4 Jwl_MVP;
 mat4 Jwl_ModelView;
 mat4 Jwl_Model;
 mat4 Jwl_InvModel;
+mat4 Jwl_NormalToWorld;
 ```
 
 The following functions are available to use in all GLSL shader blocks.

@@ -57,7 +57,6 @@ namespace Jwl
 		void RenderEntityRecursive(const Entity& ent);
 
 		void CreateUniformBuffer();
-		void CreateUniformHandles();
 
 		const Viewport* viewport = nullptr;
 		Entity::Ptr camera;
@@ -72,5 +71,6 @@ namespace Jwl
 		UniformHandle<mat4> modelView;
 		UniformHandle<mat4> model;
 		UniformHandle<mat4> invModel;
+		UniformHandle<mat4> normalMatrix;
 	};
 }

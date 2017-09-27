@@ -41,7 +41,7 @@ Vertex
 		gl_Position = Jwl_Proj * vec4(pos, 1.0);
 
 		texcoord = a_uv;
-		norm = mat3(Jwl_ModelView) * a_normal;
+		norm = mat3(Jwl_View) * mat3(Jwl_NormalToWorld) * a_normal;
 	}
 }
 

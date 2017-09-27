@@ -430,12 +430,12 @@ namespace Jwl
 
 	void Camera::CreateUniformBuffer()
 	{
-		buffer.AddUniform("View", sizeof(mat4));
-		buffer.AddUniform("Proj", sizeof(mat4));
-		buffer.AddUniform("ViewProj", sizeof(mat4));
-		buffer.AddUniform("InvView", sizeof(mat4));
-		buffer.AddUniform("InvProj", sizeof(mat4));
-		buffer.AddUniform("CameraPosition", sizeof(vec3));
+		buffer.AddUniform<mat4>("View");
+		buffer.AddUniform<mat4>("Proj");
+		buffer.AddUniform<mat4>("ViewProj");
+		buffer.AddUniform<mat4>("InvView");
+		buffer.AddUniform<mat4>("InvProj");
+		buffer.AddUniform<vec3>("CameraPosition");
 		buffer.InitBuffer();
 	}
 

@@ -2,6 +2,7 @@
 #pragma once
 #include "Shareable.h"
 #include "Jewel3D/Application/Logging.h"
+#include "Jewel3D/Math/Matrix.h"
 
 #include <unordered_map>
 #include <vector>
@@ -22,7 +23,9 @@ namespace Jwl
 		void Copy(const UniformBuffer& other);
 
 		// During the initialization phase, appends a new variable to the buffer.
-		void AddUniform(const std::string& name, unsigned bytes, unsigned count = 1);
+		// Returns a handle to the newly added uniform.
+		template<class T>
+		UniformHandle<T> AddUniform(const std::string& name, unsigned count = 1);
 
 		// Once this is called, no more uniforms can be added and the buffer is ready for use.
 		void InitBuffer();
@@ -47,6 +50,7 @@ namespace Jwl
 		bool IsUniform(const std::string& name) const;
 
 	private:
+		void AddUniform(const std::string& name, unsigned bytes, unsigned alignment, unsigned count);
 		void* GetBufferLoc(const std::string& name) const;
 
 		mutable bool dirty	= true;
@@ -54,7 +58,7 @@ namespace Jwl
 		void* buffer		= nullptr;
 		unsigned bufferSize = 0;
 
-		std::unordered_map<std::string, int> table;
+		std::unordered_map<std::string, unsigned> table;
 	};
 
 	// Used to associate a UniformBuffer with a particular binding point.
@@ -100,22 +104,19 @@ namespace Jwl
 		static_assert(std::is_standard_layout<T>::value, "Uniforms cannot be complex types.");
 	public:
 		UniformHandle<T>() = default;
-		UniformHandle<T>(UniformBuffer& buff, T& data);
+		UniformHandle<T>(UniformBuffer& buff, unsigned offset);
 
 		// Set the value of the uniform.
-		UniformHandle<T>& operator=(const T& value);
+		void operator=(const T& value);
 
 		// Set the value of the uniform.
 		void Set(const T& value);
 		// Read the current value of the uniform.
-		const T& Get() const;
-
-		// Gets a pointer to the associated UniformBuffer.
-		UniformBuffer* GetBuffer() const;
+		T Get() const;
 
 	private:
-		UniformBuffer* buffer = nullptr;
-		T* data;
+		UniformBuffer* uniformBuffer = nullptr;
+		unsigned offset = 0;
 	};
 }
 

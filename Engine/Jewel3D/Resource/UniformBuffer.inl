@@ -2,6 +2,31 @@
 namespace Jwl
 {
 	template<class T>
+	UniformHandle<T> UniformBuffer::AddUniform(const std::string& name, unsigned count)
+	{
+		static_assert(std::is_standard_layout<T>::value, "Uniforms cannot be complex types.");
+
+		// Due to alignment rules, some types are padded up.
+		unsigned alignment;
+		if (std::is_same<T, vec3>::value)
+		{
+			alignment = sizeof(vec4);
+		}
+		else if (std::is_same<T, mat3>::value)
+		{
+			alignment = sizeof(mat4);
+		}
+		else
+		{
+			alignment = sizeof(T);
+		}
+
+		AddUniform(name, sizeof(T), alignment, count);
+
+		return MakeHandle<T>(name);
+	}
+
+	template<class T>
 	void UniformBuffer::SetUniform(const std::string& name, const T& data)
 	{
 		static_assert(std::is_standard_layout<T>::value, "Uniforms cannot be complex types.");
@@ -31,45 +56,45 @@ namespace Jwl
 	template<class T>
 	UniformHandle<T> UniformBuffer::MakeHandle(const std::string& name)
 	{
-		T* loc = reinterpret_cast<T*>(GetBufferLoc(name));
-		ASSERT(loc, "\"%s\" does not match the name of a Uniform.", name.c_str());
+		auto itr = table.find(name);
+		ASSERT(itr != table.end(), "\"%s\" does not match the name of a Uniform.", name.c_str());
 
-		return UniformHandle<T>(*this, *loc);
+		return UniformHandle<T>(*this, itr->second);
 	}
 
 	template<class T>
-	UniformHandle<T>::UniformHandle(UniformBuffer& buff, T& data)
-		: buffer(&buff), data(&data)
+	UniformHandle<T>::UniformHandle(UniformBuffer& buff, unsigned _offset)
+		: uniformBuffer(&buff), offset(_offset)
 	{
 	}
 
 	template<class T>
-	UniformHandle<T>& UniformHandle<T>::operator=(const T& value)
+	void UniformHandle<T>::operator=(const T& value)
 	{
 		Set(value);
-		return *this;
 	}
 
 	template<class T>
 	void UniformHandle<T>::Set(const T& value)
 	{
-		ASSERT(data, "Uniform handle is not associated with a UniformBuffer.");
+		ASSERT(uniformBuffer, "Uniform handle is not associated with a UniformBuffer.");
+		ASSERT(uniformBuffer->buffer, "The associated UniformBuffer has not been initialized yet.");
 
-		*data = value;
-		buffer->dirty = true;
+		T* ptr = reinterpret_cast<T*>(static_cast<char*>(uniformBuffer->buffer) + offset);
+		*ptr = value;
+
+		uniformBuffer->dirty = true;
 	}
 
 	template<class T>
-	const T& UniformHandle<T>::Get() const
+	T UniformHandle<T>::Get() const
 	{
-		ASSERT(data, "Uniform handle is not associated with a UniformBuffer.");
+		ASSERT(uniformBuffer, "Uniform handle is not associated with a UniformBuffer.");
+		ASSERT(uniformBuffer->buffer, "The associated UniformBuffer has not been initialized yet.");
 
-		return *data;
+		return *reinterpret_cast<T*>(static_cast<char*>(uniformBuffer->buffer) + offset);
 	}
 
-	template<class T>
-	UniformBuffer* UniformHandle<T>::GetBuffer() const
-	{
-		return buffer;
-	}
+	template<> void UniformHandle<mat3>::Set(const mat3& value);
+	template<> mat3 UniformHandle<mat3>::Get() const;
 }

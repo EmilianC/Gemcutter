@@ -11,6 +11,7 @@
 #include "Jewel3D/Application/Logging.h"
 #include "Jewel3D/Entity/Entity.h"
 #include "Jewel3D/Entity/EntityGroup.h"
+#include "Jewel3D/Math/Math.h"
 #include "Jewel3D/Math/Transform.h"
 #include "Jewel3D/Resource/Font.h"
 #include "Jewel3D/Resource/Model.h"
@@ -30,14 +31,11 @@ namespace Jwl
 	RenderPass::RenderPass()
 	{
 		CreateUniformBuffer();
-		CreateUniformHandles();
 	}
 
 	RenderPass::RenderPass(const RenderPass& other)
 	{
 		CreateUniformBuffer();
-		CreateUniformHandles();
-
 		*this = other;
 	}
 
@@ -174,6 +172,7 @@ namespace Jwl
 		modelView.Set(mat4::Identity);
 		model.Set(mat4::Identity);
 		invModel.Set(mat4::Identity);
+		normalMatrix.Set(mat4::Identity);
 		transformBuffer.Bind(static_cast<unsigned>(UniformBufferSlot::Model));
 
 		Primitives.DrawFullScreenQuad(*shader);
@@ -266,6 +265,16 @@ namespace Jwl
 
 		model.Set(worldTransform);
 		invModel.Set(worldTransform.GetFastInverse());
+
+		if (ent.scale == vec3(1.0f))
+		{
+			normalMatrix.Set(worldTransform);
+		}
+		else
+		{
+			normalMatrix.Set(worldTransform.GetInverse().GetTranspose());
+		}
+
 		transformBuffer.Bind(static_cast<unsigned>(UniformBufferSlot::Model));
 
 #pragma region Render Model
@@ -444,18 +453,12 @@ namespace Jwl
 
 	void RenderPass::CreateUniformBuffer()
 	{
-		transformBuffer.AddUniform("MVP", sizeof(mat4));
-		transformBuffer.AddUniform("ModelView", sizeof(mat4));
-		transformBuffer.AddUniform("Model", sizeof(mat4));
-		transformBuffer.AddUniform("InvModel", sizeof(mat4));
-		transformBuffer.InitBuffer();
-	}
+		MVP = transformBuffer.AddUniform<mat4>("MVP");
+		modelView = transformBuffer.AddUniform<mat4>("ModelView");
+		model = transformBuffer.AddUniform<mat4>("Model");
+		invModel = transformBuffer.AddUniform<mat4>("InvModel");
+		normalMatrix = transformBuffer.AddUniform<mat4>("normal");
 
-	void RenderPass::CreateUniformHandles()
-	{
-		MVP = transformBuffer.MakeHandle<mat4>("MVP");
-		modelView = transformBuffer.MakeHandle<mat4>("ModelView");
-		model = transformBuffer.MakeHandle<mat4>("Model");
-		invModel = transformBuffer.MakeHandle<mat4>("InvModel");
+		transformBuffer.InitBuffer();
 	}
 }

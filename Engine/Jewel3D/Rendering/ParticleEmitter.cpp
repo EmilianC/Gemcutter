@@ -13,12 +13,12 @@ namespace Jwl
 	{
 		ASSERT(maxParticles > 0, "'maxParticles' must be greater than 0.");
 
-		particleParameters.AddUniform("StartSize", sizeof(vec2));
-		particleParameters.AddUniform("EndSize", sizeof(vec2));
-		particleParameters.AddUniform("StartColor", sizeof(vec3));
-		particleParameters.AddUniform("EndColor", sizeof(vec3));
-		particleParameters.AddUniform("StartAlpha", sizeof(float));
-		particleParameters.AddUniform("EndAlpha", sizeof(float));
+		particleParameters.AddUniform<vec2>("StartSize");
+		particleParameters.AddUniform<vec2>("EndSize");
+		particleParameters.AddUniform<vec3>("StartColor");
+		particleParameters.AddUniform<vec3>("EndColor");
+		particleParameters.AddUniform<float>("StartAlpha");
+		particleParameters.AddUniform<float>("EndAlpha");
 		particleParameters.InitBuffer();
 
 		particleParameters.SetUniform("StartSize", vec2(1.0f));

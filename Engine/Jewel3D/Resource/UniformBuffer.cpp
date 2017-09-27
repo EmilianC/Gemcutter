@@ -7,6 +7,21 @@
 #include <algorithm>
 #include <GLEW/GL/glew.h>
 
+namespace
+{
+	// Rounds val up to the nearest multiple.
+	unsigned round(unsigned val, unsigned multiple)
+	{
+		unsigned remainder = val % multiple;
+		if (remainder != 0)
+		{
+			val += multiple - remainder;
+		}
+
+		return val;
+	}
+}
+
 namespace Jwl
 {
 	UniformBuffer::~UniformBuffer()
@@ -37,70 +52,13 @@ namespace Jwl
 		*this = other;
 	}
 
-	void UniformBuffer::AddUniform(const std::string& name, unsigned bytes, unsigned count)
-	{
-		ASSERT(UBO == GL_NONE, "UniformBuffer has already been initialized and locked.");
-		ASSERT(count != 0, "Must add at least one element.");
-
-		// Since we are using std140 layout, we must follow the rules in the OpenGL specification:
-		// https://www.opengl.org/registry/doc/glspec45.core.pdf#page=159
-
-		if (count > 1)
-		{
-			// An array must start on a vec4 boundary.
-			while (bufferSize % sizeof(vec4) != 0)
-			{
-				bufferSize++;
-			}
-
-			// The size of an individual element is aligned to the nearest vec4.
-			while (bytes % sizeof(vec4) != 0)
-			{
-				bytes++;
-			}
-
-			table[name] = bufferSize;
-			bufferSize += bytes * count;
-
-			// There must be padding after an array to the next vec4.
-			while (bufferSize % sizeof(vec4) != 0)
-			{
-				bufferSize++;
-			}
-		}
-		else
-		{
-			unsigned alignment;
-			if (bytes == sizeof(vec3))
-			{
-				alignment = sizeof(vec4);
-			}
-			else
-			{
-				alignment = bytes;
-			}
-
-			// Start of a scalar or vector is aligned to it's own size.
-			while (bufferSize % alignment != 0)
-			{
-				bufferSize++;
-			}
-
-			table[name] = bufferSize;
-			bufferSize += bytes;
-		}
-	}
-
 	void UniformBuffer::InitBuffer()
 	{
-		ASSERT(bufferSize != 0, "Uniforms must be added to the buffer before it can be initialized.");
+		ASSERT(bufferSize != 0, "At least one uniform must be added to the buffer before it can be initialized.");
 		ASSERT(UBO == GL_NONE, "UniformBuffer has already been initialized and locked.");
 
 		// The total size of a buffer is always aligned to the size of a vec4.
-		while (bufferSize % sizeof(vec4) != 0)
-		{
-			bufferSize++;
-		}
+		bufferSize = round(bufferSize, sizeof(vec4));
 
 		// GPU buffer.
 		glGenBuffers(1, &UBO);
@@ -152,10 +110,41 @@ namespace Jwl
 		return table.find(name) != table.end();
 	}
 
+	void UniformBuffer::AddUniform(const std::string& name, unsigned bytes, unsigned alignment, unsigned count)
+	{
+		ASSERT(UBO == GL_NONE, "UniformBuffer has already been initialized and locked.");
+		ASSERT(count != 0, "Must add at least one element.");
+		ASSERT(!IsUniform(name), "A member with the same name has already been added.");
+
+		// Since we are using std140 layout, we must follow the rules in the OpenGL specification:
+		// https://www.opengl.org/registry/doc/glspec45.core.pdf#page=159
+		if (count == 1)
+		{
+			// Start of a single element is aligned to its own size.
+			bufferSize = round(bufferSize, alignment);
+
+			table[name] = bufferSize;
+			bufferSize += bytes;
+		}
+		else
+		{
+			// An array must start on a vec4 boundary.
+			bufferSize = round(bufferSize, sizeof(vec4));
+
+			// The size of an individual element is aligned to the nearest vec4.
+			bytes = round(bytes, sizeof(vec4));
+
+			table[name] = bufferSize;
+			bufferSize += bytes * count;
+
+			// There must be padding after an array to the next vec4.
+			bufferSize = round(bufferSize, sizeof(vec4));
+		}
+	}
+
 	void* UniformBuffer::GetBufferLoc(const std::string& name) const
 	{
 		auto loc = table.find(name);
-		
 		if (loc != table.end())
 		{
 			return static_cast<char*>(buffer) + loc->second;
@@ -233,5 +222,26 @@ namespace Jwl
 
 		ASSERT(bufferSlot != buffers.end(), "No matching buffer found.");
 		return bufferSlot->buffer;
+	}
+
+	template<>
+	void UniformHandle<mat3>::Set(const mat3& value)
+	{
+		ASSERT(uniformBuffer, "Uniform handle is not associated with a UniformBuffer.");
+		ASSERT(uniformBuffer->buffer, "The associated UniformBuffer has not been initialized yet.");
+
+		mat4* ptr = reinterpret_cast<mat4*>(static_cast<char*>(uniformBuffer->buffer) + offset);
+		*ptr = mat4(value);
+
+		uniformBuffer->dirty = true;
+	}
+
+	template<>
+	mat3 UniformHandle<mat3>::Get() const
+	{
+		ASSERT(uniformBuffer, "Uniform handle is not associated with a UniformBuffer.");
+		ASSERT(uniformBuffer->buffer, "The associated UniformBuffer has not been initialized yet.");
+
+		return mat3(*reinterpret_cast<mat4*>(static_cast<char*>(uniformBuffer->buffer) + offset));
 	}
 }

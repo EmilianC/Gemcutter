@@ -89,13 +89,13 @@ namespace Jwl
 	void Light::CreateUniformBuffer()
 	{
 		lightBuffer = UniformBuffer::MakeNew();
-		lightBuffer->AddUniform("Color", sizeof(vec3));
-		lightBuffer->AddUniform("Position", sizeof(vec3));
-		lightBuffer->AddUniform("Direction", sizeof(vec3));
-		lightBuffer->AddUniform("AttenuationLinear", sizeof(float));
-		lightBuffer->AddUniform("AttenuationQuadratic", sizeof(float));
-		lightBuffer->AddUniform("Angle", sizeof(float));
-		lightBuffer->AddUniform("Type", sizeof(Type));
+		lightBuffer->AddUniform<vec3>("Color");
+		lightBuffer->AddUniform<vec3>("Position");
+		lightBuffer->AddUniform<vec3>("Direction");
+		lightBuffer->AddUniform<float>("AttenuationLinear");
+		lightBuffer->AddUniform<float>("AttenuationQuadratic");
+		lightBuffer->AddUniform<float>("Angle");
+		lightBuffer->AddUniform<Type>("Type");
 		lightBuffer->InitBuffer();
 	}
 

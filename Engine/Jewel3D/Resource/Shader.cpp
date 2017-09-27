@@ -85,6 +85,7 @@ namespace
 		"	mat4 Jwl_ModelView;\n"
 		"	mat4 Jwl_Model;\n"
 		"	mat4 Jwl_InvModel;\n"
+		"	mat4 Jwl_NormalToWorld;\n"
 		"};"
 		"\n"
 		"layout(std140) uniform Jwl_Engine_Uniforms\n"
@@ -862,305 +863,202 @@ namespace Jwl
 		size_t assignmentPos = uniformStruct.find('=');
 		while (assignmentPos != std::string::npos)
 		{
-			// The last non-whitespace character will be the end of the member's name.
-			size_t nameEnd = uniformStruct.find_last_not_of(" \t\n", assignmentPos);
-			if (nameEnd == std::string::npos)
-			{
-				Error("Could not resolve assignment of block member.");
-				return false;
-			}
-
 			// We have to remove the assignment operation because it's our own
 			// syntax and OpenGL will not recognize it. We will erase everything between the
 			// end of the name and the semicolon.
-			size_t semicolon = uniformStruct.find(';', nameEnd);
+			const size_t semicolon = uniformStruct.find(';', assignmentPos);
 			if (semicolon == std::string::npos)
 			{
 				Error("Block member assignment missing trailing semicolon.");
 				return false;
 			}
 
-			uniformStruct.erase(nameEnd - 1, (semicolon - nameEnd) + 1);
+			uniformStruct.erase(assignmentPos, semicolon - assignmentPos);
 
-			// We can only safely start searching at 'nameEnd' because some characters
-			// after that position have been deleted.
-			assignmentPos = uniformStruct.find('=', nameEnd);
+			assignmentPos = uniformStruct.find('=', assignmentPos);
 		}
 
-		uniformStruct = "layout(std140) uniform Jwl_User_" + std::string(name) + "\n{" + uniformStruct + "} " + std::string(name) + ";\n";
+		uniformStruct = FormatString("layout(std140) uniform Jwl_User_%s\n{%s} %s;\n", name, uniformStruct.c_str(), name);
 
 		/* Create template and the shader owned buffer */
 		if (makeTemplate || makeStatic)
 		{
 			auto buffer = UniformBuffer::MakeNew();
 
-			struct uniformMember
+			struct UniformMember
 			{
 				std::string name;
 				std::string value;
 				GLenum type;
-				unsigned size;
 			};
 
-			std::vector<uniformMember> uniforms;
+			std::vector<UniformMember> uniforms;
 
 			// Find all uniforms and parse their information.
 			for (unsigned i = 0; i < rawStruct.size(); ++i)
 			{
-				if (!std::isspace(rawStruct[i]))
+				if (std::isspace(rawStruct[i]))
+					continue;
+
+				uniforms.push_back(UniformMember());
+				UniformMember& uniform = uniforms.back();
+
+				const size_t semicolon = rawStruct.find(';', i);
+				if (semicolon == std::string::npos)
 				{
-					uniforms.push_back(uniformMember());
-
-					size_t semicolon = rawStruct.find(';', i) + 1;
-
-					if (semicolon == std::string::npos)
-					{
-						Error("Uniform member missing trailing semicolon.");
-						return false;
-					}
-
-					std::string line = rawStruct.substr(i, (semicolon - i) - 1);
-					
-					// Resolve type.
-					#define IfFound(str, t, s) if (line.find((str)) != std::string::npos) { uniforms.back().type = (t); uniforms.back().size = (s); }
-
-					IfFound("float", GL_FLOAT, sizeof(float))
-					else IfFound("vec2", GL_FLOAT_VEC2, sizeof(vec2))
-					else IfFound("vec3", GL_FLOAT_VEC3, sizeof(vec3))
-					else IfFound("vec4", GL_FLOAT_VEC4, sizeof(vec4))
-					else IfFound("double", GL_DOUBLE, sizeof(double))
-					else IfFound("dvec2", GL_DOUBLE_VEC2, sizeof(double) * 2)
-					else IfFound("dvec3", GL_DOUBLE_VEC3, sizeof(double) * 3)
-					else IfFound("dvec4", GL_DOUBLE_VEC4, sizeof(double) * 4)
-					else IfFound("int", GL_INT, sizeof(int))
-					else IfFound("ivec2", GL_INT_VEC2, sizeof(vec2))
-					else IfFound("ivec3", GL_INT_VEC3, sizeof(vec3))
-					else IfFound("ivec4", GL_INT_VEC4, sizeof(vec4))
-					else IfFound("unsigned", GL_UNSIGNED_INT, sizeof(unsigned))
-					else IfFound("uvec2", GL_UNSIGNED_INT_VEC2, sizeof(vec2))
-					else IfFound("uvec3", GL_UNSIGNED_INT_VEC3, sizeof(vec3))
-					else IfFound("uvec4", GL_UNSIGNED_INT_VEC4, sizeof(vec4))
-					else IfFound("bool", GL_BOOL, sizeof(int))
-					else IfFound("bvec2", GL_BOOL_VEC2, sizeof(vec2))
-					else IfFound("bvec3", GL_BOOL_VEC3, sizeof(vec3))
-					else IfFound("bvec4", GL_BOOL_VEC4, sizeof(vec4))
-					else IfFound("mat2", GL_FLOAT_MAT2, sizeof(float) * 4)
-					else IfFound("mat3", GL_FLOAT_MAT3, sizeof(float) * 9)
-					else IfFound("mat4", GL_FLOAT_MAT4, sizeof(float) * 16)
-					else IfFound("mat2x3", GL_FLOAT_MAT2x3, sizeof(float) * 2 * 3)
-					else IfFound("mat2x4", GL_FLOAT_MAT2x4, sizeof(float) * 2 * 4)
-					else IfFound("mat3x2", GL_FLOAT_MAT3x2, sizeof(float) * 3 * 2)
-					else IfFound("mat3x4", GL_FLOAT_MAT3x4, sizeof(float) * 3 * 4)
-					else IfFound("mat4x2", GL_FLOAT_MAT4x2, sizeof(float) * 4 * 2)
-					else IfFound("mat4x3", GL_FLOAT_MAT4x3, sizeof(float) * 4 * 3)
-					else IfFound("dmat2", GL_DOUBLE_MAT2, sizeof(double) * 4)
-					else IfFound("dmat3", GL_DOUBLE_MAT3, sizeof(double) * 9)
-					else IfFound("dmat4", GL_DOUBLE_MAT4, sizeof(double) * 16)
-					else IfFound("dmat2x3", GL_DOUBLE_MAT2x3, sizeof(double) * 2 * 3)
-					else IfFound("dmat2x4", GL_DOUBLE_MAT2x4, sizeof(double) * 2 * 4)
-					else IfFound("dmat3x2", GL_DOUBLE_MAT3x2, sizeof(double) * 3 * 2)
-					else IfFound("dmat3x4", GL_DOUBLE_MAT3x4, sizeof(double) * 3 * 4)
-					else IfFound("dmat4x2", GL_DOUBLE_MAT4x2, sizeof(double) * 4 * 2)
-					else IfFound("dmat4x3", GL_DOUBLE_MAT4x3, sizeof(double) * 4 * 3)
-					else
-					{
-						Error("Uniform member is of unknown type.");
-						return false;
-					}
-					#undef IfFound
-
-					/* Resolve Name */
-					// If we don't find a '=', the result will be npos, causing the search to simply start at the end of the string.
-					size_t assignment = line.find('=');
-
-					// The last non-whitespace character before the '=' will be the end of the member's name.
-					size_t nameEnd = line.find_last_not_of(" \t\n=", assignment);
-					if (nameEnd == std::string::npos)
-					{
-						Error("Could not find name of uniform member.");
-						return false;
-					}
-
-					// Continue to search until we hit more whitespace to isolate the name.
-					size_t nameStart = line.find_last_of(" \t\n", nameEnd) + 1;
-					if (nameStart == std::string::npos)
-					{
-						Error("Could not find name of uniform member.");
-						return false;
-					}
-
-					uniforms.back().name = line.substr(nameStart, nameEnd - nameStart + 1);
-
-					if (assignment != std::string::npos)
-					{
-						// Extract assignment value.
-						uniforms.back().value = line.substr(assignment + 1);
-						RemoveWhitespace(uniforms.back().value);
-
-						if (uniforms.back().value.length() == 0)
-						{
-							Error("Could not resolve assignment of block member ( %s )", uniforms.back().name.c_str());
-							return false;
-						}
-					}
-
-					i += line.size();
+					Error("Uniform member is missing a trailing semicolon.");
+					return false;
 				}
+
+				const std::string line = rawStruct.substr(i, semicolon - i);
+
+				/* Resolve Name */
+				// If we don't find a '=', the result will be no-position, thus causing the search to simply start at the end of the string.
+				const size_t assignment = line.find('=');
+				const size_t nameEnd = line.find_last_not_of(" \t\n=", assignment);
+				if (nameEnd == std::string::npos)
+				{
+					Error("Failed to parse a uniform member's name.");
+					return false;
+				}
+
+				// Continue to search until we hit more whitespace to isolate the name.
+				const size_t nameStart = line.find_last_of(" \t\n", nameEnd);
+				if (nameStart == std::string::npos)
+				{
+					Error("Failed to parse a uniform member's name.");
+					return false;
+				}
+
+				uniform.name = line.substr(nameStart + 1, nameEnd - nameStart);
+					
+				if (StartsWith(line, "float"))			uniform.type = GL_FLOAT;
+				else if (StartsWith(line, "vec2"))		uniform.type = GL_FLOAT_VEC2;
+				else if (StartsWith(line, "vec3"))		uniform.type = GL_FLOAT_VEC3;
+				else if (StartsWith(line, "vec4"))		uniform.type = GL_FLOAT_VEC4;
+				else if (StartsWith(line, "mat4"))		uniform.type = GL_FLOAT_MAT4;
+				else if (StartsWith(line, "mat3"))		uniform.type = GL_FLOAT_MAT3;
+				else if (StartsWith(line, "mat2"))		uniform.type = GL_FLOAT_MAT2;
+				else if (StartsWith(line, "int"))		uniform.type = GL_INT;
+				else if (StartsWith(line, "unsigned"))	uniform.type = GL_UNSIGNED_INT;
+				else if (StartsWith(line, "bool"))		uniform.type = GL_BOOL;
+				else if (StartsWith(line, "double"))	uniform.type = GL_DOUBLE;
+				else
+				{
+					Error("Uniform member ( %s ) has an unsupported type.", uniform.name.c_str());
+					return false;
+				}
+
+				if (assignment != std::string::npos)
+				{
+					// Extract assignment value.
+					uniform.value = line.substr(assignment + 1);
+					RemoveWhitespace(uniform.value);
+
+					if (uniform.value.length() == 0)
+					{
+						Error("Could not resolve assignment of block member ( %s )", uniform.name.c_str());
+						return false;
+					}
+				}
+
+				i += line.size();
 			}
 
 			// Add all members to the buffer.
-			for (unsigned i = 0; i < uniforms.size(); ++i)
+			for (const auto& uniform : uniforms)
 			{
-				buffer->AddUniform(uniforms[i].name, uniforms[i].size);
+				switch (uniform.type)
+				{
+				case GL_FLOAT:			buffer->AddUniform<float>(uniform.name); break;
+				case GL_FLOAT_VEC2:		buffer->AddUniform<vec2>(uniform.name); break;
+				case GL_FLOAT_VEC3:		buffer->AddUniform<vec3>(uniform.name); break;
+				case GL_FLOAT_VEC4:		buffer->AddUniform<vec4>(uniform.name); break;
+				case GL_FLOAT_MAT4:		buffer->AddUniform<mat4>(uniform.name); break;
+				case GL_FLOAT_MAT3:		buffer->AddUniform<mat3>(uniform.name); break;
+				case GL_FLOAT_MAT2:		buffer->AddUniform<mat2>(uniform.name); break;
+				case GL_INT:			buffer->AddUniform<int>(uniform.name); break;
+				case GL_UNSIGNED_INT:	buffer->AddUniform<unsigned>(uniform.name); break;
+				case GL_BOOL:			buffer->AddUniform<bool>(uniform.name); break;
+				case GL_DOUBLE:			buffer->AddUniform<double>(uniform.name); break;
+				}
 			}
-			// We finalize the buffer by initializing it so it is ready to start receive values.
 			buffer->InitBuffer();
 
-			/* Resolve Default set values */
-			for (unsigned i = 0; i < uniforms.size(); ++i)
+			/* Parse default values */
+			for (auto& uniform : uniforms)
 			{
-				if (uniforms[i].value.empty())
+				if (uniform.value.empty())
 					continue;
 
-				// Macros to help with switch statement.
-				#define EXIT() \
-					Error("Assignment of \"%s\" could not be parsed.", uniforms[i].name.c_str()); \
-					return false;
-				#define SET_UNIFORM(memberName, ...) \
-					if (!buffer->IsUniform(memberName)) {										\
-						Error("Assignment of \"%s\" could not be parsed.", memberName.c_str()); \
-						return false;															\
-					} else {																	\
-						buffer->SetUniform(memberName, ##__VA_ARGS__);							\
-					}
+				auto guard = MakeScopeGaurd([&]() {
+					Error("Default value assignment of ( %s ) could not be parsed.", uniform.name.c_str()); 
+				});
 
-				// Parse value based on type.
-				switch (uniforms[i].type)
+				vec4 vec; unsigned u; int i;
+				switch (uniform.type)
 				{
 				case GL_FLOAT:
-				{
-					float val;
-					if (sscanf(uniforms[i].value.c_str(), "%f", &val) != 1)
-					{
-						EXIT();
-					}
+					if (sscanf(uniform.value.c_str(), "%f", &vec.x) != 1) 
+						return false;
 
-					SET_UNIFORM(uniforms[i].name, val);
-				} break;
-				case GL_FLOAT_VEC2:
-				{
-					float val1, val2;
-					if (sscanf(uniforms[i].value.c_str(), "(%f,%f)", &val1, &val2) != 2)
-					{
-						EXIT();
-					}
-
-					SET_UNIFORM(uniforms[i].name, vec2(val1, val2));
-				} break;
-				case GL_FLOAT_VEC3:
-				{
-					float val1, val2, val3;
-					if (sscanf(uniforms[i].value.c_str(), "(%f,%f,%f)", &val1, &val2, &val3) != 3)
-					{
-						EXIT();
-					}
-
-					SET_UNIFORM(uniforms[i].name, vec3(val1, val2, val3));
-				} break;
-				case GL_FLOAT_VEC4:
-				{
-					float val1, val2, val3, val4;
-					if (sscanf(uniforms[i].value.c_str(), "(%f,%f,%f,%f)", &val1, &val2, &val3, &val4) != 4)
-					{
-						EXIT();
-					}
-
-					SET_UNIFORM(uniforms[i].name, vec4(val1, val2, val3, val4));
-				} break;
-				case GL_INT:
-				{
-					int val;
-					if (sscanf(uniforms[i].value.c_str(), "%i", &val) != 1)
-					{
-						EXIT();
-					}
-
-					SET_UNIFORM(uniforms[i].name, val);
-				} break;
-				case GL_UNSIGNED_INT:
-				{
-					unsigned val;
-					if (sscanf(uniforms[i].value.c_str(), "%u", &val) != 1)
-					{
-						EXIT();
-					}
-
-					SET_UNIFORM(uniforms[i].name, val);
-				} break;
-				case GL_BOOL:
-				{
-					unsigned val = 0;
-					if (uniforms[i].value == "true")
-					{
-						val = 1;
-					}
-					else if (uniforms[i].value == "false")
-					{
-						val = 0;
-					}
-					else
-					{
-						if (sscanf(uniforms[i].value.c_str(), "%d", &val) != 1)
-						{
-							EXIT();
-						}
-					}
-					SET_UNIFORM(uniforms[i].name, val == 0 ? false : true);
-				} break;
-
-				case GL_UNSIGNED_INT_VEC2:
-				case GL_UNSIGNED_INT_VEC3:
-				case GL_UNSIGNED_INT_VEC4:
-				case GL_INT_VEC2:
-				case GL_INT_VEC3:
-				case GL_INT_VEC4:
-				case GL_BOOL_VEC2:
-				case GL_BOOL_VEC3:
-				case GL_BOOL_VEC4:
-				case GL_DOUBLE:
-				case GL_DOUBLE_VEC2:
-				case GL_DOUBLE_VEC3:
-				case GL_DOUBLE_VEC4:
-				case GL_FLOAT_MAT2:
-				case GL_FLOAT_MAT3:
-				case GL_FLOAT_MAT4:
-				case GL_FLOAT_MAT2x3:
-				case GL_FLOAT_MAT2x4:
-				case GL_FLOAT_MAT3x2:
-				case GL_FLOAT_MAT3x4:
-				case GL_FLOAT_MAT4x2:
-				case GL_FLOAT_MAT4x3:
-				case GL_DOUBLE_MAT2:
-				case GL_DOUBLE_MAT3:
-				case GL_DOUBLE_MAT4:
-				case GL_DOUBLE_MAT2x3:
-				case GL_DOUBLE_MAT2x4:
-				case GL_DOUBLE_MAT3x2:
-				case GL_DOUBLE_MAT3x4:
-				case GL_DOUBLE_MAT4x2:
-				case GL_DOUBLE_MAT4x3:
-					Error("Default \"%s\" specifies a uniform type that cannot be default initialized.", uniforms[i].name.c_str());
-					return false;
+					buffer->SetUniform(uniform.name, vec.x);
 					break;
 
-				default:
-					Error("Default \"%s\" specifies a uniform with an unsupported type.", uniforms[i].name.c_str());
-					return false;
+				case GL_FLOAT_VEC2:
+					if (sscanf(uniform.value.c_str(), "(%f,%f)", &vec.x, &vec.y) != 2)
+						return false;
+
+					buffer->SetUniform(uniform.name, vec2(vec.x, vec.y));
+					break;
+
+				case GL_FLOAT_VEC3:
+					if (sscanf(uniform.value.c_str(), "(%f,%f,%f)", &vec.x, &vec.y, &vec.z) != 3)
+						return false;
+
+					buffer->SetUniform(uniform.name, vec3(vec.x, vec.y, vec.z));
+					break;
+
+				case GL_FLOAT_VEC4:
+					if (sscanf(uniform.value.c_str(), "(%f,%f,%f,%f)", &vec.x, &vec.y, &vec.z, &vec.w) != 4)
+						return false;
+
+					buffer->SetUniform(uniform.name, vec4(vec.x, vec.y, vec.z, vec.w));
+					break;
+
+				case GL_INT:
+					if (sscanf(uniform.value.c_str(), "%i", &i) != 1)
+						return false;
+
+					buffer->SetUniform(uniform.name, i);
+					break;
+
+				case GL_UNSIGNED_INT:
+					if (sscanf(uniform.value.c_str(), "%u", &u) != 1)
+						return false;
+
+					buffer->SetUniform(uniform.name, u);
+					break;
+
+				case GL_BOOL:
+					if (uniform.value == "true")
+					{
+						u = 1;
+					}
+					else if (uniform.value == "false")
+					{
+						u = 0;
+					}
+					else if (sscanf(uniform.value.c_str(), "%d", &u) != 1)
+					{
+						return false;
+					}
+
+					buffer->SetUniform(uniform.name, !!u);
+					break;
 				}
 
-				// Remove utility macros.
-				#undef EXIT
-				#undef SET_UNIFORM
+				guard.Dismiss();
 			}
 
 			bufferBindings.emplace_back(name, Id, makeTemplate ? buffer : nullptr);
@@ -1175,7 +1073,7 @@ namespace Jwl
 		}
 		else
 		{
-			if (uniformStruct.find('=') != std::string::npos)
+			if (rawStruct.find('=') != std::string::npos)
 			{
 				Error("Default uniform buffer member assignment is only available on buffers that are marked as 'template' or 'static'.");
 				return false;
