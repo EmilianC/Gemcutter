@@ -183,18 +183,12 @@ namespace Jwl
 	void mat2::Inverse()
 	{
 		float det = GetDeterminant();
-
 		if (det == 0.0f)
-		{
-			// Avoid divide by zero error.
 			return;
-		}
 
 		*this = mat2(
 			data[3], -data[2],
-			-data[1], data[0]);
-
-		*this *= (1.0f / det);
+			-data[1], data[0]) / det;
 	}
 
 	mat2 mat2::GetTranspose() const
@@ -528,12 +522,8 @@ namespace Jwl
 	void mat3::Inverse()
 	{
 		float det = GetDeterminant();
-
 		if (det == 0.0f)
-		{
-			// Avoid divide by zero error.
 			return;
-		}
 
 		*this = mat3(
 			data[4] * data[8] - data[7] * data[5],
@@ -544,9 +534,7 @@ namespace Jwl
 			data[6] * data[1] - data[0] * data[7],
 			data[1] * data[5] - data[4] * data[2],
 			data[3] * data[2] - data[0] * data[5],
-			data[0] * data[4] - data[3] * data[1]);
-
-		*this *= (1.0f / det);
+			data[0] * data[4] - data[3] * data[1]) / det;
 	}
 
 	mat3 mat3::GetTranspose() const
@@ -1069,7 +1057,7 @@ namespace Jwl
 
 	void mat4::Inverse()
 	{
-		float inv[16];
+		mat4 inv;
 
 		inv[0] = data[5] * data[10] * data[15] -
 			data[5]  * data[11] * data[14] -
@@ -1100,8 +1088,6 @@ namespace Jwl
 			data[12] * data[6] * data[9];
 
 		float det = data[0] * inv[0] + data[1] * inv[4] + data[2] * inv[8] + data[3] * inv[12];
-		
-		// Avoid divide by zero error.
 		if (det == 0.0f)
 			return;
 
@@ -1189,11 +1175,7 @@ namespace Jwl
 			data[8] * data[1] * data[6] -
 			data[8] * data[2] * data[5];
 
-		det = 1.0f / det;
-		for (unsigned i = 0; i < 16u; ++i)
-		{
-			data[i] = inv[i] * det;
-		}
+		*this = inv / det;
 	}
 
 	void mat4::FastInverse()
