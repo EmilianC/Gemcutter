@@ -37,11 +37,11 @@ Vertex
 
 	void main()
 	{
-		pos = (Jwl_ModelView * a_vert).xyz;
-		gl_Position = Jwl_Proj * vec4(pos, 1.0);
+		pos = (Jwl_Model * a_vert).xyz;
+		gl_Position = Jwl_ViewProj * vec4(pos, 1.0);
 
 		texcoord = a_uv;
-		norm = mat3(Jwl_View) * mat3(Jwl_NormalToWorld) * a_normal;
+		norm = mat3(Jwl_NormalToWorld) * a_normal;
 	}
 }
 

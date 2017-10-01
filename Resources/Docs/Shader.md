@@ -101,7 +101,7 @@ vec3 linear_to_sRGB(vec3 v);
 
 // Computes the surface contribution from any type of light and its parameters.
 // The first parameter should be a Light's Uniform Buffer.
-// 'normal' and 'pos' should be view space vectors describing the surface.
+// 'normal' and 'pos' should be world-space vectors describing the surface.
 vec3 compute_light(Light light, vec3 normal, vec3 pos);
 
 bool is_point_light(Light light);
@@ -159,14 +159,14 @@ Vertex
 
 	void main()
 	{
-		// Save the viewspace position for per-pixel lighting.
-		pos = (Jwl_ModelView * a_vert).xyz;
+		// Save the world-space position for per-pixel lighting.
+		pos = (Jwl_Model * a_vert).xyz;
 		// Complete the transformation for the vertex.
-		gl_Position = Jwl_Proj * vec4(pos, 1.0);
+		gl_Position = Jwl_ViewProj * vec4(pos, 1.0);
 
 		texcoord = a_uv;
-		// Rotate the normal into viewspace.
-		norm = mat3(Jwl_ModelView) * a_normal;
+		// Rotate the normal into world-space.
+		norm = mat3(Jwl_NormalToWorld) * a_normal;
 	}
 }
 
