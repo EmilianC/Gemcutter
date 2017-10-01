@@ -241,9 +241,17 @@ bool FontEncoder::Convert(const std::string& source, const std::string& destinat
 
 	// Report results.
 	unsigned count = 0;
-	for (bool val : masks)
+	std::string missingChars;
+	for (unsigned i = 0; i < 94; ++i)
 	{
-		if (val) count++;
+		if (masks[i])
+		{
+			count++;
+		}
+		else
+		{
+			missingChars += Jwl::FormatString("'%c' ", static_cast<char>(i + 33));
+		}
 	}
 
 	if (result != 0)
@@ -260,7 +268,7 @@ bool FontEncoder::Convert(const std::string& source, const std::string& destinat
 	{
 		if (count != 94)
 		{
-			Jwl::Warning("%d characters were not created.", 94 - count);
+			Jwl::Warning("%d characters were not created.\n%s", 94 - count, missingChars.c_str());
 		}
 		
 		return true;
