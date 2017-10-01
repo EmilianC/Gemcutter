@@ -93,51 +93,40 @@ bool TextureEncoder::Validate(const Jwl::ConfigTable& metadata, unsigned loadedV
 		return true;
 	};
 
+	if (!metadata.HasSetting("cubemap"))
+	{
+		Jwl::Error("Missing \"cubemap\" value.");
+		return false;
+	}
+
+	if (!validateAnisotropicLevel(metadata)) return false;
+	if (!validateTextureFilter(metadata)) return false;
+	if (!validateWrap(metadata, "wrap_x")) return false;
+	if (!validateWrap(metadata, "wrap_y")) return false;
+
 	switch (loadedVersion)
 	{
 	case 1:
-		if (!metadata.HasSetting("cubemap"))
-		{
-			Jwl::Error("Missing \"cubemap\" value.");
-			return false;
-		}
-
-		if (!validateAnisotropicLevel(metadata)) return false;
-		if (!validateTextureFilter(metadata)) return false;
-		if (!validateWrap(metadata, "wrap_x")) return false;
-		if (!validateWrap(metadata, "wrap_y")) return false;
-
 		if (metadata.GetSize() != 6)
 		{
 			Jwl::Error("Incorrect number of value entries.");
 			return false;
 		}
-
 		break;
 
 	case 2:
-		if (!metadata.HasSetting("cubemap"))
-		{
-			Jwl::Error("Missing \"cubemap\" value.");
-			return false;
-		}
-
 		if (!metadata.HasSetting("s_rgb"))
 		{
 			Jwl::Error("Missing \"s_rgb\" value.");
 			return false;
 		}
-
-		if (!validateAnisotropicLevel(metadata)) return false;
-		if (!validateTextureFilter(metadata)) return false;
-		if (!validateWrap(metadata, "wrap_x")) return false;
-		if (!validateWrap(metadata, "wrap_y")) return false;
-
+		
 		if (metadata.GetSize() != 7)
 		{
 			Jwl::Error("Incorrect number of value entries.");
 			return false;
 		}
+		break;
 	}
 
 	return true;

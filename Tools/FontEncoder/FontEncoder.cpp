@@ -94,12 +94,12 @@ bool FontEncoder::Validate(const Jwl::ConfigTable& metadata, unsigned loadedVers
 		return true;
 	};
 
+	if (!checkWidth(metadata)) return false;
+	if (!checkHeight(metadata)) return false;
+
 	switch (loadedVersion)
 	{
 	case 1:
-		if (!checkWidth(metadata)) return false;
-		if (!checkHeight(metadata)) return false;
-
 		if (metadata.GetSize() != 3)
 		{
 			Jwl::Error("Incorrect number of value entries.");
@@ -108,8 +108,6 @@ bool FontEncoder::Validate(const Jwl::ConfigTable& metadata, unsigned loadedVers
 		break;
 
 	case 2:
-		if (!checkWidth(metadata)) return false;
-		if (!checkHeight(metadata)) return false;
 		if (!checkTextureFilter(metadata)) return false;
 
 		if (metadata.GetSize() != 4)
