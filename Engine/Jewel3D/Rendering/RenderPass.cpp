@@ -330,6 +330,7 @@ namespace Jwl
 
 			glBindVertexArray(Font::GetVAO());
 			glBindBuffer(GL_ARRAY_BUFFER, Font::GetVBO());
+			glActiveTexture(GL_TEXTURE0);
 
 			for (unsigned i = 0; i < text->text.size(); ++i)
 			{
