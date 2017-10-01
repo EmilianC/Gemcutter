@@ -100,6 +100,14 @@ namespace
 		"	vec4 Jwl_Cos;\n"
 		"	float Jwl_DeltaTime;\n"
 		"};\n"
+		"\n" // Normal mapping helper.
+		"mat3 make_TBN(vec3 normal, vec3 tangent, float handedness)\n"
+		"{\n"
+		"	vec3 N = mat3(Jwl_NormalToWorld) * normal;\n"
+		"	vec3 T = mat3(Jwl_NormalToWorld) * tangent;\n"
+		"	vec3 B = cross(T, N) * handedness;\n"
+		"	return mat3(T, B, N);\n"
+		"}\n"
 		"\n" // sRGB <-> linear conversions.
 		"float linear_to_sRGB(float x)\n"
 		"{\n"

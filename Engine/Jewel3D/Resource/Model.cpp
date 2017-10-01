@@ -39,12 +39,27 @@ namespace Jwl
 		fread(&numFaces, sizeof(int), 1, binaryFile);
 		fread(&hasUvs, sizeof(bool), 1, binaryFile);
 		fread(&hasNormals, sizeof(bool), 1, binaryFile);
+		fread(&hasTangents, sizeof(bool), 1, binaryFile);
 
-		// Determine size of file.
+		// Determine mesh properties.
 		numVertices = numFaces * 3;
 		int bufferSize = numVertices * 3;
-		if (hasUvs) bufferSize += numVertices * 2;
-		if (hasNormals) bufferSize += numVertices * 3;
+		int stride = sizeof(float) * 3;
+		if (hasUvs)
+		{
+			bufferSize += numVertices * 2;
+			stride += sizeof(float) * 2;
+		}
+		if (hasNormals)
+		{
+			bufferSize += numVertices * 3;
+			stride += sizeof(float) * 3;
+		}
+		if (hasTangents)
+		{
+			bufferSize += numVertices * 4;
+			stride += sizeof(float) * 4;
+		}
 
 		// Read the data buffer.
 		float* data = static_cast<float*>(malloc(sizeof(float) * bufferSize));
@@ -59,21 +74,31 @@ namespace Jwl
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * bufferSize, data, GL_STATIC_DRAW);
 
-		// Determine the stride.
-		int stride = sizeof(float) * 3;
-		if (hasUvs) stride += sizeof(float) * 2;
-		if (hasNormals) stride += sizeof(float) * 3;
-
-		// Vertex attribute  : 0
-		// Texture attribute : 1
-		// Normal attribute  : 2
+		unsigned startOffset = 0;
 		glEnableVertexAttribArray(0);
-		if (hasUvs) glEnableVertexAttribArray(1);
-		if (hasNormals) glEnableVertexAttribArray(2);
+		glVertexAttribPointer(0u, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(startOffset));
+		startOffset += sizeof(float) * 3;
 
-		glVertexAttribPointer(0u, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(0));
-		if (hasUvs) glVertexAttribPointer(1u, 2, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(sizeof(float) * 3));
-		if (hasNormals) glVertexAttribPointer(2u, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(sizeof(float) * (hasUvs ? 5 : 3)));
+		if (hasUvs)
+		{
+			glEnableVertexAttribArray(1);
+			glVertexAttribPointer(1u, 2, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(startOffset));
+			startOffset += sizeof(float) * 2;
+		}
+		
+		if (hasNormals)
+		{
+			glEnableVertexAttribArray(2);
+			glVertexAttribPointer(2u, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(startOffset));
+			startOffset += sizeof(float) * 3;
+		}
+
+		if (hasTangents)
+		{
+			glEnableVertexAttribArray(3);
+			glVertexAttribPointer(3u, 4, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(startOffset));
+			startOffset += sizeof(float) * 4;
+		}
 
 		glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
 		glBindVertexArray(GL_NONE);
@@ -97,6 +122,7 @@ namespace Jwl
 
 		hasUvs = false;
 		hasNormals = false;
+		hasTangents = false;
 
 		numFaces = 0;
 		numVertices = 0;
@@ -115,6 +141,11 @@ namespace Jwl
 	bool Model::HasNormals() const
 	{
 		return hasNormals;
+	}
+
+	bool Model::HasTangents() const
+	{
+		return hasTangents;
 	}
 
 	unsigned Model::GetNumFaces() const

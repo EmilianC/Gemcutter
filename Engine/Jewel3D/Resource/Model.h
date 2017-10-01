@@ -5,7 +5,13 @@
 namespace Jwl
 {
 	// A 3D model resource.
-	// To be rendered, the model must be set on an Entity's Mesh component.
+	// To be rendered, a model must be set on an Entity's Mesh component.
+	//
+	// Provides the following attributes and bindings:
+	//	Vertex  : 0
+	//	UVs     : 1
+	//	Normal  : 2
+	//	Tangent : 3
 	class Model : public Resource<Model>
 	{
 	public:
@@ -18,6 +24,7 @@ namespace Jwl
 		unsigned GetVAO() const;
 		bool HasUVs() const;
 		bool HasNormals() const;
+		bool HasTangents() const;
 		unsigned GetNumFaces() const;
 		unsigned GetNumVerticies() const;
 
@@ -26,8 +33,9 @@ namespace Jwl
 		unsigned VBO = 0;
 		unsigned VAO = 0;
 
-		bool hasUvs		= false;
-		bool hasNormals	= false;
+		bool hasUvs		 = false;
+		bool hasNormals	 = false;
+		bool hasTangents = false;
 
 		unsigned numFaces	 = 0;
 		unsigned numVertices = 0;

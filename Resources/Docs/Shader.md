@@ -99,6 +99,10 @@ vec3 sRGB_to_linear(vec3 v);
 float linear_to_sRGB(float x);
 vec3 linear_to_sRGB(vec3 v);
 
+// Constructs the Tangent/Bitangent/Normal matrix for use with normal-maps.
+// You can pass the standard model attributes as arguments (a_normal, a_tangent.xyz, a_tangent.w).
+mat3 make_TBN(vec3 normal, vec3 tangent, float handedness);
+
 // Computes the surface contribution from any type of light and its parameters.
 // The first parameter should be a Light's Uniform Buffer.
 // 'normal' and 'pos' should be world-space vectors describing the surface.
