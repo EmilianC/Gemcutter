@@ -67,6 +67,7 @@ namespace Jwl
 		void SetRightBound(float rightBound);
 		void SetTopBound(float topBound);
 		void SetBottomBound(float bottomBound);
+		void SetBounds(const Viewport& viewport);
 
 		/* For perspective projections */
 		float GetFovyDegrees() const;

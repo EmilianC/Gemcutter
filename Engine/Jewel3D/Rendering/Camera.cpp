@@ -388,6 +388,22 @@ namespace Jwl
 		uniformInvProj.Set(invProjection);
 	}
 
+	void Camera::SetBounds(const Viewport& viewport)
+	{
+		ASSERT(!isPerspective, "Camera must be orthographic to call this function.");
+
+		left = static_cast<float>(viewport.x);
+		right = static_cast<float>(viewport.x + viewport.width);
+		top = static_cast<float>(viewport.y + viewport.height);
+		bottom = static_cast<float>(viewport.y);
+
+		projection = mat4::OrthographicProjection(left, right, top, bottom, zNear, zFar);
+		invProjection = mat4::InverseOrthographicProjection(left, right, top, bottom, zNear, zFar);
+
+		uniformProj.Set(projection);
+		uniformInvProj.Set(invProjection);
+	}
+
 	float Camera::GetFovyDegrees() const
 	{
 		return fovyDegrees;
