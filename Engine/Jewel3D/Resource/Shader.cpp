@@ -944,7 +944,7 @@ namespace Jwl
 				else if (StartsWith(line, "mat3"))		uniform.type = GL_FLOAT_MAT3;
 				else if (StartsWith(line, "mat2"))		uniform.type = GL_FLOAT_MAT2;
 				else if (StartsWith(line, "int"))		uniform.type = GL_INT;
-				else if (StartsWith(line, "unsigned"))	uniform.type = GL_UNSIGNED_INT;
+				else if (StartsWith(line, "uint"))		uniform.type = GL_UNSIGNED_INT;
 				else if (StartsWith(line, "bool"))		uniform.type = GL_BOOL;
 				else if (StartsWith(line, "double"))	uniform.type = GL_DOUBLE;
 				else
