@@ -132,7 +132,7 @@ bool MeshEncoder::Convert(const std::string& source, const std::string& destinat
 			{
 				hasUvs = true;
 
-				if (!packUvs)
+				if (!(packUvs || packTangents))
 					continue;
 
 				// Load texture coordinates.
@@ -147,7 +147,7 @@ bool MeshEncoder::Convert(const std::string& source, const std::string& destinat
 			{
 				hasNormals = true;
 
-				if (!packNormals)
+				if (!(packNormals || packTangents))
 					continue;
 
 				// Load normals.
