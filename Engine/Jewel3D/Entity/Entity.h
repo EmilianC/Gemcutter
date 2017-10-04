@@ -68,7 +68,7 @@ namespace Jwl
 		static unsigned GetComponentId();
 
 	private:
-		virtual void Copy(Entity& newOwner) const final override;
+		void Copy(Entity& newOwner) const final override;
 
 		// A unique Id given to each component type.
 		static unsigned componentId;

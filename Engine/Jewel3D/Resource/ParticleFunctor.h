@@ -63,10 +63,10 @@ namespace Jwl
 		RotationFunc(float rotationSpeed, Range initialRotation = Range(0.0f, 360.0f));
 
 	public:
-		virtual void Init(ParticleBuffer& particles, ParticleEmitter& emitter, unsigned startIndex, unsigned count) override;
-		virtual void Update(ParticleBuffer& particles, ParticleEmitter& emitter, float deltaTime) override;
+		void Init(ParticleBuffer& particles, ParticleEmitter& emitter, unsigned startIndex, unsigned count) override;
+		void Update(ParticleBuffer& particles, ParticleEmitter& emitter, float deltaTime) override;
 
-		virtual ParticleBuffers GetRequirements() const final override;
+		ParticleBuffers GetRequirements() const final override;
 
 		float rotationSpeed = 5.0f;
 		Range initialRotation{ 0.0f, 360.0f };

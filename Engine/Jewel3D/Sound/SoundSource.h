@@ -58,7 +58,7 @@ namespace Jwl
 
 	private:
 		// Stops any playing sound when disabled.
-		virtual void OnDisable() final override;
+		void OnDisable() final override;
 
 		Sound::Ptr data;
 

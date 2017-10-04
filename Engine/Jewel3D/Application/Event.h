@@ -60,14 +60,14 @@ namespace Jwl
 		virtual ~Event() = default;
 
 		// Returns true if at least one listener responds to this event.
-		virtual bool HasListeners() const final override;
+		bool HasListeners() const final override;
 		static bool HasListenersStatic();
 
 		// Returns a vector of all objects currently listening for this type of event.
 		static const auto& GetListenersStatic() { return listeners; }
 
 	private:
-		virtual void Raise() const final override;
+		void Raise() const final override;
 
 		// Subscribes a listener to be notified from this type of event.
 		static void Subscribe(Listener<derived>& listener);

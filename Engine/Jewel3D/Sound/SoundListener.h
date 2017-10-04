@@ -17,8 +17,8 @@ namespace Jwl
 
 	private:
 		// Disabling this component causes audio to stop being heard until a SoundListener becomes active again.
-		virtual void OnDisable() final override;
-		virtual void OnEnable() final override;
+		void OnDisable() final override;
+		void OnEnable() final override;
 
 		// A pointer to the active listener. Only one is allowed.
 		static Entity::WeakPtr listener;

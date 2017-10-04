@@ -35,12 +35,12 @@ namespace Jwl
 			OnEnable();
 		}
 
-		virtual void OnEnable() final override
+		void OnEnable() final override
 		{
 			listener.callback = [owner](auto& e) { Distribute(owner, e); };
 		}
 
-		virtual void OnDisable() final override
+		void OnDisable() final override
 		{
 			listener.callback = nullptr;
 		}

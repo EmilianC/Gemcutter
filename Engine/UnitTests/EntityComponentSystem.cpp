@@ -23,8 +23,8 @@ public:
 	bool onEnableCalled = false;
 	bool onDisableCalled = false;
 
-	virtual void OnEnable() override { onEnableCalled = true; }
-	virtual void OnDisable() override { onDisableCalled = true; }
+	void OnEnable() override { onEnableCalled = true; }
+	void OnDisable() override { onDisableCalled = true; }
 };
 
 // Inherits indirectly from Component<>, and doesn't generate its own Component ID.
