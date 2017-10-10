@@ -8,11 +8,11 @@ namespace Jwl
 
 		// Due to alignment rules, some types are padded up.
 		unsigned alignment;
-		if (std::is_same<T, vec3>::value)
+		if constexpr (std::is_same_v<T, vec3>)
 		{
 			alignment = sizeof(vec4);
 		}
-		else if (std::is_same<T, mat3>::value)
+		else if constexpr (std::is_same_v<T, mat3>)
 		{
 			alignment = sizeof(mat4);
 		}
