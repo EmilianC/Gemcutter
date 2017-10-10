@@ -355,15 +355,15 @@ namespace Jwl
 	auto All()
 	{
 		static_assert(
-			std::is_base_of<ComponentBase, Component>::value,
+			std::is_base_of_v<ComponentBase, Component>,
 			"Template argument must be a Component.");
 
 		static_assert(
-			!std::is_base_of<TagBase, Component>::value,
+			!std::is_base_of_v<TagBase, Component>,
 			"Cannot query tags with All<>(). Use With<>() instead.");
 
 		static_assert(
-			std::is_same<Component, typename Component::StaticComponentType>::value,
+			std::is_same_v<Component, typename Component::StaticComponentType>,
 			"Only a direct inheritor from Component<> can be used in a query.");
 
 		using namespace detail;

@@ -30,7 +30,7 @@ namespace Jwl
 	class Listener
 	{
 		template<class T> friend class Event;
-		static_assert(std::is_base_of<EventBase, EventObj>::value, "Template argument must inherit from Event.");
+		static_assert(std::is_base_of_v<EventBase, EventObj>, "Template argument must inherit from Event.");
 	public:
 		using EventFunc = void(const EventObj&);
 

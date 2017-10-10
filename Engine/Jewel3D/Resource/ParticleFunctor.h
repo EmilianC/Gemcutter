@@ -36,8 +36,8 @@ namespace Jwl
 		template<class T>
 		void Add(std::shared_ptr<T> ptr)
 		{
-			static_assert(std::is_base_of<ParticleFunctor, T>::value, "Template argument must inherit from ParticleFunctor.");
-			static_assert(std::is_base_of<Shareable<T>, T>::value, "A ParticleFunctor must inherit from Shareable<>.");
+			static_assert(std::is_base_of_v<ParticleFunctor, T>, "Template argument must inherit from ParticleFunctor.");
+			static_assert(std::is_base_of_v<Shareable<T>, T>, "A ParticleFunctor must inherit from Shareable<>.");
 
 			functors.push_back(ptr);
 			dirty = true;
