@@ -5,11 +5,14 @@
 namespace Jwl
 {
 	template<class Derived>
-	class Shareable : private std::enable_shared_from_this<Derived>
+	class Shareable : public std::enable_shared_from_this<Derived>
 	{
+		// Hide this function from user code.
+		using std::enable_shared_from_this<Derived>::shared_from_this;
+
 	protected:
 		// If the Derived class must have a private constructor, declare "friend ShareableAlloc;"
-		// and make_shared will still be able to instantiate it.
+		// and MakeNew() will still be able to instantiate it.
 		using ShareableAlloc = std::_Ref_count_obj<Derived>;
 
 	public:
