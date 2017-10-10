@@ -67,9 +67,9 @@ namespace Jwl
 		target = _target;
 	}
 
-	void RenderPass::SetViewport(const Viewport& vp)
+	void RenderPass::SetViewport(std::optional<Viewport> vp)
 	{
-		viewport = &vp;
+		viewport = vp;
 	}
 
 	void RenderPass::SetSkybox(Texture::Ptr sky)
@@ -79,29 +79,16 @@ namespace Jwl
 		skybox = sky;
 	}
 
-	Entity::Ptr RenderPass::GetCamera() const
+	std::optional<Viewport> RenderPass::GetViewport() const
 	{
-		return camera;
-	}
-
-	Shader::Ptr RenderPass::GetShader() const
-	{
-		return shader;
-	}
-
-	RenderTarget::Ptr RenderPass::GetTarget() const
-	{
-		return target;
-	}
-
-	const Viewport* RenderPass::GetViewport() const
-	{
-		return viewport;
-	}
-
-	Texture::Ptr RenderPass::GetSkybox() const
-	{
-		return skybox;
+		if (viewport)
+		{
+			return viewport.value();
+		}
+		else
+		{
+			return std::nullopt;
+		}
 	}
 
 	void RenderPass::Bind()

@@ -1,15 +1,17 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
 #include "RenderTarget.h"
+#include "Viewport.h"
 #include "Jewel3D/Resource/Shader.h"
 #include "Jewel3D/Resource/Texture.h"
+
+#include <optional>
 
 namespace Jwl
 {
 	class Camera;
 	class Entity;
 	class EntityGroup;
-	class Viewport;
 
 	// Consolidates the three main components for rendering: input Geometry, shader pipeline and render target.
 	class RenderPass
@@ -27,15 +29,15 @@ namespace Jwl
 		// If no explicit target is set, the render pass will target the backbuffer.
 		void SetTarget(RenderTarget::Ptr target);
 		// If no explicit viewport is set, the viewport will match the render target or back buffer.
-		void SetViewport(const Viewport& vp);
+		void SetViewport(std::optional<Viewport> vp);
 		// Rendered after all the group objects attached. Ignored for post process passes.
 		void SetSkybox(Texture::Ptr sky);
 
-		Entity::Ptr GetCamera() const;
-		Shader::Ptr GetShader() const;
-		RenderTarget::Ptr GetTarget() const;
-		const Viewport* GetViewport() const;
-		Texture::Ptr GetSkybox() const;
+		auto GetCamera() const { return camera; }
+		auto GetShader() const { return shader; }
+		auto GetTarget() const { return target; }
+		auto GetSkybox() const { return skybox; }
+		std::optional<Viewport> GetViewport() const;
 
 		// Renders a fullscreen quad.
 		void PostProcess();
@@ -58,7 +60,7 @@ namespace Jwl
 
 		void CreateUniformBuffer();
 
-		const Viewport* viewport = nullptr;
+		std::optional<Viewport> viewport;
 		Entity::Ptr camera;
 		RenderTarget::Ptr target;
 		Shader::Ptr shader;
