@@ -52,8 +52,7 @@ namespace Jwl
 
 	void RenderPass::SetCamera(Entity::Ptr cam)
 	{
-		ASSERT(cam, "'cam' cannot be a nullptr.");
-		ASSERT(cam->Has<Camera>(), "'cam' must have a camera component.");
+		ASSERT(!cam || cam->Has<Camera>(), "'cam' must have a camera component.");
 
 		camera = cam;
 	}
@@ -75,7 +74,7 @@ namespace Jwl
 
 	void RenderPass::SetSkybox(Texture::Ptr sky)
 	{
-		ASSERT(sky->IsCubeMap(), "'sky' must be a cubemap texture.");
+		ASSERT(!sky || sky->IsCubeMap(), "'sky' must be a cubemap texture.");
 
 		skybox = sky;
 	}
