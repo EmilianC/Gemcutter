@@ -9,17 +9,17 @@ The framework facilitates expressive and succinct code that is both easy to read
 With a thin API and modern C++14 concepts, Jewel3D provides powerful features without feeling clunky.
 
 Highlight features include:
-* [A Rich shader workflow](Resources/Docs/Shader.md)
+* [A rich shader workflow](Resources/Docs/Shader.md)
 * [Efficient entity queries](Resources/Docs/Entity.md)
 * [Extendable asset management](Resources/Docs/AssetManager.md)
 * A modular and extendable particle system
 * Audio powered by OpenAL
 * Mesh and Texture loading
-* [FreeType driven Text rendering](Resources/Docs/Text.md)
+* [FreeType text rendering](Resources/Docs/Text.md)
 * Event dispatching and response
 * Robust fixed-timestep updates
 * A complete math library
-* Keyboard/Mouse/Xbox-Gamepad support
+* Keyboard/Mouse/Xbox-Controller support
 * Local networking
 
 # Quick Start
@@ -40,10 +40,10 @@ Future highlight features include:
 * Custom GUI support
 * A fully featured world/UI editor
 * Bullet physics integration
-* Custom Memory management
-* C++ Reflection driven features
+* Custom memory management
+* C++ reflection driven features
 	* Animations
-	* Serialization and Deserialization
+	* Serialization and deserialization
 	* Networking
 	* Seamless editor integration of user components
 
