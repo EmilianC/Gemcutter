@@ -995,7 +995,7 @@ namespace Jwl
 				if (uniform.value.empty())
 					continue;
 
-				auto guard = MakeScopeGaurd([&]() {
+				auto guard = MakeScopeGuard([&]() {
 					Error("Default value assignment of ( %s ) could not be parsed.", uniform.name.c_str()); 
 				});
 

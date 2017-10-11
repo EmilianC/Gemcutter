@@ -83,21 +83,24 @@ namespace Jwl
 	};
 
 	template<typename T>
-	ScopeGuard<T> MakeScopeGaurd(T func)
+	ScopeGuard<T> MakeScopeGuard(T func)
 	{
 		return ScopeGuard<T>(std::move(func));
 	}
 
-	enum class ScopeGuard_TYPE {};
-
-	template<typename func>
-	ScopeGuard<func> operator+(ScopeGuard_TYPE, func&& f)
+	namespace detail
 	{
-		return ScopeGuard<func>(std::forward<func>(f));
+		enum class ScopeGuard_TYPE {};
+
+		template<typename func>
+		ScopeGuard<func> operator+(ScopeGuard_TYPE, func&& f)
+		{
+			return ScopeGuard<func>(std::forward<func>(f));
+		}
 	}
 }
 
 #define CONCATENATE(s1, s2) s1##s2
 #define CONCATENATE_INDIRECT(s1, s2) CONCATENATE(s1, s2)
 #define ANONYMOUS_VARIABLE(str) CONCATENATE_INDIRECT(str, __COUNTER__)
-#define defer auto ANONYMOUS_VARIABLE(SCOPE_GUARD_) = Jwl::ScopeGuard_TYPE() + [&]()
+#define defer auto ANONYMOUS_VARIABLE(SCOPE_GUARD_) = Jwl::detail::ScopeGuard_TYPE() + [&]()
