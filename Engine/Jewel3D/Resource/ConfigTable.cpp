@@ -45,9 +45,9 @@ namespace Jwl
 			return false;
 		}
 
-		for (auto& pair : settings)
+		for (auto& [name, value] : settings)
 		{
-			output << pair.first << "=" << pair.second << '\n';
+			output << name << "=" << value << '\n';
 		}
 
 		output.close();
