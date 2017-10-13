@@ -4,6 +4,7 @@
 #include "Jewel3D/Application/Logging.h"
 #include "Jewel3D/Math/Matrix.h"
 
+#include <string>
 #include <unordered_map>
 #include <vector>
 

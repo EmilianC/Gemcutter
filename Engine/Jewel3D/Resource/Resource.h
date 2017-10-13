@@ -35,27 +35,25 @@ namespace Jwl
 				Warning("Asset loaded with an absolute path. To ensure proper asset caching, it is recommended to use only relative paths.");
 			}
 
-			auto itr = resourceCache.find(filePath);
-			if (itr == resourceCache.end())
+			// Search for the cached asset. 
+			if (auto ptr = Find(filePath))
 			{
-				// Create the new asset.
-				Ptr resourcePtr = MakeNew();
-
-				if (!resourcePtr->Load(filePath, std::forward<Args>(params)...))
-				{
-					// Error loading file.
-					return nullptr;
-				}
-
-				// Add new asset to cache.
-				resourceCache.insert(std::make_pair(filePath, resourcePtr));
-
-				return resourcePtr;
+				return ptr;
 			}
-			else
+
+			// Create the new asset.
+			Ptr resourcePtr = MakeNew();
+
+			if (!resourcePtr->Load(filePath, std::forward<Args>(params)...))
 			{
-				return itr->second;
+				// Error loading file.
+				return nullptr;
 			}
+
+			// Add new asset to cache.
+			resourceCache.insert(std::make_pair(filePath, resourcePtr));
+
+			return resourcePtr;
 		}
 
 		// Searches for a loaded asset previously loaded from the specified file path.

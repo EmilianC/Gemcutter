@@ -203,6 +203,7 @@ namespace Jwl
 
 		MessageBox(HWND_DESKTOP, message.c_str(), "Error", MB_ICONERROR);
 	}
+
 	void ErrorBox(std::string_view message)
 	{
 		if (logOutput.is_open())
