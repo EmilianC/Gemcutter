@@ -181,7 +181,7 @@ namespace Jwl
 		memset(textures, GL_NONE, sizeof(unsigned) * 94);
 	}
 
-	int Font::GetStringWidth(const std::string& text) const
+	int Font::GetStringWidth(std::string_view text) const
 	{
 		int length = 0;
 		int largest = INT_MIN;

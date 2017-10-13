@@ -4,6 +4,7 @@
 #include "Texture.h"
 #include "UniformBuffer.h"
 
+#include <string_view>
 #include <unordered_map>
 #include <vector>
 
@@ -14,22 +15,22 @@ namespace Jwl
 	{
 	public:
 		// Adds a new define, or updates its value.
-		void Define(const std::string& name, const std::string& value = "");
+		void Define(std::string_view name, std::string_view value = "");
 
 		// Either Define()'s or Undefine()'s the property, based on state.
-		void Switch(const std::string& name, bool state);
+		void Switch(std::string_view name, bool state);
 
 		// Defines the property if it does not already exist. If it does, it is undefined.
-		void Toggle(const std::string& name);
+		void Toggle(std::string_view name);
 
 		// Returns true if 'name' is defined.
-		bool IsDefined(const std::string& name) const;
+		bool IsDefined(std::string_view name) const;
 
 		// Returns true if this object contains no defines.
 		bool IsEmpty() const;
 
 		// Removes a define.
-		void Undefine(const std::string& name);
+		void Undefine(std::string_view name);
 
 		// Clears all defined values.
 		void Reset();
@@ -109,7 +110,7 @@ namespace Jwl
 		~Shader();
 
 		bool Load(std::string filePath);
-		bool LoadFromSource(const std::string& source);
+		bool LoadFromSource(std::string_view source);
 		bool LoadPassThrough();
 		static Shader::Ptr MakeNewPassThrough();
 		
@@ -164,10 +165,10 @@ namespace Jwl
 		// Describes a Program block found in the shader file.
 		struct Block
 		{
-			Block(const std::string& str) : source(str) {}
+			Block(std::string_view str) : source(str) {}
 
 			BlockType type;
-			const std::string& source;
+			std::string_view source;
 			size_t start = 0;
 			size_t end = 0;
 		};

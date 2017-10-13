@@ -88,7 +88,6 @@ namespace Jwl
 		auto message = FormatString(format, argptr);
 		va_end(argptr);
 
-		// std::endl forces a flush to file.
 		if (logOutput.is_open())
 		{
 			logOutput << "Log:\t\t" << message << std::endl;
@@ -100,7 +99,7 @@ namespace Jwl
 		}
 	}
 
-	void Log(const std::string& message)
+	void Log(std::string_view message)
 	{
 		if (logOutput.is_open())
 		{
@@ -133,7 +132,7 @@ namespace Jwl
 		}
 	}
 
-	void Error(const std::string& message)
+	void Error(std::string_view message)
 	{
 		if (logOutput.is_open())
 		{
@@ -168,7 +167,7 @@ namespace Jwl
 		}
 	}
 
-	void Warning(const std::string& message)
+	void Warning(std::string_view message)
 	{
 		if (logOutput.is_open())
 		{
@@ -204,7 +203,7 @@ namespace Jwl
 
 		MessageBox(HWND_DESKTOP, message.c_str(), "Error", MB_ICONERROR);
 	}
-	void ErrorBox(const std::string& message)
+	void ErrorBox(std::string_view message)
 	{
 		if (logOutput.is_open())
 		{
@@ -218,7 +217,7 @@ namespace Jwl
 			ResetConsoleColor();
 		}
 
-		MessageBox(HWND_DESKTOP, message.c_str(), "Error", MB_ICONERROR);
+		MessageBox(HWND_DESKTOP, message.data(), "Error", MB_ICONERROR);
 	}
 
 	void WarningBox(const char* format, ...)
@@ -243,7 +242,7 @@ namespace Jwl
 		MessageBox(HWND_DESKTOP, message.c_str(), "Warning", MB_ICONWARNING);
 	}
 
-	void WarningBox(const std::string& message)
+	void WarningBox(std::string_view message)
 	{
 		if (logOutput.is_open())
 		{
@@ -257,7 +256,7 @@ namespace Jwl
 			ResetConsoleColor();
 		}
 
-		MessageBox(HWND_DESKTOP, message.c_str(), "Warning", MB_ICONWARNING);
+		MessageBox(HWND_DESKTOP, message.data(), "Warning", MB_ICONWARNING);
 	}
 
 	void Assert(const char* exp, const char* format, ...)

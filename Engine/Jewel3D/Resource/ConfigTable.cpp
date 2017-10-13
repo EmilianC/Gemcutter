@@ -6,7 +6,7 @@
 
 namespace Jwl
 {
-	bool ConfigTable::Load(const std::string& file)
+	bool ConfigTable::Load(std::string_view file)
 	{
 		FileReader input;
 		if (!input.OpenAsBuffer(file))
@@ -37,9 +37,9 @@ namespace Jwl
 		return true;
 	}
 
-	bool ConfigTable::Save(const std::string& file) const
+	bool ConfigTable::Save(std::string_view file) const
 	{
-		std::ofstream output(file);
+		std::ofstream output(file.data());
 		if (!output)
 		{
 			return false;
@@ -64,9 +64,9 @@ namespace Jwl
 		return settings != other.settings;
 	}
 
-	bool ConfigTable::HasSetting(const std::string& setting) const
+	bool ConfigTable::HasSetting(std::string_view setting) const
 	{
-		return settings.find(setting) != settings.end();
+		return settings.count(setting);
 	}
 
 	unsigned ConfigTable::GetSize() const
@@ -74,32 +74,51 @@ namespace Jwl
 		return settings.size();
 	}
 
-	std::string ConfigTable::GetString(const std::string& setting) const
+	std::string ConfigTable::GetString(std::string_view setting) const
 	{
 		std::string result;
-		if (HasSetting(setting))
+		auto itr = settings.find(setting);
+
+		if (itr != settings.end())
 		{
-			result = settings.at(setting);
+			result = itr->second;
 		}
 
 		return result;
 	}
 
-	float ConfigTable::GetFloat(const std::string& setting) const
+	float ConfigTable::GetFloat(std::string_view setting) const
 	{
-		return HasSetting(setting) ? std::stof(settings.at(setting)) : 0.0f;
-	}
-
-	int ConfigTable::GetInt(const std::string& setting) const
-	{
-		return HasSetting(setting) ? std::stoi(settings.at(setting)) : 0;
-	}
-
-	bool ConfigTable::GetBool(const std::string& setting) const
-	{
-		if (HasSetting(setting))
+		auto itr = settings.find(setting);
+		if (itr != settings.end())
 		{
-			const auto& value = settings.at(setting);
+			return std::stof(itr->second);
+		}
+		else
+		{
+			return 0.0f;
+		}
+	}
+
+	int ConfigTable::GetInt(std::string_view setting) const
+	{
+		auto itr = settings.find(setting);
+		if (itr != settings.end())
+		{
+			return std::stoi(itr->second);
+		}
+		else
+		{
+			return 0;
+		}
+	}
+
+	bool ConfigTable::GetBool(std::string_view setting) const
+	{
+		auto itr = settings.find(setting);
+		if (itr != settings.end())
+		{
+			const auto& value = itr->second;
 
 			return
 				value == "1" ||
@@ -112,7 +131,7 @@ namespace Jwl
 		}
 	}
 
-	void ConfigTable::SetValue(const std::string& setting, const std::string& value)
+	void ConfigTable::SetValue(const std::string& setting, std::string_view value)
 	{
 		settings[setting] = value;
 	}
@@ -137,7 +156,7 @@ namespace Jwl
 		settings[setting] = value ? "on" : "off";
 	}
 
-	void ConfigTable::SetDefaultValue(const std::string& setting, const std::string& value)
+	void ConfigTable::SetDefaultValue(const std::string& setting, std::string_view value)
 	{
 		if (!HasSetting(setting))
 		{

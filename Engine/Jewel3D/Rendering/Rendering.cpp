@@ -87,7 +87,7 @@ namespace Jwl
 		return format_Resolve[static_cast<unsigned>(format)];
 	}
 
-	TextureFilter StringToTextureFilter(const std::string& str)
+	TextureFilter StringToTextureFilter(std::string_view str)
 	{
 		if (CompareLowercase(str, "linear"))
 			return TextureFilter::Linear;
@@ -99,7 +99,7 @@ namespace Jwl
 			return TextureFilter::Point;
 	}
 
-	TextureWrap StringToTextureWrap(const std::string& str)
+	TextureWrap StringToTextureWrap(std::string_view str)
 	{
 		if (CompareLowercase(str, "clampwithborder"))
 			return TextureWrap::ClampWithBorder;

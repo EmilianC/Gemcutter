@@ -4,6 +4,7 @@
 #include "Jewel3D/Application/FileSystem.h"
 #include "Jewel3D/Application/Logging.h"
 #include "Jewel3D/Utilities/ScopeGuard.h"
+#include "Jewel3D/Utilities/String.h"
 
 #include <memory>
 
@@ -21,11 +22,11 @@ namespace Jwl
 		virtual ~Encoder() = default;
 
 		// Loads a .meta file and ensures that it has a valid version number.
-		static bool LoadMetaData(const std::string& file, ConfigTable& out)
+		static bool LoadMetaData(std::string_view file, ConfigTable& out)
 		{
 			out = ConfigTable();
 
-			if (ExtractFileExtension(file) != ".meta")
+			if (!CompareLowercase(ExtractFileExtension(file), ".meta"))
 			{
 				Error("Invalid file extension.");
 				return false;
@@ -100,7 +101,7 @@ namespace Jwl
 
 		// Reads from the source file and output the packed asset to the destination file.
 		// 'metadata' will contain settings of the newest version.
-		virtual bool Convert(const std::string& source, const std::string& destination, const ConfigTable& metadata) const = 0;
+		virtual bool Convert(std::string_view source, std::string_view destination, const ConfigTable& metadata) const = 0;
 
 	protected:
 		// Ensures that all fields are present and contain valid data.

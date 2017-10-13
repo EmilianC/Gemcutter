@@ -132,9 +132,9 @@ bool TextureEncoder::Validate(const Jwl::ConfigTable& metadata, unsigned loadedV
 	return true;
 }
 
-bool TextureEncoder::Convert(const std::string& source, const std::string& destination, const Jwl::ConfigTable& metadata) const
+bool TextureEncoder::Convert(std::string_view source, std::string_view destination, const Jwl::ConfigTable& metadata) const
 {
-	const std::string outputFile = destination + Jwl::ExtractFilename(source) + ".texture";
+	const std::string outputFile = std::string(destination) + Jwl::ExtractFilename(source) + ".texture";
 	const float anisotropicLevel = metadata.GetFloat("anisotropic_level");
 	const bool isCubemap = metadata.GetBool("cubemap");
 	const bool isSRGB = metadata.GetBool("s_rgb");

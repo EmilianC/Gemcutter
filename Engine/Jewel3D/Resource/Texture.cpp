@@ -401,16 +401,16 @@ namespace Jwl
 		free(const_cast<unsigned char*>(data));
 	}
 
-	Image Image::Load(const std::string& file, bool flipY, bool sRGB)
+	Image Image::Load(std::string_view file, bool flipY, bool sRGB)
 	{
 		int width = 0;
 		int height = 0;
 		int numChannels = 0;
 
-		unsigned char* data = SOIL_load_image(file.c_str(), &width, &height, &numChannels, SOIL_LOAD_AUTO);
+		unsigned char* data = SOIL_load_image(file.data(), &width, &height, &numChannels, SOIL_LOAD_AUTO);
 		if (data == nullptr)
 		{
-			Jwl::Error("Texture: ( %s )\n%s", file.c_str(), SOIL_last_result());
+			Jwl::Error("Texture: ( %s )\n%s", file.data(), SOIL_last_result());
 			return Image(0, 0, TextureFormat::RGB_8, nullptr);
 		}
 
@@ -439,7 +439,7 @@ namespace Jwl
 		}
 		else
 		{
-			Jwl::Error("Texture: ( %s )\nUnsupported format. Must have 3 or 4 color channels.", file.c_str());
+			Jwl::Error("Texture: ( %s )\nUnsupported format. Must have 3 or 4 color channels.", file.data());
 			return Image(0, 0, TextureFormat::RGB_8, nullptr);
 		}
 	}

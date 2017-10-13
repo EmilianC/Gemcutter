@@ -2,7 +2,7 @@
 #pragma once
 #include "Jewel3D/Utilities/Singleton.h"
 
-#include <string>
+#include <string_view>
 
 namespace Jwl
 {
@@ -113,8 +113,8 @@ namespace Jwl
 	int ResolveWrap(TextureWrap wrap);
 	unsigned ResolveFormat(TextureFormat format);
 
-	TextureFilter StringToTextureFilter(const std::string&);
-	TextureWrap StringToTextureWrap(const std::string&);
+	TextureFilter StringToTextureFilter(std::string_view);
+	TextureWrap StringToTextureWrap(std::string_view);
 
 	unsigned CountMipLevels(unsigned width, unsigned height, TextureFilter filter);
 	unsigned CountChannels(TextureFormat format);

@@ -2,6 +2,7 @@
 #pragma once
 #include <stdarg.h>
 #include <string>
+#include <string_view>
 
 namespace Jwl
 {
@@ -22,11 +23,11 @@ namespace Jwl
 	std::string FormatString(const char* format, va_list args);
 
 	// Compares two strings for equality while ignore capitalization.
-	bool CompareLowercase(const std::string&, const std::string&);
+	bool CompareLowercase(std::string_view, std::string_view);
 
-	// Returns true if the first characters of base are equal to start.
-	bool StartsWith(const std::string& base, const std::string& start);
+	// Returns true if the first characters of base are equal to prefix.
+	bool StartsWith(std::string_view base, std::string_view prefix);
 
-	// Returns true if the last characters of base are equal to end.
-	bool EndsWith(const std::string& base, const std::string& end);
+	// Returns true if the last characters of base are equal to postfix.
+	bool EndsWith(std::string_view base, std::string_view postfix);
 }

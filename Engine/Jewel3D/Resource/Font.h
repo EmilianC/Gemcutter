@@ -2,6 +2,8 @@
 #pragma once
 #include "Resource.h"
 
+#include <string_view>
+
 namespace Jwl
 {
 	struct CharData
@@ -24,7 +26,7 @@ namespace Jwl
 
 		// Returns the real world unit width of the string.
 		// If the string is multi-line, the length of the longest line is returned.
-		int GetStringWidth(const std::string& text) const;
+		int GetStringWidth(std::string_view text) const;
 		int GetStringHeight() const;
 
 		const unsigned* GetTextures() const;

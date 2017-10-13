@@ -56,7 +56,7 @@ namespace Jwl
 		return true;
 	}
 
-	bool NetworkUDP::Init(const std::string& remoteIP, int remotePortNum)
+	bool NetworkUDP::Init(std::string_view remoteIP, int remotePortNum)
 	{
 		remoteIp = remoteIP;
 		remotePort = remotePortNum;
@@ -97,9 +97,9 @@ namespace Jwl
 		memset(receiveBuffer, '\0', PACKET_LENGTH);
 	}
 
-	bool NetworkUDP::Send(const std::string& packet)
+	bool NetworkUDP::Send(std::string_view packet)
 	{
-		return sendto(outputSocket, packet.c_str(), packet.size(), 0, reinterpret_cast<sockaddr*>(&remoteAddress), sizeof(sockaddr)) != SOCKET_ERROR;
+		return sendto(outputSocket, packet.data(), packet.size(), 0, reinterpret_cast<sockaddr*>(&remoteAddress), sizeof(sockaddr)) != SOCKET_ERROR;
 	}
 
 	bool NetworkUDP::Receive(std::string& out_packet)
@@ -214,7 +214,7 @@ namespace Jwl
 		}
 	}
 	
-	bool NetworkTCP::SendConnectionRequest(const std::string& remoteIP, int remotePortNum)
+	bool NetworkTCP::SendConnectionRequest(std::string_view remoteIP, int remotePortNum)
 	{
 		ASSERT(isConnected == false, "Network is already connected.");
 
@@ -253,11 +253,11 @@ namespace Jwl
 		return isConnected;
 	}
 	
-	bool NetworkTCP::Send(const std::string& packet)
+	bool NetworkTCP::Send(std::string_view packet)
 	{
 		ASSERT(isConnected == true, "Network must have a connection to call this function.");
 	
-		return send(socketId, packet.c_str(), packet.size(), 0) != SOCKET_ERROR;
+		return send(socketId, packet.data(), packet.size(), 0) != SOCKET_ERROR;
 	}
 	
 	bool NetworkTCP::Receive(std::string& out_packet)
@@ -300,7 +300,7 @@ namespace Jwl
 		memset(receiveBuffer, '\0', PACKET_LENGTH);
 	}
 
-	bool NetworkClient::Init(int localPortNumTCP, int localPortNumUDP, const std::string& remoteIP, int remotePortNumTCP, int remotePortNumUDP)
+	bool NetworkClient::Init(int localPortNumTCP, int localPortNumUDP, std::string_view remoteIP, int remotePortNumTCP, int remotePortNumUDP)
 	{
 		ASSERT(localPortNumTCP != localPortNumUDP, "Local TCP and UDP ports cannot be the same.");
 		ASSERT(remotePortNumTCP != remotePortNumUDP, "Remote TCP and UDP ports cannot be the same.");
@@ -346,7 +346,7 @@ namespace Jwl
 		}
 		UDPAddress.sin_family = AF_INET;
 		UDPAddress.sin_port = htons(static_cast<u_short>(remotePortUDP));
-		UDPAddress.sin_addr.S_un.S_addr = inet_addr(remoteIP.c_str());
+		UDPAddress.sin_addr.S_un.S_addr = inet_addr(remoteIP.data());
 		// Set as Non-Blocking.
 		iMode = 1;
 		ioctlsocket(UDPSendSocket, FIONBIO, &iMode);
@@ -415,9 +415,9 @@ namespace Jwl
 		return isConnected;
 	}
 
-	bool NetworkClient::SendUDP(const std::string& packet)
+	bool NetworkClient::SendUDP(std::string_view packet)
 	{
-		return sendto(UDPSendSocket, packet.c_str(), packet.size(), 0, reinterpret_cast<sockaddr*>(&UDPAddress), sizeof(sockaddr)) != SOCKET_ERROR;
+		return sendto(UDPSendSocket, packet.data(), packet.size(), 0, reinterpret_cast<sockaddr*>(&UDPAddress), sizeof(sockaddr)) != SOCKET_ERROR;
 	}
 
 	bool NetworkClient::ReceiveUDP(std::string& out_packet)
@@ -440,9 +440,9 @@ namespace Jwl
 		}
 	}
 
-	bool NetworkClient::SendTCP(const std::string& packet)
+	bool NetworkClient::SendTCP(std::string_view packet)
 	{
-		return send(TCPSocket, packet.c_str(), packet.size(), 0) != SOCKET_ERROR;
+		return send(TCPSocket, packet.data(), packet.size(), 0) != SOCKET_ERROR;
 	}
 
 	bool NetworkClient::ReceiveTCP(std::string& out_packet)
@@ -622,27 +622,27 @@ namespace Jwl
 		clients.erase(clients.begin() + i);
 	}
 
-	bool NetworkServer::SendUDP(const std::string& packet, int ID)
+	bool NetworkServer::SendUDP(std::string_view packet, int ID)
 	{
 		unsigned i = GetClientIndex(ID);
 		ASSERT(i != -1, "Client with ID %d could not be found.", ID);
 
-		return sendto(UDPSendSocket, packet.c_str(), packet.size(), 0, reinterpret_cast<sockaddr*>(&clients[i].UDPAddress), clients[i].UDPAddressSize) != SOCKET_ERROR;
+		return sendto(UDPSendSocket, packet.data(), packet.size(), 0, reinterpret_cast<sockaddr*>(&clients[i].UDPAddress), clients[i].UDPAddressSize) != SOCKET_ERROR;
 	}
 
-	bool NetworkServer::SendUDP(const std::string& packet)
+	bool NetworkServer::SendUDP(std::string_view packet)
 	{
 		bool okay = true;
 		for (unsigned i = 0; i < clients.size(); ++i)
 		{
-			bool result = sendto(UDPSendSocket, packet.c_str(), packet.size(), 0, reinterpret_cast<sockaddr*>(&clients[i].UDPAddress), clients[i].UDPAddressSize) != SOCKET_ERROR;
+			bool result = sendto(UDPSendSocket, packet.data(), packet.size(), 0, reinterpret_cast<sockaddr*>(&clients[i].UDPAddress), clients[i].UDPAddressSize) != SOCKET_ERROR;
 			okay = okay && result;
 		}
 
 		return okay;
 	}
 
-	bool NetworkServer::SendToAllButOneUDP(const std::string& packet, int excludedID)
+	bool NetworkServer::SendToAllButOneUDP(std::string_view packet, int excludedID)
 	{
 		bool okay = true;
 		for (unsigned i = 0; i < clients.size(); ++i)
@@ -650,7 +650,7 @@ namespace Jwl
 			if (clients[i].ID == excludedID)
 				continue;
 
-			bool result = sendto(UDPSendSocket, packet.c_str(), packet.size(), 0, reinterpret_cast<sockaddr*>(&clients[i].UDPAddress), clients[i].UDPAddressSize) != SOCKET_ERROR;
+			bool result = sendto(UDPSendSocket, packet.data(), packet.size(), 0, reinterpret_cast<sockaddr*>(&clients[i].UDPAddress), clients[i].UDPAddressSize) != SOCKET_ERROR;
 			okay = okay && result;
 		}
 
@@ -691,27 +691,27 @@ namespace Jwl
 		return -1;
 	}
 
-	bool NetworkServer::SendTCP(const std::string& packet, int ID)
+	bool NetworkServer::SendTCP(std::string_view packet, int ID)
 	{
 		unsigned i = GetClientIndex(ID);
 		ASSERT(i != -1, "Client with ID %d could not be found.", ID);
 
-		return send(clients[i].TCPSocket, packet.c_str(), packet.size(), 0) != SOCKET_ERROR;
+		return send(clients[i].TCPSocket, packet.data(), packet.size(), 0) != SOCKET_ERROR;
 	}
 
-	bool NetworkServer::SendTCP(const std::string& packet)
+	bool NetworkServer::SendTCP(std::string_view packet)
 	{
 		bool okay = true;
 		for (unsigned i = 0; i < clients.size(); ++i)
 		{
-			bool result = send(clients[i].TCPSocket, packet.c_str(), packet.size(), 0) != SOCKET_ERROR;
+			bool result = send(clients[i].TCPSocket, packet.data(), packet.size(), 0) != SOCKET_ERROR;
 			okay = okay && result;
 		}
 
 		return okay;
 	}
 
-	bool NetworkServer::SendToAllButOneTCP(const std::string& packet, int excludedID)
+	bool NetworkServer::SendToAllButOneTCP(std::string_view packet, int excludedID)
 	{
 		bool okay = true;
 		for (unsigned i = 0; i < clients.size(); ++i)
@@ -719,7 +719,7 @@ namespace Jwl
 			if (clients[i].ID == excludedID)
 				continue;
 
-			bool result = send(clients[i].TCPSocket, packet.c_str(), packet.size(), 0) != SOCKET_ERROR;
+			bool result = send(clients[i].TCPSocket, packet.data(), packet.size(), 0) != SOCKET_ERROR;
 			okay = okay && result;
 		}
 

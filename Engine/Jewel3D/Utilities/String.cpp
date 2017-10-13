@@ -107,7 +107,7 @@ namespace Jwl
 		return result;
 	}
 
-	bool CompareLowercase(const std::string& a, const std::string& b)
+	bool CompareLowercase(std::string_view a, std::string_view b)
 	{
 		if (a.size() != b.size())
 		{
@@ -125,23 +125,23 @@ namespace Jwl
 		return true;
 	}
 
-	bool StartsWith(const std::string& base, const std::string& start)
+	bool StartsWith(std::string_view base, std::string_view prefix)
 	{
-		if (base.size() < start.size())
+		if (base.size() < prefix.size())
 		{
 			return false;
 		}
 
-		return strncmp(base.c_str(), start.c_str(), start.size()) == 0;
+		return strncmp(base.data(), prefix.data(), prefix.size()) == 0;
 	}
 
-	bool EndsWith(const std::string& base, const std::string& end)
+	bool EndsWith(std::string_view base, std::string_view postfix)
 	{
-		if (base.size() < end.size())
+		if (base.size() < postfix.size())
 		{
 			return false;
 		}
 
-		return strncmp(&base[base.size() - end.size()], end.c_str(), end.size()) == 0;
+		return strncmp((base.data() + base.size()) - postfix.size(), postfix.data(), postfix.size()) == 0;
 	}
 }
