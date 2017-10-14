@@ -1,6 +1,6 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
-#include <string>
+#include <string_view>
 
 /*
  This file defines various functions and macros for logging.
@@ -43,15 +43,15 @@ namespace Jwl
 	void ResetConsoleColor();
 
 	void Log(const char* format, ...);
-	void Log(const std::string& message);
+	void Log(std::string_view message);
 	void Error(const char* format, ...);
-	void Error(const std::string& message);
+	void Error(std::string_view message);
 	void Warning(const char* format, ...);
-	void Warning(const std::string& message);
+	void Warning(std::string_view message);
 	void ErrorBox(const char* format, ...);
-	void ErrorBox(const std::string& message);
+	void ErrorBox(std::string_view message);
 	void WarningBox(const char* format, ...);
-	void WarningBox(const std::string& message);
+	void WarningBox(std::string_view message);
 
 	void Assert(const char* exp, const char* format, ...);
 }

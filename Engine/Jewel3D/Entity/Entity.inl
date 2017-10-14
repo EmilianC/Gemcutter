@@ -3,58 +3,20 @@ namespace Jwl
 {
 	namespace detail
 	{
-		template<class T, class U>
-		struct _safe_cast
-		{
-			static T* Cast(ComponentBase* comp) { return dynamic_cast<T*>(comp); }
-		};
-
-		template<class T>
-		struct _safe_cast<T, T>
-		{
-			static T* Cast(ComponentBase* comp) { return static_cast<T*>(comp); }
-		};
-
 		// Allows for compile-time decision of whether or not a dynamic cast is required.
 		// A dynamic cast is required when a class inherits from Component indirectly, and
 		// as such, doesn't compile its own unique component type ID.
 		template<class T>
 		T* safe_cast(ComponentBase* comp)
 		{
-			static_assert(std::is_base_of<ComponentBase, T>::value, "Template argument must inherit from Component.");
-			static_assert(!std::is_base_of<TagBase, T>::value, "Template argument cannot be a Tag");
-
-			return _safe_cast<T, typename T::StaticComponentType>::Cast(comp);
-		}
-
-		// Copies a component using direct assignment. Compiles to a warning if direct assignment is invalid.
-		template<class Component>
-		std::enable_if_t<!std::is_base_of<TagBase, Component>::value && std::is_copy_assignable<Component>::value>
-		copy_component(Entity& destination, const Component& source)
-		{
-			auto& dest = destination.Require<Component>();
-			dest = source;
-
-			if (!source.IsEnabled())
+			if constexpr (std::is_same_v<T, typename T::StaticComponentType>)
 			{
-				destination.Disable<Component>();
+				return static_cast<T*>(comp);
 			}
-		}
-
-		// Copies a component using direct assignment. Compiles to a warning if direct assignment is invalid.
-		template<class Component>
-		std::enable_if_t<!std::is_base_of<TagBase, Component>::value && !std::is_copy_assignable<Component>::value>
-		copy_component(Entity& destination, const Component& source)
-		{
-			Warning("Component could not be copied. It does not have a valid assignment operator.");
-		}
-
-		// The copy operation is disabled for tags.
-		template<class Component>
-		std::enable_if_t<std::is_base_of<TagBase, Component>::value>
-		copy_component(Entity& destination, const Component& source)
-		{
-			Error("Tag was attempted to be copied as if it was a Component.");
+			else
+			{
+				return dynamic_cast<T*>(comp);
+			}
 		}
 	}
 
@@ -72,14 +34,36 @@ namespace Jwl
 	template<class derived>
 	void Component<derived>::Copy(Entity& newOwner) const
 	{
-		detail::copy_component(newOwner, *static_cast<const derived*>(this));
+		if constexpr (std::is_base_of_v<TagBase, derived>)
+		{
+			Error("Tag was attempted to be copied as if it was a Component.");
+		}
+		else
+		{
+			if constexpr (std::is_copy_assignable_v<derived>)
+			{
+				const derived& source = *static_cast<const derived*>(this);
+
+				auto& dest = newOwner.Require<derived>();
+				dest = source;
+
+				if (!source.IsEnabled())
+				{
+					newOwner.Disable<derived>();
+				}
+			}
+			else
+			{
+				Warning("Component could not be copied. It does not have a valid assignment operator.");
+			}
+		}
 	}
 
 	template<class T, typename... Args>
 	T& Entity::Add(Args&&... constructorParams)
 	{
-		static_assert(std::is_base_of<ComponentBase, T>::value, "Template argument must inherit from Component.");
-		static_assert(!std::is_base_of<TagBase, T>::value, "Template argument cannot be a Tag");
+		static_assert(std::is_base_of_v<ComponentBase, T>, "Template argument must inherit from Component.");
+		static_assert(!std::is_base_of_v<TagBase, T>, "Template argument cannot be a Tag.");
 		ASSERT(!Has<T>(), "Component already exists on this entity.");
 
 		T* newComponent = new T(*this, std::forward<Args>(constructorParams)...);
@@ -106,8 +90,8 @@ namespace Jwl
 	template<class T>
 	T& Entity::Require()
 	{
-		static_assert(std::is_base_of<ComponentBase, T>::value, "Template argument must inherit from Component.");
-		static_assert(!std::is_base_of<TagBase, T>::value, "Template argument cannot be a Tag");
+		static_assert(std::is_base_of_v<ComponentBase, T>, "Template argument must inherit from Component.");
+		static_assert(!std::is_base_of_v<TagBase, T>, "Template argument cannot be a Tag.");
 
 		if (T* comp = Try<T>())
 		{
@@ -133,8 +117,8 @@ namespace Jwl
 	T& Entity::Get() const
 	{
 		using namespace detail;
-		static_assert(std::is_base_of<ComponentBase, T>::value, "Template argument must inherit from Component.");
-		static_assert(!std::is_base_of<TagBase, T>::value, "Template argument cannot be a Tag");
+		static_assert(std::is_base_of_v<ComponentBase, T>, "Template argument must inherit from Component.");
+		static_assert(!std::is_base_of_v<TagBase, T>, "Template argument cannot be a Tag.");
 
 		auto itr = components.begin();
 		for (; itr != components.end(); ++itr)
@@ -154,8 +138,8 @@ namespace Jwl
 	T* Entity::Try() const
 	{
 		using namespace detail;
-		static_assert(std::is_base_of<ComponentBase, T>::value, "Template argument must inherit from Component.");
-		static_assert(!std::is_base_of<TagBase, T>::value, "Template argument cannot be a Tag");
+		static_assert(std::is_base_of_v<ComponentBase, T>, "Template argument must inherit from Component.");
+		static_assert(!std::is_base_of_v<TagBase, T>, "Template argument cannot be a Tag.");
 
 		for (auto comp : components)
 		{
@@ -172,8 +156,8 @@ namespace Jwl
 	void Entity::RemoveComponent()
 	{
 		using namespace detail;
-		static_assert(std::is_base_of<ComponentBase, T>::value, "Template argument must inherit from Component.");
-		static_assert(!std::is_base_of<TagBase, T>::value, "Template argument cannot be a Tag");
+		static_assert(std::is_base_of_v<ComponentBase, T>, "Template argument must inherit from Component.");
+		static_assert(!std::is_base_of_v<TagBase, T>, "Template argument cannot be a Tag.");
 
 		for (unsigned i = 0; i < components.size(); ++i)
 		{
@@ -200,8 +184,8 @@ namespace Jwl
 	template<class T>
 	bool Entity::Has() const
 	{
-		static_assert(std::is_base_of<ComponentBase, T>::value, "Template argument must inherit from Component.");
-		static_assert(!std::is_base_of<TagBase, T>::value, "Template argument cannot be a Tag");
+		static_assert(std::is_base_of_v<ComponentBase, T>, "Template argument must inherit from Component.");
+		static_assert(!std::is_base_of_v<TagBase, T>, "Template argument cannot be a Tag.");
 
 		return Try<T>() != nullptr;
 	}
@@ -209,7 +193,7 @@ namespace Jwl
 	template<class T>
 	void Entity::Tag()
 	{
-		static_assert(std::is_base_of<TagBase, T>::value, "Template argument must inherit from Tag.");
+		static_assert(std::is_base_of_v<TagBase, T>, "Template argument must inherit from Tag.");
 		if (HasTag<T>())
 		{
 			return;
@@ -221,7 +205,7 @@ namespace Jwl
 	template<class T>
 	void Entity::RemoveTag()
 	{
-		static_assert(std::is_base_of<TagBase, T>::value, "Template argument must inherit from Tag.");
+		static_assert(std::is_base_of_v<TagBase, T>, "Template argument must inherit from Tag.");
 
 		RemoveTag(T::GetComponentId());
 	}
@@ -229,7 +213,7 @@ namespace Jwl
 	template<class T>
 	bool Entity::HasTag() const
 	{
-		static_assert(std::is_base_of<TagBase, T>::value, "Template argument must inherit from Tag.");
+		static_assert(std::is_base_of_v<TagBase, T>, "Template argument must inherit from Tag.");
 
 		for (auto tag : tags)
 		{
@@ -245,8 +229,8 @@ namespace Jwl
 	template<class T>
 	void Entity::Enable()
 	{
-		static_assert(std::is_base_of<ComponentBase, T>::value, "Template argument must inherit from Component.");
-		static_assert(!std::is_base_of<TagBase, T>::value, "Tags cannot be enabled or disabled. Add or remove them instead.");
+		static_assert(std::is_base_of_v<ComponentBase, T>, "Template argument must inherit from Component.");
+		static_assert(!std::is_base_of_v<TagBase, T>, "Tags cannot be enabled or disabled. Add or remove them instead.");
 		
 		auto& comp = Get<T>();
 
@@ -269,8 +253,8 @@ namespace Jwl
 	template<class T>
 	void Entity::Disable()
 	{
-		static_assert(std::is_base_of<ComponentBase, T>::value, "Template argument must inherit from Component.");
-		static_assert(!std::is_base_of<TagBase, T>::value, "Tags cannot be enabled or disabled. Add or remove them instead.");
+		static_assert(std::is_base_of_v<ComponentBase, T>, "Template argument must inherit from Component.");
+		static_assert(!std::is_base_of_v<TagBase, T>, "Tags cannot be enabled or disabled. Add or remove them instead.");
 		
 		auto& comp = Get<T>();
 

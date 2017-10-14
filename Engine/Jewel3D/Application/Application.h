@@ -5,7 +5,7 @@
 #include "Jewel3D/Utilities/Singleton.h"
 
 #include <Windows.h>
-#include <string>
+#include <string_view>
 #include <functional>
 
 namespace Jwl
@@ -18,7 +18,7 @@ namespace Jwl
 		Application();
 		~Application();
 
-		bool CreateGameWindow(const std::string& title, unsigned glMajorVersion, unsigned glMinorVersion);
+		bool CreateGameWindow(std::string_view title, unsigned glMajorVersion, unsigned glMinorVersion);
 		void DestroyGameWindow();
 
 		// Starts the main game-loop.

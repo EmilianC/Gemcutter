@@ -11,7 +11,7 @@ namespace Jwl
 	template<class EventObj>
 	class ProxyListener : public Component<ProxyListener<EventObj>>
 	{
-		static_assert(std::is_base_of<EventBase, EventObj>::value, "Template argument must inherit from Event.");
+		static_assert(std::is_base_of_v<EventBase, EventObj>, "Template argument must inherit from Event.");
 	public:
 		ProxyListener(Entity& owner)
 			: Component(owner)
@@ -27,7 +27,7 @@ namespace Jwl
 	template<class EventObj>
 	class EventDispatcher : public Component<EventDispatcher<EventObj>>
 	{
-		static_assert(std::is_base_of<EventBase, EventObj>::value, "Template argument must inherit from Event.");
+		static_assert(std::is_base_of_v<EventBase, EventObj>, "Template argument must inherit from Event.");
 	public:
 		EventDispatcher(Entity& owner)
 			: Component(owner)

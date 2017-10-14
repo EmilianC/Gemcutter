@@ -4,6 +4,7 @@
 #include "Jewel3D/Application/Logging.h"
 #include "Jewel3D/Math/Matrix.h"
 
+#include <string>
 #include <unordered_map>
 #include <vector>
 
@@ -101,7 +102,7 @@ namespace Jwl
 	template<class T>
 	class UniformHandle
 	{
-		static_assert(std::is_standard_layout<T>::value, "Uniforms cannot be complex types.");
+		static_assert(std::is_standard_layout_v<T>, "Uniforms cannot be complex types.");
 	public:
 		UniformHandle<T>() = default;
 		UniformHandle<T>(UniformBuffer& buff, unsigned offset);

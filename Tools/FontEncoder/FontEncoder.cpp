@@ -121,9 +121,9 @@ bool FontEncoder::Validate(const Jwl::ConfigTable& metadata, unsigned loadedVers
 	return true;
 }
 
-bool FontEncoder::Convert(const std::string& source, const std::string& destination, const Jwl::ConfigTable& metadata) const
+bool FontEncoder::Convert(std::string_view source, std::string_view destination, const Jwl::ConfigTable& metadata) const
 {
-	const std::string outputFile = destination + Jwl::ExtractFilename(source) + ".font";
+	const std::string outputFile = std::string(destination) + Jwl::ExtractFilename(source) + ".font";
 	const unsigned width = static_cast<unsigned>(metadata.GetInt("width"));
 	const unsigned height = static_cast<unsigned>(metadata.GetInt("height"));
 	
@@ -157,7 +157,7 @@ bool FontEncoder::Convert(const std::string& source, const std::string& destinat
 	defer { FT_Done_FreeType(library); };
 
 	// Create the face data.
-	if (FT_New_Face(library, source.c_str(), 0, &face))
+	if (FT_New_Face(library, source.data(), 0, &face))
 	{
 		Jwl::Error("Input file could not be opened or processed.");
 		return false;

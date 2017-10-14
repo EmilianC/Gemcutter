@@ -26,12 +26,12 @@ namespace Jwl
 		return ParseDirectory(outData, GetCurrentDirectory());
 	}
 
-	bool ParseDirectory(DirectoryData& outData, const std::string& directory)
+	bool ParseDirectory(DirectoryData& outData, std::string_view directory)
 	{
 		outData.files.clear();
 		outData.folders.clear();
 
-		DIR* dir = opendir(directory.c_str());
+		DIR* dir = opendir(directory.data());
 		if (dir == nullptr)
 		{
 			return false;
@@ -63,9 +63,9 @@ namespace Jwl
 		return true;
 	}
 
-	bool DirectoryExists(const std::string& directory)
+	bool DirectoryExists(std::string_view directory)
 	{
-		if (auto dir = opendir(directory.c_str()))
+		if (auto dir = opendir(directory.data()))
 		{
 			closedir(dir);
 			return true;
@@ -76,20 +76,20 @@ namespace Jwl
 		}
 	}
 
-	bool IsPathRelative(const std::string& directory)
+	bool IsPathRelative(std::string_view directory)
 	{
 		return ExtractDriveLetter(directory).empty();
 	}
 
-	bool IsPathAbsolute(const std::string& directory)
+	bool IsPathAbsolute(std::string_view directory)
 	{
 		return !IsPathRelative(directory);
 	}
 
-	bool FileExists(const std::string& fileName)
+	bool FileExists(std::string_view fileName)
 	{
 		FILE* file = nullptr;
-		fopen_s(&file, fileName.c_str(), "r");
+		fopen_s(&file, fileName.data(), "r");
 
 		if (file != nullptr)
 		{
@@ -102,14 +102,14 @@ namespace Jwl
 		}
 	}
 
-	bool RemoveFile(const std::string& file)
+	bool RemoveFile(std::string_view file)
 	{
-		return DeleteFile(file.c_str()) == TRUE;
+		return DeleteFile(file.data()) == TRUE;
 	}
 
-	bool MakeDirectory(const std::string& directory)
+	bool MakeDirectory(std::string_view directory)
 	{
-		if (_mkdir(directory.c_str()) == ENOENT)
+		if (_mkdir(directory.data()) == ENOENT)
 		{
 			Error("FileSystem: Could not create directory due to an invalid directory path.");
 			return false;
@@ -128,12 +128,12 @@ namespace Jwl
 		return result;
 	}
 
-	void SetCurrentDirectory(const std::string& directory)
+	void SetCurrentDirectory(std::string_view directory)
 	{
-		SetCurrentDirectoryA(directory.c_str());
+		SetCurrentDirectoryA(directory.data());
 	}
 
-	void PushCurrentDirectory(const std::string& newDirectory)
+	void PushCurrentDirectory(std::string_view newDirectory)
 	{
 		currentDirectoryStack.push(GetCurrentDirectory());
 		SetCurrentDirectory(newDirectory);
@@ -145,7 +145,7 @@ namespace Jwl
 		currentDirectoryStack.pop();
 	}
 
-	std::string ExtractDriveLetter(const std::string& path)
+	std::string ExtractDriveLetter(std::string_view path)
 	{
 		if (path.empty())
 		{
@@ -154,7 +154,7 @@ namespace Jwl
 		}
 
 		char result[_MAX_DRIVE] = { '\0' };
-		if (_splitpath_s(path.c_str(), result, _MAX_DRIVE, nullptr, 0, nullptr, 0, nullptr, 0) != SUCCESS)
+		if (_splitpath_s(path.data(), result, _MAX_DRIVE, nullptr, 0, nullptr, 0, nullptr, 0) != SUCCESS)
 		{
 			Error("FileSystem: Invalid path.");
 			return std::string();
@@ -163,7 +163,7 @@ namespace Jwl
 		return result;
 	}
 
-	std::string ExtractPath(const std::string& path)
+	std::string ExtractPath(std::string_view path)
 	{
 		if (path.empty())
 		{
@@ -172,7 +172,7 @@ namespace Jwl
 		}
 
 		char result[_MAX_DIR] = { '\0' };
-		if (_splitpath_s(path.c_str(), nullptr, 0, result, _MAX_DIR, nullptr, 0, nullptr, 0) != SUCCESS)
+		if (_splitpath_s(path.data(), nullptr, 0, result, _MAX_DIR, nullptr, 0, nullptr, 0) != SUCCESS)
 		{
 			Error("FileSystem: Invalid path.");
 			return std::string();
@@ -181,12 +181,12 @@ namespace Jwl
 		return ExtractDriveLetter(path) + result;
 	}
 
-	std::string ExtractFile(const std::string& path)
+	std::string ExtractFile(std::string_view path)
 	{
 		return ExtractFilename(path) + ExtractFileExtension(path);
 	}
 
-	std::string ExtractFilename(const std::string& path)
+	std::string ExtractFilename(std::string_view path)
 	{
 		if (path.empty())
 		{
@@ -195,7 +195,7 @@ namespace Jwl
 		}
 
 		char result[_MAX_FNAME] = { '\0' };
-		if (_splitpath_s(path.c_str(), nullptr, 0, nullptr, 0, result, _MAX_FNAME, nullptr, 0) != SUCCESS)
+		if (_splitpath_s(path.data(), nullptr, 0, nullptr, 0, result, _MAX_FNAME, nullptr, 0) != SUCCESS)
 		{
 			Error("FileSystem: Invalid path.");
 			return std::string();
@@ -204,7 +204,7 @@ namespace Jwl
 		return result;
 	}
 
-	std::string ExtractFileExtension(const std::string& path)
+	std::string ExtractFileExtension(std::string_view path)
 	{
 		if (path.empty())
 		{
@@ -213,7 +213,7 @@ namespace Jwl
 		}
 
 		char result[_MAX_EXT] = { '\0' };
-		if (_splitpath_s(path.c_str(), nullptr, 0, nullptr, 0, nullptr, 0, result, _MAX_EXT) != SUCCESS)
+		if (_splitpath_s(path.data(), nullptr, 0, nullptr, 0, nullptr, 0, result, _MAX_EXT) != SUCCESS)
 		{
 			Error("FileSystem: Invalid path.");
 			return std::string();
@@ -222,11 +222,11 @@ namespace Jwl
 		return result;
 	}
 
-	std::string LoadFileAsString(const std::string& fileName)
+	std::string LoadFileAsString(std::string_view fileName)
 	{
 		std::string result;
 
-		std::ifstream inStream(fileName);
+		std::ifstream inStream(fileName.data());
 		if (inStream.good())
 		{
 			result = std::string(std::istreambuf_iterator<char>(inStream), std::istreambuf_iterator<char>());
@@ -246,11 +246,11 @@ namespace Jwl
 		return !file.is_open() && buffer.empty();
 	}
 
-	bool FileReader::OpenAsBuffer(const std::string& filePath)
+	bool FileReader::OpenAsBuffer(std::string_view filePath)
 	{
 		ASSERT(!(*this), "FileReader: Already associated with a file");
 
-		file.open(filePath);
+		file.open(filePath.data());
 		if (!file.good())
 		{
 			return false;
@@ -274,11 +274,11 @@ namespace Jwl
 		return true;
 	}
 
-	bool FileReader::OpenAsStream(const std::string& filePath)
+	bool FileReader::OpenAsStream(std::string_view filePath)
 	{
 		ASSERT(!(*this), "FileReader: Already associated with a file");
 
-		file.open(filePath);
+		file.open(filePath.data());
 		if (!file.good())
 		{
 			return false;

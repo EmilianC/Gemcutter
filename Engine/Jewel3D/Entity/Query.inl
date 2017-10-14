@@ -9,6 +9,12 @@ namespace Jwl
 		// Index of all Components of a particular type. Used to power the queries.
 		// Not sorted since no logical operations are performed using these tables.
 		extern std::unordered_map<unsigned, std::vector<ComponentBase*>> componentIndex;
+
+		// This is a light-weight tag representing the end of a query's range.
+		// This allows us to avoid creating a second, complex, iterator just to represent the end of a query.
+		// Since our custom iterators already have all the information they need to know if they have expired,
+		// we can use this tag to ask them when they has finished enumerating the range.
+		struct RangeEndSentinel {};
 		
 		// Enumerates a table of the componentIndex while performing a cast and a dereference.
 		template<class Component>
@@ -16,46 +22,38 @@ namespace Jwl
 		{
 			using Iterator = std::vector<ComponentBase*>::iterator;
 		public:
-			ComponentIterator(Iterator _itr)
-				: itr(_itr)
+			ComponentIterator(Iterator _itr, const Iterator _itrEnd)
+				: itr(_itr), itrEnd(_itrEnd)
 			{}
 
 			ComponentIterator& operator++()
 			{
+				ASSERT(!IsTerminated(), "Invalid range is in use.");
 				++itr;
 				return *this;
 			}
 
-			ComponentIterator operator++(int)
-			{
-				ComponentIterator result(*this);
-				operator++();
-				return result;
-			}
-
 			Component& operator*() const
 			{
+				ASSERT(!IsTerminated(), "Invalid range is in use.");
 				return *static_cast<Component*>(*itr);
 			}
 
-			Component* operator->() const
+			bool operator!=(RangeEndSentinel) const
 			{
-				return static_cast<Component*>(*itr);
+				return !IsTerminated();
 			}
 
-			bool operator==(const ComponentIterator& other) const
+			bool IsTerminated() const
 			{
-				return itr == other.itr;
-			}
-
-			bool operator!=(const ComponentIterator& other) const
-			{
-				return itr != other.itr;
+				return itr == itrEnd;
 			}
 
 		private:
 			// The current position in the target table.
 			Iterator itr;
+			// Ensures that we don't surpass the table while we are skipping items.
+			const Iterator itrEnd;
 		};
 
 		// A safe iterator used to enumerate the entityIndex tables.
@@ -70,48 +68,25 @@ namespace Jwl
 
 			SafeIterator& operator++()
 			{
-				ASSERT(!IsTerminated(), "Iterator cannot be incremented. Check for invalid usage of With<>().");
+				ASSERT(!IsTerminated(), "Invalid range is in use.");
 				++itr;
 				return *this;
 			}
 
-			SafeIterator operator++(int)
-			{
-				ASSERT(!IsTerminated(), "Iterator cannot be incremented. Check for invalid usage of With<>().");
-				SafeIterator result(*this);
-				operator++();
-				return result;
-			}
-
 			Entity& operator*() const
 			{
-				ASSERT(!IsTerminated(), "Iterator cannot be dereferenced. Check for invalid usage of With<>().");
+				ASSERT(!IsTerminated(), "Invalid range is in use.");
 				return *(*itr);
 			}
 
-			Entity* operator->() const
+			bool operator!=(RangeEndSentinel) const
 			{
-				ASSERT(!IsTerminated(), "Iterator cannot be dereferenced. Check for invalid usage of With<>().");
-				return *itr;
-			}
-
-			bool operator==(const SafeIterator& other) const
-			{
-				ASSERT(itrEnd == other.itrEnd, 
-					"Comparison between iterators of different index tables. Check for invalid usage of With<>().");
-				return itr == other.itr;
-			}
-
-			bool operator!=(const SafeIterator& other) const
-			{
-				ASSERT(itrEnd == other.itrEnd, 
-					"Comparison between iterators of different index tables. Check for invalid usage of With<>().");
-				return itr != other.itr;
+				return !IsTerminated();
 			}
 
 			Entity* Get() const
 			{
-				ASSERT(!IsTerminated(), "Iterator is invalid. Check for invalid usage of With<>().");
+				ASSERT(!IsTerminated(), "Invalid range is in use.");
 				return *itr;
 			}
 
@@ -128,7 +103,7 @@ namespace Jwl
 		private:
 			// The current position in the table.
 			Iterator itr;
-			// This is required to ensure we don't surpass the table while we are skipping items.
+			// Ensures that we don't surpass the table while we are skipping items.
 			const Iterator itrEnd;
 		};
 
@@ -138,24 +113,27 @@ namespace Jwl
 		{
 			static void FindFirst(SafeIterator& itr1, SafeIterator& itr2)
 			{
-				while (!(itr1.IsTerminated() || itr2.IsTerminated()) && itr1.Get() != itr2.Get())
+				while (!(itr1.IsTerminated() || itr2.IsTerminated()))
 				{
-					if (itr1.Get() < itr2.Get())
+					Entity* p1 = itr1.Get();
+					Entity* p2 = itr2.Get();
+
+					if (p1 < p2)
 					{
 						++itr1;
 					}
-					else
+					else if (p1 > p2)
 					{
 						++itr2;
 					}
+					else
+					{
+						break;
+					}
 				}
 
-				// Kill the iterators if any reached their end.
-				if (itr1.IsTerminated())
-				{
-					itr2.Terminate();
-				}
-				else if (itr2.IsTerminated())
+				// Itr1 is the one that is checked for death, so propagate the termination if Itr2 finished first.
+				if (itr2.IsTerminated())
 				{
 					itr1.Terminate();
 				}
@@ -189,31 +167,14 @@ namespace Jwl
 				return *this;
 			}
 
-			LogicalIterator operator++(int)
-			{
-				LogicalIterator result(*this);
-				operator++();
-				return result;
-			}
-
 			Entity& operator*() const
 			{
 				return *itr1;
 			}
 
-			Entity* operator->() const
+			bool operator!=(RangeEndSentinel) const
 			{
-				return &(*itr1);
-			}
-
-			bool operator==(const LogicalIterator& other) const
-			{
-				return itr1 == other.itr1;
-			}
-
-			bool operator!=(const LogicalIterator& other) const
-			{
-				return itr1 != other.itr1;
+				return !itr1.IsTerminated();
 			}
 
 			SafeIterator& GetCurrentItr()
@@ -244,31 +205,14 @@ namespace Jwl
 				return *this;
 			}
 
-			LogicalIterator operator++(int)
-			{
-				LogicalIterator result(*this);
-				operator++();
-				return result;
-			}
-
 			Entity& operator*() const
 			{
 				return *itr1;
 			}
 
-			Entity* operator->() const
+			bool operator!=(RangeEndSentinel) const
 			{
-				return &(*itr1);
-			}
-
-			bool operator==(const LogicalIterator& other) const
-			{
-				return itr1 == other.itr1 && itr2 == other.itr2;
-			}
-
-			bool operator!=(const LogicalIterator& other) const
-			{
-				return itr1 != other.itr1 || itr2 != other.itr2;
+				return !itr1.IsTerminated();
 			}
 
 			SafeIterator& GetCurrentItr()
@@ -286,18 +230,23 @@ namespace Jwl
 		class Range
 		{
 		public:
-			Range(RootIterator _itr, const RootIterator _itrEnd)
-				: itr(_itr), itrEnd(_itrEnd)
+			Range(RootIterator _itr)
+				: itr(_itr)
 			{}
 
-			RootIterator& begin() { return itr; }
-			const RootIterator& end() const { return itrEnd; }
+			RootIterator& begin()
+			{
+				return itr;
+			}
+
+			RangeEndSentinel end() const
+			{
+				return RangeEndSentinel();
+			}
 
 		private:
 			// The starting position of the range.
 			RootIterator itr;
-			// The ending position of the range.
-			const RootIterator itrEnd;
 		};
 
 		// Template deduction assisted construction.
@@ -309,42 +258,24 @@ namespace Jwl
 
 		// Constructs a logical iterator representing the start of the sequence.
 		template<typename Arg1, typename Arg2, typename... Args>
-		auto BuildRootBegin()
+		auto BuildRootIterator()
 		{
 			auto& index = entityIndex[Arg1::GetComponentId()];
 			auto rawBegin = index.begin();
 			auto rawEnd = index.end();
 
-			return BuildLogicalIterator(SafeIterator(rawBegin, rawEnd), BuildRootBegin<Arg2, Args...>());
+			return BuildLogicalIterator(SafeIterator(rawBegin, rawEnd), BuildRootIterator<Arg2, Args...>());
 		}
 
-		// BuildRootBegin() base case.
+		// BuildRootIterator() base case.
 		template<typename Arg>
-		SafeIterator BuildRootBegin()
+		SafeIterator BuildRootIterator()
 		{
 			auto& index = entityIndex[Arg::GetComponentId()];
 			auto rawBegin = index.begin();
 			auto rawEnd = index.end();
 
 			return SafeIterator(rawBegin, rawEnd);
-		}
-
-		// Constructs a logical iterator representing the end of the sequence.
-		template<typename Arg1, typename Arg2, typename... Args>
-		auto BuildRootEnd()
-		{
-			auto rawEnd = entityIndex[Arg1::GetComponentId()].end();
-
-			return BuildLogicalIterator(SafeIterator(rawEnd, rawEnd), BuildRootEnd<Arg2, Args...>());
-		}
-
-		// BuildRootEnd() base case.
-		template<typename Arg>
-		SafeIterator BuildRootEnd()
-		{
-			auto rawEnd = entityIndex[Arg::GetComponentId()].end();
-
-			return SafeIterator(rawEnd, rawEnd);
 		}
 	}
 
@@ -355,23 +286,22 @@ namespace Jwl
 	auto All()
 	{
 		static_assert(
-			std::is_base_of<ComponentBase, Component>::value,
+			std::is_base_of_v<ComponentBase, Component>,
 			"Template argument must be a Component.");
 
 		static_assert(
-			!std::is_base_of<TagBase, Component>::value,
+			!std::is_base_of_v<TagBase, Component>,
 			"Cannot query tags with All<>(). Use With<>() instead.");
 
 		static_assert(
-			std::is_same<Component, typename Component::StaticComponentType>::value,
+			std::is_same_v<Component, typename Component::StaticComponentType>,
 			"Only a direct inheritor from Component<> can be used in a query.");
 
 		using namespace detail;
 		auto& index = componentIndex[Component::GetComponentId()];
-		auto begin = ComponentIterator<Component>(index.begin());
-		auto end = ComponentIterator<Component>(index.end());
+		auto itr = ComponentIterator<Component>(index.begin(), index.end());
 
-		return detail::Range<decltype(begin)>(begin, end);
+		return detail::Range<decltype(itr)>(itr);
 	}
 
 	// Returns an enumerable range of all Entities which have an active instance of each specified Component/Tag.
@@ -391,10 +321,9 @@ namespace Jwl
 			"Only a direct inheritor from Component<> can be used in a query.");
 
 		using namespace detail;
-		auto begin = BuildRootBegin<Args...>();
-		auto end = BuildRootEnd<Args...>();
+		auto itr = BuildRootIterator<Args...>();
 
-		return detail::Range<decltype(begin)>(begin, end);
+		return detail::Range<decltype(itr)>(itr);
 	}
 
 	// Returns all Entities which have an active instance of each specified Component/Tag.
@@ -407,8 +336,6 @@ namespace Jwl
 		auto range = With<Args...>();
 
 		std::vector<Entity::Ptr> result;
-		result.reserve(std::distance(range.begin(), range.end()));
-
 		for (Entity& ent : range)
 		{
 			result.push_back(ent.GetPtr());

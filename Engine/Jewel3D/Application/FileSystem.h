@@ -2,6 +2,7 @@
 #pragma once
 #include <fstream>
 #include <string>
+#include <string_view>
 #include <vector>
 
 namespace Jwl
@@ -16,55 +17,55 @@ namespace Jwl
 	bool ParseDirectory(DirectoryData& outData);
 
 	// Enumerates a directory and caches all filenames and folder names it contains.
-	bool ParseDirectory(DirectoryData& outData, const std::string& directory);
+	bool ParseDirectory(DirectoryData& outData, std::string_view directory);
 
 	// Returns true if the specified string contains a valid, existing path.
-	bool DirectoryExists(const std::string& directory);
+	bool DirectoryExists(std::string_view directory);
 
 	// Returns true if the specified path does not start with a drive letter.
-	bool IsPathRelative(const std::string& path);
+	bool IsPathRelative(std::string_view path);
 
 	// Returns true if the specified path starts with a drive letter.
-	bool IsPathAbsolute(const std::string& path);
+	bool IsPathAbsolute(std::string_view path);
 
 	// Returns true if the specified string contains a valid, existing file.
-	bool FileExists(const std::string& file);
+	bool FileExists(std::string_view file);
 
 	// Deletes the specified file.
-	bool RemoveFile(const std::string& file);
+	bool RemoveFile(std::string_view file);
 
 	// Attempts to create the specified directory. Returns true on success.
-	bool MakeDirectory(const std::string& directory);
+	bool MakeDirectory(std::string_view directory);
 
 	// Returns the current Directory path.
 	std::string GetCurrentDirectory();
 
 	// Returns the current Directory path.
-	void SetCurrentDirectory(const std::string& directory);
+	void SetCurrentDirectory(std::string_view directory);
 
 	// Saves the current directory on a global stack before changing it to the new directory.
-	void PushCurrentDirectory(const std::string& newDirectory);
+	void PushCurrentDirectory(std::string_view newDirectory);
 
 	// Restores the last current directory path pushed with PushCurrentDirectory().
 	void PopCurrentDirectory();
 
 	// Returns the drive letter specified in the string, followed by a ':'.
-	std::string ExtractDriveLetter(const std::string& path);
+	std::string ExtractDriveLetter(std::string_view path);
 
 	// Returns the path specified in the string, including the drive letter and ignoring filenames.
-	std::string ExtractPath(const std::string& path);
+	std::string ExtractPath(std::string_view path);
 
 	// Returns the name of any file specified in the string, extension included.
-	std::string ExtractFile(const std::string& path);
+	std::string ExtractFile(std::string_view path);
 
 	// Returns the name of any file specified in the string, without any extension.
-	std::string ExtractFilename(const std::string& path);
+	std::string ExtractFilename(std::string_view path);
 
 	// Returns the extension of any file specified in the string, '.' included.
-	std::string ExtractFileExtension(const std::string& path);
+	std::string ExtractFileExtension(std::string_view path);
 
 	// Loads all the content of a file as a string, and returns the result.
-	std::string LoadFileAsString(const std::string& file);
+	std::string LoadFileAsString(std::string_view file);
 
 	// Streams input from a file or loads a file as a buffer.
 	class FileReader
@@ -76,9 +77,9 @@ namespace Jwl
 		bool operator!() const;
 
 		// Opens the file and loads it into RAM.
-		bool OpenAsBuffer(const std::string& filePath);
+		bool OpenAsBuffer(std::string_view filePath);
 		// Opens the file for reading on command.
-		bool OpenAsStream(const std::string& filePath);
+		bool OpenAsStream(std::string_view filePath);
 		// Closes the file or releases memory from RAM.
 		void Close();
 

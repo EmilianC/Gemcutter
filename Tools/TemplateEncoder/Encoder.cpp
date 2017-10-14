@@ -41,7 +41,7 @@ bool Encoder::Validate(const Jwl::ConfigTable& metadata, unsigned loadedVersion)
 	return true;
 }
 
-bool Encoder::Convert(const std::string& source, const std::string& destination, const Jwl::ConfigTable& metadata) const
+bool Encoder::Convert(std::string_view source, std::string_view destination, const Jwl::ConfigTable& metadata) const
 {
 	// Load the source file and output the built data to the destination folder.
 	// The conversion should be done using the properties inside the metadata.

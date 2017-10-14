@@ -251,7 +251,7 @@ namespace Jwl
 
 	//-----------------------------------------------------------------------------------------------------
 
-	void ShaderVariantControl::Define(const std::string& name, const std::string& value)
+	void ShaderVariantControl::Define(std::string_view name, std::string_view value)
 	{
 		ASSERT(!name.empty(), "Name cannot be empty.");
 
@@ -268,10 +268,10 @@ namespace Jwl
 		}
 
 		// Add as a new define.
-		defines.push_back({ name, value });
+		defines.push_back({ std::string(name), std::string(value) });
 	}
 
-	void ShaderVariantControl::Switch(const std::string& name, bool state)
+	void ShaderVariantControl::Switch(std::string_view name, bool state)
 	{
 		if (state)
 		{
@@ -283,7 +283,7 @@ namespace Jwl
 		}
 	}
 
-	void ShaderVariantControl::Toggle(const std::string& name)
+	void ShaderVariantControl::Toggle(std::string_view name)
 	{
 		ASSERT(!name.empty(), "Name cannot be empty.");
 
@@ -298,10 +298,10 @@ namespace Jwl
 			}
 		}
 
-		defines.push_back({ name, "" });
+		defines.push_back({ std::string(name), "" });
 	}
 
-	bool ShaderVariantControl::IsDefined(const std::string& name) const
+	bool ShaderVariantControl::IsDefined(std::string_view name) const
 	{
 		for (auto& define : defines)
 		{
@@ -319,7 +319,7 @@ namespace Jwl
 		return defines.empty();
 	}
 
-	void ShaderVariantControl::Undefine(const std::string& name)
+	void ShaderVariantControl::Undefine(std::string_view name)
 	{
 		for (unsigned i = 0; i < defines.size(); ++i)
 		{
@@ -436,11 +436,11 @@ namespace Jwl
 		return true;
 	}
 
-	bool Shader::LoadFromSource(const std::string& source)
+	bool Shader::LoadFromSource(std::string_view source)
 	{
 		ASSERT(!IsLoaded(), "ShaderData already has a Shader loaded.");
 
-		if (!LoadInternal(source))
+		if (!LoadInternal(std::string(source)))
 		{
 			Error("Shader: ( From Source )");
 			return false;
@@ -860,7 +860,7 @@ namespace Jwl
 		ASSERT(name != nullptr, "Must provide name.");
 
 		// The struct with all default assignments intact.
-		std::string rawStruct = block.source.substr(block.start, block.end - block.start);
+		std::string rawStruct(block.source.substr(block.start, block.end - block.start));
 
 		/* Convert to OpenGL compatible code */
 		std::string uniformStruct = rawStruct;

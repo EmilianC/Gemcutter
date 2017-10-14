@@ -3,7 +3,7 @@
 #include "Resource.h"
 #include "Jewel3D/Rendering/Rendering.h"
 
-#include <string>
+#include <string_view>
 #include <vector>
 
 namespace Jwl
@@ -104,7 +104,7 @@ namespace Jwl
 		~Image();
 
 		// Loads *.png, *.jpg, *.tga, and *.bmp.
-		static Image Load(const std::string& file, bool flipY, bool sRGB);
+		static Image Load(std::string_view file, bool flipY, bool sRGB);
 
 		const int width;
 		const int height;

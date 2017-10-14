@@ -2,6 +2,7 @@
 #pragma once
 #include <WinSock2.h>
 #include <string>
+#include <string_view>
 #include <vector>
 
 namespace Jwl
@@ -22,11 +23,11 @@ namespace Jwl
 		// Init socket for receiving.
 		bool Init(int localPortNum);
 		// Init socket for sending.
-		bool Init(const std::string& remoteIP, int remotePortNum);
+		bool Init(std::string_view remoteIP, int remotePortNum);
 
 		void Destroy();
 
-		bool Send(const std::string& packet);
+		bool Send(std::string_view packet);
 		bool Receive(std::string& out_packet);
 
 	private:
@@ -57,11 +58,11 @@ namespace Jwl
 		bool CheckForConnectionRequests();
 	
 		// Send a connection request to IP/Port.
-		bool SendConnectionRequest(const std::string& remoteIP, int remotePortNum);
+		bool SendConnectionRequest(std::string_view remoteIP, int remotePortNum);
 		// Returns true if a TCP connection is established.
 		bool IsConnected() const;
 	
-		bool Send(const std::string& packet);
+		bool Send(std::string_view packet);
 		bool Receive(std::string& out_packet);
 	
 	private:
@@ -82,7 +83,7 @@ namespace Jwl
 	public:
 		NetworkClient();
 	
-		bool Init(int localPortNumTCP, int localPortNumUDP, const std::string& remoteIP, int remotePortNumTCP, int remotePortNumUDP);
+		bool Init(int localPortNumTCP, int localPortNumUDP, std::string_view remoteIP, int remotePortNumTCP, int remotePortNumUDP);
 		void Destroy();
 	
 		// Send a connection request to IP/Port.
@@ -90,10 +91,10 @@ namespace Jwl
 		// Returns true if a connection is established.
 		bool IsConnected() const;
 
-		bool SendUDP(const std::string& packet);
+		bool SendUDP(std::string_view packet);
 		bool ReceiveUDP(std::string& out_packet);
 
-		bool SendTCP(const std::string& packet);
+		bool SendTCP(std::string_view packet);
 		bool ReceiveTCP(std::string& out_packet);
 	
 	private:
@@ -132,16 +133,16 @@ namespace Jwl
 
 		void RemoveClient(int ID);
 		
-		bool SendUDP(const std::string& packet, int ID);
+		bool SendUDP(std::string_view packet, int ID);
 		// Sends the message to all clients.
-		bool SendUDP(const std::string& packet);
-		bool SendToAllButOneUDP(const std::string& packet, int excludedID);
+		bool SendUDP(std::string_view packet);
+		bool SendToAllButOneUDP(std::string_view packet, int excludedID);
 		int ReceiveUDP(std::string& out_packet);
 
-		bool SendTCP(const std::string& packet, int ID);
+		bool SendTCP(std::string_view packet, int ID);
 		// Sends the message to all clients
-		bool SendTCP(const std::string& packet);
-		bool SendToAllButOneTCP(const std::string& packet, int excludedID);
+		bool SendTCP(std::string_view packet);
+		bool SendToAllButOneTCP(std::string_view packet, int excludedID);
 		int ReceiveTCP(std::string& out_packet);
 	
 	private:

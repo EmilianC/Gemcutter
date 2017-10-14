@@ -268,7 +268,7 @@ namespace Jwl
 		}
 	}
 
-	bool Application::CreateGameWindow(const std::string& title, unsigned _glMajorVersion, unsigned _glMinorVersion)
+	bool Application::CreateGameWindow(std::string_view title, unsigned _glMajorVersion, unsigned _glMinorVersion)
 	{
 		ASSERT(hwnd == NULL, "A game window is already open.");
 		ASSERT(_glMajorVersion > 3 || (_glMajorVersion == 3 && _glMinorVersion == 3), "OpenGL version must be 3.3 or greater.");
@@ -308,7 +308,7 @@ namespace Jwl
 		HWND window = CreateWindowEx(
 			STYLE_EXTENDED,			// extended style
 			"Jewel3D",				// class name
-			title.c_str(),			// application name
+			title.data(),			// application name
 			style,					// border style
 			CW_USEDEFAULT, CW_USEDEFAULT,		// x,y position of window
 			windowRect.right - windowRect.left,	// dimensions of the window

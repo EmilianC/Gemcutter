@@ -94,9 +94,9 @@ bool MeshEncoder::Validate(const Jwl::ConfigTable& metadata, unsigned loadedVers
 	return true;
 }
 
-bool MeshEncoder::Convert(const std::string& source, const std::string& destination, const Jwl::ConfigTable& metadata) const
+bool MeshEncoder::Convert(std::string_view source, std::string_view destination, const Jwl::ConfigTable& metadata) const
 {
-	const std::string outputFile = destination + Jwl::ExtractFilename(source) + ".model";
+	const std::string outputFile = std::string(destination) + Jwl::ExtractFilename(source) + ".model";
 	const float scale = metadata.GetFloat("scale");
 	const bool packUvs = metadata.GetBool("uvs");
 	const bool packNormals = metadata.GetBool("normals");
@@ -104,7 +104,7 @@ bool MeshEncoder::Convert(const std::string& source, const std::string& destinat
 
 	// Load ASCII file.
 	std::ifstream input;
-	input.open(source);
+	input.open(source.data());
 	if (!input)
 	{
 		Jwl::Error("Input file could not be opened or processed.");
