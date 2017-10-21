@@ -110,10 +110,10 @@ namespace Jwl::Meta
 
 	public:
 		// The size of the string, null character not included.
-		static constexpr unsigned size() { return StrLen(buff); }
+		static constexpr unsigned size() { return detail::StrLen(buff); }
 
 		// The length of the string, null character not included.
-		static constexpr unsigned length() { return StrLen(buff); }
+		static constexpr unsigned length() { return detail::StrLen(buff); }
 
 		// Returns a pointer to the first character in the string.
 		static constexpr const char* data() { return buff; }
