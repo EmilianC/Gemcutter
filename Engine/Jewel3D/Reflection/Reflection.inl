@@ -24,8 +24,8 @@ namespace Reflection
 	template<typename MetaTag>
 	void Member::AddMetaTag()
 	{
-		static_assert(std::is_default_constructible<MetaTag>::value, "MetaTag must be default constructible.");
-		static_assert(std::is_base_of<MetaTagBase, MetaTag>::value, "MetaTag must inherit from MetaTagBase.");
+		static_assert(std::is_default_constructible_v<MetaTag>, "MetaTag must be default constructible.");
+		static_assert(std::is_base_of_v<MetaTagBase, MetaTag>, "MetaTag must inherit from MetaTagBase.");
 
 		metaTags.push_back(new MetaTag());
 	}
@@ -118,8 +118,8 @@ namespace Reflection
 	template<typename MetaTag>
 	void Type::AddMetaTag()
 	{
-		static_assert(std::is_default_constructible<MetaTag>::value, "MetaTag must be default constructible.");
-		static_assert(std::is_base_of<MetaTagBase, MetaTag>::value, "MetaTag must inherit from MetaTagBase.");
+		static_assert(std::is_default_constructible_v<MetaTag>, "MetaTag must be default constructible.");
+		static_assert(std::is_base_of_v<MetaTagBase, MetaTag>, "MetaTag must inherit from MetaTagBase.");
 
 		metaTags.push_back(new MetaTag());
 	}

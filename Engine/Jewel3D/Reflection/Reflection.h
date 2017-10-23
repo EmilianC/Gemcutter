@@ -77,9 +77,9 @@ namespace Reflection
 		template<typename T> TypeInspector<T> TypeCreator<T>::initializer;
 
 		// These help keep track of which collectors have been inherited from.
-		struct BaseCollectorFlag {};
-		struct MemberCollectorFlag {};
-		struct EnumValueCollectorFlag {};
+		struct BaseCollectorTag {};
+		struct MemberCollectorTag {};
+		struct EnumValueCollectorTag {};
 
 		template<typename... MetaTagPack>
 		struct MetaTagCollector
@@ -89,21 +89,21 @@ namespace Reflection
 
 			static void AddMetaTags(Type& t)
 			{
-				EXECUTE_PACK(t.AddMetaTag<MetaTagPack>());
+				(t.AddMetaTag<MetaTagPack>(), ...);
 			}
 
 			static void AddMetaTags(Member& m)
 			{
-				EXECUTE_PACK(m.AddMetaTag<MetaTagPack>());
+				(m.AddMetaTag<MetaTagPack>(), ...);
 			}
 		};
 
 		template<typename... BasePack>
-		struct BaseCollector : BaseCollectorFlag
+		struct BaseCollector : BaseCollectorTag
 		{
 			static void AddBases(Type& t)
 			{
-				EXECUTE_PACK(t.AddBase<BasePack>());
+				(t.AddBase<BasePack>(), ...);
 			}
 		};
 
@@ -124,11 +124,11 @@ namespace Reflection
 					Name::c_str()
 					, Name::length()
 					, offset
-					, std::is_array<type>::value
-					, std::is_pointer<decayType>::value
-					, std::is_const<type>::value
-					, std::is_reference<type>::value
-					, std::is_volatile<type>::value
+					, std::is_array_v<type>
+					, std::is_pointer_v<decayType>
+					, std::is_const_v<type>
+					, std::is_reference_v<type>
+					, std::is_volatile_v<type>
 					, sizeof(type) / sizeof(coreType)
 					, &TypeInspector<coreType>::Internal::Traits
 				};
@@ -136,11 +136,11 @@ namespace Reflection
 		};
 
 		template<typename... MemberPack>
-		struct MemberCollector : MemberCollectorFlag
+		struct MemberCollector : MemberCollectorTag
 		{
 			static void AddMembers(Type& t)
 			{
-				EXECUTE_PACK(t.AddMember<MemberPack>());
+				(t.AddMember<MemberPack>(), ...);
 			}
 		};
 
@@ -152,11 +152,11 @@ namespace Reflection
 		};
 
 		template<typename... EnumValues>
-		struct EnumValueCollector : EnumValueCollectorFlag
+		struct EnumValueCollector : EnumValueCollectorTag
 		{
 			static void AddEnumValues(Type& t)
 			{
-				EXECUTE_PACK(t.AddEnumValue<EnumValues>());
+				(t.AddEnumValue<EnumValues>(), ...);
 			}
 		};
 
@@ -306,8 +306,8 @@ namespace Reflection
 	//- MetaTags are not stringified.
 	std::string GetLog();
 
-	static_assert(std::is_move_constructible<Type>::value, "Type should be move-constructible for performance reasons.");
-	static_assert(std::is_move_constructible<Member>::value, "Member should be move-constructible for performance reasons.");
+	static_assert(std::is_move_constructible_v<Type>, "Type should be move-constructible for performance reasons.");
+	static_assert(std::is_move_constructible_v<Member>, "Member should be move-constructible for performance reasons.");
 }
 
 //- Allows the reflection system to inspect elements in the private section of a class.
@@ -317,54 +317,54 @@ namespace Reflection
 
 //- One macro for quick and easy reflection. Useful for fundamental types or when you don't need tags/bases/members.
 #define REFLECT_BASIC(Class) \
-	namespace Reflection { namespace detail {																	\
-		template<> struct TypeInspector<Class> : TypeCreator<Class>												\
-		{																										\
-			static_assert(std::is_same<Class, std::decay_t<Class>>::value, "Must provide non-decorated type.");	\
-			static_assert(!std::is_union<Class>::value, "Cannot reflect unions.");								\
-			static_assert(std::is_default_constructible<Class>::value,											\
-				"Objects reflected with REFLECT_BASIC must be default constructible.");							\
-			TypeInspector() {																					\
-				/* Force static to be compiled-in by referencing itself. */										\
-				(void)(TypeCreator<Class>::initializer);														\
-				/* Fetch constexpr data and move it to our runtime structures. */								\
-				Type::Create<Class>();																			\
-			}																									\
-			struct Internal																						\
-			{																									\
-				static constexpr TypeTraits Traits = TypeTraits {												\
-					#Class																						\
-					, sizeof(#Class)																			\
-					, Jwl::Meta::HashCRC(#Class)																\
-					, sizeof(Class)																				\
-					, std::alignment_of<Class>::value															\
-					, std::is_fundamental<Class>::value															\
-					, false																						\
-					, std::is_abstract<Class>::value															\
-					, std::is_final<Class>::value																\
-					, std::is_assignable<Class, Class>::value													\
-					, std::is_integral<Class>::value															\
-					, std::is_floating_point<Class>::value														\
-					, std::is_unsigned<Class>::value															\
-					, std::is_polymorphic<Class>::value															\
-					, std::is_empty<Class>::value																\
-				};																								\
-			};																									\
-		};																										\
-	}}
+	namespace Reflection::detail {																			\
+		template<> struct TypeInspector<Class> : TypeCreator<Class>											\
+		{																									\
+			static_assert(std::is_same_v<Class, std::decay_t<Class>>, "Must provide non-decorated type.");	\
+			static_assert(!std::is_union_v<Class>, "Cannot reflect unions.");								\
+			static_assert(std::is_default_constructible_v<Class>,											\
+				"Objects reflected with REFLECT_BASIC must be default constructible.");						\
+			TypeInspector() {																				\
+				/* Force static to be compiled-in by referencing itself. */									\
+				(void)(TypeCreator<Class>::initializer);													\
+				/* Fetch constexpr data and move it to our runtime structures. */							\
+				Type::Create<Class>();																		\
+			}																								\
+			struct Internal																					\
+			{																								\
+				static constexpr TypeTraits Traits = TypeTraits {											\
+					#Class																					\
+					, sizeof(#Class)																		\
+					, Jwl::Meta::HashCRC(#Class)															\
+					, sizeof(Class)																			\
+					, std::alignment_of_v<Class>															\
+					, std::is_fundamental_v<Class>															\
+					, false																					\
+					, std::is_abstract_v<Class>																\
+					, std::is_final_v<Class>																\
+					, std::is_assignable_v<Class, Class>													\
+					, std::is_integral_v<Class>																\
+					, std::is_floating_point_v<Class>														\
+					, std::is_unsigned_v<Class>																\
+					, std::is_polymorphic_v<Class>															\
+					, std::is_empty_v<Class>																\
+				};																							\
+			};																								\
+		};																									\
+	}
 
 //- The main entry point for reflection.
 #define REFLECT(Class) \
-	namespace Reflection { namespace detail {																	\
-		template<> struct TypeInspector<Class> : TypeCreator<Class>												\
-		{																										\
-			static_assert(std::is_same<Class, std::decay_t<Class>>::value, "Must provide non-decorated type.");	\
-			static_assert(!std::is_union<Class>::value, "Cannot reflect unions.");								\
-			/* These hold names and types so that we don't have to respecify them for each macro. */			\
-			using ClassType = Class;																			\
-			using Name = STRING_48(#Class);																		\
-			static constexpr unsigned NameHash = Jwl::Meta::HashCRC(#Class);									\
-			/* The main reflection starts here. */																\
+	namespace Reflection::detail {																			\
+		template<> struct TypeInspector<Class> : TypeCreator<Class>											\
+		{																									\
+			static_assert(std::is_same_v<Class, std::decay_t<Class>>, "Must provide non-decorated type.");	\
+			static_assert(!std::is_union_v<Class>, "Cannot reflect unions.");								\
+			/* These hold names and types so that we don't have to respecify them for each macro. */		\
+			using ClassType = Class;																		\
+			using Name = STRING_48(#Class);																	\
+			static constexpr unsigned NameHash = Jwl::Meta::HashCRC(#Class);								\
+			/* The main reflection starts here. */															\
 			struct Internal : MetaTagCollector
 
 //- Opens a new reflection section for collecting base classes.
@@ -376,65 +376,47 @@ namespace Reflection
 //- Gathers information for a class member.
 #define REF_MEMBER(Member) Reflection::detail::MemberInspector<decltype(ClassType::Member), STRING_48(#Member), offsetof(ClassType, Member)>::Internal
 //- Gathers information for an enum value.
-#define REF_VALUE(val) Reflection::detail::EnumValue<STRING_48(#val), (unsigned)(ClassType::val)>
+#define REF_VALUE(val) Reflection::detail::EnumValue<STRING_48(#val), static_cast<unsigned>(ClassType::val)>
 
 //- Required when you are finished using reflection.
 #define REF_END \
-			{																						\
-				static void AddData() {																\
-					/* Fetch constexpr data and move it to our runtime structures. */				\
-					auto& type = Type::Create<ClassType>();											\
-					AddMetaTags(type);																\
-					AddBases_safe(type, Internal());												\
-					AddMembers_safe(type, Internal());												\
-					AddEnumValues_safe(type, Internal());											\
-				}																					\
-				static constexpr TypeTraits Traits = TypeTraits {									\
-					Name::c_str()																	\
-					, Name::length()																\
-					, NameHash																		\
-					, sizeof(ClassType)																\
-					, std::alignment_of<ClassType>::value											\
-					, std::is_fundamental<ClassType>::value											\
-					, std::is_enum<ClassType>::value												\
-					, std::is_abstract<ClassType>::value											\
-					, std::is_final<ClassType>::value												\
-					, std::is_assignable<ClassType, ClassType>::value								\
-					, std::is_integral<ClassType>::value											\
-					, std::is_floating_point<ClassType>::value										\
-					, std::is_unsigned<ClassType>::value											\
-					, std::is_polymorphic<ClassType>::value											\
-					, std::is_empty<ClassType>::value												\
-				};																					\
-			private:																				\
-				/* SFINAE to avoid errors if no Bases are reflected */								\
-				template<typename inspect>															\
-				static std::enable_if_t<std::is_base_of<BaseCollectorFlag, inspect>::value>			\
-					AddBases_safe(Type& t, inspect) { AddBases(t); }								\
-				template<typename inspect>															\
-				static std::enable_if_t<!std::is_base_of<BaseCollectorFlag, inspect>::value>		\
-					AddBases_safe(Type&, inspect) { }												\
-				/* SFINAE to avoid errors if no Members are reflected */							\
-				template<typename inspect>															\
-				static std::enable_if_t<std::is_base_of<MemberCollectorFlag, inspect>::value>		\
-					AddMembers_safe(Type& t, inspect) { AddMembers(t); }							\
-				template<typename inspect>															\
-				static std::enable_if_t<!std::is_base_of<MemberCollectorFlag, inspect>::value>		\
-					AddMembers_safe(Type&, inspect) { }												\
-				/* SFINAE to avoid errors if no Values are reflected */								\
-				template<typename inspect>															\
-				static std::enable_if_t<std::is_base_of<EnumValueCollectorFlag, inspect>::value>	\
-					AddEnumValues_safe(Type& t, inspect) { AddEnumValues(t); }						\
-				template<typename inspect>															\
-				static std::enable_if_t<!std::is_base_of<EnumValueCollectorFlag, inspect>::value>	\
-					AddEnumValues_safe(Type&, inspect) { }											\
-			};																						\
-			TypeInspector() {																		\
-				/* Force static to be compiled-in by referencing itself. */							\
-				(void)(TypeCreator<ClassType>::initializer);										\
-				Internal::AddData();																\
-			}																						\
-		};																							\
-	}}
+			{																				\
+				template<typename = ClassType>												\
+				static void AddData() {														\
+					/* Fetch constexpr data and move it to our runtime structures. */		\
+					auto& type = Type::Create<ClassType>();									\
+					AddMetaTags(type);														\
+					if constexpr (std::is_base_of_v<BaseCollectorTag, Internal>)			\
+						AddBases(type);														\
+					if constexpr (std::is_base_of_v<MemberCollectorTag, Internal>)			\
+						AddMembers(type);													\
+					if constexpr (std::is_base_of_v<EnumValueCollectorTag, Internal>)		\
+						AddEnumValues(type);												\
+				}																			\
+				static constexpr TypeTraits Traits = TypeTraits {							\
+					Name::c_str()															\
+					, Name::length()														\
+					, NameHash																\
+					, sizeof(ClassType)														\
+					, std::alignment_of_v<ClassType>										\
+					, std::is_fundamental_v<ClassType>										\
+					, std::is_enum_v<ClassType>												\
+					, std::is_abstract_v<ClassType>											\
+					, std::is_final_v<ClassType>											\
+					, std::is_assignable_v<ClassType, ClassType>							\
+					, std::is_integral_v<ClassType>											\
+					, std::is_floating_point_v<ClassType>									\
+					, std::is_unsigned_v<ClassType>											\
+					, std::is_polymorphic_v<ClassType>										\
+					, std::is_empty_v<ClassType>											\
+				};																			\
+			};																				\
+			TypeInspector() {																\
+				/* Force static to be compiled-in by referencing itself. */					\
+				(void)(TypeCreator<ClassType>::initializer);								\
+				Internal::AddData();														\
+			}																				\
+		};																					\
+	}
 
 #include "Reflection.inl"

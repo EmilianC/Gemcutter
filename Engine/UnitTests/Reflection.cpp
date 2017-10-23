@@ -3,6 +3,7 @@
 #include <Jewel3D/Application/Logging.h>
 #include <Jewel3D/Reflection/Reflection.h>
 #include <Jewel3D/Utilities/Meta.h>
+#include <algorithm>
 #include <vector>
 #include <string>
 

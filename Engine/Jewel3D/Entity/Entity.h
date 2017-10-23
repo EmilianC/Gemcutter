@@ -237,6 +237,6 @@ REFLECT(Jwl::Entity)<>,
 REF_END;
 
 #define REFLECT_TAG(Class) \
-	static_assert(std::is_base_of<Jwl::TagBase, Class>::value, "REFLECT_TAG must be used on a Tag."); \
+	static_assert(std::is_base_of_v<Jwl::TagBase, Class>, "REFLECT_TAG must be used on a Tag."); \
 	REFLECT(Class)< Tag > \
 	REF_END;
