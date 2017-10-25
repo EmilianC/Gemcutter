@@ -243,10 +243,9 @@ namespace Jwl
 		}
 
 		/* Update existing particles */
-		for (unsigned i = 0; i < numCurrentParticles; ++i)
+		for (unsigned i = 0; i < numCurrentParticles;)
 		{
 			data.ages[i] += deltaTime;
-
 			if (!data.IsAlive(i))
 			{
 				// Remove the particle by replacing it with the one at the top of the stack.
@@ -255,6 +254,7 @@ namespace Jwl
 			}
 
 			data.positions[i] += data.velocities[i] * deltaTime;
+			++i;
 		}
 
 		/* Run Update Functors */
