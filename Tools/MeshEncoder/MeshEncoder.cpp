@@ -122,6 +122,9 @@ bool MeshEncoder::Convert(std::string_view source, std::string_view destination,
 	// Indexing data.
 	std::vector<MeshFace> faceData;
 
+	Jwl::vec3 minBounds{ FLT_MAX };
+	Jwl::vec3 maxBounds{ FLT_MIN };
+
 	while (!input.eof())
 	{
 		input.getline(inputString, CHAR_BUFFER_SIZE);
@@ -167,6 +170,14 @@ bool MeshEncoder::Convert(std::string_view source, std::string_view destination,
 				temp.x = std::strtof(inputString + 2, &endPtr);
 				temp.y = std::strtof(endPtr + 1, &endPtr);
 				temp.z = std::strtof(endPtr + 1, nullptr);
+
+				if (temp.x < minBounds.x) minBounds.x = temp.x;
+				if (temp.y < minBounds.y) minBounds.y = temp.y;
+				if (temp.z < minBounds.z) minBounds.z = temp.z;
+
+				if (temp.x > maxBounds.x) maxBounds.x = temp.x;
+				if (temp.y > maxBounds.y) maxBounds.y = temp.y;
+				if (temp.z > maxBounds.z) maxBounds.z = temp.z;
 
 				vertexData.push_back(temp);
 			}
@@ -347,10 +358,12 @@ bool MeshEncoder::Convert(std::string_view source, std::string_view destination,
 	}
 
 	// Write header.
-	fwrite(&numFaces, sizeof(int), 1, modelFile);
+	fwrite(&minBounds, sizeof(Jwl::vec3), 1, modelFile);
+	fwrite(&maxBounds, sizeof(Jwl::vec3), 1, modelFile);
 	fwrite(&useUvs, sizeof(bool), 1, modelFile);
 	fwrite(&useNormals, sizeof(bool), 1, modelFile);
 	fwrite(&useTangents, sizeof(bool), 1, modelFile);
+	fwrite(&numFaces, sizeof(int), 1, modelFile);
 
 	// Write Data.
 	fwrite(data, sizeof(float), bufferSize, modelFile);

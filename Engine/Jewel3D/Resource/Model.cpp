@@ -36,10 +36,12 @@ namespace Jwl
 		}
 		defer { fclose(binaryFile); };
 
-		fread(&numFaces, sizeof(int), 1, binaryFile);
+		fread(&minBounds, sizeof(vec3), 1, binaryFile);
+		fread(&maxBounds, sizeof(vec3), 1, binaryFile);
 		fread(&hasUvs, sizeof(bool), 1, binaryFile);
 		fread(&hasNormals, sizeof(bool), 1, binaryFile);
 		fread(&hasTangents, sizeof(bool), 1, binaryFile);
+		fread(&numFaces, sizeof(int), 1, binaryFile);
 
 		// Determine mesh properties.
 		numVertices = numFaces * 3;
@@ -131,6 +133,16 @@ namespace Jwl
 	unsigned Model::GetVAO() const
 	{
 		return VAO;
+	}
+
+	const vec3& Model::GetMinBounds() const
+	{
+		return minBounds;
+	}
+
+	const vec3& Model::GetMaxBounds() const
+	{
+		return maxBounds;
 	}
 
 	bool Model::HasUVs() const

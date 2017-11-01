@@ -1,6 +1,7 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
 #include "Resource.h"
+#include "Jewel3D\Math\Vector.h"
 
 namespace Jwl
 {
@@ -22,9 +23,15 @@ namespace Jwl
 		void Unload();
 
 		unsigned GetVAO() const;
+
+		// Returns the extents of each axis in local-space.
+		const vec3& GetMinBounds() const;
+		const vec3& GetMaxBounds() const;
+
 		bool HasUVs() const;
 		bool HasNormals() const;
 		bool HasTangents() const;
+
 		unsigned GetNumFaces() const;
 		unsigned GetNumVerticies() const;
 
@@ -32,6 +39,9 @@ namespace Jwl
 		// OpenGL buffers.
 		unsigned VBO = 0;
 		unsigned VAO = 0;
+
+		vec3 minBounds;
+		vec3 maxBounds;
 
 		bool hasUvs		 = false;
 		bool hasNormals	 = false;
