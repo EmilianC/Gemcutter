@@ -6,9 +6,8 @@
 namespace Jwl
 {
 	// A pose in space - Position / Rotation / Scale.
-	class Transform
+	struct Transform
 	{
-	public:
 		Transform() = default;
 		Transform(const vec3& position);
 		Transform(const vec3& position, const quat& rotation);

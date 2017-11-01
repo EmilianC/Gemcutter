@@ -8,8 +8,8 @@
 
 namespace Jwl
 {
-	class vec2;
-	class vec3;
+	struct vec2;
+	struct vec3;
 
 	// Spawns particles and updates their positions.
 	// Can be extended with ParticleFunctors to add custom functionality.

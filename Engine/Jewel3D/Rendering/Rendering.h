@@ -6,7 +6,7 @@
 
 namespace Jwl
 {
-	class vec4;
+	struct vec4;
 
 	// Binding locations for Jewel3D uniform buffers.
 	enum class UniformBufferSlot : unsigned

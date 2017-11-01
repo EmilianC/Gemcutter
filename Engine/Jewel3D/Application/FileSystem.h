@@ -7,8 +7,9 @@
 
 namespace Jwl
 {
-	struct DirectoryData
+	class DirectoryData
 	{
+	public:
 		std::vector<std::string> files;
 		std::vector<std::string> folders;
 	};

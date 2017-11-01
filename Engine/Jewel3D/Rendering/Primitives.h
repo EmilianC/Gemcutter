@@ -6,8 +6,8 @@
 
 namespace Jwl
 {
-	class vec3;
-	class vec4;
+	struct vec3;
+	struct vec4;
 
 	// Provides simple, intimidate, geometry rendering.
 	// Line, Triangle, and Rectangle functions are intended for debugging; they are not particularly efficient.

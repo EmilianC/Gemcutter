@@ -7,7 +7,7 @@
 
 namespace Jwl
 {
-	class Viewport;
+	struct Viewport;
 
 	class Camera : public Component<Camera>
 	{

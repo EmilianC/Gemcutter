@@ -3,12 +3,11 @@
 
 namespace Jwl
 {
-	class vec3;
-	class mat3;
+	struct vec3;
+	struct mat3;
 
-	class quat
+	struct quat
 	{
-	public:
 		quat() = default;
 		quat(float X, float Y, float Z, float W);
 		quat(const vec3& right, const vec3& up, const vec3& forward);

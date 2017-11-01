@@ -3,15 +3,14 @@
 
 namespace Jwl
 {
-	class vec2;
-	class vec3;
-	class vec4;
-	class mat4;
-	class quat;
+	struct vec2;
+	struct vec3;
+	struct vec4;
+	struct mat4;
+	struct quat;
 
-	class mat2
+	struct mat2
 	{
-	public:
 		enum // Indexes
 		{
 			RightX = 0, UpX = 2,
@@ -65,9 +64,8 @@ namespace Jwl
 		float data[4];
 	};
 
-	class mat3
+	struct mat3
 	{
-	public:
 		enum // Indexes
 		{
 			RightX = 0, UpX = 3, ForwardX = 6,
@@ -131,9 +129,8 @@ namespace Jwl
 		float data[9];
 	};
 
-	class mat4
+	struct mat4
 	{
-	public:
 		enum // Indexes
 		{
 			RightX = 0, UpX = 4, ForwardX = 8,  TransX = 12,

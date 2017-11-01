@@ -5,8 +5,8 @@
 
 namespace Jwl
 {
-	class vec4;
-	class Viewport;
+	struct vec4;
+	struct Viewport;
 
 	// Contains a series of textures that can be rendered into.
 	class RenderTarget : public Shareable<RenderTarget>

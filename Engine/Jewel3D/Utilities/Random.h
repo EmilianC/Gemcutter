@@ -3,7 +3,7 @@
 
 namespace Jwl
 {
-	class vec3;
+	struct vec3;
 
 	void SeedRandomNumberGenerator();
 	void SeedRandomNumberGenerator(unsigned seed);
@@ -16,9 +16,8 @@ namespace Jwl
 	// Returns a random color with [0, 1] RGB values.
 	vec3 RandomColor();
 
-	class Range
+	struct Range
 	{
-	public:
 		Range() = default;
 		Range(float min, float max);
 

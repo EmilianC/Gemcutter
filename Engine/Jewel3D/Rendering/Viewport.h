@@ -3,9 +3,8 @@
 
 namespace Jwl
 {
-	class Viewport
+	struct Viewport
 	{
-	public:
 		Viewport() = default;
 		Viewport(unsigned x, unsigned y, unsigned width, unsigned height);
 

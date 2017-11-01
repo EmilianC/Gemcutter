@@ -3,9 +3,8 @@
 
 namespace Jwl
 {
-	class vec2
+	struct vec2
 	{
-	public:
 		vec2() = default;
 		vec2(float x, float y);
 		explicit vec2(float val);
@@ -47,9 +46,8 @@ namespace Jwl
 		float y = 0.0f;
 	};
 
-	class vec3
+	struct vec3
 	{
-	public:
 		vec3() = default;
 		vec3(const vec2& xy, float z);
 		vec3(float x, float y, float z);
@@ -95,9 +93,8 @@ namespace Jwl
 		float z = 0.0f;
 	};
 
-	class vec4
+	struct vec4
 	{
-	public:
 		vec4() = default;
 		vec4(const vec3& xyz, float w);
 		vec4(const vec2& xy, float y, float w);
