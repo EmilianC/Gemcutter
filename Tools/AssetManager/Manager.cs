@@ -23,12 +23,7 @@ namespace AssetManager
 
 			buttonEditMetadata.Click += delegate { OpenFile(GetSelectedItem() + ".meta"); };
 
-			treeViewAssets.DoubleClick += delegate 
-			{
-				var path = GetSelectedItem();
-				if (File.Exists(path))
-					OpenFile(path);
-			};
+			treeViewAssets.DoubleClick += delegate { OpenFile(GetSelectedItem()); };
 
 			treeViewAssets.AfterSelect += delegate
 			{
@@ -354,9 +349,9 @@ namespace AssetManager
 				Process.Start(file);
 			}
 			catch (System.ComponentModel.Win32Exception)
-			{
-				// The file might not have an associated program to open with.
-			}
+			{} // The file might not have an associated program to open with.
+			catch (FileNotFoundException)
+			{}
 		}
 
 		private void buttonSettings_Click(object sender, EventArgs e)
