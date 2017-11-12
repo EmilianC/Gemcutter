@@ -39,9 +39,9 @@ namespace Jwl
 		// Hides the default windows cursor.
 		void DisableCursor();
 
-		bool IsFullscreen();
-		bool IsBordered();
-		bool IsResizable();
+		bool IsFullscreen() const;
+		bool IsBordered() const;
+		bool IsResizable() const;
 		int GetScreenWidth() const;
 		int GetScreenHeight() const;
 		float GetAspectRatio() const;

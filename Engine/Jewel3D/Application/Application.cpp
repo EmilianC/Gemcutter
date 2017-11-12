@@ -464,17 +464,17 @@ namespace Jwl
 		while (ShowCursor(false) > 0);
 	}
 
-	bool Application::IsFullscreen()
+	bool Application::IsFullscreen() const
 	{
 		return fullscreen;
 	}
 
-	bool Application::IsBordered()
+	bool Application::IsBordered() const
 	{
 		return bordered;
 	}
 
-	bool Application::IsResizable()
+	bool Application::IsResizable() const
 	{
 		return resizable;
 	}
@@ -811,8 +811,8 @@ namespace Jwl
 			glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 			glDebugMessageCallback(OpenGLDebugCallback, NULL);
 			glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
-			glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, 0, GL_FALSE);
-			glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_LOW, 0, 0, GL_FALSE);
+			glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, NULL, GL_FALSE);
+			glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_LOW, 0, NULL, GL_FALSE);
 #endif
 
 			// Setup OpenGL settings.
