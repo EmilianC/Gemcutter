@@ -4,7 +4,6 @@
 #include "Jewel3D/Application/Logging.h"
 
 #include <OpenAL_Soft/al.h>
-#include <OpenAL_Soft/alc.h>
 
 #ifdef _DEBUG
 	#define AL_DEBUG_CHECK() \

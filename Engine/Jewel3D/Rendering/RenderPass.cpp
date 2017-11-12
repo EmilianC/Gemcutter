@@ -11,7 +11,6 @@
 #include "Jewel3D/Application/Logging.h"
 #include "Jewel3D/Entity/Entity.h"
 #include "Jewel3D/Entity/EntityGroup.h"
-#include "Jewel3D/Math/Math.h"
 #include "Jewel3D/Math/Transform.h"
 #include "Jewel3D/Resource/Font.h"
 #include "Jewel3D/Resource/Model.h"

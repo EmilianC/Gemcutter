@@ -6,7 +6,6 @@
 #include "Jewel3D/Utilities/String.h"
 
 #include <OpenAL_Soft/al.h>
-#include <OpenAL_Soft/alc.h>
 #include <stdio.h>
 
 #ifdef _DEBUG
