@@ -383,10 +383,12 @@ namespace Jwl
 		__int64 lastRender = lastUpdate;
 		__int64 lastFpsCapture = lastRender;
 
-		while (appIsRunning)
+		while (true)
 		{
 			// Updates our input and Windows OS events.
 			DrainEventQueue();
+			if (!appIsRunning)
+				return;
 
 			// Record the FPS for the previous second of time.
 			__int64 currentTime = Timer::GetCurrentTick();
@@ -406,6 +408,10 @@ namespace Jwl
 			{
 				update();
 
+				// The user might have requested to exit during update().
+				if (!appIsRunning)
+					return;
+				
 				lastUpdate += updateStep;
 				updateCount++;
 
