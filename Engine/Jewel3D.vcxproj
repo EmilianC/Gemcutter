@@ -409,7 +409,6 @@ xcopy /Y /S /E "$(Jewel3D_PATH)Engine\Jewel3D\*.inl" "$(Jewel3D_PATH)Build\inclu
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <AdditionalIncludeDirectories>$(ProjectDir);$(Jewel3D_Path)Build\include\;$(FrameworkSdkDir)include\um\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;GLEW_STATIC;NOMINMAX;_CRT_SECURE_NO_WARNINGS;_HAS_EXCEPTIONS=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4100;4505</DisableSpecificWarnings>
@@ -445,7 +444,6 @@ xcopy /Y /S /E "$(Jewel3D_PATH)Engine\Jewel3D\*.inl" "$(Jewel3D_PATH)Build\inclu
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <AdditionalIncludeDirectories>$(ProjectDir);$(Jewel3D_Path)Build\include\;$(FrameworkSdkDir)include\um\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32_LEAN_AND_MEAN;GLEW_STATIC;NOMINMAX;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4100;4505</DisableSpecificWarnings>
