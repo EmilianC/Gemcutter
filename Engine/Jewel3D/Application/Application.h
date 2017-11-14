@@ -60,6 +60,12 @@ namespace Jwl
 		void SetUpdatesPerSecond(unsigned ups);
 		unsigned GetUpdatesPerSecond() const;
 
+		// If the game's update rate has fallen behind the target updates per second,
+		// this will skip the fast-forwarding effect caused by the update loop catching up to real time.
+		// The lost time is ignored. This should be called at the start of a real-time gameplay segment 
+		// or after loading a high volume of assets and stalling the game loop.
+		void SkipToPresentTime();
+
 		const Viewport& GetScreenViewport() const;
 		std::string GetOpenGLVersionString() const;
 
@@ -80,7 +86,9 @@ namespace Jwl
 		__int64 updateStep = 0;
 		// The target amount of time between renders.
 		__int64 renderStep = 0;
-		// Display variables.
+
+		bool skipToPresent = false;
+
 		bool fullscreen = false;
 		bool bordered = true;
 		bool resizable = false;

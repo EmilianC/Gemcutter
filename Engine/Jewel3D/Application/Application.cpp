@@ -415,6 +415,13 @@ namespace Jwl
 				lastUpdate += updateStep;
 				updateCount++;
 
+				if (skipToPresent)
+				{
+					lastUpdate = currentTime;
+					skipToPresent = false;
+					break;
+				}
+
 				// Avoid spiral of death. This also allows us to keep rendering even in a worst-case scenario.
 				if (updateCount >= MAX_CONCURRENT_UPDATES)
 					break;
@@ -553,6 +560,11 @@ namespace Jwl
 	unsigned Application::GetUpdatesPerSecond() const
 	{
 		return updatesPerSecond;
+	}
+
+	void Application::SkipToPresentTime()
+	{
+		skipToPresent = true;
 	}
 
 	const Viewport& Application::GetScreenViewport() const
