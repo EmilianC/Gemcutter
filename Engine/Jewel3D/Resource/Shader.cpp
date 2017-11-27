@@ -8,7 +8,6 @@
 #include "Jewel3D/Utilities/String.h"
 
 #include <GLEW/GL/glew.h>
-#include <algorithm>
 #include <cctype>
 #include <functional>
 #include <iostream>
@@ -381,18 +380,12 @@ namespace Jwl
 
 	void ShaderVariantControl::UpdateHash()
 	{
-		// Sort alphabetically to eliminate order of defines creating different hashes.
-		std::sort(defines.begin(), defines.end(), [](const auto& lhs, const auto& rhs)
-		{
-			return lhs.name < rhs.name;
-		});
-
 		std::hash<std::string> str_hash;
-		hash = 0;
+		hash = 0x0;
 
 		for (auto& define : defines)
 		{
-			hash = hash ^ str_hash(define.name) ^ str_hash(define.value);
+			hash += str_hash(define.name) + str_hash(define.value);
 		}
 	}
 
