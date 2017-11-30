@@ -513,7 +513,6 @@ namespace Jwl
 
 				// Find the block start.
 				pos = source.find('{', pos);
-
 				if (pos == std::string::npos)
 				{
 					Error("Expected '{' to start block after identifier.");
@@ -658,7 +657,7 @@ namespace Jwl
 					return false;
 				}
 
-				attributes += "layout(location = " + std::to_string(Id) + ") in " + std::string(type) + ' ' + std::string(name) + ";\n";
+				attributes += FormatString("layout(location = %u) in %s %s;\n", Id, type, name);
 
 				// Jump past the line we just read.
 				pos = block.source.find(';', pos);
@@ -782,13 +781,10 @@ namespace Jwl
 						return false;
 					}
 				}
-				else 
+				else if (sscanf(&block.source[pos], "%127s : %u;", name, &Id) != 2)
 				{
-					if (sscanf(&block.source[pos], "%127s : %u;", name, &Id) != 2)
-					{
-						Error("Failed to parse Uniform buffer.");
-						return false;
-					}
+					Error("Failed to parse Uniform buffer.");
+					return false;
 				}
 
 				if (Id == static_cast<unsigned>(UniformBufferSlot::Camera) ||
@@ -1038,15 +1034,15 @@ namespace Jwl
 					break;
 
 				case GL_BOOL:
-					if (uniform.value == "true")
+					if (CompareLowercase(uniform.value, "true"))
 					{
 						u = 1;
 					}
-					else if (uniform.value == "false")
+					else if (CompareLowercase(uniform.value, "false"))
 					{
 						u = 0;
 					}
-					else if (sscanf(uniform.value.c_str(), "%d", &u) != 1)
+					else if (sscanf(uniform.value.c_str(), "%u", &u) != 1)
 					{
 						return false;
 					}
@@ -1107,7 +1103,7 @@ namespace Jwl
 				textureBindings.emplace_back(name, Id);
 
 				// Add OpenGL correct entry into _Samplers string.
-				samplers += "uniform " + std::string(type) + ' ' + std::string(name) + ";\n";
+				samplers += FormatString("uniform %s %s;\n", type, name);
 
 				// Jump past the line we just read.
 				pos = block.source.find(';', pos);
@@ -1339,14 +1335,14 @@ namespace Jwl
 
 		/* Initialize built-in uniform blocks */
 		unsigned cameraBlock = glGetUniformBlockIndex(hProgram, "Jwl_Camera_Uniforms");
-		unsigned modelBlock = glGetUniformBlockIndex(hProgram, "Jwl_Model_Uniforms");
+		unsigned modelBlock  = glGetUniformBlockIndex(hProgram, "Jwl_Model_Uniforms");
 		unsigned engineBlock = glGetUniformBlockIndex(hProgram, "Jwl_Engine_Uniforms");
-		unsigned timeBlock = glGetUniformBlockIndex(hProgram, "Jwl_Time_Uniforms");
+		unsigned timeBlock   = glGetUniformBlockIndex(hProgram, "Jwl_Time_Uniforms");
 
 		ASSERT(cameraBlock != GL_INVALID_INDEX, "Camera-Block could not be created.");
-		ASSERT(modelBlock != GL_INVALID_INDEX, "Model-Block could not be created.");
+		ASSERT(modelBlock  != GL_INVALID_INDEX, "Model-Block could not be created.");
 		ASSERT(engineBlock != GL_INVALID_INDEX, "Engine-Block could not be created.");
-		ASSERT(timeBlock != GL_INVALID_INDEX, "Time-Block could not be created.");
+		ASSERT(timeBlock   != GL_INVALID_INDEX, "Time-Block could not be created.");
 
 		glUniformBlockBinding(hProgram, cameraBlock, static_cast<unsigned>(UniformBufferSlot::Camera));
 		glUniformBlockBinding(hProgram, modelBlock, static_cast<unsigned>(UniformBufferSlot::Model));
