@@ -83,9 +83,9 @@ namespace Jwl
 	};
 
 	template<typename T>
-	ScopeGuard<T> MakeScopeGuard(T func)
+	ScopeGuard<T> MakeScopeGuard(T&& func)
 	{
-		return ScopeGuard<T>(std::move(func));
+		return ScopeGuard<T>(std::forward<T>(func));
 	}
 
 	namespace detail
