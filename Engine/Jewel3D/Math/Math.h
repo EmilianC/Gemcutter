@@ -33,6 +33,9 @@ namespace Jwl
 		return Abs(a - b) <= std::numeric_limits<std::decay_t<T>>::epsilon();
 	}
 
+	// Merges two hash values non-symmetrically.
+	unsigned CombineHashes(unsigned a, unsigned b);
+
 	// Returns the lesser of all arguments.
 	template<typename T0, typename T1, typename... Args>
 	auto Min(T0&& val1, T1&& val2, Args&&... args)

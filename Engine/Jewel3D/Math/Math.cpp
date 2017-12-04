@@ -4,6 +4,11 @@
 
 namespace Jwl
 {
+	unsigned CombineHashes(unsigned a, unsigned b)
+	{
+		return a ^ (b + 0x9E3779B9 + (a << 6) + (a >> 2));
+	}
+
 	float SnapToGrid(float value, float step)
 	{
 		return std::floorf((value + (step / 2.0f)) / step) * step;
