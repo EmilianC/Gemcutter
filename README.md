@@ -26,8 +26,8 @@ Highlight features include:
 1. Run "INSTALL.cmd" to save the checkout path to the environment and install project templates.
 	- You might have to restart your computer for this to take effect.
 2. Run "BUILD.cmd" to compile the engine and tools.
-3. Create a new game project by selecting ```Add New Project -> Visual C++ -> Jewel3D Project```. 
-	- Due to a known bug in Visual Studio, source files are missing from the template project. 
+3. Create a new game project by selecting ```Add New Project -> Visual C++ -> Jewel3D Project```.
+	- Due to a known bug in Visual Studio, source files are missing from the template project.
 	- Feel free to manually copy the project from ```\Jewel3D\Tools\TemplateProject\``` until this is fixed.
 	- Includes and link dependencies are still set up correctly.
 	
@@ -51,13 +51,13 @@ Future highlight features include:
 All Dependencies used under their respective licenses. Copyright is held by their respective owners.
 * [GLEW 2.0.0](http://glew.sourceforge.net/)
 * [FreeType 2](https://www.freetype.org/)
-* [Catch 1.9.1](https://github.com/philsquared/Catch)
+* [Catch 2.0.1](https://github.com/philsquared/Catch)
 * [OpenAL Soft 1.17.2](https://github.com/kcat/openal-soft)
 * [SOIL ext](https://github.com/fenbf/SOIL_ext)
 * [dirent 1.21](https://github.com/tronkko/dirent)
 * [XInput 1.4](https://msdn.microsoft.com/en-us/library/windows/desktop/ee417001(v=vs.85).aspx)
 
 # Notes
-* Jewel3D is built for Windows with Visual Studio 2017 Community (Update 4) and is not tested on other compilers, IDEs, or platforms.
+* Jewel3D is built for Windows with Visual Studio 2017 Community (Update 5) and is not tested on other compilers, IDEs, or platforms.
 * Jewel3D requires at least OpenGL 3.3.
 * Jewel3D is provided under the MIT License.
