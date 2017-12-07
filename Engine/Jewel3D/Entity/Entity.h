@@ -102,7 +102,7 @@ namespace Jwl
 		T& Add(Args&&... constructorParams);
 
 		// Adds all specified Components to the entity, default constructed.
-		template<class T, typename... Args>
+		template<typename... Args>
 		void AddComponents();
 
 		// Adds the specified component if it doesn't already exist and returns a pointer to it.
@@ -110,7 +110,7 @@ namespace Jwl
 		T& Require();
 
 		// Adds the specified components if any don't already exist.
-		template<class T, typename... Args>
+		template<typename... Args>
 		void RequireComponents();
 
 		// Returns the requested component. Asserts if the component does not exist.
@@ -123,7 +123,7 @@ namespace Jwl
 
 		// Removes the instance of the specified component from this Entity if one exists.
 		template<class T>
-		void RemoveComponent();
+		void Remove();
 
 		// Removes all components from the entity.
 		void RemoveAllComponents();

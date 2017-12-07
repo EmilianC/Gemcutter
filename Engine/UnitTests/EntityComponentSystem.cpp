@@ -60,7 +60,7 @@ TEST_CASE("Entity-Component-System")
 		CHECK(!ent->Has<DerivedA>());
 		CHECK(!ent->Has<DerivedB>());
 
-		ent->RemoveComponent<Base>();
+		ent->Remove<Base>();
 		CHECK(!ent->Has<Base>());
 		CHECK(!ent->Has<DerivedA>());
 		CHECK(!ent->Has<DerivedB>());
@@ -91,7 +91,7 @@ TEST_CASE("Entity-Component-System")
 		CHECK(ent->Has<DerivedA>());
 		CHECK(!ent->Has<DerivedB>());
 
-		ent->RemoveComponent<Base>();
+		ent->Remove<Base>();
 		CHECK(!ent->Has<Base>());
 		CHECK(!ent->Has<DerivedA>());
 		CHECK(!ent->Has<DerivedB>());
@@ -102,12 +102,12 @@ TEST_CASE("Entity-Component-System")
 		CHECK(ent->Has<DerivedB>());
 
 		// Removing Derived type A shouldn't modify the entity.
-		ent->RemoveComponent<DerivedA>();
+		ent->Remove<DerivedA>();
 		CHECK(ent->Has<Base>());
 		CHECK(!ent->Has<DerivedA>());
 		CHECK(ent->Has<DerivedB>());
 
-		ent->RemoveComponent<DerivedB>();
+		ent->Remove<DerivedB>();
 		CHECK(!ent->Has<Base>());
 		CHECK(!ent->Has<DerivedA>());
 		CHECK(!ent->Has<DerivedB>());

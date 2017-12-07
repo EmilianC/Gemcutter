@@ -77,14 +77,12 @@ namespace Jwl
 		return *newComponent;
 	}
 
-	template<class T, typename... Args>
+	template<typename... Args>
 	void Entity::AddComponents()
 	{
-		ComponentBase* ptr[] =
-		{
-			&Add<T>(),
-			&Add<Args>()...
-		};
+		static_assert(sizeof...(Args), "AddComponents<>() must receive at least one template argument.");
+
+		(Add<Args>(), ...);
 	}
 
 	template<class T>
@@ -103,14 +101,12 @@ namespace Jwl
 		}
 	}
 
-	template<class T, typename... Args>
+	template<typename... Args>
 	void Entity::RequireComponents()
 	{
-		ComponentBase* ptr[] =
-		{
-			&Require<T>(),
-			&Require<Args>()...
-		};
+		static_assert(sizeof...(Args), "RequireComponents<>() must receive at least one template argument.");
+
+		(Require<Args>(), ...);
 	}
 
 	template<class T>
@@ -153,7 +149,7 @@ namespace Jwl
 	}
 
 	template<class T>
-	void Entity::RemoveComponent()
+	void Entity::Remove()
 	{
 		using namespace detail;
 		static_assert(std::is_base_of_v<ComponentBase, T>, "Template argument must inherit from Component.");

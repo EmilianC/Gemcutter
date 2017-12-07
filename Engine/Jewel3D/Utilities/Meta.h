@@ -5,13 +5,6 @@
 // Contains various helpers and utilities for compile-time metaprogramming.
 namespace Jwl::Meta
 {
-	// Executes the expression on each instance (if any) of a referenced parameter pack.
-	#define EXECUTE_PACK(expr) \
-		do {														\
-			int unused[] = { 0, ((expr), 0) ... }; (void)unused;	\
-			__pragma(warning(suppress:4127))						\
-		} while (false)
-
 	// Allows for the use of complex template types as macro parameters.
 	// Normally the ','s in a template parameter list would interfere with the macro expansion.
 	#define TEMPLATE_TYPE(...) decltype(__VA_ARGS__())
