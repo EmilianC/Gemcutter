@@ -33,12 +33,12 @@ namespace Jwl
 
 		WeakPtr GetWeakPtr()
 		{
-			return shared_from_this();
+			return weak_from_this();
 		}
 
 		ConstWeakPtr GetWeakPtr() const
 		{
-			return shared_from_this();
+			return weak_from_this();
 		}
 
 		template<typename... Args>
