@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClCompile Include="UnitTests\EntityComponentSystem.cpp" />
     <ClCompile Include="UnitTests\FileSystem.cpp" />
+    <ClCompile Include="UnitTests\Hierarchy.cpp" />
     <ClCompile Include="UnitTests\main.cpp" />
     <ClCompile Include="UnitTests\Math.cpp" />
     <ClCompile Include="UnitTests\String.cpp" />

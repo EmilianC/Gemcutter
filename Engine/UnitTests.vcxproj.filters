@@ -28,5 +28,8 @@
     <ClCompile Include="UnitTests\String.cpp">
       <Filter>Utilities</Filter>
     </ClCompile>
+    <ClCompile Include="UnitTests\Hierarchy.cpp">
+      <Filter>Entity</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

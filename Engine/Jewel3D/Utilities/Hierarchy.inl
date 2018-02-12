@@ -62,9 +62,8 @@ namespace Jwl
 	template<class Node>
 	bool Hierarchy<Node>::IsChild(const Node& node) const
 	{
-		return 
-			!node.parent.expired() && 
-			node.parent.lock().get() == static_cast<const Node*>(this);
+		auto lock = node.parent.lock();
+		return lock && lock.get() == static_cast<const Node*>(this);
 	}
 
 	template<class Node>
