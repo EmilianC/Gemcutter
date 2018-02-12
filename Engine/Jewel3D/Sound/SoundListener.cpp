@@ -38,8 +38,8 @@ namespace Jwl
 	
 	void SoundListener::OnEnable()
 	{
-		// If there is another listener we must disable it first.
-		// OpenAL only supports one listener at a time.
+		// If there is already an active listener, we must disable it
+		// Because OpenAL only supports one active listener at a time.
 		if (auto listenerEntity = GetListener())
 		{
 			listenerEntity->Disable<SoundListener>();
