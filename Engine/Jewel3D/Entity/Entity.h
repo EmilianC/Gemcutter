@@ -34,8 +34,6 @@ namespace Jwl
 
 		// The Entity to which this component is attached.
 		Entity& owner;
-		// The unique ID used by the derived component.
-		const unsigned componentId;
 
 	protected:
 		// Called when the component is removed from queries.
@@ -48,6 +46,9 @@ namespace Jwl
 
 	private:
 		virtual void Copy(Entity& newOwner) const = 0;
+
+		// The unique ID used by the derived component.
+		const unsigned componentId;
 
 		bool isEnabled = true;
 	};
