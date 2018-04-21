@@ -142,9 +142,6 @@ namespace Jwl
 		}
 		else
 		{
-			// The effect will require the age of the particle in order to LERP in-shader
-			// based on the global size values. The same is true for Colors and Alpha.
-			buffers |= ParticleBuffers::AgeRatio;
 			glDisableVertexAttribArray(1);
 		}
 
@@ -165,7 +162,6 @@ namespace Jwl
 		}
 		else
 		{
-			buffers |= ParticleBuffers::AgeRatio;
 			glDisableVertexAttribArray(2);
 		}
 
@@ -186,7 +182,6 @@ namespace Jwl
 		}
 		else
 		{
-			buffers |= ParticleBuffers::AgeRatio;
 			glDisableVertexAttribArray(3);
 		}
 
@@ -254,31 +249,31 @@ namespace Jwl
 
 		if (buffers.Has(ParticleBuffers::Size))
 		{
-			memcpy(buffer, &sizes[0], sizeof(vec2) * _numParticles);
+			memcpy(buffer, sizes, sizeof(vec2) * _numParticles);
 			buffer = static_cast<vec2*>(buffer) + numParticles;
 		}
 
 		if (buffers.Has(ParticleBuffers::Color))
 		{
-			memcpy(buffer, &colors[0], sizeof(vec3) * _numParticles);
+			memcpy(buffer, colors, sizeof(vec3) * _numParticles);
 			buffer = static_cast<vec3*>(buffer) + numParticles;
 		}
 
 		if (buffers.Has(ParticleBuffers::Alpha))
 		{
-			memcpy(buffer, &alphas[0], sizeof(float) * _numParticles);
+			memcpy(buffer, alphas, sizeof(float) * _numParticles);
 			buffer = static_cast<float*>(buffer) + numParticles;
 		}
 
 		if (buffers.Has(ParticleBuffers::Rotation))
 		{
-			memcpy(buffer, &rotations[0], sizeof(float) * _numParticles);
+			memcpy(buffer, rotations, sizeof(float) * _numParticles);
 			buffer = static_cast<float*>(buffer) + numParticles;
 		}
 
 		if (buffers.Has(ParticleBuffers::AgeRatio))
 		{
-			memcpy(buffer, &ageRatios[0], sizeof(float) * _numParticles);
+			memcpy(buffer, ageRatios, sizeof(float) * _numParticles);
 		}
 
 		glUnmapBuffer(GL_ARRAY_BUFFER);

@@ -179,63 +179,29 @@ namespace Jwl
 		if (functors.dirty)
 		{
 			EnumFlags<ParticleBuffers> requirements = ParticleBuffers::None;
-			for (const auto& functor : functors.GetAll())
+			for (auto& functor : functors.GetAll())
 			{
 				requirements |= functor->GetRequirements();
 			}
 
+			requiresAgeRatio = 
+				!requirements.Has(ParticleBuffers::Size) ||
+				!requirements.Has(ParticleBuffers::Color) ||
+				!requirements.Has(ParticleBuffers::Alpha);
+
 			/* Update shader variant to match the buffers and effect requirements */
 			auto& material = owner.Get<Material>();
-
-			requiresAgeRatio = false;
-			if (requirements.Has(ParticleBuffers::Size))
-			{
-				material.variantDefinitions.Define("JWL_PARTICLE_SIZE");
-			}
-			else
-			{
-				material.variantDefinitions.Undefine("JWL_PARTICLE_SIZE");
-				requiresAgeRatio = true;
-			}
-
-			if (requirements.Has(ParticleBuffers::Color))
-			{
-				material.variantDefinitions.Define("JWL_PARTICLE_COLOR");
-			}
-			else
-			{
-				material.variantDefinitions.Undefine("JWL_PARTICLE_COLOR");
-				requiresAgeRatio = true;
-			}
-
-			if (requirements.Has(ParticleBuffers::Alpha))
-			{
-				material.variantDefinitions.Define("JWL_PARTICLE_ALPHA");
-			}
-			else
-			{
-				material.variantDefinitions.Undefine("JWL_PARTICLE_ALPHA");
-				requiresAgeRatio = true;
-			}
-
-			if (requirements.Has(ParticleBuffers::Rotation))
-			{
-				material.variantDefinitions.Define("JWL_PARTICLE_ROTATION");
-			}
-			else
-			{
-				material.variantDefinitions.Undefine("JWL_PARTICLE_ROTATION");
-				requiresAgeRatio = true;
-			}
+			material.variantDefinitions.Switch("JWL_PARTICLE_SIZE", requirements.Has(ParticleBuffers::Size));
+			material.variantDefinitions.Switch("JWL_PARTICLE_COLOR", requirements.Has(ParticleBuffers::Color));
+			material.variantDefinitions.Switch("JWL_PARTICLE_ALPHA", requirements.Has(ParticleBuffers::Alpha));
+			material.variantDefinitions.Switch("JWL_PARTICLE_ROTATION", requirements.Has(ParticleBuffers::Rotation));
+			material.variantDefinitions.Switch("JWL_PARTICLE_AGERATIO", requiresAgeRatio);
 
 			if (requiresAgeRatio)
 			{
+				// We are using uniform [start, end] values for some properties and require the age of the particle 
+				// as a percentage. This will LERP in the shader based on the global [start, end] values.
 				requirements |= ParticleBuffers::AgeRatio;
-				material.variantDefinitions.Define("JWL_PARTICLE_AGERATIO");
-			}
-			else
-			{
-				material.variantDefinitions.Undefine("JWL_PARTICLE_AGERATIO");
 			}
 
 			data.SetBuffers(maxParticles, requirements);

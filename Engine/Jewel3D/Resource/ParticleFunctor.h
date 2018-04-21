@@ -39,7 +39,7 @@ namespace Jwl
 			static_assert(std::is_base_of_v<ParticleFunctor, T>, "Template argument must inherit from ParticleFunctor.");
 			static_assert(std::is_base_of_v<Shareable<T>, T>, "A ParticleFunctor must inherit from Shareable<>.");
 
-			functors.push_back(ptr);
+			functors.push_back(std::move(ptr));
 			dirty = true;
 		}
 
