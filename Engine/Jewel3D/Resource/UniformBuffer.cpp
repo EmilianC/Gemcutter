@@ -67,8 +67,7 @@ namespace Jwl
 		glBindBuffer(GL_UNIFORM_BUFFER, GL_NONE);
 
 		// RAM buffer.
-		buffer = malloc(bufferSize);
-		memset(buffer, 0, bufferSize);
+		buffer = calloc(1, bufferSize);
 	}
 
 	void UniformBuffer::UnLoad()
