@@ -30,22 +30,22 @@ Highlight features include:
 	- Due to a known bug in Visual Studio, source files are missing from the template project.
 	- Feel free to manually copy the project from ```\Jewel3D\Tools\TemplateProject\``` until this is fixed.
 	- Includes and link dependencies are still set up correctly.
-	
+
 Code samples are available and maintained [here](https://github.com/EmilianC/Jewel3D-Samples).
 
 # Upcoming Features
 Jewel3D is always being updated and improved. See the [Trello board](https://trello.com/b/Oc2GFT2A/jewel3d) to follow development.
 
 Future highlight features include:
-* Custom GUI support
+* GUI support
 * A fully featured world/UI editor
 * Bullet physics integration
-* Custom memory management
-* C++ reflection driven features
-	* Animations
+* Configurable memory management
+* C++ reflection driven features:
+	* Animation of arbitrary values
 	* Serialization and deserialization
-	* Networking
-	* Seamless editor integration of user components
+	* Replication over networks
+	* Seamless editor integration of user data-types
 
 # Dependencies
 All Dependencies used under their respective licenses. Copyright is held by their respective owners.
@@ -58,6 +58,6 @@ All Dependencies used under their respective licenses. Copyright is held by thei
 * [XInput 1.4](https://msdn.microsoft.com/en-us/library/windows/desktop/ee417001(v=vs.85).aspx)
 
 # Notes
-* Jewel3D is built for Windows with Visual Studio 2017 Community (Update 5) and is not tested on other compilers, IDEs, or platforms.
+* Jewel3D is built for Windows with the latest version of Visual Studio 2017 Community and is not tested on other platforms or compilers.
 * Jewel3D requires at least OpenGL 3.3.
 * Jewel3D is provided under the MIT License.
