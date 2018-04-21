@@ -2,7 +2,6 @@
 #include "Jewel3D/Precompiled.h"
 #include "FileSystem.h"
 #include "Logging.h"
-#include "Jewel3D/Utilities/ScopeGuard.h"
 
 #include <Dirent/dirent.h>
 #include <direct.h>
@@ -262,13 +261,8 @@ namespace Jwl
 		file.seekg(0, file.beg);
 
 		// Read data as a block.
-		char* buff = static_cast<char*>(malloc(sizeof(char) * length));
-		defer { free(buff); };
-
-		memset(buff, '\0', length);
-		file.read(buff, length);
-		buffer = buff;
-
+		buffer.resize(length);
+		file.read(buffer.data(), length);
 		file.close();
 
 		return true;
