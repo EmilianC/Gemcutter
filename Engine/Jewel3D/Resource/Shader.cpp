@@ -1339,15 +1339,10 @@ namespace Jwl
 		unsigned engineBlock = glGetUniformBlockIndex(hProgram, "Jwl_Engine_Uniforms");
 		unsigned timeBlock   = glGetUniformBlockIndex(hProgram, "Jwl_Time_Uniforms");
 
-		ASSERT(cameraBlock != GL_INVALID_INDEX, "Camera-Block could not be created.");
-		ASSERT(modelBlock  != GL_INVALID_INDEX, "Model-Block could not be created.");
-		ASSERT(engineBlock != GL_INVALID_INDEX, "Engine-Block could not be created.");
-		ASSERT(timeBlock   != GL_INVALID_INDEX, "Time-Block could not be created.");
-
-		glUniformBlockBinding(hProgram, cameraBlock, static_cast<unsigned>(UniformBufferSlot::Camera));
-		glUniformBlockBinding(hProgram, modelBlock, static_cast<unsigned>(UniformBufferSlot::Model));
-		glUniformBlockBinding(hProgram, engineBlock, static_cast<unsigned>(UniformBufferSlot::Engine));
-		glUniformBlockBinding(hProgram, timeBlock, static_cast<unsigned>(UniformBufferSlot::Time));
+		if (cameraBlock != GL_INVALID_INDEX) glUniformBlockBinding(hProgram, cameraBlock, (GLuint)UniformBufferSlot::Camera);
+		if (modelBlock  != GL_INVALID_INDEX) glUniformBlockBinding(hProgram, modelBlock, (GLuint)UniformBufferSlot::Model);
+		if (engineBlock != GL_INVALID_INDEX) glUniformBlockBinding(hProgram, engineBlock, (GLuint)UniformBufferSlot::Engine);
+		if (timeBlock   != GL_INVALID_INDEX) glUniformBlockBinding(hProgram, timeBlock, (GLuint)UniformBufferSlot::Time);
 
 		return true;
 	}
