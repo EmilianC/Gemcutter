@@ -557,12 +557,12 @@ namespace Jwl
 		texturedRectangleProgram.Unload();
 		texturedFullScreenQuadProgram.Unload();
 
-		auto unloadVBO = [](unsigned vbo) {
+		auto unloadVBO = [](unsigned& vbo) {
 			glDeleteBuffers(1, &vbo);
 			vbo = GL_NONE;
 		};
 
-		auto unloadVAO = [](unsigned vao) {
+		auto unloadVAO = [](unsigned& vao) {
 			glDeleteVertexArrays(1, &vao);
 			vao = GL_NONE;
 		};

@@ -1127,10 +1127,6 @@ namespace Jwl
 		textures.Clear();
 		buffers.Clear();
 		
-		for (auto itr = variants.begin(); itr != variants.end(); ++itr)
-		{
-			itr->second.Unload();
-		}
 		variants.clear();
 
 		textureBindings.clear();
