@@ -86,7 +86,7 @@ namespace Jwl
 		stdOutputHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 	}
 
-	void MoveConsoleWindowToForeground()
+	void FocusConsoleWindow()
 	{
 		SetForegroundWindow(GetConsoleWindow());
 	}

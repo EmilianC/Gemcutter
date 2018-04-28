@@ -38,7 +38,7 @@ namespace Jwl
 
 	void CreateConsoleWindow();
 	void DestroyConsoleWindow();
-	void MoveConsoleWindowToForeground();
+	void FocusConsoleWindow();
 	void SetConsoleColor(ConsoleColor color);
 	void ResetConsoleColor();
 

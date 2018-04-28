@@ -12,7 +12,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 
 	int result = Catch::Session().run(GetArgc(), GetArgv());
 	
-	MoveConsoleWindowToForeground();
+	FocusConsoleWindow();
 	if (result != 0)
 	{
 		system("pause");
