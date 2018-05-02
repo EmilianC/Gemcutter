@@ -308,6 +308,12 @@ namespace Jwl
 		data[ForwardZ] = mat.data[mat4::ForwardZ];
 	}
 
+	mat3::mat3(const quat& rotation, const vec3& scale)
+		: mat3(rotation)
+	{
+		Scale(scale);
+	}
+
 	mat3::mat3(const vec3& right, const vec3& up, const vec3& forward)
 	{
 		data[RightX] = right.x;
@@ -561,18 +567,20 @@ namespace Jwl
 
 	void mat3::Scale(const vec3& V)
 	{
-		*this = mat3(
-			V.x, 0.0f, 0.0f,
-			0.0f, V.y, 0.0f,
-			0.0f, 0.0f, V.z) * (*this);
+		data[RightX] *= V.x;
+		data[RightY] *= V.x;
+		data[RightZ] *= V.x;
+		data[UpX] *= V.y;
+		data[UpY] *= V.y;
+		data[UpZ] *= V.y;
+		data[ForwardX] *= V.z;
+		data[ForwardY] *= V.z;
+		data[ForwardZ] *= V.z;
 	}
 
 	void mat3::Scale(float scale)
 	{
-		*this = mat3(
-			scale, 0.0f, 0.0f,
-			0.0f, scale, 0.0f,
-			0.0f, 0.0f, scale) * (*this);
+		Scale(vec3(scale));
 	}
 
 	void mat3::Rotate(const vec3& axis, float degrees)
@@ -712,21 +720,21 @@ namespace Jwl
 		data[15] = 1.0f;
 	}
 
-	mat4::mat4(const mat3& orientation)
+	mat4::mat4(const mat3& rotation)
 	{
-		data[RightX] = orientation.data[mat3::RightX];
-		data[RightY] = orientation.data[mat3::RightY];
-		data[RightZ] = orientation.data[mat3::RightZ];
+		data[RightX] = rotation.data[mat3::RightX];
+		data[RightY] = rotation.data[mat3::RightY];
+		data[RightZ] = rotation.data[mat3::RightZ];
 		data[W0] = 0.0f;
 
-		data[UpX] = orientation.data[mat3::UpX];
-		data[UpY] = orientation.data[mat3::UpY];
-		data[UpZ] = orientation.data[mat3::UpZ];
+		data[UpX] = rotation.data[mat3::UpX];
+		data[UpY] = rotation.data[mat3::UpY];
+		data[UpZ] = rotation.data[mat3::UpZ];
 		data[W1] = 0.0f;
 
-		data[ForwardX] = orientation.data[mat3::ForwardX];
-		data[ForwardY] = orientation.data[mat3::ForwardY];
-		data[ForwardZ] = orientation.data[mat3::ForwardZ];
+		data[ForwardX] = rotation.data[mat3::ForwardX];
+		data[ForwardY] = rotation.data[mat3::ForwardY];
+		data[ForwardZ] = rotation.data[mat3::ForwardZ];
 		data[W2] = 0.0f;
 
 		data[TransX] = 0.0f;
@@ -758,27 +766,39 @@ namespace Jwl
 		data[15] = 1.0f;
 	}
 
-	mat4::mat4(const mat3& orientation, const vec3& translation)
+	mat4::mat4(const mat3& rotation, const vec3& translation)
 	{
-		data[RightX] = orientation.data[mat3::RightX];
-		data[RightY] = orientation.data[mat3::RightY];
-		data[RightZ] = orientation.data[mat3::RightZ];
+		data[RightX] = rotation.data[mat3::RightX];
+		data[RightY] = rotation.data[mat3::RightY];
+		data[RightZ] = rotation.data[mat3::RightZ];
 		data[W0] = 0.0f;
 
-		data[UpX] = orientation.data[mat3::UpX];
-		data[UpY] = orientation.data[mat3::UpY];
-		data[UpZ] = orientation.data[mat3::UpZ];
+		data[UpX] = rotation.data[mat3::UpX];
+		data[UpY] = rotation.data[mat3::UpY];
+		data[UpZ] = rotation.data[mat3::UpZ];
 		data[W1] = 0.0f;
 		
-		data[ForwardX] = orientation.data[mat3::ForwardX];
-		data[ForwardY] = orientation.data[mat3::ForwardY];
-		data[ForwardZ] = orientation.data[mat3::ForwardZ];
+		data[ForwardX] = rotation.data[mat3::ForwardX];
+		data[ForwardY] = rotation.data[mat3::ForwardY];
+		data[ForwardZ] = rotation.data[mat3::ForwardZ];
 		data[W2] = 0.0f;
 
 		data[TransX] = translation.x;
 		data[TransY] = translation.y;
 		data[TransZ] = translation.z;
 		data[W3] = 1.0f;
+	}
+
+	mat4::mat4(const quat& rotation, const vec3& translation, const vec3& scale)
+		: mat4(rotation, translation)
+	{
+		Scale(scale);
+	}
+
+	mat4::mat4(const mat3& rotation, const vec3& translation, const vec3& scale)
+		: mat4(rotation, translation)
+	{
+		Scale(scale);
 	}
 
 	mat4::mat4(const vec3& right, const vec3& up, const vec3& forward, const vec4& translation)
@@ -1214,20 +1234,20 @@ namespace Jwl
 
 	void mat4::Scale(const vec3& V)
 	{
-		*this = mat4(
-			V.x, 0.0f, 0.0f, 0.0f,
-			0.0f, V.y, 0.0f, 0.0f,
-			0.0f, 0.0f, V.z, 0.0f,
-			0.0f, 0.0f, 0.0f, 1.0f) * (*this);
+		data[RightX] *= V.x;
+		data[RightY] *= V.x;
+		data[RightZ] *= V.x;
+		data[UpX] *= V.y;
+		data[UpY] *= V.y;
+		data[UpZ] *= V.y;
+		data[ForwardX] *= V.z;
+		data[ForwardY] *= V.z;
+		data[ForwardZ] *= V.z;
 	}
 
 	void mat4::Scale(float scale)
 	{
-		*this = mat4(
-			scale, 0.0f, 0.0f, 0.0f,
-			0.0f, scale, 0.0f, 0.0f,
-			0.0f, 0.0f, scale, 0.0f,
-			0.0f, 0.0f, 0.0f, 1.0f) * (*this);
+		Scale(vec3(scale));
 	}
 
 	void mat4::Rotate(const vec3& axis, float degrees)

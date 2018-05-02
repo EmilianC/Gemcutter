@@ -260,10 +260,7 @@ namespace Jwl
 
 	mat4 Entity::GetWorldTransform() const
 	{
-		mat4 transform(rotation, position);
-		reinterpret_cast<vec3*>(&transform.data[mat4::RightX])->operator*=(scale.x);
-		reinterpret_cast<vec3*>(&transform.data[mat4::UpX])->operator*=(scale.y);
-		reinterpret_cast<vec3*>(&transform.data[mat4::ForwardX])->operator*=(scale.z);
+		mat4 transform(rotation, position, scale);
 
 		if (auto parentEntity = GetParent())
 		{

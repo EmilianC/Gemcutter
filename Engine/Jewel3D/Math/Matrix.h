@@ -77,6 +77,7 @@ namespace Jwl
 		explicit mat3(const quat& rotation);
 		// Extracts the rotational component from the 4x4 matrix.
 		explicit mat3(const mat4& mat);
+		mat3(const quat& rotation, const vec3& scale);
 		mat3(const vec3& right, const vec3& up, const vec3& forward);
 		mat3(float f0, float f3, float f6,
 			float f1, float f4, float f7,
@@ -144,6 +145,8 @@ namespace Jwl
 		explicit mat4(const mat3& rotation);
 		mat4(const quat& rotation, const vec3& translation);
 		mat4(const mat3& rotation, const vec3& translation);
+		mat4(const quat& rotation, const vec3& translation, const vec3& scale);
+		mat4(const mat3& rotation, const vec3& translation, const vec3& scale);
 		mat4(const vec3& right, const vec3& up, const vec3& forward, const vec4& translation);
 		mat4(float f0, float f4, float f8, float f12,
 			float f1, float f5, float f9, float f13,
