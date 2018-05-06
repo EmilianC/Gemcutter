@@ -8,7 +8,9 @@ namespace Jwl
 	void SeedRandomNumberGenerator();
 	void SeedRandomNumberGenerator(unsigned seed);
 
+	// Returns a random float in the range [min, max].
 	float RandomRange(float min, float max);
+	// Returns a random int in the range [min, max].
 	int RandomRange(int min, int max);
 
 	// Returns a random unit-length vector.

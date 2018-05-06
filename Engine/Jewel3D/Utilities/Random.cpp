@@ -3,29 +3,33 @@
 #include "Random.h"
 #include "Jewel3D/Math/Vector.h"
 
-#include <stdlib.h>
-#include <time.h>
+#include <random>
 
 namespace Jwl
 {
+	std::mt19937 engine;
+
 	void SeedRandomNumberGenerator()
 	{
-		srand(static_cast<unsigned>(time(NULL)));
+		std::random_device rd;
+		engine.seed(rd());
 	}
 
 	void SeedRandomNumberGenerator(unsigned seed)
 	{
-		srand(seed);
+		engine.seed(seed);
 	}
 
 	float RandomRange(float min, float max)
 	{
-		return min + ((max - min) * rand()) / (RAND_MAX + 1.0f);
+		std::uniform_real_distribution<float> dist(min, std::nextafter(max, FLT_MAX));
+		return dist(engine);
 	}
 
 	int RandomRange(int min, int max)
 	{
-		return rand() % (max + 1 - min) + min;
+		std::uniform_int_distribution<int> dist(min, max);
+		return dist(engine);
 	}
 	
 	vec3 RandomDirection()
