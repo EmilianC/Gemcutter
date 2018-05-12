@@ -2,12 +2,11 @@
 #pragma once
 
 /*
- ScopeGuard assists in preventing memory leaks and makes code more clear.
+ ScopeGuard assists in preventing memory leaks and making code more clear.
  Following RAII principles, this can allow you to create safer functions.
  
- A function that allocates memory but has many exit points can easily 
- leak memory. Unless you remember to duplicate your cleanup code in 
- every return case, you will leak memory. For example:
+ A function that allocates memory but has many exit points can easily leak
+ unless you remember to duplicate your cleanup code in every return case. For example:
  
  void Load() {
  	int* memory = new int[256];
@@ -16,11 +15,11 @@
  	
  	// Many more exit points...
  	
- 	delete[] int; // Only here will the data be released.
+ 	delete[] int; // Only here will the memory be safely released.
  }
  
  With the scope guard we improve readability, safety, and maintainability.
- Write the cleanup code once, and it will run however the function exits.
+ Write the cleanup code once, and it will run however the scope exits.
  
  void Load() {
  	int* memory = new int[256];
@@ -30,15 +29,15 @@
  	
  	// Many more (safe) exit points...
  	
- 	// defer block is called. no need to manually delete.
+ 	// defer block is called. No need to manually delete.
  }
-
- Based on the implementation by Andrei Alexandrescu
+ 
+ Based on the implementation by Andrei Alexandrescu.
 */
 
 namespace Jwl
 {
-	template<typename LambdaFunc>
+	template<typename Functor>
 	class ScopeGuard
 	{
 	public:
@@ -52,8 +51,8 @@ namespace Jwl
 		{
 			rhs.Dismiss();
 		}
-		
-		ScopeGuard(LambdaFunc func)
+
+		ScopeGuard(Functor func)
 			: func(std::move(func))
 		{
 		}
@@ -63,8 +62,7 @@ namespace Jwl
 			if (active) func();
 		}
 
-		// Executes the function early. It will not be called again when
-		// the scope is terminated.
+		// Executes the function early. It will not be called again when the scope is terminated.
 		void Execute()
 		{
 			func();
@@ -78,29 +76,12 @@ namespace Jwl
 		}
 
 	private:
-		LambdaFunc func;
+		Functor func;
 		bool active = true;
 	};
-
-	template<typename T>
-	ScopeGuard<T> MakeScopeGuard(T&& func)
-	{
-		return ScopeGuard<T>(std::forward<T>(func));
-	}
-
-	namespace detail
-	{
-		enum class ScopeGuard_TYPE {};
-
-		template<typename func>
-		ScopeGuard<func> operator+(ScopeGuard_TYPE, func&& f)
-		{
-			return ScopeGuard<func>(std::forward<func>(f));
-		}
-	}
 }
 
 #define CONCATENATE(s1, s2) s1##s2
 #define CONCATENATE_INDIRECT(s1, s2) CONCATENATE(s1, s2)
 #define ANONYMOUS_VARIABLE(str) CONCATENATE_INDIRECT(str, __COUNTER__)
-#define defer auto ANONYMOUS_VARIABLE(SCOPE_GUARD_) = Jwl::detail::ScopeGuard_TYPE() + [&]()
+#define defer Jwl::ScopeGuard ANONYMOUS_VARIABLE(SCOPE_GUARD_) = [&]()

@@ -984,9 +984,9 @@ namespace Jwl
 				if (uniform.value.empty())
 					continue;
 
-				auto guard = MakeScopeGuard([&]() {
+				ScopeGuard guard = [&]() {
 					Error("Default value assignment of ( %s ) could not be parsed.", uniform.name.c_str()); 
-				});
+				};
 
 				vec4 vec; unsigned u; int i;
 				switch (uniform.type)
