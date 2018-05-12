@@ -345,7 +345,7 @@ namespace Jwl
 		UnloadAll<Texture>();
 		UnloadAll<Model>();
 		UnloadAll<ParticleBuffer>();
-	
+
 		if (IsFullscreen())
 		{
 			SetFullscreen(false);
@@ -353,6 +353,10 @@ namespace Jwl
 		
 		EnableCursor();
 
+#ifdef _DEBUG
+		// Some drivers will emit erroneous errors on shutdown, so we disable debug info first.
+		glDebugMessageCallback(NULL, NULL);
+#endif
 		// Release Device and Render Contexts.
 		wglMakeCurrent(NULL, NULL);
 		wglDeleteContext(renderContext);
@@ -542,7 +546,7 @@ namespace Jwl
 			Warning("FPSCap is higher than the Update rate. Frames cannot be rendered more often than there are updates.");
 		}
 	}
-	
+
 	unsigned Application::GetFPSCap() const
 	{
 		return FPSCap;
@@ -654,7 +658,7 @@ namespace Jwl
 				return false;
 			}
 		}
-		
+
 		resizable = state;
 		return true;
 	}
