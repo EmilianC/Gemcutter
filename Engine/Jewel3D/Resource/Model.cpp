@@ -165,7 +165,7 @@ namespace Jwl
 		return numFaces;
 	}
 
-	unsigned Model::GetNumVerticies() const
+	unsigned Model::GetNumVertices() const
 	{
 		return numVertices;
 	}

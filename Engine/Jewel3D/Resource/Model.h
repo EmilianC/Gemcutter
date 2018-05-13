@@ -33,7 +33,7 @@ namespace Jwl
 		bool HasTangents() const;
 
 		unsigned GetNumFaces() const;
-		unsigned GetNumVerticies() const;
+		unsigned GetNumVertices() const;
 
 	private:
 		// OpenGL buffers.

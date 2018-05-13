@@ -270,7 +270,7 @@ namespace Jwl
 			ASSERT(modelData, "Entity has a Mesh component but does not have a Model to render.");
 
 			glBindVertexArray(modelData->GetVAO());
-			glDrawArrays(GL_TRIANGLES, 0, modelData->GetNumVerticies());
+			glDrawArrays(GL_TRIANGLES, 0, modelData->GetNumVertices());
 		}
 #pragma endregion
 
