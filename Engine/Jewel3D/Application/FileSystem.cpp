@@ -5,6 +5,7 @@
 
 #include <Dirent/dirent.h>
 #include <direct.h>
+#include <sstream>
 #include <stack>
 
 #define SUCCESS 0
@@ -255,16 +256,11 @@ namespace Jwl
 			return false;
 		}
 
-		// Get length of file.
-		file.seekg(0, file.end);
-		length = static_cast<unsigned>(file.tellg());
-		file.seekg(0, file.beg);
-
-		// Read data as a block.
-		buffer.resize(length);
-		file.read(buffer.data(), length);
+		std::ostringstream contents;
+		contents << file.rdbuf();
 		file.close();
 
+		buffer = contents.str();
 		return true;
 	}
 
