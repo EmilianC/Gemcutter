@@ -1,6 +1,7 @@
 // Copyright (c) 2017 Emilian Cioca
 #include "Jewel3D/Precompiled.h"
 #include "Rendering.h"
+#include "Jewel3D/Application/FileSystem.h"
 #include "Jewel3D/Application/Logging.h"
 #include "Jewel3D/Math/Math.h"
 #include "Jewel3D/Math/Vector.h"
@@ -8,6 +9,7 @@
 
 #include <GLEW/GL/glew.h>
 #include <GLEW/GL/wglew.h>
+#include <SOIL/SOIL.h>
 
 namespace
 {
@@ -293,6 +295,27 @@ namespace Jwl
 		}
 
 		return result;
+	}
+
+	bool SaveScreenshot(std::string_view filePath, unsigned x, unsigned y, unsigned width, unsigned height)
+	{
+		ASSERT(!filePath.empty(), "Must provide a valid path and filename.");
+		ASSERT(width != 0, "Cannot take a screenshot with a 'width' of zero.");
+		ASSERT(height != 0, "Cannot take a screenshot with a 'height' of zero.");
+
+		if (!MakeDirectory(ExtractPath(filePath)))
+		{
+			Error("Failed to create path for screenshot ( %s ).", filePath.data());
+			return false;
+		}
+
+		if (!SOIL_save_screenshot(filePath.data(), SOIL_SAVE_TYPE_BMP, x, y, width, height))
+		{
+			Error("Failed to save screenshot ( %s ).", filePath.data());
+			return false;
+		}
+
+		return true;
 	}
 
 	void GPUInfo::ScanDevice()

@@ -132,6 +132,10 @@ namespace Jwl
 	void SetViewport(unsigned x, unsigned y, unsigned width, unsigned height);
 	bool SetVSync(VSyncMode mode);
 
+	// Saves a screenshot of the currently bound RenderTarget or the backbuffer.
+	// This is a very slow function and should only be used for debugging or when absolutely necessary.
+	bool SaveScreenshot(std::string_view filePath, unsigned x, unsigned y, unsigned width, unsigned height);
+
 	static class GPUInfo : public Singleton<class GPUInfo>
 	{
 		friend class Application;
