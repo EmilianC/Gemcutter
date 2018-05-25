@@ -45,10 +45,9 @@ namespace Jwl
 
 		for (auto& [name, value] : settings)
 		{
-			output << name << "=" << value << '\n';
+			output << name << '=' << value << '\n';
 		}
 
-		output.close();
 		return true;
 	}
 
