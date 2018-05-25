@@ -247,14 +247,14 @@ namespace Jwl
 
 	bool FileReader::OpenAsBuffer(std::string_view filePath)
 	{
-		ASSERT(!(*this), "FileReader: Already associated with a file");
+		ASSERT(!(*this), "FileReader: Already associated with a file.");
 
 		return LoadFileAsString(filePath, buffer);
 	}
 
 	bool FileReader::OpenAsStream(std::string_view filePath)
 	{
-		ASSERT(!(*this), "FileReader: Already associated with a file");
+		ASSERT(!(*this), "FileReader: Already associated with a file.");
 
 		file.open(filePath.data());
 		if (!file.good())

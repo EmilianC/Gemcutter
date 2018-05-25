@@ -189,7 +189,7 @@ namespace Jwl
 
 			GLint infoLen;
 			glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLen);
-			ASSERT(infoLen > 0, "Could not retrieve shader compilation log");
+			ASSERT(infoLen > 0, "Could not retrieve shader compilation log.");
 
 			infoLog = static_cast<char*>(malloc(sizeof(char) * infoLen));
 			defer { free(infoLog); };
@@ -226,7 +226,7 @@ namespace Jwl
 
 			GLint infoLen;
 			glGetProgramiv(program, GL_INFO_LOG_LENGTH, &infoLen);
-			ASSERT(infoLen > 0, "Could not retrieve program compilation log");
+			ASSERT(infoLen > 0, "Could not retrieve program compilation log.");
 
 			infoLog = static_cast<char*>(malloc(sizeof(char) * infoLen));
 			defer { free(infoLog); };
@@ -434,7 +434,7 @@ namespace Jwl
 
 		if (!LoadInternal(std::string(source)))
 		{
-			Error("Shader: ( From Source )");
+			Error("Shader: ( From Source ).");
 			return false;
 		}
 
@@ -447,7 +447,7 @@ namespace Jwl
 
 		if (!LoadInternal(passThroughProgram))
 		{
-			Error("Shader: ( PassThrough )");
+			Error("Shader: ( PassThrough ).");
 			return false;
 		}
 
