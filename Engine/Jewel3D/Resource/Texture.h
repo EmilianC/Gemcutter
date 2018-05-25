@@ -112,6 +112,6 @@ namespace Jwl
 		const unsigned char* data;
 
 	private:
-		Image(int width, int height, TextureFormat format, unsigned char* data);
+		Image(int width, int height, TextureFormat format, const unsigned char* data);
 	};
 }

@@ -76,8 +76,8 @@ namespace Jwl
 	// Used internally to expose Uniform buffers from the shader to BufferSlots.
 	struct BufferBinding
 	{
-		BufferBinding(const std::string& name, unsigned unit, UniformBuffer::Ptr buff)
-			: name(name), unit(unit), templateBuff(buff) {}
+		BufferBinding(std::string name, unsigned unit, UniformBuffer::Ptr buff)
+			: name(std::move(name)), unit(unit), templateBuff(std::move(buff)) {}
 
 		// The name of the uniform buffer in the shader.
 		const std::string name;
@@ -91,8 +91,8 @@ namespace Jwl
 	// Used internally to expose Samplers from the shader to TextureSlots.
 	struct TextureBinding
 	{
-		TextureBinding(const std::string& name, unsigned unit)
-			: name(name), unit(unit) {}
+		TextureBinding(std::string name, unsigned unit)
+			: name(std::move(name)), unit(unit) {}
 
 		// The name of the sampler in the shader.
 		const std::string name;

@@ -17,7 +17,8 @@ namespace
 namespace Jwl
 {
 	RenderTarget::RenderTarget(unsigned _width, unsigned _height, unsigned _numColorTextures, bool hasDepth, unsigned _numSamples)
-		: numColorTextures(_numColorTextures)
+		: FBO(GL_NONE)
+		, numColorTextures(_numColorTextures)
 		, numSamples(_numSamples)
 		, width(_width)
 		, height(_height)

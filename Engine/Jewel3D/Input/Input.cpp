@@ -3,8 +3,7 @@
 #include "Input.h"
 #include "Jewel3D/Application/Application.h"
 
-#include <WindowsX.h> // GET_X_LPARAM and GET_Y_LPARAM
-#include <new>
+#include <windowsx.h> // GET_X_LPARAM and GET_Y_LPARAM
 
 namespace
 {

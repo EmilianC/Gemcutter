@@ -49,8 +49,8 @@ namespace Jwl
 			}
 
 			// Never delete a single newline character.
-			if (lhs == '\n' && rhs != '\n' ||
-				lhs != '\n' && rhs == '\n')
+			if ((lhs == '\n' && rhs != '\n') ||
+				(lhs != '\n' && rhs == '\n'))
 			{
 				continue;
 			}

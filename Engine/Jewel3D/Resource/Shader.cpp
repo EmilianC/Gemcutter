@@ -10,7 +10,6 @@
 #include <GLEW/GL/glew.h>
 #include <cctype>
 #include <functional>
-#include <iostream>
 
 namespace
 {
@@ -893,8 +892,7 @@ namespace Jwl
 				if (std::isspace(rawStruct[i]))
 					continue;
 
-				uniforms.push_back(UniformMember());
-				UniformMember& uniform = uniforms.back();
+				UniformMember& uniform = uniforms.emplace_back();
 
 				const size_t semicolon = rawStruct.find(';', i);
 				if (semicolon == std::string::npos)

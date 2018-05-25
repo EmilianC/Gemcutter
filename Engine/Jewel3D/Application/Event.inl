@@ -30,15 +30,17 @@ namespace Jwl
 	}
 
 	template<class EventObj>
-	void Listener<EventObj>::operator=(const std::function<EventFunc>& _callback)
+	Listener<EventObj>& Listener<EventObj>::operator=(const std::function<EventFunc>& _callback)
 	{
 		callback = _callback;
+		return *this;
 	}
 
 	template<class EventObj>
-	void Listener<EventObj>::operator=(std::function<EventFunc>&& _callback)
+	Listener<EventObj>& Listener<EventObj>::operator=(std::function<EventFunc>&& _callback)
 	{
 		callback = std::move(_callback);
+		return *this;
 	}
 
 	template<class derived>

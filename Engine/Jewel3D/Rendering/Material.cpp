@@ -14,21 +14,21 @@ namespace Jwl
 
 	Material::Material(Entity& _owner, Shader::Ptr _shader)
 		: Component(_owner)
-		, shader(_shader)
+		, shader(std::move(_shader))
 	{
 	}
 
 	Material::Material(Entity& _owner, Texture::Ptr texture)
 		: Component(_owner)
 	{
-		textures.Add(texture);
+		textures.Add(std::move(texture));
 	}
 
 	Material::Material(Entity& _owner, Shader::Ptr _shader, Texture::Ptr texture)
 		: Component(_owner)
-		, shader(_shader)
+		, shader(std::move(_shader))
 	{
-		textures.Add(texture);
+		textures.Add(std::move(texture));
 	}
 
 	Material& Material::operator=(const Material& other)
@@ -95,13 +95,11 @@ namespace Jwl
 	{
 		ASSERT(shader, "Must have a Shader attached.");
 
-		const auto& bindings = shader->GetBufferBindings();
-
-		for (unsigned i = 0; i < bindings.size(); ++i)
+		for (const auto& binding : shader->GetBufferBindings())
 		{
-			if (bindings[i].templateBuff)
+			if (binding.templateBuff)
 			{
-				CreateUniformBuffer(bindings[i].unit);
+				CreateUniformBuffer(binding.unit);
 			}
 		}
 	}

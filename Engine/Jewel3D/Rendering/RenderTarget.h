@@ -12,11 +12,12 @@ namespace Jwl
 	class RenderTarget : public Shareable<RenderTarget>
 	{
 		friend ShareableAlloc;
-		RenderTarget(const RenderTarget&) = delete;
-		RenderTarget& operator=(const RenderTarget&) = delete;
 		~RenderTarget();
 
 	public:
+		RenderTarget(const RenderTarget&) = delete;
+		RenderTarget& operator=(const RenderTarget&) = delete;
+
 		RenderTarget(unsigned width, unsigned height, unsigned numColorTextures, bool hasDepth, unsigned numSamples = 1);
 		// Allocates and initializes the texture slot specified by index. Must be called on each slot before use.
 		void InitTexture(unsigned index, TextureFormat format, TextureFilter filter);

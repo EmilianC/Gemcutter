@@ -22,7 +22,7 @@ namespace Jwl
 		void DestroyGameWindow();
 
 		// Starts the main game-loop.
-		void GameLoop(std::function<void()> update, std::function<void()> draw);
+		void GameLoop(const std::function<void()>& update, const std::function<void()>& draw);
 
 		// Updates systems provided by the engine.
 		// - Dispatches the event queue.

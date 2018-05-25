@@ -2,7 +2,7 @@
 #include "Jewel3D/Precompiled.h"
 #include "CmdArgs.h"
 
-#include <stdlib.h>
+#include <cstdlib>
 
 namespace Jwl
 {

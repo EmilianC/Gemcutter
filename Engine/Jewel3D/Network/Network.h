@@ -169,8 +169,6 @@ namespace Jwl
 		int UDPReceiveSocket;
 		int localPortTCP;
 		int localPortUDP;
-		int remotePortTCP;
-		int remotePortUDP;
 		int idCounter;
 
 		char receiveBuffer[PACKET_LENGTH];

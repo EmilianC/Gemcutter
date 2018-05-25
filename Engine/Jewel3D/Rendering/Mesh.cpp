@@ -11,7 +11,7 @@ namespace Jwl
 
 	Mesh::Mesh(Entity& _owner, Model::Ptr _model)
 		: Component(_owner)
-		, model(_model)
+		, model(std::move(_model))
 	{
 	}
 }

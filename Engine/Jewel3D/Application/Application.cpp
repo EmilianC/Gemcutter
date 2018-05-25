@@ -369,7 +369,7 @@ namespace Jwl
 		hwnd = NULL;
 	}
 
-	void Application::GameLoop(std::function<void()> update, std::function<void()> draw)
+	void Application::GameLoop(const std::function<void()>& update, const std::function<void()>& draw)
 	{
 		ASSERT(update, "An update function must be provided.");
 		ASSERT(draw, "A draw function must be provided.");

@@ -106,7 +106,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	Log("Initialized Primitives.");
 
 	/* Initialize Game */
-	Game* game = new Game(config);
+	auto game = new Game(config);
 	if (!game->Init())
 	{
 		FocusConsoleWindow();

@@ -76,30 +76,28 @@ namespace Jwl
 		}
 	}
 
-	bool IsPathRelative(std::string_view directory)
+	bool IsPathRelative(std::string_view path)
 	{
-		return ExtractDriveLetter(directory).empty();
+		return ExtractDriveLetter(path).empty();
 	}
 
-	bool IsPathAbsolute(std::string_view directory)
+	bool IsPathAbsolute(std::string_view path)
 	{
-		return !IsPathRelative(directory);
+		return !IsPathRelative(path);
 	}
 
-	bool FileExists(std::string_view fileName)
+	bool FileExists(std::string_view file)
 	{
-		FILE* file = nullptr;
-		fopen_s(&file, fileName.data(), "r");
+		FILE* f = nullptr;
+		fopen_s(&f, file.data(), "r");
 
-		if (file != nullptr)
-		{
-			fclose(file);
-			return true;
-		}
-		else
+		if (f == nullptr)
 		{
 			return false;
 		}
+
+		fclose(f);
+		return true;
 	}
 
 	bool RemoveFile(std::string_view file)
@@ -222,11 +220,11 @@ namespace Jwl
 		return result;
 	}
 
-	std::string LoadFileAsString(std::string_view fileName)
+	std::string LoadFileAsString(std::string_view file)
 	{
 		std::string result;
 
-		std::ifstream inStream(fileName.data());
+		std::ifstream inStream(file.data());
 		if (inStream.good())
 		{
 			result = std::string(std::istreambuf_iterator<char>(inStream), std::istreambuf_iterator<char>());
@@ -275,9 +273,9 @@ namespace Jwl
 		}
 
 		// Get length of file.
-		file.seekg(0, file.end);
+		file.seekg(0, std::ifstream::end);
 		length = static_cast<unsigned>(file.tellg());
-		file.seekg(0, file.beg);
+		file.seekg(0, std::ifstream::beg);
 
 		return true;
 	}

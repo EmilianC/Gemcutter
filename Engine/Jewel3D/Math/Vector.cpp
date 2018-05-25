@@ -38,13 +38,6 @@ namespace Jwl
 			!Equals(y, RHS.y);
 	}
 
-	vec2& vec2::operator=(const vec2& RHS)
-	{
-		this->x = RHS.x;
-		this->y = RHS.y;
-		return *this;
-	}
-
 	vec2& vec2::operator-=(const vec2& RHS)
 	{
 		this->x -= RHS.x;
@@ -215,14 +208,6 @@ namespace Jwl
 			!Equals(x, RHS.x) || 
 			!Equals(y, RHS.y) || 
 			!Equals(z, RHS.z);
-	}
-
-	vec3& vec3::operator=(const vec3& RHS)
-	{
-		this->x = RHS.x;
-		this->y = RHS.y;
-		this->z = RHS.z;
-		return *this;
 	}
 
 	vec3& vec3::operator-=(const vec3& RHS)
@@ -419,15 +404,6 @@ namespace Jwl
 			!Equals(y, RHS.y) || 
 			!Equals(z, RHS.z) || 
 			!Equals(w, RHS.w);
-	}
-
-	vec4& vec4::operator=(const vec4& RHS)
-	{
-		this->x = RHS.x;
-		this->y = RHS.y;
-		this->z = RHS.z;
-		this->w = RHS.w;
-		return *this;
 	}
 
 	vec4& vec4::operator-=(const vec4& RHS)

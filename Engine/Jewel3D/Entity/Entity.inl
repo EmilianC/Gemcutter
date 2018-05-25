@@ -66,7 +66,7 @@ namespace Jwl
 		static_assert(!std::is_base_of_v<TagBase, T>, "Template argument cannot be a Tag.");
 		ASSERT(!Has<T>(), "Component already exists on this entity.");
 
-		T* newComponent = new T(*this, std::forward<Args>(constructorParams)...);
+		auto newComponent = new T(*this, std::forward<Args>(constructorParams)...);
 		components.push_back(newComponent);
 
 		if (IsEnabled())
@@ -91,7 +91,7 @@ namespace Jwl
 		static_assert(std::is_base_of_v<ComponentBase, T>, "Template argument must inherit from Component.");
 		static_assert(!std::is_base_of_v<TagBase, T>, "Template argument cannot be a Tag.");
 
-		if (T* comp = Try<T>())
+		if (auto comp = Try<T>())
 		{
 			return *comp;
 		}

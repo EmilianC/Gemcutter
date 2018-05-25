@@ -74,9 +74,9 @@ namespace Jwl
 	{
 	}
 
-	Name::Name(Entity& _owner, const std::string& _name)
+	Name::Name(Entity& _owner, std::string _name)
 		: Component(_owner)
-		, name(_name)
+		, name(std::move(_name))
 	{
 	}
 

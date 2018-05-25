@@ -169,7 +169,7 @@ namespace Jwl
 	
 	bool NetworkTCP::OpenToConnectionRequests(int localPortNum)
 	{
-		ASSERT(isConnected == false, "Network is already connected.");
+		ASSERT(!isConnected, "Network is already connected.");
 
 		localPort = localPortNum;
 	
@@ -196,7 +196,7 @@ namespace Jwl
 	
 	bool NetworkTCP::CheckForConnectionRequests()
 	{
-		ASSERT(isConnected == false, "Network is already connected.");
+		ASSERT(!isConnected, "Network is already connected.");
 	
 		SOCKET TempSock = static_cast<SOCKET>(SOCKET_ERROR);
 	
@@ -216,7 +216,7 @@ namespace Jwl
 	
 	bool NetworkTCP::SendConnectionRequest(std::string_view remoteIP, int remotePortNum)
 	{
-		ASSERT(isConnected == false, "Network is already connected.");
+		ASSERT(!isConnected, "Network is already connected.");
 
 		remoteIp = remoteIP;
 		remotePort = remotePortNum;
@@ -255,14 +255,14 @@ namespace Jwl
 	
 	bool NetworkTCP::Send(std::string_view packet)
 	{
-		ASSERT(isConnected == true, "Network must have a connection to call this function.");
+		ASSERT(isConnected, "Network must have a connection to call this function.");
 	
 		return send(socketId, packet.data(), packet.size(), 0) != SOCKET_ERROR;
 	}
 	
 	bool NetworkTCP::Receive(std::string& out_packet)
 	{
-		ASSERT(isConnected == true, "Network must have a connection to call this function.");
+		ASSERT(isConnected, "Network must have a connection to call this function.");
 		
 		out_packet.clear();
 		memset(receiveBuffer, '\0', PACKET_LENGTH);
@@ -476,8 +476,6 @@ namespace Jwl
 		, UDPReceiveSocket(-1)
 		, localPortTCP(-1)
 		, localPortUDP(-1)
-		, remotePortTCP(-1)
-		, remotePortUDP(-1)
 		, idCounter(-1)
 	{
 		memset(&TCPAddress, 0, sizeof(sockaddr_in));
@@ -633,9 +631,9 @@ namespace Jwl
 	bool NetworkServer::SendUDP(std::string_view packet)
 	{
 		bool okay = true;
-		for (unsigned i = 0; i < clients.size(); ++i)
+		for (auto& client : clients)
 		{
-			bool result = sendto(UDPSendSocket, packet.data(), packet.size(), 0, reinterpret_cast<sockaddr*>(&clients[i].UDPAddress), clients[i].UDPAddressSize) != SOCKET_ERROR;
+			bool result = sendto(UDPSendSocket, packet.data(), packet.size(), 0, reinterpret_cast<sockaddr*>(&client.UDPAddress), client.UDPAddressSize) != SOCKET_ERROR;
 			okay = okay && result;
 		}
 
@@ -645,12 +643,12 @@ namespace Jwl
 	bool NetworkServer::SendToAllButOneUDP(std::string_view packet, int excludedID)
 	{
 		bool okay = true;
-		for (unsigned i = 0; i < clients.size(); ++i)
+		for (auto& client : clients)
 		{
-			if (clients[i].ID == excludedID)
+			if (client.ID == excludedID)
 				continue;
 
-			bool result = sendto(UDPSendSocket, packet.data(), packet.size(), 0, reinterpret_cast<sockaddr*>(&clients[i].UDPAddress), clients[i].UDPAddressSize) != SOCKET_ERROR;
+			bool result = sendto(UDPSendSocket, packet.data(), packet.size(), 0, reinterpret_cast<sockaddr*>(&client.UDPAddress), client.UDPAddressSize) != SOCKET_ERROR;
 			okay = okay && result;
 		}
 
@@ -678,12 +676,12 @@ namespace Jwl
 			out_packet = receiveBuffer;
 
 			// Identify the client.
-			for (unsigned i = 0; i < clients.size(); ++i)
+			for (auto& client : clients)
 			{
 				// Clients are assumed to have unique IP addresses.
-				if (clients[i].UDPAddress.sin_addr.S_un.S_addr == addr.sin_addr.S_un.S_addr)
+				if (client.UDPAddress.sin_addr.S_un.S_addr == addr.sin_addr.S_un.S_addr)
 				{
-					return clients[i].ID;
+					return client.ID;
 				}
 			}
 		}
@@ -702,9 +700,9 @@ namespace Jwl
 	bool NetworkServer::SendTCP(std::string_view packet)
 	{
 		bool okay = true;
-		for (unsigned i = 0; i < clients.size(); ++i)
+		for (auto& client : clients)
 		{
-			bool result = send(clients[i].TCPSocket, packet.data(), packet.size(), 0) != SOCKET_ERROR;
+			bool result = send(client.TCPSocket, packet.data(), packet.size(), 0) != SOCKET_ERROR;
 			okay = okay && result;
 		}
 
@@ -714,12 +712,12 @@ namespace Jwl
 	bool NetworkServer::SendToAllButOneTCP(std::string_view packet, int excludedID)
 	{
 		bool okay = true;
-		for (unsigned i = 0; i < clients.size(); ++i)
+		for (auto& client : clients)
 		{
-			if (clients[i].ID == excludedID)
+			if (client.ID == excludedID)
 				continue;
 
-			bool result = send(clients[i].TCPSocket, packet.data(), packet.size(), 0) != SOCKET_ERROR;
+			bool result = send(client.TCPSocket, packet.data(), packet.size(), 0) != SOCKET_ERROR;
 			okay = okay && result;
 		}
 
@@ -733,9 +731,9 @@ namespace Jwl
 		memset(receiveBuffer, '\0', PACKET_LENGTH);
 
 		// Look through all clients for packets.
-		for (unsigned i = 0; i < clients.size(); ++i)
+		for (auto& client : clients)
 		{
-			int length = recv(clients[i].TCPSocket, receiveBuffer, PACKET_LENGTH, 0);
+			int length = recv(client.TCPSocket, receiveBuffer, PACKET_LENGTH, 0);
 	
 			// Did we receive anything?
 			if (length == SOCKET_ERROR || WSAGetLastError() == WSAEWOULDBLOCK)
@@ -746,7 +744,7 @@ namespace Jwl
 			else
 			{
 				out_packet = receiveBuffer;
-				return clients[i].ID;
+				return client.ID;
 			}
 		}
 

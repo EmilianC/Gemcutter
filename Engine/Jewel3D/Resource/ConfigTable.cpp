@@ -18,13 +18,11 @@ namespace Jwl
 		{
 			std::string line = input.GetLine();
 
-			if (line.size() == 0 || line[0] == ':')
+			if (line.empty() || line[0] == ':')
 				continue;
 
-			// Line must have an '=' to be processed.
-			size_t pos = line.find("=");
-
 			// Check that the position is valid and not the last character.
+			size_t pos = line.find('=');
 			if (pos == std::string::npos || pos == line.size() - 1)
 				continue;
 

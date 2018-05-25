@@ -21,11 +21,7 @@ namespace Jwl
 
 	ProbabilityMatrix::ProbabilityMatrix(const ProbabilityMatrix& other)
 	{
-		numStates = other.numStates;
-		numActions = other.numActions;
-		data = static_cast<float*>(malloc(sizeof(float) * numStates * numActions));
-
-		std::memcpy(data, other.data, sizeof(float) * numStates * numActions);
+		*this = other;
 	}
 
 	ProbabilityMatrix::ProbabilityMatrix(ProbabilityMatrix&& other)
@@ -41,6 +37,35 @@ namespace Jwl
 	ProbabilityMatrix::~ProbabilityMatrix()
 	{
 		free(data);
+	}
+
+	ProbabilityMatrix& ProbabilityMatrix::operator=(const ProbabilityMatrix& other)
+	{
+		const unsigned oldSize = numStates * numActions;
+		numStates = other.numStates;
+		numActions = other.numActions;
+
+		if (oldSize != numStates * numActions)
+		{
+			data = static_cast<float*>(realloc(data, sizeof(float) * numStates * numActions));
+		}
+
+		std::memcpy(data, other.data, sizeof(float) * numStates * numActions);
+
+		return *this;
+	}
+
+	ProbabilityMatrix& ProbabilityMatrix::operator=(ProbabilityMatrix&& other)
+	{
+		numStates = other.numStates;
+		numActions = other.numActions;
+		data = other.data;
+
+		other.numStates = 0;
+		other.numActions = 0;
+		other.data = nullptr;
+
+		return *this;
 	}
 
 	void ProbabilityMatrix::Normalize()

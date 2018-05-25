@@ -8,7 +8,6 @@ namespace Jwl
 {
 	FunctorList::FunctorList(const FunctorList& other)
 		: functors(other.functors)
-		, dirty(true)
 	{
 	}
 

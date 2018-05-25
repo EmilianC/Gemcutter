@@ -49,21 +49,21 @@ namespace Jwl
 		return *this;
 	}
 
-	void RenderPass::SetCamera(Entity::Ptr cam)
+	void RenderPass::SetCamera(Entity::Ptr _camera)
 	{
-		ASSERT(!cam || cam->Has<Camera>(), "'cam' must have a camera component.");
+		ASSERT(!_camera || _camera->Has<Camera>(), "'camera' must have a camera component.");
 
-		camera = cam;
+		camera = std::move(_camera);
 	}
 
-	void RenderPass::SetShader(Shader::Ptr program)
+	void RenderPass::SetShader(Shader::Ptr _shader)
 	{
-		shader = program;
+		shader = std::move(_shader);
 	}
 
 	void RenderPass::SetTarget(RenderTarget::Ptr _target)
 	{
-		target = _target;
+		target = std::move(_target);
 	}
 
 	void RenderPass::SetViewport(std::optional<Viewport> vp)
@@ -75,19 +75,7 @@ namespace Jwl
 	{
 		ASSERT(!sky || sky->IsCubeMap(), "'sky' must be a cubemap texture.");
 
-		skybox = sky;
-	}
-
-	std::optional<Viewport> RenderPass::GetViewport() const
-	{
-		if (viewport)
-		{
-			return viewport.value();
-		}
-		else
-		{
-			return std::nullopt;
-		}
+		skybox = std::move(sky);
 	}
 
 	void RenderPass::Bind()

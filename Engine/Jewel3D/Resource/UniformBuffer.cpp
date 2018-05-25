@@ -157,7 +157,7 @@ namespace Jwl
 	//-----------------------------------------------------------------------------------------------------
 
 	BufferSlot::BufferSlot(UniformBuffer::Ptr buffer, unsigned unit)
-		: buffer(buffer), unit(unit)
+		: buffer(std::move(buffer)), unit(unit)
 	{
 	}
 
@@ -193,7 +193,7 @@ namespace Jwl
 	{
 		Remove(unit);
 
-		buffers.push_back(BufferSlot(buffer, unit));
+		buffers.emplace_back(std::move(buffer), unit);
 	}
 
 	void BufferList::Remove(unsigned unit)

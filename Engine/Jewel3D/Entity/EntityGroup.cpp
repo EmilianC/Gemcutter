@@ -10,7 +10,7 @@ namespace Jwl
 		ASSERT(ent, "Cannot add a null Entity to an EntityGroup.");
 		ASSERT(!Has(*ent), "Entity is already part of the EntityGroup.");
 
-		entities.push_back(ent);
+		entities.push_back(std::move(ent));
 	}
 
 	void EntityGroup::Remove(const Entity& ent)

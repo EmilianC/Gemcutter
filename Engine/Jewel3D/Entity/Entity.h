@@ -6,9 +6,6 @@
 #include "Jewel3D/Utilities/Hierarchy.h"
 #include "Jewel3D/Utilities/Meta.h"
 
-#include <iterator>
-#include <string>
-#include <type_traits>
 #include <unordered_map>
 #include <vector>
 
@@ -92,10 +89,9 @@ namespace Jwl
 		Entity(const std::string& name);
 		Entity(const Transform& pose);
 
+	public:
 		Entity(const Entity&) = delete;
 		Entity& operator=(const Entity&) = delete;
-		
-	public:
 		~Entity();
 
 		// Returns a pointer to the new Component.

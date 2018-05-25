@@ -6,7 +6,7 @@
 #include "Jewel3D/Utilities/String.h"
 
 #include <OpenAL_Soft/al.h>
-#include <stdio.h>
+#include <cstdio>
 
 #ifdef _DEBUG
 	#define AL_DEBUG_CHECK() \
@@ -78,7 +78,7 @@ namespace Jwl
 		
 		// Check that the WAVE file is OK.
 		fread(chunkID, sizeof(char), 4, file);
-		if (strcmp(chunkID, "RIFF"))
+		if (strcmp(chunkID, "RIFF") != 0)
 		{
 			Error("Sound: ( %s )\nIncorrect file type.", filePath.c_str());
 			return false;
@@ -86,14 +86,14 @@ namespace Jwl
 
 		fread(&chunkSize, sizeof(unsigned), 1, file);
 		fread(chunkID, sizeof(char), 4, file);
-		if (strcmp(chunkID, "WAVE"))
+		if (strcmp(chunkID, "WAVE") != 0)
 		{
 			Error("Sound: ( %s )\nIncorrect file type.", filePath.c_str());
 			return false;
 		}
 
 		fread(chunkID, sizeof(char), 4, file);
-		if (strcmp(chunkID, "fmt "))
+		if (strcmp(chunkID, "fmt ") != 0)
 		{
 			Error("Sound: ( %s )\nIncorrect file type.", filePath.c_str());
 			return false;

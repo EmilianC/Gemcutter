@@ -13,20 +13,20 @@ namespace Jwl
 
 	Text::Text(Entity& _owner, Font::Ptr _font)
 		: Component(_owner)
-		, font(_font)
+		, font(std::move(_font))
 	{
 	}
 
-	Text::Text(Entity& _owner, const std::string& _text)
+	Text::Text(Entity& _owner, std::string _text)
 		: Component(_owner)
-		, text(_text)
+		, text(std::move(_text))
 	{
 	}
 
-	Text::Text(Entity& _owner, Font::Ptr _font, const std::string& _text)
+	Text::Text(Entity& _owner, Font::Ptr _font, std::string _text)
 		: Component(_owner)
-		, font(_font)
-		, text(_text)
+		, font(std::move(_font))
+		, text(std::move(_text))
 	{
 	}
 

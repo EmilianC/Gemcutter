@@ -17,10 +17,11 @@ namespace Jwl
 	{
 	protected:
 		Resource() = default;
+
+	public:
 		Resource(const Resource&) = delete;
 		Resource& operator=(const Resource&) = delete;
 
-	public:
 		// Loads an asset from the specified file, if it wasn't loaded already.
 		// Calls the derived class's Load() with the file path and any other arguments.
 		template<typename... Args>

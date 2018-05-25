@@ -25,7 +25,6 @@ namespace Jwl
 		bool operator==(const mat2&) const;
 		bool operator!=(const mat2&) const;
 
-		mat2& operator=(const mat2&);
 		mat2& operator*=(const mat2&);
 		mat2& operator*=(float scalar);
 		mat2& operator/=(float divisor);
@@ -86,7 +85,6 @@ namespace Jwl
 		bool operator==(const mat3&) const;
 		bool operator!=(const mat3&) const;
 
-		mat3& operator=(const mat3&);
 		mat3& operator*=(const mat3&);
 		mat3& operator*=(float scalar);
 		mat3& operator/=(float divisor);
@@ -156,7 +154,6 @@ namespace Jwl
 		bool operator==(const mat4&) const;
 		bool operator!=(const mat4&) const;
 
-		mat4& operator=(const mat4&);
 		mat4& operator*=(const mat4&);
 		mat4& operator*=(float scalar);
 		mat4& operator/=(float divisor);

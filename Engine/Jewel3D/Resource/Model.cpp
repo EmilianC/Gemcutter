@@ -99,7 +99,6 @@ namespace Jwl
 		{
 			glEnableVertexAttribArray(3);
 			glVertexAttribPointer(3u, 4, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(startOffset));
-			startOffset += sizeof(float) * 4;
 		}
 
 		glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);

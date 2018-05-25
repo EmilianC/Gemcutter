@@ -9,7 +9,6 @@
 
 namespace Jwl
 {
-	class Camera;
 	class Entity;
 	class EntityGroup;
 
@@ -22,10 +21,10 @@ namespace Jwl
 
 		RenderPass& operator=(const RenderPass&);
 
-		// Camera is optional. Provided SceneNode must have a camera component.
-		void SetCamera(Entity::Ptr cam);
-		// The program that will be used if the render call is a post process, or if a renderable does not have a material.
-		void SetShader(Shader::Ptr program);
+		// Provided Entity must have a camera component.
+		void SetCamera(Entity::Ptr camera);
+		// The shader that will be used if the render call is a post process, or if a renderable does not have a material.
+		void SetShader(Shader::Ptr shader);
 		// If no explicit target is set, the render pass will target the backbuffer.
 		void SetTarget(RenderTarget::Ptr target);
 		// If no explicit viewport is set, the viewport will match the render target or back buffer.
@@ -33,11 +32,11 @@ namespace Jwl
 		// Rendered after all the group objects attached. Ignored for post process passes.
 		void SetSkybox(Texture::Ptr sky);
 
-		auto GetCamera() const { return camera; }
-		auto GetShader() const { return shader; }
-		auto GetTarget() const { return target; }
-		auto GetSkybox() const { return skybox; }
-		std::optional<Viewport> GetViewport() const;
+		const auto& GetCamera() const { return camera; }
+		const auto& GetShader() const { return shader; }
+		const auto& GetTarget() const { return target; }
+		const auto& GetSkybox() const { return skybox; }
+		const auto& GetViewport() const { return viewport; }
 
 		// Renders a fullscreen quad.
 		void PostProcess();

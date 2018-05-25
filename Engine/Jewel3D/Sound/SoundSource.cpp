@@ -31,7 +31,7 @@ namespace Jwl
 		alGenSources(1, &hSound);
 		AL_DEBUG_CHECK();
 
-		SetData(sound);
+		SetData(std::move(sound));
 	}
 
 	SoundSource& SoundSource::operator=(const SoundSource& other)
@@ -59,9 +59,9 @@ namespace Jwl
 	{
 		ASSERT(sound, "SoundHandle is not valid.");
 
-		data = sound;
+		data = std::move(sound);
 
-		alSourcei(hSound, AL_BUFFER, sound->GetBufferHandle());
+		alSourcei(hSound, AL_BUFFER, data->GetBufferHandle());
 		AL_DEBUG_CHECK();
 	}
 

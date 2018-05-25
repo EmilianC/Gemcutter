@@ -320,7 +320,7 @@ namespace Jwl
 	//-----------------------------------------------------------------------------------------------------
 
 	TextureSlot::TextureSlot(Texture::Ptr tex, unsigned unit)
-		: tex(tex), unit(unit)
+		: tex(std::move(tex)), unit(unit)
 	{
 	}
 
@@ -356,7 +356,7 @@ namespace Jwl
 	{
 		Remove(unit);
 
-		textureSlots.push_back(TextureSlot(tex, unit));
+		textureSlots.emplace_back(std::move(tex), unit);
 	}
 
 	void TextureList::Remove(unsigned unit)
@@ -388,7 +388,7 @@ namespace Jwl
 
 	//-----------------------------------------------------------------------------------------------------
 	
-	Image::Image(int _width, int _height, TextureFormat _format, unsigned char* _data)
+	Image::Image(int _width, int _height, TextureFormat _format, const unsigned char* _data)
 		: width(_width)
 		, height(_height)
 		, format(_format)

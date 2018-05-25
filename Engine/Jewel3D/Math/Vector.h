@@ -12,7 +12,6 @@ namespace Jwl
 		bool operator==(const vec2&) const;
 		bool operator!=(const vec2&) const;
 
-		vec2& operator=(const vec2&);
 		vec2& operator-=(const vec2&);
 		vec2& operator+=(const vec2&);
 		vec2& operator*=(const vec2&);
@@ -56,7 +55,6 @@ namespace Jwl
 		bool operator==(const vec3&) const;
 		bool operator!=(const vec3&) const;
 
-		vec3& operator=(const vec3&);
 		vec3& operator-=(const vec3&);
 		vec3& operator+=(const vec3&);
 		vec3& operator*=(const vec3&);
@@ -105,7 +103,6 @@ namespace Jwl
 		bool operator==(const vec4&) const;
 		bool operator!=(const vec4&) const;
 
-		vec4& operator=(const vec4&);
 		vec4& operator-=(const vec4&);
 		vec4& operator+=(const vec4&);
 		vec4& operator*=(const vec4&);

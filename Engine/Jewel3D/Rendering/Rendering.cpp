@@ -274,8 +274,7 @@ namespace Jwl
 			return false;
 		}
 
-		typedef bool (APIENTRY *FUNC)(int);
-		FUNC wglSwapIntervalEXT = reinterpret_cast<FUNC>(wglGetProcAddress("wglSwapIntervalEXT"));
+		auto wglSwapIntervalEXT = reinterpret_cast<bool (APIENTRY *)(int)>(wglGetProcAddress("wglSwapIntervalEXT"));
 		if (!wglSwapIntervalEXT)
 		{
 			Error("Could not retrieve \"wglSwapIntervalEXT\" function.");

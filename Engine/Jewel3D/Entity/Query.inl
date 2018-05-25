@@ -18,11 +18,17 @@ namespace Jwl
 		
 		// Enumerates a table of the componentIndex while performing a cast and a dereference.
 		template<class Component>
-		class ComponentIterator : public std::iterator<std::forward_iterator_tag, Component>
+		class ComponentIterator
 		{
-			using Iterator = std::vector<ComponentBase*>::iterator;
 		public:
-			ComponentIterator(Iterator _itr, const Iterator _itrEnd)
+			using iterator			= std::vector<ComponentBase*>::iterator;
+			using iterator_category = std::forward_iterator_tag;
+			using value_type		= Component;
+			using difference_type	= std::ptrdiff_t;
+			using pointer			= Component*;
+			using reference			= Component&;
+
+			ComponentIterator(iterator _itr, const iterator _itrEnd)
 				: itr(_itr), itrEnd(_itrEnd)
 			{}
 
@@ -51,18 +57,24 @@ namespace Jwl
 
 		private:
 			// The current position in the target table.
-			Iterator itr;
+			iterator itr;
 			// Ensures that we don't surpass the table while we are skipping items.
-			const Iterator itrEnd;
+			const iterator itrEnd;
 		};
 
 		// A safe iterator used to enumerate the entityIndex tables.
 		// Although it models a single iterator, it knows when it has reached the end of the table.
-		class SafeIterator : public std::iterator<std::forward_iterator_tag, Entity*>
+		class SafeIterator
 		{
-			using Iterator = std::vector<Entity*>::iterator;
 		public:
-			SafeIterator(Iterator _itr, const Iterator _itrEnd)
+			using iterator			= std::vector<Entity*>::iterator;
+			using iterator_category = std::forward_iterator_tag;
+			using value_type		= Entity*;
+			using difference_type	= std::ptrdiff_t;
+			using pointer			= Entity**;
+			using reference			= Entity*&;
+
+			SafeIterator(iterator _itr, const iterator _itrEnd)
 				: itr(_itr), itrEnd(_itrEnd)
 			{}
 
@@ -102,9 +114,9 @@ namespace Jwl
 
 		private:
 			// The current position in the table.
-			Iterator itr;
+			iterator itr;
 			// Ensures that we don't surpass the table while we are skipping items.
-			const Iterator itrEnd;
+			const iterator itrEnd;
 		};
 
 		// Provides functions to advance two SafeIterators as a logical AND of two entityIndex tables.
@@ -148,9 +160,15 @@ namespace Jwl
 		// Enumerates a SafeIterator and a templated iterator while performing a logical operation between them.
 		// The templated iterator expands into a subtree of more LogicalIterators.
 		template<class Iterator, class Operation>
-		class LogicalIterator : public std::iterator<std::forward_iterator_tag, Entity*>
+		class LogicalIterator
 		{
 		public:
+			using iterator_category = std::forward_iterator_tag;
+			using value_type		= Entity*;
+			using difference_type	= std::ptrdiff_t;
+			using pointer			= Entity**;
+			using reference			= Entity*&;
+
 			LogicalIterator(SafeIterator _itr1, const Iterator _itr2)
 				: itr1(_itr1), itr2(_itr2)
 			{
@@ -190,9 +208,15 @@ namespace Jwl
 		// LogicalIterator specialization for the bottom of the hierarchy.
 		// Directly operates on two SafeIterators.
 		template<class Operation>
-		class LogicalIterator<SafeIterator, Operation> : public std::iterator<std::forward_iterator_tag, Entity*>
+		class LogicalIterator<SafeIterator, Operation>
 		{
 		public:
+			using iterator_category = std::forward_iterator_tag;
+			using value_type		= Entity*;
+			using difference_type	= std::ptrdiff_t;
+			using pointer			= Entity**;
+			using reference			= Entity*&;
+
 			LogicalIterator(SafeIterator _itr1, const SafeIterator _itr2)
 				: itr1(_itr1), itr2(_itr2)
 			{

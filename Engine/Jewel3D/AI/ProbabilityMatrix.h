@@ -12,6 +12,9 @@ namespace Jwl
 		ProbabilityMatrix(ProbabilityMatrix&&);
 		~ProbabilityMatrix();
 
+		ProbabilityMatrix& operator=(const ProbabilityMatrix&);
+		ProbabilityMatrix& operator=(ProbabilityMatrix&&);
+
 		// Re-initialize the matrix with uniform probabilities.
 		void Reset();
 

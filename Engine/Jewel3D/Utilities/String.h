@@ -1,6 +1,6 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
-#include <stdarg.h>
+#include <cstdarg>
 #include <string>
 #include <string_view>
 

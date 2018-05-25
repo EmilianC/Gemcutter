@@ -58,12 +58,6 @@ namespace Jwl
 			!Equals(data[3], M.data[3]);
 	}
 
-	mat2& mat2::operator=(const mat2& M)
-	{
-		memcpy(data, M.data, sizeof(float) * 4);
-		return *this;
-	}
-
 	mat2& mat2::operator*=(const mat2& M)
 	{
 		return *this = (*this) * M;
@@ -150,9 +144,9 @@ namespace Jwl
 			data[1] * scalar, data[3] * scalar);
 	}
 
-	mat2 mat2::operator/(float scalar) const
+	mat2 mat2::operator/(float divisor) const
 	{
-		return *this * (1.0f / scalar);
+		return *this * (1.0f / divisor);
 	}
 
 	mat2 mat2::operator-() const
@@ -210,11 +204,11 @@ namespace Jwl
 		return data[0] * data[3] - data[1] * data[2];
 	}
 
-	void mat2::Scale(const vec2& V)
+	void mat2::Scale(const vec2& scale)
 	{
 		*this = mat2(
-			V.x, 0.0f,
-			0.0f, V.y) * (*this);
+			scale.x, 0.0f,
+			0.0f, scale.y) * (*this);
 	}
 
 	void mat2::Scale(float scale)
@@ -366,12 +360,6 @@ namespace Jwl
 		return false;
 	}
 
-	mat3& mat3::operator=(const mat3& M)
-	{
-		memcpy(data, M.data, sizeof(float) * 9);
-		return *this;
-	}
-
 	mat3& mat3::operator*=(const mat3& M)
 	{
 		return *this = (*this) * M;
@@ -493,9 +481,9 @@ namespace Jwl
 			data[2] * scalar, data[5] * scalar, data[8] * scalar);
 	}
 
-	mat3 mat3::operator/(float scalar) const
+	mat3 mat3::operator/(float divisor) const
 	{
-		return *this * (1.0f / scalar);
+		return *this * (1.0f / divisor);
 	}
 
 	mat3 mat3::operator-() const
@@ -565,17 +553,17 @@ namespace Jwl
 			data[6] * (data[1] * data[5] - data[4] * data[2]);
 	}
 
-	void mat3::Scale(const vec3& V)
+	void mat3::Scale(const vec3& scale)
 	{
-		data[RightX] *= V.x;
-		data[RightY] *= V.x;
-		data[RightZ] *= V.x;
-		data[UpX] *= V.y;
-		data[UpY] *= V.y;
-		data[UpZ] *= V.y;
-		data[ForwardX] *= V.z;
-		data[ForwardY] *= V.z;
-		data[ForwardZ] *= V.z;
+		data[RightX] *= scale.x;
+		data[RightY] *= scale.x;
+		data[RightZ] *= scale.x;
+		data[UpX] *= scale.y;
+		data[UpY] *= scale.y;
+		data[UpZ] *= scale.y;
+		data[ForwardX] *= scale.z;
+		data[ForwardY] *= scale.z;
+		data[ForwardZ] *= scale.z;
 	}
 
 	void mat3::Scale(float scale)
@@ -868,12 +856,6 @@ namespace Jwl
 
 		return false;
 	}
-	
-	mat4& mat4::operator=(const mat4& M)
-	{
-		memcpy(data, M.data, sizeof(float) * 16);
-		return *this;
-	}
 
 	mat4& mat4::operator*=(const mat4& M)
 	{
@@ -1039,9 +1021,9 @@ namespace Jwl
 			data[3] * scalar, data[7] * scalar, data[11] * scalar, data[15] * scalar);
 	};
 
-	mat4 mat4::operator/(float scalar) const
+	mat4 mat4::operator/(float divisor) const
 	{
-		return *this * (1.0f / scalar);
+		return *this * (1.0f / divisor);
 	}
 
 	mat4 mat4::operator-() const
@@ -1232,17 +1214,17 @@ namespace Jwl
 		return result;
 	}
 
-	void mat4::Scale(const vec3& V)
+	void mat4::Scale(const vec3& scale)
 	{
-		data[RightX] *= V.x;
-		data[RightY] *= V.x;
-		data[RightZ] *= V.x;
-		data[UpX] *= V.y;
-		data[UpY] *= V.y;
-		data[UpZ] *= V.y;
-		data[ForwardX] *= V.z;
-		data[ForwardY] *= V.z;
-		data[ForwardZ] *= V.z;
+		data[RightX] *= scale.x;
+		data[RightY] *= scale.x;
+		data[RightZ] *= scale.x;
+		data[UpX] *= scale.y;
+		data[UpY] *= scale.y;
+		data[UpZ] *= scale.y;
+		data[ForwardX] *= scale.z;
+		data[ForwardY] *= scale.z;
+		data[ForwardZ] *= scale.z;
 	}
 
 	void mat4::Scale(float scale)
