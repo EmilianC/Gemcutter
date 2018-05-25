@@ -412,8 +412,8 @@ namespace Jwl
 			return false;
 		}
 
-		std::string source = LoadFileAsString(filePath);
-		if (source.empty())
+		std::string source;
+		if (!LoadFileAsString(filePath, source))
 		{
 			Error("Shader: ( %s )\nUnable to open file.", filePath.c_str());
 			return false;
@@ -703,17 +703,19 @@ namespace Jwl
 
 					if (IsPathRelative(path))
 					{
-						*output = LoadFileAsString(RootAssetDirectory + path);
+						if (!LoadFileAsString(RootAssetDirectory + path, *output))
+						{
+							Error("Shader include ( %s ) failed to load.", path);
+							return false;
+						}
 					}
 					else
 					{
-						*output = LoadFileAsString(path);
-					}
-
-					if (output->empty())
-					{
-						Error("Shader include (%s) failed to load.", path);
-						return false;
+						if (!LoadFileAsString(path, *output))
+						{
+							Error("Shader include ( %s ) failed to load.", path);
+							return false;
+						}
 					}
 				}
 				else

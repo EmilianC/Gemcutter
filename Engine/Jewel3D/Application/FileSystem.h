@@ -65,8 +65,8 @@ namespace Jwl
 	// Returns the extension of any file specified in the string, '.' included.
 	std::string ExtractFileExtension(std::string_view path);
 
-	// Loads all the content of a file as a string, and returns the result.
-	std::string LoadFileAsString(std::string_view file);
+	// Loads all the contents of a file into the provided string.
+	bool LoadFileAsString(std::string_view file, std::string& output);
 
 	// Streams input from a file or loads a file as a buffer.
 	class FileReader

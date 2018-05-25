@@ -220,18 +220,19 @@ namespace Jwl
 		return result;
 	}
 
-	std::string LoadFileAsString(std::string_view file)
+	bool LoadFileAsString(std::string_view file, std::string& output)
 	{
-		std::string result;
-
 		std::ifstream inStream(file.data());
-		if (inStream.good())
+		if (!inStream.good())
 		{
-			result = std::string(std::istreambuf_iterator<char>(inStream), std::istreambuf_iterator<char>());
-			inStream.close();
+			return false;
 		}
 
-		return result;
+		std::ostringstream contents;
+		contents << inStream.rdbuf();
+		output = contents.str();
+
+		return true;
 	}
 
 	FileReader::~FileReader()
@@ -248,18 +249,7 @@ namespace Jwl
 	{
 		ASSERT(!(*this), "FileReader: Already associated with a file");
 
-		file.open(filePath.data());
-		if (!file.good())
-		{
-			return false;
-		}
-
-		std::ostringstream contents;
-		contents << file.rdbuf();
-		file.close();
-
-		buffer = contents.str();
-		return true;
+		return LoadFileAsString(filePath, buffer);
 	}
 
 	bool FileReader::OpenAsStream(std::string_view filePath)
