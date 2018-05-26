@@ -1,7 +1,5 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
-#include "Jewel3D/Utilities/Singleton.h"
-
 #include <string_view>
 
 namespace Jwl
@@ -136,9 +134,10 @@ namespace Jwl
 	// This is a very slow function and should only be used for debugging or when absolutely necessary.
 	bool SaveScreenshot(std::string_view filePath, unsigned x, unsigned y, unsigned width, unsigned height);
 
-	static class GPUInfo : public Singleton<class GPUInfo>
+	extern class GPUInfoSingleton GPUInfo;
+	class GPUInfoSingleton
 	{
-		friend class Application;
+		friend class ApplicationSingleton;
 	public:
 		unsigned GetMaxTextureSlots() const;
 		unsigned GetMaxUniformBufferSlots() const;
@@ -152,5 +151,5 @@ namespace Jwl
 		unsigned maxUniformBufferSlots = 0;
 		unsigned maxRenderTargetTextures = 0;
 		unsigned maxDrawBuffers = 0;
-	} &GPUInfo = Singleton<class GPUInfo>::instanceRef;
+	};
 }

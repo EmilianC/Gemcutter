@@ -1,7 +1,5 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
-#include "Jewel3D/Utilities/Singleton.h"
-
 #include <functional>
 #include <memory>
 #include <queue>
@@ -12,7 +10,7 @@ namespace Jwl
 	// The base class for event objects.
 	class EventBase
 	{
-		friend class EventQueue;
+		friend class EventQueueSingleton;
 	public:
 		virtual ~EventBase() = default;
 		// Returns true if at least one listener responds to this event.
@@ -77,9 +75,10 @@ namespace Jwl
 		// All Listeners of the derived class event.
 		static std::vector<Listener<derived>*> listeners;
 	};
-	
+
 	// This singleton class handles queuing and distribution of events.
-	static class EventQueue : public Singleton<class EventQueue>
+	extern class EventQueueSingleton EventQueue;
+	class EventQueueSingleton
 	{
 	public:
 		// Add a new event to the queue.
@@ -101,7 +100,7 @@ namespace Jwl
 		// Stops events from being queued during a call to Dispatch().
 		bool inDispatch = false;
 #endif
-	} &EventQueue = Singleton<class EventQueue>::instanceRef;
+	};
 }
 
 #include "Event.inl"

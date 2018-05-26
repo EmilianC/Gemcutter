@@ -25,7 +25,9 @@
 
 namespace Jwl
 {
-	bool SoundSystem::Init()
+	SoundSystemSingleton SoundSystem;
+
+	bool SoundSystemSingleton::Init()
 	{
 		// Init audio device.
 		device = alcOpenDevice(nullptr);
@@ -59,12 +61,12 @@ namespace Jwl
 		return true;
 	}
 
-	bool SoundSystem::IsLoaded() const
+	bool SoundSystemSingleton::IsLoaded() const
 	{
 		return context != nullptr;
 	}
 
-	void SoundSystem::Unload()
+	void SoundSystemSingleton::Unload()
 	{
 		// Delete all resources that require the OpenAL context.
 		UnloadAll<Sound>();
@@ -77,7 +79,7 @@ namespace Jwl
 		device = nullptr;
 	}
 
-	void SoundSystem::SetAttenuationMode(AttenuationMode mode)
+	void SoundSystemSingleton::SetAttenuationMode(AttenuationMode mode)
 	{
 		ASSERT(IsLoaded(), "SoundSystem must be initialized to call this function.");
 
@@ -85,7 +87,7 @@ namespace Jwl
 		AL_DEBUG_CHECK();
 	}
 
-	void SoundSystem::SetGlobalVolume(float volume)
+	void SoundSystemSingleton::SetGlobalVolume(float volume)
 	{
 		ASSERT(IsLoaded(), "SoundSystem must be initialized to call this function.");
 		ASSERT(volume >= 0.0f, "'volume' must be non negative.");
@@ -94,7 +96,7 @@ namespace Jwl
 		AL_DEBUG_CHECK();
 	}
 
-	void SoundSystem::Update()
+	void SoundSystemSingleton::Update()
 	{
 		ASSERT(IsLoaded(), "SoundSystem must be initialized to call this function.");
 

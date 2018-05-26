@@ -242,7 +242,9 @@ namespace
 
 namespace Jwl
 {
-	void Application::DrainEventQueue()
+	ApplicationSingleton Application;
+
+	void ApplicationSingleton::DrainEventQueue()
 	{
 		// Windows message loop.
 		MSG msg;
@@ -268,7 +270,7 @@ namespace Jwl
 		}
 	}
 
-	bool Application::CreateGameWindow(std::string_view title, unsigned _glMajorVersion, unsigned _glMinorVersion)
+	bool ApplicationSingleton::CreateGameWindow(std::string_view title, unsigned _glMajorVersion, unsigned _glMinorVersion)
 	{
 		ASSERT(hwnd == NULL, "A game window is already open.");
 		ASSERT(_glMajorVersion > 3 || (_glMajorVersion == 3 && _glMinorVersion == 3), "OpenGL version must be 3.3 or greater.");
@@ -282,16 +284,16 @@ namespace Jwl
 		WNDCLASSEX windowClass;
 		windowClass.cbSize = sizeof(WNDCLASSEX);
 		windowClass.style = CS_HREDRAW | CS_VREDRAW;
-		windowClass.lpfnWndProc = Application::WndProc;			// We set our static method as the event handler
+		windowClass.lpfnWndProc = ApplicationSingleton::WndProc;	// We set our static method as the event handler
 		windowClass.cbClsExtra = 0;
 		windowClass.cbWndExtra = 0;
 		windowClass.hInstance = apInstance;
-		windowClass.hIcon = LoadIcon(NULL, IDI_APPLICATION);	// default icon
-		windowClass.hCursor = LoadCursor(NULL, IDC_ARROW);		// default arrow
-		windowClass.hbrBackground = NULL;						// don't need background
-		windowClass.lpszMenuName = NULL;						// no menu
+		windowClass.hIcon = LoadIcon(NULL, IDI_APPLICATION);		// default icon
+		windowClass.hCursor = LoadCursor(NULL, IDC_ARROW);			// default arrow
+		windowClass.hbrBackground = NULL;							// don't need background
+		windowClass.lpszMenuName = NULL;							// no menu
 		windowClass.lpszClassName = "Jewel3D";
-		windowClass.hIconSm = LoadIcon(NULL, IDI_WINLOGO);		// windows logo small icon
+		windowClass.hIconSm = LoadIcon(NULL, IDI_WINLOGO);			// windows logo small icon
 
 		// Send our window parameters to windows.
 		if (!RegisterClassEx(&windowClass))
@@ -335,7 +337,7 @@ namespace Jwl
 		return true;
 	}
 
-	void Application::DestroyGameWindow()
+	void ApplicationSingleton::DestroyGameWindow()
 	{
 		ASSERT(hwnd != NULL, "A game window must be created before calling this function.");
 
@@ -369,7 +371,7 @@ namespace Jwl
 		hwnd = NULL;
 	}
 
-	void Application::GameLoop(const std::function<void()>& update, const std::function<void()>& draw)
+	void ApplicationSingleton::GameLoop(const std::function<void()>& update, const std::function<void()>& draw)
 	{
 		ASSERT(update, "An update function must be provided.");
 		ASSERT(draw, "A draw function must be provided.");
@@ -446,7 +448,7 @@ namespace Jwl
 		}
 	}
 
-	void Application::UpdateEngine()
+	void ApplicationSingleton::UpdateEngine()
 	{
 		// Distribute all queued events to their listeners.
 		EventQueue.Dispatch();
@@ -466,69 +468,69 @@ namespace Jwl
 		SoundSystem.Update();
 	}
 
-	void Application::Exit()
+	void ApplicationSingleton::Exit()
 	{
 		appIsRunning = false;
 	}
 
-	void Application::EnableCursor()
+	void ApplicationSingleton::EnableCursor()
 	{
 		while (ShowCursor(true) <= 0);
 	}
 
-	void Application::DisableCursor()
+	void ApplicationSingleton::DisableCursor()
 	{
 		while (ShowCursor(false) > 0);
 	}
 
-	bool Application::IsFullscreen() const
+	bool ApplicationSingleton::IsFullscreen() const
 	{
 		return fullscreen;
 	}
 
-	bool Application::IsBordered() const
+	bool ApplicationSingleton::IsBordered() const
 	{
 		return bordered;
 	}
 
-	bool Application::IsResizable() const
+	bool ApplicationSingleton::IsResizable() const
 	{
 		return resizable;
 	}
 
-	std::string Application::GetOpenGLVersionString() const
+	std::string ApplicationSingleton::GetOpenGLVersionString() const
 	{
 		ASSERT(hwnd != NULL, "A game window must be created before calling this function.");
 
 		return std::string(reinterpret_cast<const char*>(glGetString(GL_VERSION)));
 	}
 
-	int Application::GetScreenWidth() const
+	int ApplicationSingleton::GetScreenWidth() const
 	{
 		return screenViewport.width;
 	}
 
-	int Application::GetScreenHeight() const
+	int ApplicationSingleton::GetScreenHeight() const
 	{
 		return screenViewport.height;
 	}
 
-	float Application::GetAspectRatio() const
+	float ApplicationSingleton::GetAspectRatio() const
 	{
 		return screenViewport.GetAspectRatio();
 	}
 
-	float Application::GetDeltaTime() const
+	float ApplicationSingleton::GetDeltaTime() const
 	{
 		return 1.0f / updatesPerSecond;
 	}
 
-	unsigned Application::GetFPS() const
+	unsigned ApplicationSingleton::GetFPS() const
 	{
 		return fps;
 	}
 
-	void Application::SetFPSCap(unsigned _fps)
+	void ApplicationSingleton::SetFPSCap(unsigned _fps)
 	{
 		if (_fps == 0)
 		{
@@ -547,12 +549,12 @@ namespace Jwl
 		}
 	}
 
-	unsigned Application::GetFPSCap() const
+	unsigned ApplicationSingleton::GetFPSCap() const
 	{
 		return FPSCap;
 	}
 
-	void Application::SetUpdatesPerSecond(unsigned ups)
+	void ApplicationSingleton::SetUpdatesPerSecond(unsigned ups)
 	{
 		ASSERT(ups > 0, "Invalid update rate.");
 
@@ -561,22 +563,22 @@ namespace Jwl
 		updatesPerSecond = ups;
 	}
 
-	unsigned Application::GetUpdatesPerSecond() const
+	unsigned ApplicationSingleton::GetUpdatesPerSecond() const
 	{
 		return updatesPerSecond;
 	}
 
-	void Application::SkipToPresentTime()
+	void ApplicationSingleton::SkipToPresentTime()
 	{
 		skipToPresent = true;
 	}
 
-	const Viewport& Application::GetScreenViewport() const
+	const Viewport& ApplicationSingleton::GetScreenViewport() const
 	{
 		return screenViewport;
 	}
 
-	bool Application::SetFullscreen(bool state)
+	bool ApplicationSingleton::SetFullscreen(bool state)
 	{
 		if (hwnd != NULL)
 		{
@@ -610,7 +612,7 @@ namespace Jwl
 		return true;
 	}
 
-	bool Application::SetBordered(bool state)
+	bool ApplicationSingleton::SetBordered(bool state)
 	{
 		if (hwnd != NULL)
 		{
@@ -636,7 +638,7 @@ namespace Jwl
 		return true;
 	}
 
-	bool Application::SetResizable(bool state)
+	bool ApplicationSingleton::SetResizable(bool state)
 	{
 		if (hwnd != NULL)
 		{
@@ -663,7 +665,7 @@ namespace Jwl
 		return true;
 	}
 
-	bool Application::SetResolution(unsigned width, unsigned height)
+	bool ApplicationSingleton::SetResolution(unsigned width, unsigned height)
 	{
 		ASSERT(width > 0, "'width' must be greater than 0.");
 		ASSERT(height > 0, "'height' must be greater than 0.");
@@ -703,7 +705,7 @@ namespace Jwl
 		return true;
 	}
 
-	Application::Application()
+	ApplicationSingleton::ApplicationSingleton()
 		: glMajorVersion(3)
 		, glMinorVersion(3)
 		, screenViewport(0, 0, 800, 600)
@@ -714,7 +716,7 @@ namespace Jwl
 	{
 	}
 
-	Application::~Application()
+	ApplicationSingleton::~ApplicationSingleton()
 	{
 		if (hwnd != NULL)
 		{
@@ -722,10 +724,8 @@ namespace Jwl
 		}
 	}
 
-	LRESULT CALLBACK Application::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+	LRESULT CALLBACK ApplicationSingleton::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	{
-		auto& app = Application::instanceRef;
-
 		switch (uMsg)
 		{
 		case WM_SIZE:
@@ -736,21 +736,21 @@ namespace Jwl
 
 			if (width > 0 && height > 0)
 			{
-				app.screenViewport.width = width;
-				app.screenViewport.height = height;
-				app.screenViewport.bind();
+				Application.screenViewport.width = width;
+				Application.screenViewport.height = height;
+				Application.screenViewport.bind();
 
-				EventQueue.Push(std::make_unique<Resize>(app.screenViewport.width, app.screenViewport.height));
+				EventQueue.Push(std::make_unique<Resize>(Application.screenViewport.width, Application.screenViewport.height));
 			}
 			return 0;
 		}
 
 		case WM_CREATE:
 		{
-			app.hwnd = hWnd;
-			app.deviceContext = GetDC(hWnd);
+			Application.hwnd = hWnd;
+			Application.deviceContext = GetDC(hWnd);
 
-			if (app.deviceContext == 0)
+			if (Application.deviceContext == 0)
 			{
 				Error("Console: DeviceContext could not be created.");
 				return -1;
@@ -769,12 +769,12 @@ namespace Jwl
 			pfd.cStencilBits	= STENCIL_BUFFER_BITS;
 			pfd.iLayerType		= PFD_MAIN_PLANE;
 
-			int pixelFormat = ChoosePixelFormat(app.deviceContext, &pfd);
-			SetPixelFormat(app.deviceContext, pixelFormat, &pfd);
+			int pixelFormat = ChoosePixelFormat(Application.deviceContext, &pfd);
+			SetPixelFormat(Application.deviceContext, pixelFormat, &pfd);
 
 			int attribs[] = {
-				WGL_CONTEXT_MAJOR_VERSION_ARB, static_cast<int>(app.glMajorVersion),
-				WGL_CONTEXT_MINOR_VERSION_ARB, static_cast<int>(app.glMinorVersion),
+				WGL_CONTEXT_MAJOR_VERSION_ARB, static_cast<int>(Application.glMajorVersion),
+				WGL_CONTEXT_MINOR_VERSION_ARB, static_cast<int>(Application.glMinorVersion),
 				WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
 #ifdef _DEBUG
 				WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB | WGL_CONTEXT_DEBUG_BIT_ARB,
@@ -784,9 +784,9 @@ namespace Jwl
 				0 }; // zero indicates the end of the array
 
 			// Create a temporary context so we can get a pointer to our newer context
-			HGLRC tmpContext = wglCreateContext(app.deviceContext);
+			HGLRC tmpContext = wglCreateContext(Application.deviceContext);
 			// Make it current
-			if (!wglMakeCurrent(app.deviceContext, tmpContext))
+			if (!wglMakeCurrent(Application.deviceContext, tmpContext))
 			{
 				Error("Console: Device-Context could not be made current.\nTry updating your graphics drivers.");
 				return -1;
@@ -797,19 +797,19 @@ namespace Jwl
 			if (wglCreateContextAttribsARB)
 			{
 				// Create modern OpenGL context using the new function and delete the old one.
-				app.renderContext = wglCreateContextAttribsARB(app.deviceContext, 0, attribs);
+				Application.renderContext = wglCreateContextAttribsARB(Application.deviceContext, 0, attribs);
 			}
 
-			if (app.renderContext == NULL)
+			if (Application.renderContext == NULL)
 			{
 				Error("Console: Failed to create OpenGL rendering context.\nTry updating your graphics drivers.");
 				return -1;
 			}
 
 			// Switch to new context.
-			wglMakeCurrent(app.deviceContext, NULL);
+			wglMakeCurrent(Application.deviceContext, NULL);
 			wglDeleteContext(tmpContext);
-			if (!wglMakeCurrent(app.deviceContext, app.renderContext))
+			if (!wglMakeCurrent(Application.deviceContext, Application.renderContext))
 			{
 				Error("Console: Render-Context could not be made current.\nTry updating your graphics drivers.");
 				return -1;
@@ -850,7 +850,7 @@ namespace Jwl
 
 		case WM_CLOSE:
 		case WM_DESTROY:
-			app.Exit();
+			Application.Exit();
 			return 0;
 
 		case WM_SYSCOMMAND:

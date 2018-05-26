@@ -2,7 +2,6 @@
 #pragma once
 #include "Jewel3D/Application/Event.h"
 #include "Jewel3D/Rendering/Viewport.h"
-#include "Jewel3D/Utilities/Singleton.h"
 
 #include <Windows.h>
 #include <string_view>
@@ -12,11 +11,12 @@ namespace Jwl
 {
 	// Provides an interface to the operating system and the game window.
 	// The class also responsible for scheduling and executing the game-loop.
-	static class Application : public Singleton<class Application>
+	extern class ApplicationSingleton Application;
+	class ApplicationSingleton
 	{
 	public:
-		Application();
-		~Application();
+		ApplicationSingleton();
+		~ApplicationSingleton();
 
 		bool CreateGameWindow(std::string_view title, unsigned glMajorVersion, unsigned glMinorVersion);
 		void DestroyGameWindow();
@@ -81,7 +81,7 @@ namespace Jwl
 		static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 		bool appIsRunning = true;
-		
+
 		// The target amount of time between updates.
 		__int64 updateStep = 0;
 		// The target amount of time between renders.
@@ -106,7 +106,7 @@ namespace Jwl
 		HINSTANCE apInstance;
 		HGLRC renderContext;
 		HDC deviceContext;
-	} &Application = Singleton<class Application>::instanceRef;
+	};
 
 	// An event distributed by the engine when the game window is resized.
 	struct Resize : public Event<Resize>

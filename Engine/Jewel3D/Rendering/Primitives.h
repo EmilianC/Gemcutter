@@ -2,7 +2,6 @@
 #pragma once
 #include "Jewel3D/Resource/Shader.h"
 #include "Jewel3D/Resource/Texture.h"
-#include "Jewel3D/Utilities/Singleton.h"
 
 namespace Jwl
 {
@@ -11,7 +10,8 @@ namespace Jwl
 
 	// Provides simple, intimidate, geometry rendering.
 	// Line, Triangle, and Rectangle functions are intended for debugging; they are not particularly efficient.
-	static class Primitives : public Singleton<class Primitives>
+	extern class PrimitivesSingleton Primitives;
+	class PrimitivesSingleton
 	{
 	public:
 		bool Load();
@@ -58,5 +58,5 @@ namespace Jwl
 		unsigned skyboxVAO = 0;
 		unsigned skyboxVBO = 0;
 		unsigned primitivesVAO = 0;
-	} &Primitives = Singleton<class Primitives>::instanceRef;
+	};
 }

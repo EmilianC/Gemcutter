@@ -317,7 +317,9 @@ namespace Jwl
 		return true;
 	}
 
-	void GPUInfo::ScanDevice()
+	GPUInfoSingleton GPUInfo;
+
+	void GPUInfoSingleton::ScanDevice()
 	{
 		glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, reinterpret_cast<int*>(&maxTextureSlots));
 		glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, reinterpret_cast<int*>(&maxUniformBufferSlots));
@@ -325,22 +327,22 @@ namespace Jwl
 		glGetIntegerv(GL_MAX_DRAW_BUFFERS, reinterpret_cast<int*>(&maxDrawBuffers));
 	}
 
-	unsigned GPUInfo::GetMaxTextureSlots() const
+	unsigned GPUInfoSingleton::GetMaxTextureSlots() const
 	{
 		return maxTextureSlots;
 	}
 
-	unsigned GPUInfo::GetMaxUniformBufferSlots() const
+	unsigned GPUInfoSingleton::GetMaxUniformBufferSlots() const
 	{
 		return maxUniformBufferSlots;
 	}
 
-	unsigned GPUInfo::GetMaxRenderTargetTextures() const
+	unsigned GPUInfoSingleton::GetMaxRenderTargetTextures() const
 	{
 		return maxRenderTargetTextures;
 	}
 
-	unsigned GPUInfo::GetMaxDrawBuffers() const
+	unsigned GPUInfoSingleton::GetMaxDrawBuffers() const
 	{
 		return maxDrawBuffers;
 	}

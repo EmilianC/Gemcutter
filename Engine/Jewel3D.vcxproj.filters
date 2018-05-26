@@ -193,9 +193,6 @@
     <ClInclude Include="Jewel3D\Utilities\ScopeGuard.h">
       <Filter>Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="Jewel3D\Utilities\Singleton.h">
-      <Filter>Utilities</Filter>
-    </ClInclude>
     <ClInclude Include="Jewel3D\Utilities\String.h">
       <Filter>Utilities</Filter>
     </ClInclude>

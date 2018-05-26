@@ -5,7 +5,9 @@
 
 namespace Jwl
 {
-	void EventQueue::Push(std::unique_ptr<EventBase> e)
+	EventQueueSingleton EventQueue;
+
+	void EventQueueSingleton::Push(std::unique_ptr<EventBase> e)
 	{
 #ifdef _DEBUG
 		ASSERT(!inDispatch,
@@ -19,12 +21,12 @@ namespace Jwl
 		}
 	}
 
-	void EventQueue::Dispatch(const EventBase& e) const
+	void EventQueueSingleton::Dispatch(const EventBase& e) const
 	{
 		e.Raise();
 	}
 
-	void EventQueue::Dispatch()
+	void EventQueueSingleton::Dispatch()
 	{
 		// Events should not be posted during this call.
 #ifdef _DEBUG

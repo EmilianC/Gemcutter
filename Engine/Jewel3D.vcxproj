@@ -307,7 +307,6 @@
     <ClInclude Include="Jewel3D\Utilities\Meta.h" />
     <ClInclude Include="Jewel3D\Utilities\Random.h" />
     <ClInclude Include="Jewel3D\Utilities\ScopeGuard.h" />
-    <ClInclude Include="Jewel3D\Utilities\Singleton.h" />
     <ClInclude Include="Jewel3D\Utilities\String.h" />
   </ItemGroup>
   <ItemGroup>

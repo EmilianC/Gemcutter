@@ -1,7 +1,5 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
-#include "Jewel3D/Utilities/Singleton.h"
-
 struct ALCdevice_struct;
 struct ALCcontext_struct;
 
@@ -19,9 +17,10 @@ namespace Jwl
 	};
 
 	// Provides global control of audio playback.
-	static class SoundSystem : public Singleton<class SoundSystem>
+	extern class SoundSystemSingleton SoundSystem;
+	class SoundSystemSingleton
 	{
-		friend class Application;
+		friend class ApplicationSingleton;
 	public:
 		bool Init();
 		bool IsLoaded() const;
@@ -38,5 +37,5 @@ namespace Jwl
 
 		ALCdevice_struct* device = nullptr;
 		ALCcontext_struct* context = nullptr;
-	} &SoundSystem = Singleton<class SoundSystem>::instanceRef;
+	};
 }

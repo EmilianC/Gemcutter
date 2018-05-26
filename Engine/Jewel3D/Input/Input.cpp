@@ -35,32 +35,34 @@ namespace
 
 namespace Jwl
 {
-	bool Input::IsDown(Key key) const
+	InputSingleton Input;
+
+	bool InputSingleton::IsDown(Key key) const
 	{
 		return keys[static_cast<unsigned>(key)];
 	}
 
-	bool Input::IsUp(Key key) const
+	bool InputSingleton::IsUp(Key key) const
 	{
 		return !IsDown(key);
 	}
 
-	int Input::GetMouseX() const
+	int InputSingleton::GetMouseX() const
 	{
 		return x;
 	}
 
-	int Input::GetMouseY() const
+	int InputSingleton::GetMouseY() const
 	{
 		return y;
 	}
 
-	vec2 Input::GetMousePos() const
+	vec2 InputSingleton::GetMousePos() const
 	{
 		return vec2(static_cast<float>(x), static_cast<float>(y));
 	}
 
-	bool Input::Update(const MSG& msg)
+	bool InputSingleton::Update(const MSG& msg)
 	{
 		switch(msg.message)
 		{

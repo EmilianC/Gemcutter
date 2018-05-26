@@ -313,7 +313,9 @@ namespace
 
 namespace Jwl
 {
-	bool Primitives::Load()
+	PrimitivesSingleton Primitives;
+
+	bool PrimitivesSingleton::Load()
 	{
 		if (isLoaded)
 		{
@@ -541,12 +543,12 @@ namespace Jwl
 		return true;
 	}
 
-	bool Primitives::IsLoaded() const
+	bool PrimitivesSingleton::IsLoaded() const
 	{
 		return isLoaded;
 	}
 
-	void Primitives::Unload()
+	void PrimitivesSingleton::Unload()
 	{
 		skyboxProgram.Unload();
 		lineProgram.Unload();
@@ -578,12 +580,12 @@ namespace Jwl
 		isLoaded = false;
 	}
 
-	void Primitives::DrawLine(const vec3& p1, const vec3& p2, const vec4& color)
+	void PrimitivesSingleton::DrawLine(const vec3& p1, const vec3& p2, const vec4& color)
 	{
 		DrawLine(p1, p2, color, color);
 	}
 
-	void Primitives::DrawLine(const vec3& p1, const vec3& p2, const vec4& color1, const vec4& color2)
+	void PrimitivesSingleton::DrawLine(const vec3& p1, const vec3& p2, const vec4& color1, const vec4& color2)
 	{
 		ASSERT(IsLoaded(), "Primitives must be initialized to call this function.");
 
@@ -600,7 +602,7 @@ namespace Jwl
 		lineProgram.UnBind();
 	}
 
-	void Primitives::DrawLine(const vec3& p1, const vec3& p2, Texture& tex)
+	void PrimitivesSingleton::DrawLine(const vec3& p1, const vec3& p2, Texture& tex)
 	{
 		ASSERT(IsLoaded(), "Primitives must be initialized to call this function.");
 
@@ -619,12 +621,12 @@ namespace Jwl
 		tex.UnBind(0);
 	}
 
-	void Primitives::DrawTriangle(const vec3& p1, const vec3& p2, const vec3& p3, const vec4& color)
+	void PrimitivesSingleton::DrawTriangle(const vec3& p1, const vec3& p2, const vec3& p3, const vec4& color)
 	{
 		DrawTriangle(p1, p2, p3, color, color, color);
 	}
 
-	void Primitives::DrawTriangle(const vec3& p1, const vec3& p2, const vec3& p3, const vec4& color1, const vec4& color2, const vec4& color3)
+	void PrimitivesSingleton::DrawTriangle(const vec3& p1, const vec3& p2, const vec3& p3, const vec4& color1, const vec4& color2, const vec4& color3)
 	{
 		ASSERT(IsLoaded(), "Primitives must be initialized to call this function.");
 
@@ -643,7 +645,7 @@ namespace Jwl
 		triangleProgram.UnBind();
 	}
 
-	void Primitives::DrawTriangle(const vec3& p1, const vec3& p2, const vec3& p3, Texture& tex)
+	void PrimitivesSingleton::DrawTriangle(const vec3& p1, const vec3& p2, const vec3& p3, Texture& tex)
 	{
 		ASSERT(IsLoaded(), "Primitives must be initialized to call this function.");
 
@@ -663,12 +665,12 @@ namespace Jwl
 		tex.UnBind(0);
 	}
 
-	void Primitives::DrawRectangle(const vec3& p1, const vec3& p2, const vec3& p3, const vec3& p4, const vec4& color)
+	void PrimitivesSingleton::DrawRectangle(const vec3& p1, const vec3& p2, const vec3& p3, const vec3& p4, const vec4& color)
 	{
 		DrawRectangle(p1, p2, p3, p4, color, color, color, color);
 	}
 
-	void Primitives::DrawRectangle(const vec3& p1, const vec3& p2, const vec3& p3, const vec3& p4, const vec4& color1, const vec4& color2, const vec4& color3, const vec4& color4)
+	void PrimitivesSingleton::DrawRectangle(const vec3& p1, const vec3& p2, const vec3& p3, const vec3& p4, const vec4& color1, const vec4& color2, const vec4& color3, const vec4& color4)
 	{
 		ASSERT(IsLoaded(), "Primitives must be initialized to call this function.");
 
@@ -689,7 +691,7 @@ namespace Jwl
 		rectangleProgram.UnBind();
 	}
 
-	void Primitives::DrawRectangle(const vec3& p1, const vec3& p2, const vec3& p3, const vec3& p4, Texture& tex)
+	void PrimitivesSingleton::DrawRectangle(const vec3& p1, const vec3& p2, const vec3& p3, const vec3& p4, Texture& tex)
 	{
 		ASSERT(IsLoaded(), "Primitives must be initialized to call this function.");
 
@@ -710,7 +712,7 @@ namespace Jwl
 		tex.UnBind(0);
 	}
 
-	void Primitives::DrawUnitRectangle()
+	void PrimitivesSingleton::DrawUnitRectangle()
 	{
 		ASSERT(IsLoaded(), "Primitives must be initialized to call this function.");
 
@@ -719,7 +721,7 @@ namespace Jwl
 		glBindVertexArray(GL_NONE);
 	}
 
-	void Primitives::DrawGrid(const vec3& p1, const vec3& p2, const vec3& p3, const vec3& p4, const vec4& color, unsigned numDivisions)
+	void PrimitivesSingleton::DrawGrid(const vec3& p1, const vec3& p2, const vec3& p3, const vec3& p4, const vec4& color, unsigned numDivisions)
 	{
 		ASSERT(IsLoaded(), "Primitives must be initialized to call this function.");
 
@@ -745,7 +747,7 @@ namespace Jwl
 		}
 	}
 
-	void Primitives::DrawFullScreenQuad(Shader& program)
+	void PrimitivesSingleton::DrawFullScreenQuad(Shader& program)
 	{
 		ASSERT(IsLoaded(), "Primitives must be initialized to call this function.");
 
@@ -758,7 +760,7 @@ namespace Jwl
 		program.UnBind();
 	}
 
-	void Primitives::DrawFullScreenQuad(Texture& tex)
+	void PrimitivesSingleton::DrawFullScreenQuad(Texture& tex)
 	{
 		ASSERT(IsLoaded(), "Primitives must be initialized to call this function.");
 
@@ -773,12 +775,12 @@ namespace Jwl
 		tex.UnBind(0);
 	}
 
-	void Primitives::DrawSkyBox(Texture& tex)
+	void PrimitivesSingleton::DrawSkyBox(Texture& tex)
 	{
 		DrawSkyBox(tex, skyboxProgram);
 	}
 
-	void Primitives::DrawSkyBox(Texture& tex, Shader& program) const
+	void PrimitivesSingleton::DrawSkyBox(Texture& tex, Shader& program) const
 	{
 		ASSERT(IsLoaded(), "Primitives must be initialized to call this function.");
 		ASSERT(tex.IsCubeMap(), "'tex' must be a cubemap to be rendered as a skybox.");

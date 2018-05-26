@@ -2,7 +2,6 @@
 #pragma once
 #include "Jewel3D/Application/Event.h"
 #include "Jewel3D/Math/Vector.h"
-#include "Jewel3D/Utilities/Singleton.h"
 
 struct tagMSG;
 typedef tagMSG MSG;
@@ -46,9 +45,10 @@ namespace Jwl
 	};
 
 	// Singleton class for managing keyboard and mouse input.
-	static class Input : public Singleton<class Input>
+	extern class InputSingleton Input;
+	class InputSingleton
 	{
-		friend class Application;
+		friend class ApplicationSingleton;
 	public:
 		bool IsDown(Key key) const;
 		bool IsUp(Key key) const;
@@ -63,7 +63,7 @@ namespace Jwl
 		bool keys[static_cast<unsigned>(Key::NUM_KEYS)] = { false };
 		int x = 0;
 		int y = 0;
-	} &Input = Singleton<class Input>::instanceRef;
+	};
 
 	// An event distributed by the engine when the mouse position has changed from the previous frame.
 	struct MouseMoved : public Event<MouseMoved>
