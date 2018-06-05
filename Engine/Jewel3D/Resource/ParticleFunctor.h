@@ -17,11 +17,13 @@ namespace Jwl
 		virtual ~ParticleFunctor() = default;
 		// Called to, optionally, initialize newly spawned particles.
 		// New particles will be in the specified index range.
-		virtual void Init(ParticleBuffer& particles, ParticleEmitter& emitter, unsigned startIndex, unsigned count) {};
+		virtual void Init(ParticleBuffer& particles, ParticleEmitter& emitter, unsigned startIndex, unsigned count) {}
 		// Main update call for the functor.
 		virtual void Update(ParticleBuffer& particles, ParticleEmitter& emitter, float deltaTime) = 0;
 		// Specifies the required data buffers for this functor to update.
-		virtual ParticleBuffers GetRequirements() const { return ParticleBuffers::None; };
+		virtual ParticleBuffers GetRequirements() const { return ParticleBuffers::None; }
+		// Specifies if the functor should be executed even when the emitter is paused.
+		virtual bool UpdateWhenPaused() const { return false; }
 	};
 
 	// A list of ParticleFunctors acting on a ParticleEmitter.

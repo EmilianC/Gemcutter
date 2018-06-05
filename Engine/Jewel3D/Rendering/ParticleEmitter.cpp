@@ -77,13 +77,29 @@ namespace Jwl
 
 	void ParticleEmitter::Update()
 	{
-		if (isPaused)
-			return;
+		if (!isPaused)
+		{
+			UpdateInternal(Application.GetDeltaTime());
+			// Upload data to GPU.
+			data.Update(numCurrentParticles);
+		}
+		else
+		{
+			bool updateBuffer = false;
+			for (auto& functor : functors.GetAll())
+			{
+				if (functor->UpdateWhenPaused())
+				{
+					updateBuffer = true;
+					functor->Update(data, *this, Application.GetDeltaTime());
+				}
+			}
 
-		UpdateInternal(Application.GetDeltaTime());
-
-		// Upload data to GPU.
-		data.Update(numCurrentParticles);
+			if (updateBuffer)
+			{
+				data.Update(numCurrentParticles);
+			}
+		}
 	}
 
 	unsigned ParticleEmitter::GetNumAliveParticles() const
