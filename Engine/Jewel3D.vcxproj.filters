@@ -181,6 +181,9 @@
     <ClCompile Include="Jewel3D\Resource\Resource.cpp">
       <Filter>Resource</Filter>
     </ClCompile>
+    <ClCompile Include="Jewel3D\Resource\VertexArray.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Jewel3D\Precompiled.h" />
@@ -340,6 +343,9 @@
     <ClInclude Include="Jewel3D\Rendering\ParticleEmitter.h">
       <Filter>Rendering</Filter>
     </ClInclude>
+    <ClInclude Include="Jewel3D\Resource\VertexArray.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Jewel3D\Utilities\Hierarchy.inl">
@@ -356,6 +362,9 @@
     </None>
     <None Include="Jewel3D\Application\Event.inl">
       <Filter>Application</Filter>
+    </None>
+    <None Include="Jewel3D\Resource\VertexArray.inl">
+      <Filter>Resource</Filter>
     </None>
   </ItemGroup>
 </Project>
