@@ -32,8 +32,7 @@ namespace Jwl
 		bool HasNormals() const;
 		bool HasTangents() const;
 
-		unsigned GetNumFaces() const;
-		unsigned GetNumVertices() const;
+		unsigned GetVertexCount() const;
 
 	private:
 		// OpenGL buffers.
@@ -47,7 +46,6 @@ namespace Jwl
 		bool hasNormals	 = false;
 		bool hasTangents = false;
 
-		unsigned numFaces	 = 0;
 		unsigned numVertices = 0;
 	};
 }

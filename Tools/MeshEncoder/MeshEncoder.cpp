@@ -306,8 +306,7 @@ bool MeshEncoder::Convert(std::string_view source, std::string_view destination,
 		}
 	}
 
-	const unsigned numFaces = faceData.size();
-	const unsigned numVertices = numFaces * 3;
+	const unsigned numVertices = faceData.size() * 3;
 	unsigned bufferSize = numVertices * 3;
 	if (useUvs) bufferSize += numVertices * 2;
 	if (useNormals) bufferSize += numVertices * 3;
@@ -363,7 +362,7 @@ bool MeshEncoder::Convert(std::string_view source, std::string_view destination,
 	fwrite(&useUvs, sizeof(bool), 1, modelFile);
 	fwrite(&useNormals, sizeof(bool), 1, modelFile);
 	fwrite(&useTangents, sizeof(bool), 1, modelFile);
-	fwrite(&numFaces, sizeof(int), 1, modelFile);
+	fwrite(&numVertices, sizeof(int), 1, modelFile);
 
 	// Write Data.
 	fwrite(data, sizeof(float), bufferSize, modelFile);

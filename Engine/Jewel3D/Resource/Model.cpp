@@ -41,10 +41,9 @@ namespace Jwl
 		fread(&hasUvs, sizeof(bool), 1, binaryFile);
 		fread(&hasNormals, sizeof(bool), 1, binaryFile);
 		fread(&hasTangents, sizeof(bool), 1, binaryFile);
-		fread(&numFaces, sizeof(int), 1, binaryFile);
+		fread(&numVertices, sizeof(int), 1, binaryFile);
 
 		// Determine mesh properties.
-		numVertices = numFaces * 3;
 		int bufferSize = numVertices * 3;
 		int stride = sizeof(float) * 3;
 		if (hasUvs)
@@ -125,7 +124,6 @@ namespace Jwl
 		hasNormals = false;
 		hasTangents = false;
 
-		numFaces = 0;
 		numVertices = 0;
 	}
 
@@ -159,12 +157,7 @@ namespace Jwl
 		return hasTangents;
 	}
 
-	unsigned Model::GetNumFaces() const
-	{
-		return numFaces;
-	}
-
-	unsigned Model::GetNumVertices() const
+	unsigned Model::GetVertexCount() const
 	{
 		return numVertices;
 	}
