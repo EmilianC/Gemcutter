@@ -8,6 +8,7 @@
 namespace Jwl
 {
 	// A single OpenGL buffer object.
+	// This owns and provides access to the array of data used for rendering.
 	class VertexBuffer
 	{
 	public:
@@ -52,6 +53,12 @@ namespace Jwl
 		unsigned stride;
 	};
 
+	namespace detail
+	{
+		template<typename Type>
+		class VertexRange;
+	}
+
 	// 
 	class VertexArray : public Shareable<VertexArray>
 	{
@@ -64,6 +71,10 @@ namespace Jwl
 
 		void AddStream(const VertexStream& ptr);
 		VertexStream& GetStream(unsigned index);
+
+		// 
+		template<typename Type>
+		detail::VertexRange<Type> GetStream(unsigned index, VertexAccess access = VertexAccess::ReadWrite);
 
 		void Bind();
 		void UnBind();
