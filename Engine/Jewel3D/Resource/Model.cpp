@@ -5,16 +5,14 @@
 #include "Jewel3D/Utilities/ScopeGuard.h"
 #include "Jewel3D/Utilities/String.h"
 
-#include <GLEW/GL/glew.h>
-
 namespace Jwl
 {
-	Model::~Model()
+	bool Model::Load(std::string filePath)
 	{
-		Unload();
+		return Load(std::move(filePath), VertexBufferUsage::Static);
 	}
 
-	bool Model::Load(std::string filePath)
+	bool Model::Load(std::string filePath, VertexBufferUsage usage)
 	{
 		auto ext = ExtractFileExtension(filePath);
 		if (ext.empty())
@@ -36,6 +34,7 @@ namespace Jwl
 		}
 		defer { fclose(binaryFile); };
 
+		int numVertices;
 		fread(&minBounds, sizeof(vec3), 1, binaryFile);
 		fread(&maxBounds, sizeof(vec3), 1, binaryFile);
 		fread(&hasUvs, sizeof(bool), 1, binaryFile);
@@ -62,74 +61,52 @@ namespace Jwl
 			stride += sizeof(float) * 4;
 		}
 
-		// Read the data buffer.
-		float* data = static_cast<float*>(malloc(sizeof(float) * bufferSize));
-		defer { free(data); };
+		vertexArray = VertexArray::MakeNew();
+		vertexArray->numVertices = numVertices;	// temp?
+
+		// Read the data buffer from the file.
+		VertexBuffer& buffer = vertexArray->CreateBuffer(sizeof(float) * bufferSize, usage);
+		auto* data = buffer.MapBuffer(VertexAccess::WriteOnly);
 		fread(data, sizeof(float), bufferSize, binaryFile);
+		buffer.UnmapBuffer();
 
-		// Send data to OpenGL.
-		glGenVertexArrays(1, &VAO);
-		glGenBuffers(1, &VBO);
+		// Set streams...
+		VertexStream stream;
+		stream.bindingUnit = 0;
+		stream.bufferSource = 0;
+		stream.format = VertexFormat::Float;
+		stream.numElements = 3;
+		stream.startOffset = 0;
+		stream.stride = stride;
 
-		glBindVertexArray(VAO);
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * bufferSize, data, GL_STATIC_DRAW);
-
-		unsigned startOffset = 0;
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0u, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(startOffset));
-		startOffset += sizeof(float) * 3;
+		vertexArray->AddStream(stream);
+		stream.startOffset += sizeof(float) * 3;
 
 		if (hasUvs)
 		{
-			glEnableVertexAttribArray(1);
-			glVertexAttribPointer(1u, 2, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(startOffset));
-			startOffset += sizeof(float) * 2;
+			stream.bindingUnit = 1;
+			stream.numElements = 2;
+
+			vertexArray->AddStream(stream);
+			stream.startOffset += sizeof(float) * 2;
 		}
-		
 		if (hasNormals)
 		{
-			glEnableVertexAttribArray(2);
-			glVertexAttribPointer(2u, 3, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(startOffset));
-			startOffset += sizeof(float) * 3;
-		}
+			stream.bindingUnit = 2;
+			stream.numElements = 3;
 
+			vertexArray->AddStream(stream);
+			stream.startOffset += sizeof(float) * 3;
+		}
 		if (hasTangents)
 		{
-			glEnableVertexAttribArray(3);
-			glVertexAttribPointer(3u, 4, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(startOffset));
-		}
+			stream.bindingUnit = 3;
+			stream.numElements = 4;
 
-		glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
-		glBindVertexArray(GL_NONE);
+			vertexArray->AddStream(stream);
+		}
 
 		return true;
-	}
-
-	void Model::Unload()
-	{
-		if (VBO != GL_NONE)
-		{
-			glDeleteBuffers(1, &VBO);
-			VBO = GL_NONE;
-		}
-		
-		if (VAO != GL_NONE)
-		{
-			glDeleteVertexArrays(1, &VAO);
-			VAO = GL_NONE;
-		}
-
-		hasUvs = false;
-		hasNormals = false;
-		hasTangents = false;
-
-		numVertices = 0;
-	}
-
-	unsigned Model::GetVAO() const
-	{
-		return VAO;
 	}
 
 	const vec3& Model::GetMinBounds() const
@@ -157,8 +134,8 @@ namespace Jwl
 		return hasTangents;
 	}
 
-	unsigned Model::GetVertexCount() const
+	VertexArray::Ptr& Model::GetVertexArray()
 	{
-		return numVertices;
+		return vertexArray;
 	}
 }

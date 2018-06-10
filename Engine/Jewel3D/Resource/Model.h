@@ -2,12 +2,12 @@
 #pragma once
 #include "Resource.h"
 #include "Shareable.h"
+#include "VertexArray.h"
 #include "Jewel3D\Math\Vector.h"
 
 namespace Jwl
 {
-	// A 3D model resource.
-	// To be rendered, a model must be set on an Entity's Mesh component.
+	// A 3D model resource. Can be attached to an Entity's Mesh component.
 	//
 	// Provides the following attributes and bindings:
 	//	Vertex  : 0
@@ -17,13 +17,11 @@ namespace Jwl
 	class Model : public Resource<Model>, public Shareable<Model>
 	{
 	public:
-		~Model();
-
 		// Loads pre-packed *.model resources.
 		bool Load(std::string filePath);
-		void Unload();
+		bool Load(std::string filePath, VertexBufferUsage usage);
 
-		unsigned GetVAO() const;
+		VertexArray::Ptr& GetVertexArray();
 
 		// Returns the extents of each axis in local-space.
 		const vec3& GetMinBounds() const;
@@ -33,12 +31,8 @@ namespace Jwl
 		bool HasNormals() const;
 		bool HasTangents() const;
 
-		unsigned GetVertexCount() const;
-
 	private:
-		// OpenGL buffers.
-		unsigned VBO = 0;
-		unsigned VAO = 0;
+		VertexArray::Ptr vertexArray;
 
 		vec3 minBounds;
 		vec3 maxBounds;
@@ -46,7 +40,5 @@ namespace Jwl
 		bool hasUvs		 = false;
 		bool hasNormals	 = false;
 		bool hasTangents = false;
-
-		unsigned numVertices = 0;
 	};
 }

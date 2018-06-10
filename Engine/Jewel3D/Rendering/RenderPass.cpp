@@ -256,9 +256,11 @@ namespace Jwl
 			// Capture pointer to current mesh data.
 			auto& modelData = mesh->model;
 			ASSERT(modelData, "Entity has a Mesh component but does not have a Model to render.");
-
-			glBindVertexArray(modelData->GetVAO());
-			glDrawArrays(GL_TRIANGLES, 0, modelData->GetVertexCount());
+			auto vertexArray = modelData->GetVertexArray();
+			ASSERT(modelData, "Entity has a Mesh component but does not have a VertexArray to render.");
+			
+			vertexArray->Bind();
+			glDrawArrays(GL_TRIANGLES, 0, vertexArray->GetVertexCount());
 		}
 #pragma endregion
 
