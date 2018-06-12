@@ -49,9 +49,10 @@ namespace Jwl
 		class VertexRange
 		{
 		public:
-			VertexRange(VertexBuffer& _buffer, VertexStream& _stream, VertexAccess _access)
-				: buffer(_buffer), stream(_stream), access(_access)
+			VertexRange(VertexBuffer& _buffer, VertexStream& _stream, VertexAccess access)
+				: buffer(_buffer), stream(_stream)
 			{
+				data = static_cast<unsigned char*>(buffer.MapBuffer(access));
 			}
 
 			~VertexRange()
@@ -61,18 +62,16 @@ namespace Jwl
 
 			VertexIterator<Type> begin()
 			{
-				auto* data = static_cast<unsigned char*>(buffer.MapBuffer(access));
 				auto* end = data + buffer.GetSize();
-
 				return VertexIterator<Type>(data + stream.startOffset, end, stream.stride);
 			}
 
 			VertexRangeEndSentinel end() { return {}; }
 
 		private:
+			unsigned char* data;
 			VertexBuffer& buffer;
 			VertexStream& stream;
-			VertexAccess access;
 		};
 	}
 
