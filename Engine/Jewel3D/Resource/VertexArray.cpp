@@ -116,6 +116,11 @@ namespace Jwl
 	{
 		ASSERT(ptr.bufferSource < buffers.size(), "'ptr.bufferSource' is out of bounds.");
 
+		if ((ptr.startOffset % 4) != 0)
+		{
+			Warning("VertexStream's startOffset does not start on a 4-byte boundary. This may lead to degraded performance.");
+		}
+
 		streams.push_back(ptr);
 
 		glBindVertexArray(VAO);
