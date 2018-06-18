@@ -44,13 +44,14 @@ namespace Jwl
 	// Defines how to read the attribute from the given VertexBuffer.
 	struct VertexStream
 	{
-		unsigned bufferSource;
-		unsigned bindingUnit;
+		unsigned bufferSource = 0;
+		unsigned bindingUnit = 0;
 
-		VertexFormat format;
-		unsigned numElements;
-		unsigned startOffset;
-		unsigned stride;
+		VertexFormat format = VertexFormat::Float;
+		bool normalized = false;
+		unsigned numElements = 1;
+		unsigned startOffset = 0;
+		unsigned stride = 0;
 	};
 
 	namespace detail

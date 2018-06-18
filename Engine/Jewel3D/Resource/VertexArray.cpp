@@ -130,7 +130,7 @@ namespace Jwl
 		switch (ptr.format)
 		{
 		case VertexFormat::Float:
-			glVertexAttribPointer(ptr.bindingUnit, ptr.numElements, ResolveVertexFormat(ptr.format), GL_FALSE, ptr.stride, reinterpret_cast<void*>(ptr.startOffset));
+			glVertexAttribPointer(ptr.bindingUnit, ptr.numElements, ResolveVertexFormat(ptr.format), ptr.normalized, ptr.stride, reinterpret_cast<void*>(ptr.startOffset));
 			break;
 
 		case VertexFormat::Int:
