@@ -3,9 +3,9 @@
 #include "Jewel3D/Application/Event.h"
 #include "Jewel3D/Rendering/Viewport.h"
 
-#include <Windows.h>
-#include <string_view>
 #include <functional>
+#include <string_view>
+#include <Windows.h>
 
 namespace Jwl
 {

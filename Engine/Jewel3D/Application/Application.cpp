@@ -35,19 +35,10 @@ namespace
 	{
 		if (bordered && !fullScreen)
 		{
-			if (resizable)
-			{
-				return STYLE_BORDERED;
-			}
-			else
-			{
-				return STYLE_BORDERED_FIXED;
-			}
+			return resizable ? STYLE_BORDERED : STYLE_BORDERED_FIXED;
 		}
-		else
-		{
-			return STYLE_BORDERLESS;
-		}
+
+		return STYLE_BORDERLESS;
 	}
 
 	RECT GetWindowSize(LONG style, unsigned clientWidth, unsigned clientHeight)
@@ -135,7 +126,7 @@ namespace
 		return true;
 	}
 
-	#ifdef _DEBUG
+#ifdef _DEBUG
 	void CALLBACK OpenGLDebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* msg, const void* /* unused */)
 	{
 		// Ignored messages.
@@ -151,9 +142,11 @@ namespace
 		}
 
 		char buffer[9] = { '\0' };
-		sprintf(buffer, "%.8x", id);
+		snprintf(buffer, 9, "%.8x", id);
 
-		std::string message("OpenGL(0x");
+		std::string message;
+		message.reserve(128);
+		message += "OpenGL(0x";
 		message += buffer;
 		message += "): ";
 
@@ -237,7 +230,7 @@ namespace
 			Jwl::Log(message);
 		}
 	}
-	#endif
+#endif
 }
 
 namespace Jwl
@@ -276,26 +269,23 @@ namespace Jwl
 		ASSERT(_glMajorVersion > 3 || (_glMajorVersion == 3 && _glMinorVersion == 3), "OpenGL version must be 3.3 or greater.");
 
 		apInstance = reinterpret_cast<HINSTANCE>(&__ImageBase);
-
 		glMajorVersion = _glMajorVersion;
 		glMinorVersion = _glMinorVersion;
 
-		// Prepare our window parameters.
 		WNDCLASSEX windowClass;
 		windowClass.cbSize = sizeof(WNDCLASSEX);
 		windowClass.style = CS_HREDRAW | CS_VREDRAW;
-		windowClass.lpfnWndProc = ApplicationSingleton::WndProc;	// We set our static method as the event handler
+		windowClass.lpfnWndProc = ApplicationSingleton::WndProc;
 		windowClass.cbClsExtra = 0;
 		windowClass.cbWndExtra = 0;
 		windowClass.hInstance = apInstance;
-		windowClass.hIcon = LoadIcon(NULL, IDI_APPLICATION);		// default icon
-		windowClass.hCursor = LoadCursor(NULL, IDC_ARROW);			// default arrow
-		windowClass.hbrBackground = NULL;							// don't need background
-		windowClass.lpszMenuName = NULL;							// no menu
+		windowClass.hIcon = LoadIcon(NULL, IDI_APPLICATION); // Default icon.
+		windowClass.hCursor = LoadCursor(NULL, IDC_ARROW);	 // Default arrow.
+		windowClass.hbrBackground = NULL;
+		windowClass.lpszMenuName = NULL;
 		windowClass.lpszClassName = "Jewel3D";
-		windowClass.hIconSm = LoadIcon(NULL, IDI_WINLOGO);			// windows logo small icon
+		windowClass.hIconSm = LoadIcon(NULL, IDI_WINLOGO);	 // Windows logo small icon.
 
-		// Send our window parameters to windows.
 		if (!RegisterClassEx(&windowClass))
 		{
 			Error("Console: Failed to register window.");
@@ -305,22 +295,19 @@ namespace Jwl
 		LONG style = GetStyle(fullscreen, bordered, resizable);
 		RECT windowRect = GetWindowSize(style, screenViewport.width, screenViewport.height);
 
-		// Create window. this sends a WM_CREATE message that is handled before the function returns.
-		// Hwnd is set when handling WM_CREATE in the WinProc.
-		HWND window = CreateWindowEx(
-			STYLE_EXTENDED,			// extended style
-			"Jewel3D",				// class name
-			title.data(),			// application name
-			style,					// border style
-			CW_USEDEFAULT, CW_USEDEFAULT,		// x,y position of window
-			windowRect.right - windowRect.left,	// dimensions of the window
+		// This will internally send a WM_CREATE message that is handled before the function returns.
+		if (!CreateWindowEx(
+			STYLE_EXTENDED,
+			"Jewel3D",		// Class name.
+			title.data(),
+			style,
+			CW_USEDEFAULT, CW_USEDEFAULT,
+			windowRect.right - windowRect.left,
 			windowRect.bottom - windowRect.top,
-			NULL,					// handle to parent
-			NULL,					// handle to menu
-			apInstance,				// application instance
-			NULL);					// extra data
-
-		if (window == NULL)
+			NULL,			// Handle to parent.
+			NULL,			// Handle to menu.
+			apInstance,
+			NULL))
 		{
 			Error("Console: Failed to create window.");
 			return false;
@@ -502,7 +489,7 @@ namespace Jwl
 	{
 		ASSERT(hwnd != NULL, "A game window must be created before calling this function.");
 
-		return std::string(reinterpret_cast<const char*>(glGetString(GL_VERSION)));
+		return reinterpret_cast<const char*>(glGetString(GL_VERSION));
 	}
 
 	int ApplicationSingleton::GetScreenWidth() const
@@ -620,7 +607,8 @@ namespace Jwl
 			{
 				return true;
 			}
-			else if (IsFullscreen())
+
+			if (IsFullscreen())
 			{
 				// State will be applied next time we exit fullscreen mode.
 				bordered = state;
@@ -781,11 +769,10 @@ namespace Jwl
 #else
 				WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
 #endif
-				0 }; // zero indicates the end of the array
+				0 };
 
 			// Create a temporary context so we can get a pointer to our newer context
 			HGLRC tmpContext = wglCreateContext(Application.deviceContext);
-			// Make it current
 			if (!wglMakeCurrent(Application.deviceContext, tmpContext))
 			{
 				Error("Console: Device-Context could not be made current.\nTry updating your graphics drivers.");
@@ -825,8 +812,7 @@ namespace Jwl
 				return -1;
 			}
 
-			// GLEW can sometimes cause a GL_INVALID_ENUM error.
-			// We pop it off the error stack here.
+			// Initializing GLEW can sometimes emit an GL_INVALID_ENUM error, so we discard any errors here.
 			glGetError();
 
 #ifdef _DEBUG
@@ -854,7 +840,7 @@ namespace Jwl
 			return 0;
 
 		case WM_SYSCOMMAND:
-			// Here we block screen savers and monitor power-saving modes.
+			// Ignore screen savers and monitor power-saving modes.
 			if (wParam == SC_SCREENSAVE || wParam == SC_MONITORPOWER)
 			{
 				return 0;
