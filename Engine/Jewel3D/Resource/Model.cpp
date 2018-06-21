@@ -62,7 +62,6 @@ namespace Jwl
 		}
 
 		vertexArray = VertexArray::MakeNew();
-		vertexArray->numVertices = numVertices;	// temp?
 
 		// Read the data buffer from the file.
 		VertexBuffer& buffer = vertexArray->CreateBuffer(sizeof(float) * bufferSize, usage);
@@ -71,7 +70,7 @@ namespace Jwl
 		buffer.UnmapBuffer();
 
 		// Set streams...
-		VertexStream stream;
+		VertexStream stream = {};
 		stream.bindingUnit = 0;
 		stream.bufferSource = 0;
 		stream.format = VertexFormat::Float;
@@ -105,6 +104,8 @@ namespace Jwl
 
 			vertexArray->AddStream(stream);
 		}
+
+		vertexArray->SetVertexCount(numVertices);
 
 		return true;
 	}

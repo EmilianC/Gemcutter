@@ -29,8 +29,8 @@ namespace Jwl
 		VertexBufferUsage GetBufferUsage() const;
 
 	private:
-		void Bind();
-		void UnBind();
+		void Bind() const;
+		void UnBind() const;
 
 		unsigned VBO = 0;
 		unsigned size = 0;
@@ -77,21 +77,20 @@ namespace Jwl
 		template<typename Type>
 		detail::VertexRange<Type> GetStream(unsigned index, VertexAccess access = VertexAccess::ReadWrite);
 
-		void Bind();
-		void UnBind();
+		void Bind() const;
+		void UnBind() const;
 
+		void SetVertexCount(unsigned count);
 		unsigned GetVertexCount() const;
 		const auto& GetBuffers() const { return buffers; }
 		const auto& GetStreams() const { return streams; }
 
 	private:
 		unsigned VAO = 0;
+		unsigned vertexCount = 0;
 
 		std::vector<VertexBuffer> buffers;
 		std::vector<VertexStream> streams;
-
-	public: //temp
-		unsigned numVertices = 0;
 	};
 }
 

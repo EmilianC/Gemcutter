@@ -71,12 +71,12 @@ namespace Jwl
 		return usage;
 	}
 
-	void VertexBuffer::Bind()
+	void VertexBuffer::Bind() const
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	}
 
-	void VertexBuffer::UnBind()
+	void VertexBuffer::UnBind() const
 	{
 		glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
 	}
@@ -114,17 +114,19 @@ namespace Jwl
 
 	void VertexArray::AddStream(const VertexStream& ptr)
 	{
-		ASSERT(ptr.bufferSource < buffers.size(), "'ptr.bufferSource' is out of bounds.");
+		ASSERT(ptr.bufferSource < buffers.size(), "'ptr.bufferSource' does not refer to an attached VertexBuffer.");
+		const auto& buffer = buffers[ptr.bufferSource];
 
 		if ((ptr.startOffset % 4) != 0)
 		{
 			Warning("VertexStream's startOffset does not start on a 4-byte boundary. This may lead to degraded performance.");
 		}
 
+		ASSERT(ptr.startOffset < buffer.GetSize(), "'ptr.startOffset' cannot be greater than the size of the VertexBuffer.");
 		streams.push_back(ptr);
 
 		glBindVertexArray(VAO);
-		buffers[ptr.bufferSource].Bind();
+		buffer.Bind();
 		glEnableVertexAttribArray(ptr.bindingUnit);
 
 		switch (ptr.format)
@@ -153,23 +155,44 @@ namespace Jwl
 
 	VertexStream& VertexArray::GetStream(unsigned index)
 	{
-		ASSERT(index < buffers.size(), "'ptr.bufferSource' is out of bounds.");
+		ASSERT(index < buffers.size(), "'index' is out of bounds.");
 
 		return streams[index];
 	}
 
-	void VertexArray::Bind()
+	void VertexArray::Bind() const
 	{
 		glBindVertexArray(VAO);
 	}
 
-	void VertexArray::UnBind()
+	void VertexArray::UnBind() const
 	{
 		glBindVertexArray(GL_NONE);
 	}
 
+	void VertexArray::SetVertexCount(unsigned count)
+	{
+#ifdef _DEBUG
+		if (count > 0)
+		{
+			// Check to ensure that the specified count would not cause us to read past
+			// any of the active buffers.
+			for (unsigned i = 0; i < streams.size(); ++i)
+			{
+				const auto& stream = streams[i];
+				const unsigned bufferSize = buffers[stream.bufferSource].GetSize();
+				const unsigned end = stream.startOffset + (count - 1) * stream.stride;
+
+				ASSERT(end < bufferSize, "'count' would cause a buffer overrun in VertexBuffer( %d ) read with Stream( %d ).", stream.bufferSource, i);
+			}
+		}
+#endif
+
+		vertexCount = count;
+	}
+
 	unsigned VertexArray::GetVertexCount() const
 	{
-		return numVertices;
+		return vertexCount;
 	}
 }
