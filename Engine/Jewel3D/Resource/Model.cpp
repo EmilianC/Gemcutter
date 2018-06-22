@@ -62,21 +62,22 @@ namespace Jwl
 		}
 
 		vertexArray = VertexArray::MakeNew();
+		auto buffer = VertexBuffer::MakeNew(sizeof(float) * bufferSize, usage);
 
 		// Read the data buffer from the file.
-		VertexBuffer& buffer = vertexArray->CreateBuffer(sizeof(float) * bufferSize, usage);
-		auto* data = buffer.MapBuffer(VertexAccess::WriteOnly);
+		void* data = buffer->MapBuffer(VertexAccess::WriteOnly);
 		fread(data, sizeof(float), bufferSize, binaryFile);
-		buffer.UnmapBuffer();
+		buffer->UnmapBuffer();
 
-		// Set streams...
+		// Enable vertex attribute streams.
 		VertexStream stream = {};
-		stream.bindingUnit = 0;
-		stream.bufferSource = 0;
-		stream.format = VertexFormat::Float;
-		stream.numElements = 3;
-		stream.startOffset = 0;
-		stream.stride = stride;
+		stream.buffer		= std::move(buffer);
+		stream.bindingUnit	= 0;
+		stream.format		= VertexFormat::Float;
+		stream.normalized	= false;
+		stream.numElements	= 3;
+		stream.startOffset	= 0;
+		stream.stride		= stride;
 
 		vertexArray->AddStream(stream);
 		stream.startOffset += sizeof(float) * 3;

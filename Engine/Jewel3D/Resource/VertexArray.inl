@@ -49,7 +49,7 @@ namespace Jwl
 		class VertexRange
 		{
 		public:
-			VertexRange(VertexBuffer& _buffer, VertexStream& _stream, VertexAccess access)
+			VertexRange(VertexBuffer& _buffer, const VertexStream& _stream, VertexAccess access)
 				: buffer(_buffer), stream(_stream)
 			{
 				data = static_cast<unsigned char*>(buffer.MapBuffer(access));
@@ -71,16 +71,15 @@ namespace Jwl
 		private:
 			unsigned char* data;
 			VertexBuffer& buffer;
-			VertexStream& stream;
+			const VertexStream& stream;
 		};
 	}
 
 	template<typename Type>
-	detail::VertexRange<Type> VertexArray::GetStream(unsigned index, VertexAccess access)
+	detail::VertexRange<Type> VertexArray::GetStream(unsigned bindingUnit, VertexAccess access)
 	{
-		auto& stream = GetStream(index);
-		auto& buffer = GetBuffer(stream.bufferSource);
+		auto& stream = GetStream(bindingUnit);
 
-		return detail::VertexRange<Type>(buffer, stream, access);
+		return detail::VertexRange<Type>(*stream.buffer, stream, access);
 	}
 }

@@ -7,16 +7,6 @@
 
 namespace Jwl
 {
-	VertexBuffer::VertexBuffer(const VertexBuffer& other)
-		: VertexBuffer(other.size, other.usage)
-	{
-	}
-
-	VertexBuffer::VertexBuffer(VertexBuffer&& other)
-	{
-		swap(*this, other);
-	}
-
 	VertexBuffer::VertexBuffer(unsigned _size, VertexBufferUsage _usage)
 		: size(_size)
 		, usage(_usage)
@@ -32,12 +22,6 @@ namespace Jwl
 	VertexBuffer::~VertexBuffer()
 	{
 		glDeleteBuffers(1, &VBO);
-	}
-
-	VertexBuffer& VertexBuffer::operator=(VertexBuffer other)
-	{
-		swap(*this, other);
-		return *this;
 	}
 
 	void VertexBuffer::SetData(unsigned start, unsigned _size, void* data)
@@ -81,15 +65,6 @@ namespace Jwl
 		glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
 	}
 
-	void swap(VertexBuffer& left, VertexBuffer& right)
-	{
-		using std::swap;
-
-		swap(left.VBO, right.VBO);
-		swap(left.size, right.size);
-		swap(left.usage, right.usage);
-	}
-
 	VertexArray::VertexArray()
 	{
 		glGenVertexArrays(1, &VAO);
@@ -100,33 +75,26 @@ namespace Jwl
 		glDeleteVertexArrays(1, &VAO);
 	}
 
-	VertexBuffer& VertexArray::CreateBuffer(unsigned size, VertexBufferUsage usage)
+	void VertexArray::AddStream(VertexStream ptr)
 	{
-		return buffers.emplace_back(size, usage);
-	}
-
-	VertexBuffer& VertexArray::GetBuffer(unsigned index)
-	{
-		ASSERT(index < buffers.size(), "'index' is out of bounds.");
-
-		return buffers[index];
-	}
-
-	void VertexArray::AddStream(const VertexStream& ptr)
-	{
-		ASSERT(ptr.bufferSource < buffers.size(), "'ptr.bufferSource' does not refer to an attached VertexBuffer.");
-		const auto& buffer = buffers[ptr.bufferSource];
+		ASSERT(ptr.buffer, "'ptr.buffer' cannot be nullptr.");
+		ASSERT(!HasStream(ptr.bindingUnit), "'ptr.bindingUnit' ( %d ) is already a stream.", ptr.bindingUnit);
+		ASSERT(ptr.startOffset < ptr.buffer->GetSize(), "'ptr.startOffset' cannot be greater than the size of the VertexBuffer.");
 
 		if ((ptr.startOffset % 4) != 0)
 		{
-			Warning("VertexStream's startOffset does not start on a 4-byte boundary. This may lead to degraded performance.");
+			Warning("'ptr.startOffset' ( %d ) does not start on a 4-byte boundary. This may lead to degraded performance.", ptr.startOffset);
 		}
 
-		ASSERT(ptr.startOffset < buffer.GetSize(), "'ptr.startOffset' cannot be greater than the size of the VertexBuffer.");
-		streams.push_back(ptr);
+		if (ptr.stride == 0)
+		{
+			// Even though OpenGL will correctly interpret a zero as stream of tightly 
+			// packed data, we might need the correct stride for our own use later.
+			ptr.stride = CountBytes(ptr.format);
+		}
 
 		glBindVertexArray(VAO);
-		buffer.Bind();
+		ptr.buffer->Bind();
 		glEnableVertexAttribArray(ptr.bindingUnit);
 
 		switch (ptr.format)
@@ -149,15 +117,59 @@ namespace Jwl
 			break;
 		}
 
-		buffers[ptr.bufferSource].UnBind();
+		ptr.buffer->UnBind();
 		glBindVertexArray(GL_NONE);
+
+		streams.push_back(std::move(ptr));
 	}
 
-	VertexStream& VertexArray::GetStream(unsigned index)
+	void VertexArray::RemoveStream(unsigned bindingUnit)
 	{
-		ASSERT(index < buffers.size(), "'index' is out of bounds.");
+		for (unsigned i = 0; i < streams.size(); ++i)
+		{
+			if (streams[i].bindingUnit == bindingUnit)
+			{
+				streams.erase(streams.begin() + i);
+				return;
+			}
+		}
+	}
 
-		return streams[index];
+	bool VertexArray::HasStream(unsigned bindingUnit) const
+	{
+		for (auto& stream : streams)
+		{
+			if (stream.bindingUnit == bindingUnit)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	const VertexStream& VertexArray::GetStream(unsigned bindingUnit) const
+	{
+		for (auto& stream : streams)
+		{
+			if (stream.bindingUnit == bindingUnit)
+			{
+				return stream;
+			}
+		}
+
+		ASSERT(false, "'bindingUnit' ( %d ) is out of bounds.", bindingUnit);
+		return streams[0];
+	}
+
+	const VertexBuffer& VertexArray::GetBuffer(unsigned bindingUnit) const
+	{
+		return *GetStream(bindingUnit).buffer;
+	}
+
+	VertexBuffer& VertexArray::GetBuffer(unsigned bindingUnit)
+	{
+		return *GetStream(bindingUnit).buffer;
 	}
 
 	void VertexArray::Bind() const
@@ -180,10 +192,11 @@ namespace Jwl
 			for (unsigned i = 0; i < streams.size(); ++i)
 			{
 				const auto& stream = streams[i];
-				const unsigned bufferSize = buffers[stream.bufferSource].GetSize();
+				const auto& buffer = stream.buffer;
+				const unsigned bufferSize = buffer->GetSize();
 				const unsigned end = stream.startOffset + (count - 1) * stream.stride;
 
-				ASSERT(end < bufferSize, "'count' would cause a buffer overrun in VertexBuffer( %d ) read with Stream( %d ).", stream.bufferSource, i);
+				ASSERT(end < bufferSize, "'count' would cause a buffer overrun in Stream( %d ).", i);
 			}
 		}
 #endif

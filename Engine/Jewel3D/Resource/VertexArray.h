@@ -1,27 +1,24 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
-#include "Jewel3D\Rendering\Rendering.h"
-#include "Jewel3D\Resource\Shareable.h"
+#include "Jewel3D/Rendering/Rendering.h"
+#include "Jewel3D/Resource/Shareable.h"
 
 #include <vector>
 
 namespace Jwl
 {
 	// A single OpenGL buffer object.
-	// This owns and provides access to the array of data used for rendering.
-	class VertexBuffer
+	// This owns and provides access to the raw data used for rendering.
+	class VertexBuffer : public Shareable<VertexBuffer>
 	{
+		friend class VertexArray;
 	public:
-		VertexBuffer(const VertexBuffer&);
-		VertexBuffer(VertexBuffer&&);
 		VertexBuffer(unsigned size, VertexBufferUsage usage);
 		~VertexBuffer();
 
-		VertexBuffer& operator=(VertexBuffer);
-
 		void SetData(unsigned start, unsigned size, void* data);
 
-		// Must be followed by a call to UnmapBuffer after the returned pointer is no longer needed.
+		// Must be followed by a call to UnmapBuffer() before rendering with the buffer.
 		void* MapBuffer(VertexAccess accessMode);
 		void UnmapBuffer();
 
@@ -35,16 +32,13 @@ namespace Jwl
 		unsigned VBO = 0;
 		unsigned size = 0;
 		VertexBufferUsage usage;
-
-		friend void swap(VertexBuffer&, VertexBuffer&);
-		friend class VertexArray;
 	};
 
 	// A single vertex attribute to be streamed to a vertex shader.
 	// Defines how to read the attribute from the given VertexBuffer.
 	struct VertexStream
 	{
-		unsigned bufferSource = 0;
+		VertexBuffer::Ptr buffer;
 		unsigned bindingUnit = 0;
 
 		VertexFormat format = VertexFormat::Float;
@@ -60,36 +54,37 @@ namespace Jwl
 		class VertexRange;
 	}
 
-	// 
+	// A renderable collection of VertexStreams.
 	class VertexArray : public Shareable<VertexArray>
 	{
 	public:
 		VertexArray();
 		~VertexArray();
 
-		VertexBuffer& CreateBuffer(unsigned size, VertexBufferUsage usage);
-		VertexBuffer& GetBuffer(unsigned index);
+		void AddStream(VertexStream ptr);
+		void RemoveStream(unsigned bindingUnit);
+		bool HasStream(unsigned bindingUnit) const;
+		const VertexStream& GetStream(unsigned bindingUnit) const;
+		const VertexBuffer& GetBuffer(unsigned bindingUnit) const;
+		VertexBuffer& GetBuffer(unsigned bindingUnit);
 
-		void AddStream(const VertexStream& ptr);
-		VertexStream& GetStream(unsigned index);
-
-		// 
+		// Returns an enumerable range over the specific elements pointed to by a VertexStream.
+		// Elements will be casted to 'Type'. You must ensure that this cast is safe for the contents of the VertexBuffer.
+		// The full buffer will be enumerated, not just 'VertexCount' number of elements.
 		template<typename Type>
-		detail::VertexRange<Type> GetStream(unsigned index, VertexAccess access = VertexAccess::ReadWrite);
+		detail::VertexRange<Type> GetStream(unsigned bindingUnit, VertexAccess access = VertexAccess::ReadWrite);
 
 		void Bind() const;
 		void UnBind() const;
 
 		void SetVertexCount(unsigned count);
 		unsigned GetVertexCount() const;
-		const auto& GetBuffers() const { return buffers; }
 		const auto& GetStreams() const { return streams; }
 
 	private:
 		unsigned VAO = 0;
 		unsigned vertexCount = 0;
 
-		std::vector<VertexBuffer> buffers;
 		std::vector<VertexStream> streams;
 	};
 }
