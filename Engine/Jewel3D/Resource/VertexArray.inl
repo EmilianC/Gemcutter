@@ -3,48 +3,60 @@ namespace Jwl
 {
 	namespace detail
 	{
-		struct VertexRangeEndSentinel {};
-
-		// 
+		// Enumerates a VertexBuffer with respect to a VertexStream while also performing a cast and a dereference.
 		template<typename Type>
-		class VertexIterator : public std::iterator<std::bidirectional_iterator_tag, Type>
+		class VertexIterator : public std::iterator<std::random_access_iterator_tag, Type>
 		{
 		public:
-			VertexIterator(unsigned char* _data, unsigned char* _end, const unsigned _stride)
-				: data(_data), end(_end), stride(_stride)
-			{
-			}
+			VertexIterator(const VertexIterator&) = default;
+			VertexIterator(unsigned char* _itr, unsigned _stride)
+				: itr(_itr), stride(_stride)
+			{}
 
 			VertexIterator& operator=(const VertexIterator&) = default;
 
-			VertexIterator& operator++()
+			bool operator==(const VertexIterator& other) const { return itr == other.itr; }
+			bool operator!=(const VertexIterator& other) const { return itr != other.itr; }
+			bool operator<(const VertexIterator& other)  const { return itr < other.itr; }
+			bool operator>(const VertexIterator& other)  const { return itr > other.itr; }
+			bool operator<=(const VertexIterator& other) const { return itr <= other.itr; }
+			bool operator>=(const VertexIterator& other) const { return itr >= other.itr; }
+
+			std::ptrdiff_t operator-(const VertexIterator& other) const { return (itr - other.itr) / stride; }
+			
+			Type& operator[](std::ptrdiff_t diff) const { return *(*this + diff); }
+
+			VertexIterator operator+(std::ptrdiff_t diff) const { return {itr + stride * diff, stride}; }
+			VertexIterator operator-(std::ptrdiff_t diff) const { return {itr - stride * diff, stride}; }
+			VertexIterator& operator+=(std::ptrdiff_t diff) { itr += stride * diff; return *this; }
+			VertexIterator& operator-=(std::ptrdiff_t diff) { itr -= stride * diff; return *this; }
+
+			VertexIterator& operator--() { itr -= stride; return *this; }
+			VertexIterator& operator++() { itr += stride; return *this; }
+
+			VertexIterator operator++(int)
 			{
-				data += stride;
-				return *this;
+				VertexIterator result = *this;
+				++(*this);
+				return result;
 			}
 
-			VertexIterator& operator--()
+			VertexIterator operator--(int)
 			{
-				data -= stride;
-				return *this;
+				VertexIterator result = *this;
+				--(*this);
+				return result;
 			}
 
-			Type& operator*() const
-			{
-				return *reinterpret_cast<Type*>(data);
-			}
-
-			bool operator!=(VertexRangeEndSentinel) const
-			{
-				return data < end;
-			}
+			Type& operator*()  const { return *reinterpret_cast<Type*>(itr); }
+			Type* operator->() const { return *reinterpret_cast<Type*>(itr); }
 
 		private:
-			unsigned char* data;
-			unsigned char* end;
-			const unsigned stride;
+			unsigned char* itr;
+			unsigned stride;
 		};
 
+		// Enumerable range of a specific VertexBuffer stream/element.
 		template<typename Type>
 		class VertexRange
 		{
@@ -60,13 +72,15 @@ namespace Jwl
 				buffer.UnmapBuffer();
 			}
 
-			VertexIterator<Type> begin()
+			VertexIterator<Type> begin() const
 			{
-				auto* end = data + buffer.GetSize();
-				return VertexIterator<Type>(data + stream.startOffset, end, stream.stride);
+				return {data + stream.startOffset, stream.stride};
 			}
 
-			VertexRangeEndSentinel end() { return {}; }
+			VertexIterator<Type> end() const
+			{
+				return {data + stream.startOffset + buffer.GetSize(), stream.stride};
+			}
 
 		private:
 			unsigned char* data;
