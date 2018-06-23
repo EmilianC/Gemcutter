@@ -3,32 +3,26 @@ namespace Jwl
 {
 	namespace detail
 	{
-		// Index of all Entities for each component and tag type. Used to power the queries.
+		// Index of all Entities for each component and tag type.
 		// Sorted to allow for logical operations, such as ANDing, between multiple tables in the index.
 		extern std::unordered_map<unsigned, std::vector<Entity*>> entityIndex;
-		// Index of all Components of a particular type. Used to power the queries.
+
+		// Index of all Components of a particular type.
 		// Not sorted since no logical operations are performed using these tables.
 		extern std::unordered_map<unsigned, std::vector<ComponentBase*>> componentIndex;
 
-		// This is a light-weight tag representing the end of a query's range.
-		// This allows us to avoid creating a second, complex, iterator just to represent the end of a query.
-		// Since our custom iterators already have all the information they need to know if they have expired,
-		// we can use this tag to ask them when they has finished enumerating the range.
+		// A lightweight tag representing the end of a query's range. We use this rather than creating another
+		// potentially large end-iterator. Our custom iterators already have all the information they need to
+		// detect if they have expired, so we use this tag to ask them when they has finished enumerating the range. 
 		struct RangeEndSentinel {};
-		
+
 		// Enumerates a table of the componentIndex while performing a cast and a dereference.
 		template<class Component>
-		class ComponentIterator
+		class ComponentIterator : public std::iterator<std::forward_iterator_tag, Component>
 		{
+			using Iterator = std::vector<ComponentBase*>::iterator;
 		public:
-			using iterator			= std::vector<ComponentBase*>::iterator;
-			using iterator_category = std::forward_iterator_tag;
-			using value_type		= Component;
-			using difference_type	= std::ptrdiff_t;
-			using pointer			= Component*;
-			using reference			= Component&;
-
-			ComponentIterator(iterator _itr, const iterator _itrEnd)
+			ComponentIterator(Iterator _itr, Iterator _itrEnd)
 				: itr(_itr), itrEnd(_itrEnd)
 			{}
 
@@ -45,36 +39,25 @@ namespace Jwl
 				return *static_cast<Component*>(*itr);
 			}
 
-			bool operator!=(RangeEndSentinel) const
-			{
-				return !IsTerminated();
-			}
+			bool operator==(RangeEndSentinel) const { return IsTerminated(); }
+			bool operator!=(RangeEndSentinel) const { return !IsTerminated(); }
 
-			bool IsTerminated() const
-			{
-				return itr == itrEnd;
-			}
+			bool IsTerminated() const { return itr == itrEnd; }
 
 		private:
 			// The current position in the target table.
-			iterator itr;
+			Iterator itr;
 			// Ensures that we don't surpass the table while we are skipping items.
-			const iterator itrEnd;
+			const Iterator itrEnd;
 		};
 
 		// A safe iterator used to enumerate the entityIndex tables.
 		// Although it models a single iterator, it knows when it has reached the end of the table.
-		class SafeIterator
+		class SafeIterator : public std::iterator<std::forward_iterator_tag, Entity*>
 		{
+			using Iterator = std::vector<Entity*>::iterator;
 		public:
-			using iterator			= std::vector<Entity*>::iterator;
-			using iterator_category = std::forward_iterator_tag;
-			using value_type		= Entity*;
-			using difference_type	= std::ptrdiff_t;
-			using pointer			= Entity**;
-			using reference			= Entity*&;
-
-			SafeIterator(iterator _itr, const iterator _itrEnd)
+			SafeIterator(Iterator _itr, Iterator _itrEnd)
 				: itr(_itr), itrEnd(_itrEnd)
 			{}
 
@@ -91,32 +74,23 @@ namespace Jwl
 				return *(*itr);
 			}
 
-			bool operator!=(RangeEndSentinel) const
-			{
-				return !IsTerminated();
-			}
-
 			Entity* Get() const
 			{
 				ASSERT(!IsTerminated(), "Invalid range is in use.");
 				return *itr;
 			}
 
-			bool IsTerminated() const
-			{
-				return itr == itrEnd;
-			}
+			bool operator==(RangeEndSentinel) const { return IsTerminated(); }
+			bool operator!=(RangeEndSentinel) const { return !IsTerminated(); }
 
-			void Terminate()
-			{
-				itr = itrEnd;
-			}
+			bool IsTerminated() const { return itr == itrEnd; }
+			void Terminate() { itr = itrEnd; }
 
 		private:
 			// The current position in the table.
-			iterator itr;
+			Iterator itr;
 			// Ensures that we don't surpass the table while we are skipping items.
-			const iterator itrEnd;
+			const Iterator itrEnd;
 		};
 
 		// Provides functions to advance two SafeIterators as a logical AND of two entityIndex tables.
@@ -160,16 +134,10 @@ namespace Jwl
 		// Enumerates a SafeIterator and a templated iterator while performing a logical operation between them.
 		// The templated iterator expands into a subtree of more LogicalIterators.
 		template<class Iterator, class Operation>
-		class LogicalIterator
+		class LogicalIterator : public std::iterator<std::forward_iterator_tag, Entity*>
 		{
 		public:
-			using iterator_category = std::forward_iterator_tag;
-			using value_type		= Entity*;
-			using difference_type	= std::ptrdiff_t;
-			using pointer			= Entity**;
-			using reference			= Entity*&;
-
-			LogicalIterator(SafeIterator _itr1, const Iterator _itr2)
+			LogicalIterator(SafeIterator _itr1, Iterator _itr2)
 				: itr1(_itr1), itr2(_itr2)
 			{
 				Operation::FindFirst(itr1, itr2.GetCurrentItr());
@@ -185,20 +153,12 @@ namespace Jwl
 				return *this;
 			}
 
-			Entity& operator*() const
-			{
-				return *itr1;
-			}
+			SafeIterator& GetCurrentItr() { return itr1; }
 
-			bool operator!=(RangeEndSentinel) const
-			{
-				return !itr1.IsTerminated();
-			}
+			Entity& operator*() const { return *itr1; }
 
-			SafeIterator& GetCurrentItr()
-			{
-				return itr1;
-			}
+			bool operator==(RangeEndSentinel) const { return itr1.IsTerminated(); }
+			bool operator!=(RangeEndSentinel) const { return !itr1.IsTerminated(); }
 
 		private:
 			SafeIterator itr1;
@@ -208,16 +168,10 @@ namespace Jwl
 		// LogicalIterator specialization for the bottom of the hierarchy.
 		// Directly operates on two SafeIterators.
 		template<class Operation>
-		class LogicalIterator<SafeIterator, Operation>
+		class LogicalIterator<SafeIterator, Operation> : public std::iterator<std::forward_iterator_tag, Entity*>
 		{
 		public:
-			using iterator_category = std::forward_iterator_tag;
-			using value_type		= Entity*;
-			using difference_type	= std::ptrdiff_t;
-			using pointer			= Entity**;
-			using reference			= Entity*&;
-
-			LogicalIterator(SafeIterator _itr1, const SafeIterator _itr2)
+			LogicalIterator(SafeIterator _itr1, SafeIterator _itr2) 
 				: itr1(_itr1), itr2(_itr2)
 			{
 				Operation::FindFirst(itr1, itr2);
@@ -229,20 +183,12 @@ namespace Jwl
 				return *this;
 			}
 
-			Entity& operator*() const
-			{
-				return *itr1;
-			}
+			SafeIterator& GetCurrentItr() { return itr1; }
 
-			bool operator!=(RangeEndSentinel) const
-			{
-				return !itr1.IsTerminated();
-			}
+			Entity& operator*() const { return *itr1; }
 
-			SafeIterator& GetCurrentItr()
-			{
-				return itr1;
-			}
+			bool operator==(RangeEndSentinel) const { return itr1.IsTerminated(); }
+			bool operator!=(RangeEndSentinel) const { return !itr1.IsTerminated(); }
 
 		private:
 			SafeIterator itr1;
@@ -265,7 +211,7 @@ namespace Jwl
 
 			RangeEndSentinel end() const
 			{
-				return RangeEndSentinel();
+				return {};
 			}
 
 		private:
@@ -285,10 +231,10 @@ namespace Jwl
 		auto BuildRootIterator()
 		{
 			auto& index = entityIndex[Arg1::GetComponentId()];
-			auto rawBegin = index.begin();
-			auto rawEnd = index.end();
+			auto begin = index.begin();
+			auto end = index.end();
 
-			return BuildLogicalIterator(SafeIterator(rawBegin, rawEnd), BuildRootIterator<Arg2, Args...>());
+			return BuildLogicalIterator(SafeIterator(begin, end), BuildRootIterator<Arg2, Args...>());
 		}
 
 		// BuildRootIterator() base case.
@@ -296,16 +242,16 @@ namespace Jwl
 		SafeIterator BuildRootIterator()
 		{
 			auto& index = entityIndex[Arg::GetComponentId()];
-			auto rawBegin = index.begin();
-			auto rawEnd = index.end();
+			auto begin = index.begin();
+			auto end = index.end();
 
-			return SafeIterator(rawBegin, rawEnd);
+			return SafeIterator(begin, end);
 		}
 	}
 
 	// Returns an enumerable range of all enabled Components of the specified type.
+	// By providing you the Component directly you don't have to waste time calling Entity.Get<>().
 	// This is a faster option than With<>() but it only allows you to specify a single Component type.
-	// Additionally, by giving you the Component directly you don't have to waste time calling Entity.Get<>().
 	template<class Component>
 	auto All()
 	{
@@ -325,7 +271,7 @@ namespace Jwl
 		auto& index = componentIndex[Component::GetComponentId()];
 		auto itr = ComponentIterator<Component>(index.begin(), index.end());
 
-		return detail::Range<decltype(itr)>(itr);
+		return detail::Range(itr);
 	}
 
 	// Returns an enumerable range of all Entities which have an active instance of each specified Component/Tag.
@@ -345,9 +291,9 @@ namespace Jwl
 			"Only a direct inheritor from Component<> can be used in a query.");
 
 		using namespace detail;
-		auto itr = BuildRootIterator<Args...>();
+		auto&& itr = BuildRootIterator<Args...>();
 
-		return detail::Range<decltype(itr)>(itr);
+		return detail::Range(itr);
 	}
 
 	// Returns all Entities which have an active instance of each specified Component/Tag.
@@ -357,12 +303,10 @@ namespace Jwl
 	template<typename... Args>
 	auto CaptureWith()
 	{
-		auto range = With<Args...>();
-
 		std::vector<Entity::Ptr> result;
-		for (Entity& ent : range)
+		for (Entity& ent : With<Args...>())
 		{
-			result.push_back(ent.GetPtr());
+			result.emplace_back(ent.GetPtr());
 		}
 
 		return result;
