@@ -254,7 +254,7 @@ namespace Jwl
 		if (mesh && mesh->IsComponentEnabled())
 		{
 			// Capture pointer to current mesh data.
-			auto modelData = mesh->model;
+			auto& modelData = mesh->model;
 			ASSERT(modelData, "Entity has a Mesh component but does not have a Model to render.");
 
 			glBindVertexArray(modelData->GetVAO());
@@ -265,7 +265,7 @@ namespace Jwl
 #pragma region Render Text
 		if (text && text->IsComponentEnabled())
 		{
-			auto font = text->font;
+			auto& font = text->font;
 			ASSERT(font != nullptr, "Entity has a Text component but does not have a Font to render with.");
 
 			auto dimensions = font->GetDimensions();
