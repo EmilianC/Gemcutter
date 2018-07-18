@@ -1,6 +1,7 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
 #include "Resource.h"
+#include "Shareable.h"
 #include "Jewel3D/Rendering/Rendering.h"
 
 #include <string_view>
@@ -9,7 +10,7 @@
 namespace Jwl
 {
 	// A 2D texture, renderTarget, or cubemap.
-	class Texture : public Resource<Texture>
+	class Texture : public Resource<Texture>, public Shareable<Texture>
 	{
 	public:
 		Texture() = default;

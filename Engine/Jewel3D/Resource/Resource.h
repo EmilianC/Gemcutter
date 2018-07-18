@@ -1,6 +1,5 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
-#include "Shareable.h"
 #include "Jewel3D/Application/FileSystem.h"
 #include "Jewel3D/Application/Logging.h"
 
@@ -13,7 +12,7 @@ namespace Jwl
 
 	// Base resource class. Provides an interface for cached loading.
 	template<class Asset>
-	class Resource : public Shareable<Asset>
+	class Resource
 	{
 	protected:
 		Resource() = default;
@@ -25,7 +24,7 @@ namespace Jwl
 		// Loads an asset from the specified file, if it wasn't loaded already.
 		// Calls the derived class's Load() with the file path and any other arguments.
 		template<typename... Args>
-		static Ptr Load(std::string filePath, Args&&... params)
+		static std::shared_ptr<Asset> Load(std::string filePath, Args&&... params)
 		{
 			if (IsPathRelative(filePath))
 			{
@@ -43,7 +42,7 @@ namespace Jwl
 			}
 
 			// Create the new asset.
-			Ptr resourcePtr = MakeNew();
+			auto resourcePtr = std::make_shared<Asset>();
 
 			if (!resourcePtr->Load(filePath, std::forward<Args>(params)...))
 			{
@@ -52,13 +51,13 @@ namespace Jwl
 			}
 
 			// Add new asset to cache.
-			resourceCache.insert(std::make_pair(filePath, resourcePtr));
+			resourceCache.insert(std::pair(std::move(filePath), resourcePtr));
 
 			return resourcePtr;
 		}
 
 		// Searches for a loaded asset previously loaded from the specified file path.
-		static Ptr Find(const std::string& filePath)
+		static std::shared_ptr<Asset> Find(const std::string& filePath)
 		{
 			auto itr = resourceCache.find(filePath);
 			if (itr == resourceCache.end())
@@ -78,15 +77,15 @@ namespace Jwl
 		}
 
 	private:
-		static std::unordered_map<std::string, Ptr> resourceCache;
+		static std::unordered_map<std::string, std::shared_ptr<Asset>> resourceCache;
 	};
 
 	template<class Asset>
-	std::unordered_map<std::string, typename Resource<Asset>::Ptr> Resource<Asset>::resourceCache;
+	std::unordered_map<std::string, std::shared_ptr<Asset>> Resource<Asset>::resourceCache;
 
 	// Helper function to load an asset.
 	template<class Asset, typename... Args>
-	typename Resource<Asset>::Ptr Load(const std::string& filePath, Args&&... params)
+	typename std::shared_ptr<Asset> Load(const std::string& filePath, Args&&... params)
 	{
 		return Resource<Asset>::Load(filePath, std::forward<Args>(params)...);
 	}

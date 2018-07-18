@@ -1,6 +1,7 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
 #include "Resource.h"
+#include "Shareable.h"
 
 #include <string_view>
 
@@ -14,7 +15,7 @@ namespace Jwl
 
 	// A typeface that can be used to render text.
 	// To be rendered, this must be set on an Entity's Text component.
-	class Font : public Resource<Font>
+	class Font : public Resource<Font>, public Shareable<Font>
 	{
 	public:
 		Font();

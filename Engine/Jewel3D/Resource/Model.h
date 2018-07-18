@@ -1,6 +1,7 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
 #include "Resource.h"
+#include "Shareable.h"
 #include "Jewel3D\Math\Vector.h"
 
 namespace Jwl
@@ -13,7 +14,7 @@ namespace Jwl
 	//	UVs     : 1
 	//	Normal  : 2
 	//	Tangent : 3
-	class Model : public Resource<Model>
+	class Model : public Resource<Model>, public Shareable<Model>
 	{
 	public:
 		~Model();

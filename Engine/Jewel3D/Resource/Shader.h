@@ -1,6 +1,7 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
 #include "Resource.h"
+#include "Shareable.h"
 #include "Texture.h"
 #include "UniformBuffer.h"
 
@@ -102,7 +103,7 @@ namespace Jwl
 
 	// Manages a shader and all its variants.
 	// For global use, Textures and UniformBuffers can be attached directly to the shader.
-	class Shader : public Resource<Shader>
+	class Shader : public Resource<Shader>, public Shareable<Shader>
 	{
 	public:
 		Shader() = default;
