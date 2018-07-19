@@ -61,7 +61,6 @@ namespace Jwl
 			stride += sizeof(float) * 4;
 		}
 
-		vertexArray = VertexArray::MakeNew();
 		auto buffer = VertexBuffer::MakeNew(sizeof(float) * bufferSize, usage);
 
 		// Read the data buffer from the file.
@@ -79,7 +78,7 @@ namespace Jwl
 		stream.startOffset	= 0;
 		stream.stride		= stride;
 
-		vertexArray->AddStream(stream);
+		AddStream(stream);
 		stream.startOffset += sizeof(float) * 3;
 
 		if (hasUvs)
@@ -87,7 +86,7 @@ namespace Jwl
 			stream.bindingUnit = 1;
 			stream.numElements = 2;
 
-			vertexArray->AddStream(stream);
+			AddStream(stream);
 			stream.startOffset += sizeof(float) * 2;
 		}
 		if (hasNormals)
@@ -95,7 +94,7 @@ namespace Jwl
 			stream.bindingUnit = 2;
 			stream.numElements = 3;
 
-			vertexArray->AddStream(stream);
+			AddStream(stream);
 			stream.startOffset += sizeof(float) * 3;
 		}
 		if (hasTangents)
@@ -103,10 +102,10 @@ namespace Jwl
 			stream.bindingUnit = 3;
 			stream.numElements = 4;
 
-			vertexArray->AddStream(stream);
+			AddStream(stream);
 		}
 
-		vertexArray->SetVertexCount(numVertices);
+		SetVertexCount(numVertices);
 
 		return true;
 	}
@@ -134,10 +133,5 @@ namespace Jwl
 	bool Model::HasTangents() const
 	{
 		return hasTangents;
-	}
-
-	VertexArray::Ptr& Model::GetVertexArray()
-	{
-		return vertexArray;
 	}
 }

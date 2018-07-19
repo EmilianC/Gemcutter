@@ -13,10 +13,10 @@
 #include "Jewel3D/Entity/EntityGroup.h"
 #include "Jewel3D/Math/Transform.h"
 #include "Jewel3D/Resource/Font.h"
-#include "Jewel3D/Resource/Model.h"
 #include "Jewel3D/Resource/Shader.h"
 #include "Jewel3D/Resource/Texture.h"
 #include "Jewel3D/Resource/UniformBuffer.h"
+#include "Jewel3D/Resource/VertexArray.h"
 // Renderables
 #include "Mesh.h"
 #include "ParticleEmitter.h"
@@ -253,11 +253,8 @@ namespace Jwl
 #pragma region Render Model
 		if (mesh && mesh->IsComponentEnabled())
 		{
-			// Capture pointer to current mesh data.
-			auto& modelData = mesh->model;
-			ASSERT(modelData, "Entity has a Mesh component but does not have a Model to render.");
-			auto vertexArray = modelData->GetVertexArray();
-			ASSERT(modelData, "Entity has a Mesh component but does not have a VertexArray to render.");
+			auto& vertexArray = mesh->array;
+			ASSERT(vertexArray, "Entity has a Mesh component but does not have a VertexArray to render.");
 			
 			vertexArray->Bind();
 			glDrawArrays(GL_TRIANGLES, 0, vertexArray->GetVertexCount());

@@ -14,14 +14,12 @@ namespace Jwl
 	//	UVs     : 1
 	//	Normal  : 2
 	//	Tangent : 3
-	class Model : public Resource<Model>, public Shareable<Model>
+	class Model : public VertexArray, public Resource<Model>
 	{
 	public:
 		// Loads pre-packed *.model resources.
 		bool Load(std::string filePath);
 		bool Load(std::string filePath, VertexBufferUsage usage);
-
-		VertexArray::Ptr& GetVertexArray();
 
 		// Returns the extents of each axis in local-space.
 		const vec3& GetMinBounds() const;
@@ -32,8 +30,6 @@ namespace Jwl
 		bool HasTangents() const;
 
 	private:
-		VertexArray::Ptr vertexArray;
-
 		vec3 minBounds;
 		vec3 maxBounds;
 
