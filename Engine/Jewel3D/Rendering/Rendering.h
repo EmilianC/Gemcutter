@@ -16,6 +16,35 @@ namespace Jwl
 		Particle = 14
 	};
 
+	enum class VertexFormat
+	{
+		Float,
+		Double,
+		Int,
+		uInt,
+		Short,
+		uShort,
+		Byte,
+		uByte
+	};
+
+	enum class VertexAccess
+	{
+		ReadOnly,
+		WriteOnly,
+		ReadWrite
+	};
+
+	enum class VertexBufferUsage
+	{
+		// The buffer is not expected to change and will be kept on the GPU only.
+		Static,
+		// The buffer is expected to be occasionally updated. It will be optimized for editing.
+		Dynamic,
+		// The buffer is expected to be updated before each render. It will be optimized for streaming to the GPU.
+		Stream
+	};
+
 	enum class TextureFormat
 	{
 		RGB_8,
@@ -105,17 +134,22 @@ namespace Jwl
 		Adaptive = -1
 	};
 
-	int ResolveFilterMag(TextureFilter filter);
-	int ResolveFilterMin(TextureFilter filter);
-	bool ResolveMipMapping(TextureFilter filter);
-	int ResolveWrap(TextureWrap wrap);
-	unsigned ResolveFormat(TextureFormat format);
+	// Used internally to convert enum values to OpenGL values.
+	int ResolveVertexFormat(VertexFormat);
+	int ResolveVertexAccess(VertexAccess);
+	int ResolveVertexBufferUsage(VertexBufferUsage);
+	int ResolveFilterMag(TextureFilter);
+	int ResolveFilterMin(TextureFilter);
+	bool ResolveMipMapping(TextureFilter);
+	int ResolveWrap(TextureWrap);
+	unsigned ResolveFormat(TextureFormat);
 
 	TextureFilter StringToTextureFilter(std::string_view);
 	TextureWrap StringToTextureWrap(std::string_view);
 
-	unsigned CountMipLevels(unsigned width, unsigned height, TextureFilter filter);
-	unsigned CountChannels(TextureFormat format);
+	unsigned CountBytes(VertexFormat);
+	unsigned CountMipLevels(unsigned width, unsigned height, TextureFilter);
+	unsigned CountChannels(TextureFormat);
 
 	void ClearBackBuffer();
 	void ClearBackBufferDepth();

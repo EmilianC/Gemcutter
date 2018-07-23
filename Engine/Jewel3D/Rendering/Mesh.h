@@ -1,7 +1,7 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
 #include "Jewel3D/Entity/Entity.h"
-#include "Jewel3D/Resource/Model.h"
+#include "Jewel3D/Resource/VertexArray.h"
 
 namespace Jwl
 {
@@ -10,8 +10,8 @@ namespace Jwl
 	{
 	public:
 		Mesh(Entity& owner);
-		Mesh(Entity& owner, Model::Ptr model);
+		Mesh(Entity& owner, VertexArray::Ptr array);
 
-		Model::Ptr model;
+		VertexArray::Ptr array;
 	};
 }

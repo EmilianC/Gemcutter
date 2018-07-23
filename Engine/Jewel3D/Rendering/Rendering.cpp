@@ -13,6 +13,40 @@
 
 namespace
 {
+	const int vertexFormat_Resolve[] = {
+		GL_FLOAT,
+		GL_DOUBLE,
+		GL_INT,
+		GL_UNSIGNED_INT,
+		GL_SHORT,
+		GL_UNSIGNED_SHORT,
+		GL_BYTE,
+		GL_UNSIGNED_BYTE
+	};
+
+	const int vertexFormatSize_Resolve[] = {
+		4,	// float
+		8,	// double
+		4,	// int
+		4,	// unsigned int
+		2,	// short
+		2,	// unsigned short
+		1,	// char
+		1	// unsigned char
+	};
+
+	const int vertexAccess_Resolve[] = {
+		GL_READ_ONLY,
+		GL_WRITE_ONLY,
+		GL_READ_WRITE
+	};
+
+	const int vertexBufferUsage_Resolve[] = {
+		GL_STATIC_DRAW,
+		GL_DYNAMIC_DRAW,
+		GL_STREAM_DRAW
+	};
+
 	const int filterMin_Resolve[] = {
 		GL_NEAREST,
 		GL_LINEAR,
@@ -55,6 +89,21 @@ namespace Jwl
 	TextureWraps::TextureWraps(TextureWrap _x, TextureWrap _y)
 		: x(_x), y(_y)
 	{
+	}
+
+	int ResolveVertexFormat(VertexFormat format)
+	{
+		return vertexFormat_Resolve[static_cast<unsigned>(format)];
+	}
+
+	int ResolveVertexAccess(VertexAccess access)
+	{
+		return vertexAccess_Resolve[static_cast<unsigned>(access)];
+	}
+
+	int ResolveVertexBufferUsage(VertexBufferUsage usage)
+	{
+		return vertexBufferUsage_Resolve[static_cast<unsigned>(usage)];
 	}
 
 	int ResolveFilterMag(TextureFilter filter)
@@ -113,6 +162,11 @@ namespace Jwl
 			return TextureWrap::RepeatMirroredOnce;
 		else
 			return TextureWrap::Clamp;
+	}
+
+	unsigned CountBytes(VertexFormat format)
+	{
+		return vertexFormatSize_Resolve[static_cast<unsigned>(format)];
 	}
 
 	unsigned CountMipLevels(unsigned width, unsigned height, TextureFilter filter)

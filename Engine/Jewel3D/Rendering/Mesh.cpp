@@ -9,9 +9,9 @@ namespace Jwl
 	{
 	}
 
-	Mesh::Mesh(Entity& _owner, Model::Ptr _model)
+	Mesh::Mesh(Entity& _owner, VertexArray::Ptr _array)
 		: Component(_owner)
-		, model(std::move(_model))
+		, array(std::move(_array))
 	{
 	}
 }
