@@ -287,7 +287,7 @@ namespace Jwl
 		// We must resolve for the target position in local-space.
 		if (auto parentEntity = GetParent())
 		{
-			targetPos = (parentEntity->GetWorldTransform() * vec4(targetPos, 1.0f)).ToVec3();
+			targetPos = vec3(parentEntity->GetWorldTransform() * vec4(targetPos, 1.0f));
 		}
 
 		LookAt(position, targetPos, up);

@@ -307,6 +307,11 @@ namespace Jwl
 		return *(&x + index);
 	}
 
+	vec3::operator vec2() const
+	{
+		return vec2(x, y);
+	}
+
 	float vec3::Length() const
 	{
 		return sqrt(x * x + y * y + z * z);
@@ -346,11 +351,6 @@ namespace Jwl
 		ASSERT(!std::isinf(invLength), "Zero length vector cannot be normalized.");
 
 		return vec3(x * invLength, y * invLength, z * invLength);
-	}
-
-	vec2 vec3::ToVec2() const
-	{
-		return vec2(x, y);
 	}
 
 #pragma endregion
@@ -509,6 +509,16 @@ namespace Jwl
 		return *(&x + index);
 	}
 
+	vec4::operator vec2() const
+	{
+		return vec2(x, y);
+	}
+
+	vec4::operator vec3() const
+	{
+		return vec3(x, y, z);
+	}
+
 	float vec4::Length() const
 	{
 		return sqrt(x * x + y * y + z * z + w * w);
@@ -549,11 +559,6 @@ namespace Jwl
 		ASSERT(!std::isinf(invLength), "Zero length vector cannot be normalized.");
 
 		return vec4(x * invLength, y * invLength, z * invLength, w * invLength);
-	}
-
-	vec3 vec4::ToVec3() const
-	{
-		return vec3(x, y, z);
 	}
 
 #pragma endregion

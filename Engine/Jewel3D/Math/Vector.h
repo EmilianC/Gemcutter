@@ -73,12 +73,13 @@ namespace Jwl
 		float operator[](unsigned index) const;
 		float& operator[](unsigned index);
 
+		explicit operator vec2() const;
+
 		float Length() const;
 		float LengthSquared() const;
 		void ClampLength(float length);
 		void Normalize();
 		vec3 GetNormalized() const;
-		vec2 ToVec2() const;
 
 		static const vec3 Zero;
 		static const vec3 One;
@@ -121,12 +122,14 @@ namespace Jwl
 		float operator[](unsigned index) const;
 		float& operator[](unsigned index);
 
+		explicit operator vec2() const;
+		explicit operator vec3() const;
+
 		float Length() const;
 		float LengthSquared() const;
 		void ClampLength(float length);
 		void Normalize();
 		vec4 GetNormalized() const;
-		vec3 ToVec3() const;
 
 		static const vec4 Zero;
 		static const vec4 One;
