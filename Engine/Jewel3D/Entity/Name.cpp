@@ -31,20 +31,20 @@ namespace Jwl
 		LogSceneGraphRecursive(root, 0);
 	}
 
-	Entity::Ptr FindChild(const Entity& root, std::string_view name)
+	Entity* FindChild(const Entity& root, std::string_view name)
 	{
 		for (auto& child : root.GetChildren())
 		{
-			auto nameComp = child->Try<Name>();
+			auto* nameComp = child->Try<Name>();
 			if (nameComp && nameComp->name == name)
 			{
-				return child;
+				return child.get();
 			}
 		}
 		
 		for (auto& child : root.GetChildren())
 		{
-			if (auto result = FindChild(*child, name))
+			if (auto* result = FindChild(*child, name))
 			{
 				return result;
 			}
@@ -53,20 +53,17 @@ namespace Jwl
 		return nullptr;
 	}
 
-	Entity::Ptr FindEntity(std::string_view name)
+	Entity* FindEntity(std::string_view name)
 	{
-		Entity::Ptr result;
-
 		for (auto& comp : All<Name>())
 		{
 			if (comp.name == name)
 			{
-				result = comp.owner.GetPtr();
-				break;
+				return &comp.owner;
 			}
 		}
 
-		return result;
+		return nullptr;
 	}
 
 	Name::Name(Entity& _owner)

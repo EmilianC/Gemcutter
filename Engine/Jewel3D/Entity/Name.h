@@ -11,10 +11,10 @@ namespace Jwl
 	void LogSceneGraph(const Entity& root);
 
 	// Searches the given entity's sub-tree for the first child with the specified name.
-	Entity::Ptr FindChild(const Entity& root, std::string_view name);
+	Entity* FindChild(const Entity& root, std::string_view name);
 
 	// Searches all Entities with a name component and returns the first one found with the specified name.
-	Entity::Ptr FindEntity(std::string_view name);
+	Entity* FindEntity(std::string_view name);
 
 	// Associates an entity with a name.
 	// When copied, appends "_Copy" to the name.
