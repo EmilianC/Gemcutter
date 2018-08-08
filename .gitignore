@@ -21,3 +21,4 @@ Jewel3D.lib
 *.TMP
 *.VC.db
 .vs/Jewel3D/
+.vscode/
