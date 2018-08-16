@@ -26,10 +26,7 @@ Highlight features include:
 1. Run "INSTALL.cmd" to save the checkout path to the environment and install project templates.
 	- You might have to restart your computer for this to take effect.
 2. Run "BUILD.cmd" to compile the engine and tools.
-3. Create a new game project by selecting ```Add New Project -> Visual C++ -> Jewel3D Project```.
-	- Due to a known bug in Visual Studio, source files are missing from the template project.
-	- Feel free to manually copy the project from ```\Jewel3D\Tools\TemplateProject\``` until this is fixed.
-	- Includes and link dependencies are still set up correctly.
+3. Create a new game project by selecting `Add New Project -> Visual C++ -> Jewel3D Project`.
 
 Code samples are available and maintained [here](https://github.com/EmilianC/Jewel3D-Samples).
 
