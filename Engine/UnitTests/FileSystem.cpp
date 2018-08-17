@@ -12,14 +12,16 @@ TEST_CASE("FileSystem")
 		CHECK(IsPathAbsolute("C:/"));
 
 		CHECK_FALSE(IsPathRelative("C:/"));
-		
+
 		CHECK(IsPathRelative("./Folder1/Folder2/"));
 
 		CHECK(IsPathRelative("/Folder1/Folder2/"));
 
-		CHECK(ExtractDriveLetter("C:/user/test.txt") == "C:");
+		CHECK(ExtractDriveLetter("C:/user/test.txt") == 'C');
 
 		CHECK(ExtractPath("C:/user/test.txt") == "C:/user/");
+
+		CHECK(ExtractPath("./user/test.txt") == "./user/");
 
 		CHECK(ExtractFile("C:/user/test2.txt") == "test2.txt");
 

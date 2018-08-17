@@ -78,7 +78,7 @@ namespace Jwl
 
 	bool IsPathRelative(std::string_view path)
 	{
-		return ExtractDriveLetter(path).empty();
+		return ExtractDriveLetter(path) == '\0';
 	}
 
 	bool IsPathAbsolute(std::string_view path)
@@ -143,40 +143,47 @@ namespace Jwl
 		currentDirectoryStack.pop();
 	}
 
-	std::string ExtractDriveLetter(std::string_view path)
+	char ExtractDriveLetter(std::string_view path)
 	{
 		if (path.empty())
 		{
 			Error("FileSystem: Cannot process an empty string.");
-			return std::string();
+			return '\0';
 		}
 
 		char result[_MAX_DRIVE] = { '\0' };
 		if (_splitpath_s(path.data(), result, _MAX_DRIVE, nullptr, 0, nullptr, 0, nullptr, 0) != SUCCESS)
 		{
 			Error("FileSystem: Invalid path.");
-			return std::string();
+			return '\0';
 		}
 
-		return result;
+		return result[0];
 	}
 
 	std::string ExtractPath(std::string_view path)
 	{
+		std::string result;
+
 		if (path.empty())
 		{
 			Error("FileSystem: Cannot process an empty string.");
-			return std::string();
+			return result;
 		}
 
-		char result[_MAX_DIR] = { '\0' };
-		if (_splitpath_s(path.data(), nullptr, 0, result, _MAX_DIR, nullptr, 0, nullptr, 0) != SUCCESS)
+		char drive[_MAX_DRIVE] = { '\0' };
+		char dir[_MAX_DIR] = { '\0' };
+		if (_splitpath_s(path.data(), drive, _MAX_DRIVE, dir, _MAX_DIR, nullptr, 0, nullptr, 0) != SUCCESS)
 		{
 			Error("FileSystem: Invalid path.");
-			return std::string();
+			return result;
 		}
 
-		return ExtractDriveLetter(path) + result;
+		result.reserve(_MAX_DIR + _MAX_DRIVE - 1);
+		result = drive;
+		result += dir;
+
+		return result;
 	}
 
 	std::string ExtractFile(std::string_view path)
@@ -315,7 +322,7 @@ namespace Jwl
 				currentPos += result.size() + 1; //+ 1 for '\n'
 			}
 		}
-		
+
 		return result;
 	}
 
@@ -399,7 +406,7 @@ namespace Jwl
 		{
 			return file.eof();
 		}
-		else 
+		else
 		{
 			return currentPos >= buffer.size();
 		}

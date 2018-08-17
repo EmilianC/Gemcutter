@@ -50,8 +50,8 @@ namespace Jwl
 	// Restores the last current directory path pushed with PushCurrentDirectory().
 	void PopCurrentDirectory();
 
-	// Returns the drive letter specified in the string, followed by a ':'.
-	std::string ExtractDriveLetter(std::string_view path);
+	// Returns the drive letter specified in the path, if one exists.
+	char ExtractDriveLetter(std::string_view path);
 
 	// Returns the path specified in the string, including the drive letter and ignoring filenames.
 	std::string ExtractPath(std::string_view path);
@@ -96,7 +96,7 @@ namespace Jwl
 		int GetInt();
 		// Gets the next character.
 		char GetChar();
-		
+
 		// Returns true if the current position in the file is at the end.
 		bool IsEOF() const;
 
