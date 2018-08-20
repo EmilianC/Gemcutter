@@ -50,7 +50,7 @@ namespace Jwl
 		bool isEnabled = true;
 	};
 
-	// Derive from this to create a new component. 
+	// Derive from this to create a new component.
 	// Your class should pass itself as the template argument.
 	// All components must be constructible with just an Entity reference.
 	template<class derived>
@@ -98,17 +98,14 @@ namespace Jwl
 		template<class T, typename... Args>
 		T& Add(Args&&... constructorParams);
 
-		// Adds all specified Components to the entity, default constructed.
-		template<typename... Args>
-		void AddComponents();
-
-		// Adds the specified component if it doesn't already exist and returns a pointer to it.
-		template<class T>
-		T& Require();
+		// Adds all specified Components, default constructed.
+		template<class T1, class T2, typename... Args>
+		void Add();
 
 		// Adds the specified components if any don't already exist.
-		template<typename... Args>
-		void RequireComponents();
+		// When given a single argument, a reference is returned.
+		template<class T, typename... Args>
+		auto Require() -> std::conditional_t<sizeof...(Args) == 0, T&, void>;
 
 		// Returns the requested component. Asserts if the component does not exist.
 		template<class T>

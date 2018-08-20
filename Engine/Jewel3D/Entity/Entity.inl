@@ -21,7 +21,7 @@ namespace Jwl
 	}
 
 	template<class derived>
-	Component<derived>::Component(Entity& owner) 
+	Component<derived>::Component(Entity& owner)
 		: ComponentBase(owner, componentId)
 	{}
 
@@ -77,36 +77,31 @@ namespace Jwl
 		return *newComponent;
 	}
 
-	template<typename... Args>
-	void Entity::AddComponents()
+	template<class T1, class T2, typename... Args>
+	void Entity::Add()
 	{
-		static_assert(sizeof...(Args), "AddComponents<>() must receive at least one template argument.");
-
+		Add<T1>();
+		Add<T2>();
 		(Add<Args>(), ...);
 	}
 
-	template<class T>
-	T& Entity::Require()
+	template<class T, typename... Args>
+	auto Entity::Require() -> std::conditional_t<sizeof...(Args) == 0, T&, void>
 	{
-		static_assert(std::is_base_of_v<ComponentBase, T>, "Template argument must inherit from Component.");
-		static_assert(!std::is_base_of_v<TagBase, T>, "Template argument cannot be a Tag.");
-
-		if (auto comp = Try<T>())
+		auto* comp = Try<T>();
+		if (!comp)
 		{
-			return *comp;
+			comp = &Add<T>();
+		}
+
+		if constexpr(sizeof...(Args) > 0)
+		{
+			(Require<Args>(), ...);
 		}
 		else
 		{
-			return Add<T>();
+			return *comp;
 		}
-	}
-
-	template<typename... Args>
-	void Entity::RequireComponents()
-	{
-		static_assert(sizeof...(Args), "RequireComponents<>() must receive at least one template argument.");
-
-		(Require<Args>(), ...);
 	}
 
 	template<class T>
@@ -227,13 +222,13 @@ namespace Jwl
 	{
 		static_assert(std::is_base_of_v<ComponentBase, T>, "Template argument must inherit from Component.");
 		static_assert(!std::is_base_of_v<TagBase, T>, "Tags cannot be enabled or disabled. Add or remove them instead.");
-		
+
 		auto& comp = Get<T>();
 
 		// The component state changes either way, but it only gets indexed if the Entity is also enabled.
 		bool wasEnabled = comp.isEnabled;
 		comp.isEnabled = true;
-		
+
 		if (!this->IsEnabled())
 		{
 			return;
@@ -251,7 +246,7 @@ namespace Jwl
 	{
 		static_assert(std::is_base_of_v<ComponentBase, T>, "Template argument must inherit from Component.");
 		static_assert(!std::is_base_of_v<TagBase, T>, "Tags cannot be enabled or disabled. Add or remove them instead.");
-		
+
 		auto& comp = Get<T>();
 
 		// The component state changes either way, but it only gets removed if the Entity is enabled.

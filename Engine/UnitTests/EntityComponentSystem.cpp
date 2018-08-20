@@ -73,13 +73,49 @@ TEST_CASE("Entity-Component-System")
 		CHECK(!ent->Has<Comp1>());
 		CHECK(!ent->Has<Comp2>());
 
-		ent->AddComponents<Comp1, Comp2>();
+		ent->Add<Comp1, Comp2>();
 		CHECK(ent->Has<Comp1>());
 		CHECK(ent->Has<Comp2>());
 
 		ent->RemoveAllComponents();
 		CHECK(!ent->Has<Comp1>());
 		CHECK(!ent->Has<Comp2>());
+	}
+
+	SECTION("Require Components")
+	{
+		auto ent = Entity::MakeNew();
+
+		CHECK(!ent->Try<Comp1>());
+		CHECK(!ent->Try<Comp2>());
+
+		ent->Require<Comp1>();
+		CHECK(ent->Try<Comp1>());
+		CHECK(!ent->Try<Comp2>());
+
+		ent->Require<Comp1, Comp2>();
+		CHECK(ent->Try<Comp1>());
+		CHECK(ent->Try<Comp2>());
+	}
+
+	SECTION("Try getting Components")
+	{
+		auto ent = Entity::MakeNew();
+
+		CHECK(!ent->Try<Comp1>());
+		CHECK(!ent->Try<Comp2>());
+
+		ent->Add<Comp1>();
+		CHECK(ent->Try<Comp1>());
+		CHECK(!ent->Try<Comp2>());
+
+		ent->Add<Comp2>();
+		CHECK(ent->Try<Comp1>());
+		CHECK(ent->Try<Comp2>());
+
+		ent->RemoveAllComponents();
+		CHECK(!ent->Try<Comp1>());
+		CHECK(!ent->Try<Comp2>());
 	}
 
 	SECTION("Derived Component Classes")
@@ -256,7 +292,7 @@ TEST_CASE("Entity-Component-System")
 			ent4->Tag<TagA>();
 			ent1->Add<Base>();
 			ent1->Tag<TagB>();
-		
+
 			auto count = 0;
 			for (Comp1& comp : All<Comp1>())
 			{
@@ -322,7 +358,7 @@ TEST_CASE("Entity-Component-System")
 			SECTION("2 Components")
 			{
 				// Target Entity with Comp1/Comp2
-				ent1->AddComponents<Comp1, Comp2>();
+				ent1->Add<Comp1, Comp2>();
 
 				// Some database noise.
 				ent2->Add<Comp2>();
@@ -371,8 +407,8 @@ TEST_CASE("Entity-Component-System")
 			SECTION("2 Entities With 2 Components")
 			{
 				// Target Entities with Comp1/Comp2
-				ent1->AddComponents<Comp1, Comp2>();
-				ent2->AddComponents<Comp1, Comp2>();
+				ent1->Add<Comp1, Comp2>();
+				ent2->Add<Comp1, Comp2>();
 
 				// Some database noise.
 				ent1->Tag<TagC>();
@@ -469,7 +505,7 @@ TEST_CASE("Entity-Component-System")
 			SECTION("2 Components : 1 Tag")
 			{
 				// Target Entity with Comp1/Comp2/TagA
-				ent1->AddComponents<Comp1, Comp2>();
+				ent1->Add<Comp1, Comp2>();
 				ent1->Tag<TagA>();
 
 				// Some database noise.
@@ -521,13 +557,13 @@ TEST_CASE("Entity-Component-System")
 			SECTION("3 Components : 3 Tags")
 			{
 				// Target Entity with Comp1/Comp2/Base/TagA/TagB/TagC
-				ent1->AddComponents<Comp1, Comp2, Base>();
+				ent1->Add<Comp1, Comp2, Base>();
 				ent1->Tag<TagA>();
 				ent1->Tag<TagB>();
 				ent1->Tag<TagC>();
 
 				// Some database noise.
-				ent2->AddComponents<Base, Comp2, Comp1>();
+				ent2->Add<Base, Comp2, Comp1>();
 				ent2->Tag<TagA>();
 				ent3->Add<Comp1>();
 				ent3->Tag<TagB>();
@@ -598,7 +634,7 @@ TEST_CASE("Entity-Component-System")
 				ent3->Tag<TagB>();
 				ent4->Add<DerivedB>();
 				ent4->Tag<TagC>();
-				
+
 				// Query the Entity Database. We expect only our target Entities as a result.
 				auto count = 0;
 				SECTION("Order 1")
@@ -607,7 +643,7 @@ TEST_CASE("Entity-Component-System")
 					{
 						CHECK(&e1 == ent1.get());
 						count++;
-				
+
 						REQUIRE(e1.Has<Comp1>());
 						CHECK(e1.Get<Comp1>().IsEnabled());
 						CHECK(e1.IsEnabled());
@@ -660,7 +696,7 @@ TEST_CASE("Entity-Component-System")
 				ent3->Tag<TagB>();
 				ent3->Disable();
 				ent4->Add<Comp2>();
-				
+
 				// Query the Entity Database. No Entities should match these queries.
 				auto count = 0;
 				for (Entity& e : With<Comp1, Comp2>())
@@ -699,7 +735,7 @@ TEST_CASE("Entity-Component-System")
 				ent3->Disable();
 				ent4->Disable();
 				ent4->Add<Comp1>();
-				
+
 				// Query the Entity Database. We expect only our target Entities as a result.
 				auto results = CaptureWith<Comp1, Comp2>();
 
