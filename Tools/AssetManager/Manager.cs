@@ -74,7 +74,7 @@ namespace AssetManager
 					}
 					catch (Exception ex)
 					{
-						Log($"ERROR:   {ex.Message}", ConsoleColor.Red);
+						Log($"ERROR:    {ex.Message}", ConsoleColor.Red);
 					}
 				}
 			};
@@ -102,10 +102,10 @@ namespace AssetManager
 					encoders.Any(x => file.EndsWith(x.Key, StringComparison.InvariantCultureIgnoreCase))))
 				{
 					string logName = file.Substring(inputRoot.Length + 1);
-					Log($"Checking [{logName}]");
+					Log($"Checking: {logName}");
 
 					if (!encoders[Path.GetExtension(file).Substring(1)].Update(file))
-						throw new Exception($"Failed to update [{logName}]");
+						throw new Exception($"Failed to update: {logName}");
 				}
 
 				Log(">>>>>> Finished Validating <<<<<<", ConsoleColor.Green);
@@ -130,7 +130,7 @@ namespace AssetManager
 			string outputRoot = Path.GetFullPath(inputRoot + Path.DirectorySeparatorChar + config.outputDirectory);
 
 			Log(">>>>>> Started Packing <<<<<<");
-			Log($"Output Directory [{outputRoot}]");
+			Log($"Output Directory: {outputRoot}");
 
 			ButtonPack.Enabled = false;
 			ButtonSettings.Enabled = false;
@@ -154,12 +154,12 @@ namespace AssetManager
 					encoders.Any(x => file.EndsWith(x.Key, StringComparison.InvariantCultureIgnoreCase))))
 				{
 					string logName = file.Substring(inputRoot.Length + 1);
-					Log($"Encoding [{logName}]");
+					Log($"Encoding: {logName}");
 
 					var outDir = Path.GetDirectoryName(file.Replace(inputRoot, outputRoot)) + Path.DirectorySeparatorChar;
 
 					if (!encoders[Path.GetExtension(file).Substring(1)].Convert(file, outDir))
-						throw new Exception($"Failed to encode [{logName}]");
+						throw new Exception($"Failed to encode: {logName}");
 				}
 
 				// Copy all the remaining files.
@@ -181,7 +181,7 @@ namespace AssetManager
 						File.Delete(outFile);
 					}
 
-					Log($"Copying  [{file.Substring(inputRoot.Length + 1)}]");
+					Log($"Copying:  {file.Substring(inputRoot.Length + 1)}");
 					File.Copy(file, outFile);
 				}
 
@@ -190,7 +190,7 @@ namespace AssetManager
 			}
 			catch (Exception e)
 			{
-				Log($"ERROR:   {e.Message}", ConsoleColor.Red);
+				Log($"ERROR:    {e.Message}", ConsoleColor.Red);
 				result = false;
 			}
 			finally
