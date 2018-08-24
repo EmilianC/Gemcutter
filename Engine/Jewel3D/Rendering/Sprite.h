@@ -4,27 +4,37 @@
 
 namespace Jwl
 {
+	enum class Alignment
+	{
+		BottomLeft,
+		BottomCenter,
+		LeftCenter,
+		Center
+	};
+
 	// Causes an entity to render as a 2D textured sprite.
 	// The desired textures should be set on the Material component.
+	// Alignment and BillBoard options are supported by the default sprite shader.
 	class Sprite : public Component<Sprite>
 	{
 	public:
 		Sprite(Entity& owner);
+		Sprite(Entity& owner, Alignment pivot);
+		Sprite(Entity& owner, Alignment pivot, bool billBoarded);
 		Sprite& operator=(const Sprite&);
 
-		void SetCenteredX(bool state);
-		void SetCenteredY(bool state);
-		bool GetCenteredX() const;
-		bool GetCenteredY() const;
+		// The sprite will render with the specified point on the entity's position.
+		// Defines "JWL_SPRITE_CENTERED_X" and "JWL_SPRITE_CENTERED_Y" on the Material Component if needed.
+		void SetAlignment(Alignment pivot);
+		Alignment GetAlignment() const;
 
-		// Defines "JWL_SPRITE_BILLBOARD" on the entity's shader.
-		// If the standard sprite shader is used, this causes the Sprite to face the camera.
+		// Causes the Sprite to face the camera.
+		// Defines "JWL_SPRITE_BILLBOARD" on the Material Component if needed.
 		void SetBillBoarded(bool state);
 		bool GetBillBoarded() const;
 
 	private:
+		Alignment alignment = Alignment::BottomLeft;
 		bool billBoarded = false;
-		bool centeredX = false;
-		bool centeredY = false;
 	};
 }

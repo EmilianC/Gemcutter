@@ -10,57 +10,50 @@ namespace Jwl
 	{
 	}
 
+	Sprite::Sprite(Entity& owner, Alignment pivot)
+		: Component(owner)
+	{
+		SetAlignment(pivot);
+	}
+
+	Sprite::Sprite(Entity& owner, Alignment pivot, bool billBoarded)
+		: Component(owner)
+	{
+		SetAlignment(pivot);
+		SetBillBoarded(billBoarded);
+	}
+
 	Sprite& Sprite::operator=(const Sprite& other)
 	{
+		SetAlignment(other.alignment);
 		SetBillBoarded(other.billBoarded);
-		SetCenteredX(other.centeredX);
-		SetCenteredY(other.centeredY);
-		
+
 		return *this;
 	}
 
-	void Sprite::SetCenteredX(bool state)
+	void Sprite::SetAlignment(Alignment pivot)
 	{
-		if (centeredX == state)
-		{
+		if (alignment == pivot)
 			return;
-		}
 
-		owner.Get<Material>().variantDefinitions.Switch("JWL_SPRITE_CENTERED_X", state);
+		auto& mat = owner.Require<Material>();
+		mat.variantDefinitions.Switch("JWL_SPRITE_CENTERED_X", pivot == Alignment::Center || pivot == Alignment::BottomCenter);
+		mat.variantDefinitions.Switch("JWL_SPRITE_CENTERED_Y", pivot == Alignment::Center || pivot == Alignment::LeftCenter);
 
-		centeredX = state;
+		alignment = pivot;
 	}
 
-	void Sprite::SetCenteredY(bool state)
+	Alignment Sprite::GetAlignment() const
 	{
-		if (centeredY == state)
-		{
-			return;
-		}
-
-		owner.Get<Material>().variantDefinitions.Switch("JWL_SPRITE_CENTERED_Y", state);
-
-		centeredY = state;
-	}
-
-	bool Sprite::GetCenteredX() const
-	{
-		return centeredX;
-	}
-
-	bool Sprite::GetCenteredY() const
-	{
-		return centeredY;
+		return alignment;
 	}
 
 	void Sprite::SetBillBoarded(bool state)
 	{
 		if (billBoarded == state)
-		{
 			return;
-		}
 
-		owner.Get<Material>().variantDefinitions.Switch("JWL_SPRITE_BILLBOARD", state);
+		owner.Require<Material>().variantDefinitions.Switch("JWL_SPRITE_BILLBOARD", state);
 
 		billBoarded = state;
 	}
