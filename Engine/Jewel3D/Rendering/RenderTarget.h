@@ -29,7 +29,7 @@ namespace Jwl
 		bool Validate() const;
 
 		// Attach an existing texture.
-		void AttachDepthTexture(const Texture::Ptr& texture);
+		void AttachDepthTexture(Texture::Ptr texture);
 		void DetachDepthTexture();
 
 		// Clears all textures to the current global clear color/depth.

@@ -25,7 +25,7 @@ namespace Jwl
 	{
 		ASSERT(width != 0, "'width' must be greater than 0.");
 		ASSERT(height != 0, "'height' must be greater than 0.");
-		ASSERT(numSamples == 1 || numSamples == 2 || numSamples == 4 || numSamples == 8 || numSamples == 16, 
+		ASSERT(numSamples == 1 || numSamples == 2 || numSamples == 4 || numSamples == 8 || numSamples == 16,
 			"'numSamples' must be 1, 2, 4, 8, or 16.");
 		ASSERT(_numColorTextures > 0 || hasDepth, "A RenderTarget cannot be made without any textures.");
 
@@ -52,7 +52,7 @@ namespace Jwl
 				width, height,
 				TextureFormat::DEPTH_24, TextureFilter::Point,
 				TextureWrap::Clamp, 1.0f, numSamples);
-			
+
 			glFramebufferTexture2D(
 				GL_FRAMEBUFFER,
 				GL_DEPTH_ATTACHMENT,
@@ -140,7 +140,7 @@ namespace Jwl
 		return true;
 	}
 
-	void RenderTarget::AttachDepthTexture(const Texture::Ptr& texture)
+	void RenderTarget::AttachDepthTexture(Texture::Ptr texture)
 	{
 		ASSERT(texture, "'texture' cannot be null.");
 		ASSERT(texture->GetHandle() != GL_NONE, "'texture' must be initialized.");
@@ -154,7 +154,7 @@ namespace Jwl
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, IsMultisampled() ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D, texture->GetHandle(), 0);
 		glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
 
-		depth = texture;
+		depth = std::move(texture);
 	}
 
 	void RenderTarget::DetachDepthTexture()
@@ -351,9 +351,9 @@ namespace Jwl
 
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, FBO);
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, target.FBO);
-		
+
 		glBlitFramebuffer(0, 0, width, height, 0, 0, target.width, target.height, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
-		
+
 		glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
 	}
 
@@ -380,7 +380,7 @@ namespace Jwl
 	void RenderTarget::CopyDepthToBackBuffer() const
 	{
 		ASSERT(HasDepth(), "RenderTarget does not have a depth texture to copy.");
-		ASSERT(width == static_cast<unsigned>(Application.GetScreenWidth()) && height == static_cast<unsigned>(Application.GetScreenHeight()), 
+		ASSERT(width == static_cast<unsigned>(Application.GetScreenWidth()) && height == static_cast<unsigned>(Application.GetScreenHeight()),
 			"RenderTarget and BackBuffer must have the same dimensions.");
 
 		glBindFramebuffer(GL_READ_FRAMEBUFFER, FBO);
