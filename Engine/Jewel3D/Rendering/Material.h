@@ -19,7 +19,12 @@ namespace Jwl
 		Material(Entity& owner);
 		Material(Entity& owner, Shader::Ptr shader);
 		Material(Entity& owner, Texture::Ptr texture);
-		Material(Entity& owner, Shader::Ptr shader, Texture::Ptr texture);
+		Material(
+			Entity& owner, Shader::Ptr shader, Texture::Ptr texture,
+			BlendFunc blendMode = BlendFunc::None,
+			DepthFunc depthMode = DepthFunc::Normal,
+			CullFunc cullMode = CullFunc::Clockwise);
+
 		Material& operator=(const Material&);
 
 		void SetBlendMode(BlendFunc func);

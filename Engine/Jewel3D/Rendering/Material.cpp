@@ -24,11 +24,16 @@ namespace Jwl
 		textures.Add(std::move(texture));
 	}
 
-	Material::Material(Entity& _owner, Shader::Ptr _shader, Texture::Ptr texture)
+	Material::Material(
+		Entity& _owner, Shader::Ptr _shader, Texture::Ptr texture,
+		BlendFunc _blendMode, DepthFunc _depthMode, CullFunc _cullMode)
 		: Component(_owner)
 		, shader(std::move(_shader))
 	{
 		textures.Add(std::move(texture));
+		SetBlendMode(_blendMode);
+		SetDepthMode(_depthMode);
+		SetCullMode(_cullMode);
 	}
 
 	Material& Material::operator=(const Material& other)
@@ -67,7 +72,7 @@ namespace Jwl
 	{
 		textures.Bind();
 		buffers.Bind();
-		
+
 		SetBlendFunc(blendMode);
 		SetDepthFunc(depthMode);
 		SetCullFunc(cullMode);
@@ -122,7 +127,7 @@ namespace Jwl
 	{
 		depthMode = func;
 	}
-	
+
 	void Material::SetCullMode(CullFunc func)
 	{
 		cullMode = func;
