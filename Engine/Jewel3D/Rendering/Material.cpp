@@ -21,7 +21,10 @@ namespace Jwl
 	Material::Material(Entity& _owner, Texture::Ptr texture)
 		: Component(_owner)
 	{
-		textures.Add(std::move(texture));
+		if (texture)
+		{
+			textures.Add(std::move(texture));
+		}
 	}
 
 	Material::Material(
@@ -30,7 +33,11 @@ namespace Jwl
 		: Component(_owner)
 		, shader(std::move(_shader))
 	{
-		textures.Add(std::move(texture));
+		if (texture)
+		{
+			textures.Add(std::move(texture));
+		}
+
 		SetBlendMode(_blendMode);
 		SetDepthMode(_depthMode);
 		SetCullMode(_cullMode);

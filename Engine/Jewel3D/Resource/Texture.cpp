@@ -165,7 +165,7 @@ namespace Jwl
 			glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, anisotropicLevel);
 
 			const unsigned dataFormat = CountChannels(format) == 3 ? GL_RGB : GL_RGBA;
-			
+
 			glTexStorage2D(GL_TEXTURE_2D, numLevels, ResolveFormat(format), width, height);
 			glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, dataFormat, GL_UNSIGNED_BYTE, image.data);
 
@@ -354,8 +354,9 @@ namespace Jwl
 
 	void TextureList::Add(Texture::Ptr tex, unsigned unit)
 	{
-		Remove(unit);
+		ASSERT(tex, "'tex' cannot be null.");
 
+		Remove(unit);
 		textureSlots.emplace_back(std::move(tex), unit);
 	}
 
@@ -387,7 +388,7 @@ namespace Jwl
 	}
 
 	//-----------------------------------------------------------------------------------------------------
-	
+
 	Image::Image(int _width, int _height, TextureFormat _format, const unsigned char* _data)
 		: width(_width)
 		, height(_height)

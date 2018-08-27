@@ -32,21 +32,21 @@ namespace Jwl
 	UniformBuffer& UniformBuffer::operator=(const UniformBuffer& other)
 	{
 		UnLoad();
-	
+
 		table = other.table;
 		bufferSize = other.bufferSize;
-	
+
 		if (bufferSize != 0)
 		{
 			// We have to create our own UBO.
 			InitBuffer();
-	
+
 			memcpy(buffer, other.buffer, bufferSize);
 		}
-	
+
 		return *this;
 	}
-	
+
 	void UniformBuffer::Copy(const UniformBuffer& other)
 	{
 		*this = other;
@@ -191,8 +191,9 @@ namespace Jwl
 
 	void BufferList::Add(UniformBuffer::Ptr buffer, unsigned unit)
 	{
-		Remove(unit);
+		ASSERT(buffer, "'buffer' cannot be null.");
 
+		Remove(unit);
 		buffers.emplace_back(std::move(buffer), unit);
 	}
 
