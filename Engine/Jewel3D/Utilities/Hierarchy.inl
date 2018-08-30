@@ -69,7 +69,7 @@ namespace Jwl
 	template<class Node>
 	void Hierarchy<Node>::ClearChildren()
 	{
-		for (auto child : children)
+		for (auto& child : children)
 		{
 			child->parent.reset();
 		}
