@@ -31,5 +31,8 @@
     <ClCompile Include="UnitTests\Hierarchy.cpp">
       <Filter>Entity</Filter>
     </ClCompile>
+    <ClCompile Include="UnitTests\EnumFlags.cpp">
+      <Filter>Utilities</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -12,6 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="UnitTests\EntityComponentSystem.cpp" />
+    <ClCompile Include="UnitTests\EnumFlags.cpp" />
     <ClCompile Include="UnitTests\FileSystem.cpp" />
     <ClCompile Include="UnitTests\Hierarchy.cpp" />
     <ClCompile Include="UnitTests\main.cpp" />

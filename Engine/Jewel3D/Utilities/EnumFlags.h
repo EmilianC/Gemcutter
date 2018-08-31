@@ -44,12 +44,6 @@ namespace Jwl
 			return value == val;
 		}
 
-		EnumFlags& operator=(const EnumFlags& other)
-		{
-			value = other.value;
-			return *this;
-		}
-
 		EnumFlags& operator|=(Enumeration val)
 		{
 			value = value | static_cast<Primitive>(val);
