@@ -41,16 +41,22 @@ namespace Jwl
 	};
 }
 
+REFLECT(Jwl::Alignment)<>,
+	VALUES <
+		REF_VALUE(BottomLeft),
+		REF_VALUE(BottomCenter),
+		REF_VALUE(LeftCenter),
+		REF_VALUE(Center)
+	>
+REF_END;
+
 REFLECT(Jwl::Sprite) < Component >,
 	MEMBERS <
+		REF_MEMBER(alignment)<
+			Setter<Jwl::Sprite, Jwl::Alignment, &Jwl::Sprite::SetAlignment>
+		>,
 		REF_MEMBER(billBoarded)<
 			Setter<Jwl::Sprite, bool, &Jwl::Sprite::SetBillBoarded>
-		>,
-		REF_MEMBER(centeredX)<
-			Setter<Jwl::Sprite, bool, &Jwl::Sprite::SetCenteredX>
-		>,
-		REF_MEMBER(centeredY)<
-			Setter<Jwl::Sprite, bool, &Jwl::Sprite::SetCenteredY>
 		>
 	>
 REF_END;

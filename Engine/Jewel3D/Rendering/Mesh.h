@@ -19,6 +19,6 @@ namespace Jwl
 
 REFLECT(Jwl::Mesh) < Component >,
 	MEMBERS<
-		REF_MEMBER(model)<>
+		REF_MEMBER(array)<>
 	>
 REF_END;

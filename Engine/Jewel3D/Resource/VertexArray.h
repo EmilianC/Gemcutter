@@ -2,6 +2,7 @@
 #pragma once
 #include "Jewel3D/Rendering/Rendering.h"
 #include "Jewel3D/Resource/Shareable.h"
+#include "Jewel3D/Reflection/Reflection.h"
 
 #include <vector>
 
@@ -12,6 +13,7 @@ namespace Jwl
 	class VertexBuffer : public Shareable<VertexBuffer>
 	{
 		friend class VertexArray;
+		REFLECT_PRIVATE;
 	public:
 		VertexBuffer(unsigned size, VertexBufferUsage usage);
 		~VertexBuffer();
@@ -58,6 +60,7 @@ namespace Jwl
 	// A renderable collection of VertexStreams.
 	class VertexArray : public Shareable<VertexArray>
 	{
+		REFLECT_PRIVATE;
 	public:
 		VertexArray();
 		~VertexArray();
@@ -89,5 +92,33 @@ namespace Jwl
 		std::vector<VertexStream> streams;
 	};
 }
+
+REFLECT_SHAREABLE(Jwl::VertexBuffer)
+REFLECT(Jwl::VertexBuffer)<>,
+	MEMBERS <
+		REF_MEMBER(usage)<>
+	>
+REF_END;
+
+REFLECT(Jwl::VertexStream)<>,
+	MEMBERS <
+		REF_MEMBER(buffer)<>,
+		REF_MEMBER(bindingUnit)<>,
+		REF_MEMBER(format)<>,
+		REF_MEMBER(normalized)<>,
+		REF_MEMBER(startOffset)<>,
+		REF_MEMBER(stride)<>,
+		REF_MEMBER(divisor)<>
+	>
+REF_END;
+
+REFLECT_BASIC(std::vector<Jwl::VertexStream>)
+REFLECT_SHAREABLE(Jwl::VertexArray)
+REFLECT(Jwl::VertexArray)<>,
+	MEMBERS<
+		REF_MEMBER(vertexCount)< ReadOnly >,
+		REF_MEMBER(streams)<>
+	>
+REF_END;
 
 #include "VertexArray.inl"

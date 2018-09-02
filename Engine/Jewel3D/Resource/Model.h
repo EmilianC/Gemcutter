@@ -41,12 +41,11 @@ namespace Jwl
 	};
 }
 
-REFLECT_SHAREABLE(Jwl::Model)
 REFLECT(Jwl::Model) < Resource >,
+	BASES< Jwl::VertexArray >,
 	MEMBERS<
 		REF_MEMBER(hasUvs)< ReadOnly >,
 		REF_MEMBER(hasNormals)< ReadOnly >,
-		REF_MEMBER(numFaces)< ReadOnly >,
-		REF_MEMBER(numVertices)< ReadOnly >
+		REF_MEMBER(hasTangents)< ReadOnly >
 	>
 REF_END;

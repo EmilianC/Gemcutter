@@ -196,6 +196,45 @@ namespace Jwl
 	};
 }
 
+REFLECT(Jwl::UniformBufferSlot)<>,
+	VALUES <
+		REF_VALUE(Camera),
+		REF_VALUE(Model),
+		REF_VALUE(Engine),
+		REF_VALUE(Time),
+		REF_VALUE(Particle)
+	>
+REF_END;
+
+REFLECT(Jwl::VertexFormat)<>,
+	VALUES <
+		REF_VALUE(Float),
+		REF_VALUE(Double),
+		REF_VALUE(Int),
+		REF_VALUE(uInt),
+		REF_VALUE(Short),
+		REF_VALUE(uShort),
+		REF_VALUE(Byte),
+		REF_VALUE(uByte)
+	>
+REF_END;
+
+REFLECT(Jwl::VertexAccess)<>,
+	VALUES <
+		REF_VALUE(ReadOnly),
+		REF_VALUE(WriteOnly),
+		REF_VALUE(ReadWrite)
+	>
+REF_END;
+
+REFLECT(Jwl::VertexBufferUsage)<>,
+	VALUES <
+		REF_VALUE(Static),
+		REF_VALUE(Dynamic),
+		REF_VALUE(Stream)
+	>
+REF_END;
+
 REFLECT(Jwl::TextureFormat)<>,
 	VALUES <
 		REF_VALUE(RGB_8),
