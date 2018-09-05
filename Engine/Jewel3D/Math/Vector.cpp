@@ -6,9 +6,6 @@
 
 namespace Jwl
 {
-
-#pragma region Vector2
-
 	const vec2 vec2::Zero = vec2(0.0f, 0.0f);
 	const vec2 vec2::One = vec2(1.0f, 1.0f);
 	const vec2 vec2::Right = vec2(1.0f, 0.0f);
@@ -26,15 +23,15 @@ namespace Jwl
 
 	bool vec2::operator==(const vec2& RHS) const
 	{
-		return 
-			Equals(x, RHS.x) && 
+		return
+			Equals(x, RHS.x) &&
 			Equals(y, RHS.y);
 	}
 
 	bool vec2::operator!=(const vec2& RHS) const
 	{
-		return 
-			!Equals(x, RHS.x) || 
+		return
+			!Equals(x, RHS.x) ||
 			!Equals(y, RHS.y);
 	}
 
@@ -169,10 +166,6 @@ namespace Jwl
 		return vec2(x * invLength, y * invLength);
 	}
 
-#pragma endregion
-
-#pragma region Vector3
-
 	const vec3 vec3::Zero = vec3(0.0f, 0.0f, 0.0f);
 	const vec3 vec3::One = vec3(1.0f, 1.0f, 1.0f);
 	const vec3 vec3::Right = vec3(1.0f, 0.0f, 0.0f);
@@ -196,17 +189,17 @@ namespace Jwl
 
 	bool vec3::operator==(const vec3& RHS) const
 	{
-		return 
-			Equals(x, RHS.x) && 
-			Equals(y, RHS.y) && 
+		return
+			Equals(x, RHS.x) &&
+			Equals(y, RHS.y) &&
 			Equals(z, RHS.z);
 	}
 
 	bool vec3::operator!=(const vec3& RHS) const
 	{
-		return 
-			!Equals(x, RHS.x) || 
-			!Equals(y, RHS.y) || 
+		return
+			!Equals(x, RHS.x) ||
+			!Equals(y, RHS.y) ||
 			!Equals(z, RHS.z);
 	}
 
@@ -353,10 +346,6 @@ namespace Jwl
 		return vec3(x * invLength, y * invLength, z * invLength);
 	}
 
-#pragma endregion
-
-#pragma region vector4
-
 	const vec4 vec4::Zero = vec4(0.0f, 0.0f, 0.0f, 0.0f);
 	const vec4 vec4::One = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	const vec4 vec4::Right = vec4(1.0f, 0.0f, 0.0f, 0.0f);
@@ -390,19 +379,19 @@ namespace Jwl
 
 	bool vec4::operator==(const vec4& RHS) const
 	{
-		return 
-			Equals(x, RHS.x) && 
-			Equals(y, RHS.y) && 
-			Equals(z, RHS.z) && 
+		return
+			Equals(x, RHS.x) &&
+			Equals(y, RHS.y) &&
+			Equals(z, RHS.z) &&
 			Equals(w, RHS.w);
 	}
 
 	bool vec4::operator!=(const vec4& RHS) const
 	{
-		return 
-			!Equals(x, RHS.x) || 
-			!Equals(y, RHS.y) || 
-			!Equals(z, RHS.z) || 
+		return
+			!Equals(x, RHS.x) ||
+			!Equals(y, RHS.y) ||
+			!Equals(z, RHS.z) ||
 			!Equals(w, RHS.w);
 	}
 
@@ -561,8 +550,6 @@ namespace Jwl
 		return vec4(x * invLength, y * invLength, z * invLength, w * invLength);
 	}
 
-#pragma endregion
-
 	float Distance(const vec2& v1, const vec2& v2)
 	{
 		return (v1 - v2).Length();
@@ -600,7 +587,7 @@ namespace Jwl
 			v1.z * v2.x - v1.x * v2.z,
 			v1.x * v2.y - v1.y * v2.x);
 	}
-	
+
 	vec2 Reflect(const vec2& incident, const vec2& normal)
 	{
 		return incident - 2.0f * Dot(normal, incident) * normal;
@@ -730,7 +717,7 @@ namespace Jwl
 			Clamp(vec.x, min.x, max.x),
 			Clamp(vec.y, min.y, max.y));
 	}
-	
+
 	vec3 Clamp(const vec3& vec, const vec3& min, const vec3& max)
 	{
 		return vec3(
@@ -738,7 +725,7 @@ namespace Jwl
 			Clamp(vec.y, min.y, max.y),
 			Clamp(vec.z, min.z, max.z));
 	}
-	
+
 	vec4 Clamp(const vec4& vec, const vec4& min, const vec4& max)
 	{
 		return vec4(
@@ -758,7 +745,7 @@ namespace Jwl
 		float inverse = 1.0f / divisor;
 		return vec2(vec.x * inverse, vec.y * inverse);
 	}
-	
+
 	vec3 operator*(float scalar, const vec3& vec)
 	{
 		return vec3(vec.x * scalar, vec.y * scalar, vec.z * scalar);

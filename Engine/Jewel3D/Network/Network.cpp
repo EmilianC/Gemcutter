@@ -17,8 +17,6 @@ namespace Jwl
 		WSACleanup();
 	}
 
-#pragma region Network UDP
-
 	NetworkUDP::NetworkUDP()
 		: remotePort(-1)
 		, localPort(-1)
@@ -70,7 +68,7 @@ namespace Jwl
 		remoteAddress.sin_family = AF_INET;
 		remoteAddress.sin_port = htons(static_cast<u_short>(remotePort));
 		remoteAddress.sin_addr.S_un.S_addr = inet_addr(remoteIp.c_str());
-		
+
 		// Set as Non-Blocking.
 		u_long iMode = 1;
 		ioctlsocket(outputSocket, FIONBIO, &iMode);
@@ -121,10 +119,6 @@ namespace Jwl
 		}
 	}
 
-#pragma endregion
-
-#pragma region Network TCP
-	
 	NetworkTCP::NetworkTCP()
 		: isConnected(false)
 		, remotePort(-1)
@@ -134,7 +128,7 @@ namespace Jwl
 		memset(&address, 0, sizeof(sockaddr_in));
 		memset(receiveBuffer, '\0', PACKET_LENGTH);
 	}
-	
+
 	bool NetworkTCP::Init()
 	{
 		/* Create Socket */
@@ -143,13 +137,13 @@ namespace Jwl
 			Destroy();
 			return false;
 		}
-	
+
 		/* Setup Socket */
 		address.sin_family = AF_INET;
-	
+
 		return true;
 	}
-	
+
 	void NetworkTCP::Destroy()
 	{
 		if (isConnected)
@@ -166,40 +160,40 @@ namespace Jwl
 		memset(&address, 0, sizeof(sockaddr_in));
 		memset(receiveBuffer, '\0', PACKET_LENGTH);
 	}
-	
+
 	bool NetworkTCP::OpenToConnectionRequests(int localPortNum)
 	{
 		ASSERT(!isConnected, "Network is already connected.");
 
 		localPort = localPortNum;
-	
+
 		/* Complete socket setup */
 		address.sin_port = htons(static_cast<u_short>(localPort));
 		address.sin_addr.S_un.S_addr = INADDR_ANY;
-	
+
 		/* Bind our Socket */
 		if (bind(socketId, reinterpret_cast<sockaddr*>(&address), sizeof(sockaddr)) == SOCKET_ERROR)
 		{
 			Destroy();
 			return false;
 		}
-	
+
 		/* Open Socket to connections */
 		listen(socketId, 1);
-	
+
 		/* Set as Non-Blocking */
 		u_long iMode = 1;
 		ioctlsocket(socketId, FIONBIO, &iMode);
-	
+
 		return true;
 	}
-	
+
 	bool NetworkTCP::CheckForConnectionRequests()
 	{
 		ASSERT(!isConnected, "Network is already connected.");
-	
+
 		SOCKET TempSock = static_cast<SOCKET>(SOCKET_ERROR);
-	
+
 		TempSock = accept(socketId, NULL, NULL);
 		if (TempSock == SOCKET_ERROR)
 		{
@@ -213,18 +207,18 @@ namespace Jwl
 			return true;
 		}
 	}
-	
+
 	bool NetworkTCP::SendConnectionRequest(std::string_view remoteIP, int remotePortNum)
 	{
 		ASSERT(!isConnected, "Network is already connected.");
 
 		remoteIp = remoteIP;
 		remotePort = remotePortNum;
-	
+
 		/* Complete socket setup */
 		address.sin_port = htons(static_cast<u_short>(remotePort));
 		address.sin_addr.S_un.S_addr = inet_addr(remoteIp.c_str());
-	
+
 		if (connect(socketId, reinterpret_cast<sockaddr*>(&address), sizeof(sockaddr)) != 0)
 		{
 			closesocket(socketId);
@@ -233,42 +227,42 @@ namespace Jwl
 				Destroy();
 				return false;
 			}
-	
+
 			return false;
 		}
 		else
 		{
 			isConnected = true;
-	
+
 			/* Set as Non-Blocking */
 			u_long iMode = 1;
 			ioctlsocket(socketId, FIONBIO, &iMode);
-	
+
 			return true;
 		}
 	}
-	
+
 	bool NetworkTCP::IsConnected() const
 	{
 		return isConnected;
 	}
-	
+
 	bool NetworkTCP::Send(std::string_view packet)
 	{
 		ASSERT(isConnected, "Network must have a connection to call this function.");
-	
+
 		return send(socketId, packet.data(), packet.size(), 0) != SOCKET_ERROR;
 	}
-	
+
 	bool NetworkTCP::Receive(std::string& out_packet)
 	{
 		ASSERT(isConnected, "Network must have a connection to call this function.");
-		
+
 		out_packet.clear();
 		memset(receiveBuffer, '\0', PACKET_LENGTH);
-	
+
 		int length = recv(socketId, receiveBuffer, PACKET_LENGTH, 0);
-	
+
 		// Did we receive anything?
 		if (length == SOCKET_ERROR || WSAGetLastError() == WSAEWOULDBLOCK)
 		{
@@ -280,10 +274,6 @@ namespace Jwl
 			return true;
 		}
 	}
-
-#pragma endregion
-
-#pragma region Network Client
 
 	NetworkClient::NetworkClient()
 		: TCPSocket(-1)
@@ -389,7 +379,7 @@ namespace Jwl
 			//{
 			//	Destroy();
 			//}
-	
+
 			return false;
 		}
 		else
@@ -405,7 +395,7 @@ namespace Jwl
 			}
 
 			isConnected = true;
-	
+
 			return true;
 		}
 	}
@@ -452,7 +442,7 @@ namespace Jwl
 		memset(receiveBuffer, '\0', PACKET_LENGTH);
 
 		int length = recv(TCPSocket, receiveBuffer, PACKET_LENGTH, 0);
-	
+
 		// Did we receive anything?
 		if (length == SOCKET_ERROR || WSAGetLastError() == WSAEWOULDBLOCK)
 		{
@@ -465,10 +455,6 @@ namespace Jwl
 			return true;
 		}
 	}
-
-#pragma endregion
-
-#pragma region Network Server
 
 	NetworkServer::NetworkServer()
 		: TCPSocket(-1)
@@ -549,17 +535,17 @@ namespace Jwl
 		TCPAddress.sin_family = AF_INET;
 		TCPAddress.sin_port = htons(static_cast<u_short>(localPortTCP));
 		TCPAddress.sin_addr.S_un.S_addr = INADDR_ANY;
-	
+
 		/* Bind our Socket */
 		if (bind(TCPSocket, reinterpret_cast<sockaddr*>(&TCPAddress), sizeof(sockaddr)) == SOCKET_ERROR)
 		{
 			Destroy();
 			return false;
 		}
-	
+
 		/* Open Socket to connections */
 		listen(TCPSocket, 1);
-	
+
 		/* Set as Non-Blocking */
 		u_long iMode = 1;
 		ioctlsocket(TCPSocket, FIONBIO, &iMode);
@@ -571,7 +557,7 @@ namespace Jwl
 	{
 		Client newClient;
 		SOCKET tempSocket = accept(TCPSocket, reinterpret_cast<sockaddr*>(&newClient.TCPAddress), &newClient.TCPAddressSize);
-	
+
 		if (tempSocket == SOCKET_ERROR)
 		{
 			return -1;
@@ -734,7 +720,7 @@ namespace Jwl
 		for (auto& client : clients)
 		{
 			int length = recv(client.TCPSocket, receiveBuffer, PACKET_LENGTH, 0);
-	
+
 			// Did we receive anything?
 			if (length == SOCKET_ERROR || WSAGetLastError() == WSAEWOULDBLOCK)
 			{
@@ -760,10 +746,7 @@ namespace Jwl
 				return i;
 			}
 		}
-		
+
 		return UINT_MAX;
 	}
-
-#pragma endregion
-
 }

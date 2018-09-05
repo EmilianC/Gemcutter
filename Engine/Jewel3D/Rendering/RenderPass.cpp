@@ -250,18 +250,17 @@ namespace Jwl
 
 		transformBuffer.Bind(static_cast<unsigned>(UniformBufferSlot::Model));
 
-#pragma region Render Model
+		// Render Models.
 		if (mesh && mesh->IsComponentEnabled())
 		{
 			auto& vertexArray = mesh->array;
 			ASSERT(vertexArray, "Entity has a Mesh component but does not have a VertexArray to render.");
-			
+
 			vertexArray->Bind();
 			glDrawArrays(GL_TRIANGLES, 0, vertexArray->GetVertexCount());
 		}
-#pragma endregion
 
-#pragma region Render Text
+		// Render Text.
 		if (text && text->IsComponentEnabled())
 		{
 			auto& font = text->font;
@@ -390,9 +389,8 @@ namespace Jwl
 
 			text->owner.position = initialPosition;
 		}
-#pragma endregion
 
-#pragma region Render Particles
+		// Render Particles.
 		if (emitter && emitter->IsComponentEnabled() && emitter->GetNumAliveParticles() > 0)
 		{
 			emitter->GetBuffer().Bind(static_cast<unsigned>(UniformBufferSlot::Particle));
@@ -400,16 +398,14 @@ namespace Jwl
 			glBindVertexArray(emitter->GetVAO());
 			glDrawArrays(GL_POINTS, 0, emitter->GetNumAliveParticles());
 		}
-#pragma endregion
 
-#pragma region Render Sprite
+		// Render Sprites.
 		if (sprite && sprite->IsComponentEnabled())
 		{
 			ASSERT(Primitives.IsLoaded(), "Primitives system must be initialized in order to render sprites.");
 
 			Primitives.DrawUnitRectangle();
 		}
-#pragma endregion
 
 		material->UnBind();
 	}

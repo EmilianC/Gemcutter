@@ -8,9 +8,6 @@
 
 namespace Jwl
 {
-
-#pragma region mat2
-
 	const mat2 mat2::Identity = mat2();
 
 	mat2::mat2()
@@ -42,19 +39,19 @@ namespace Jwl
 
 	bool mat2::operator==(const mat2& M) const
 	{
-		return 
-			Equals(data[0], M.data[0]) && 
-			Equals(data[1], M.data[1]) && 
-			Equals(data[2], M.data[2]) && 
+		return
+			Equals(data[0], M.data[0]) &&
+			Equals(data[1], M.data[1]) &&
+			Equals(data[2], M.data[2]) &&
 			Equals(data[3], M.data[3]);
 	}
 
 	bool mat2::operator!=(const mat2& M) const
 	{
-		return 
-			!Equals(data[0], M.data[0]) || 
-			!Equals(data[1], M.data[1]) || 
-			!Equals(data[2], M.data[2]) || 
+		return
+			!Equals(data[0], M.data[0]) ||
+			!Equals(data[1], M.data[1]) ||
+			!Equals(data[2], M.data[2]) ||
 			!Equals(data[3], M.data[3]);
 	}
 
@@ -250,10 +247,6 @@ namespace Jwl
 	{
 		return vec2(data[UpX], data[UpY]);
 	}
-
-#pragma endregion
-
-#pragma region mat3
 
 	const mat3 mat3::Identity = mat3();
 
@@ -656,10 +649,6 @@ namespace Jwl
 		return vec3(data[ForwardX], data[ForwardY], data[ForwardZ]);
 	}
 
-#pragma endregion
-
-#pragma region mat4
-
 	const mat4 mat4::Identity = mat4();
 
 	mat4::mat4()
@@ -765,7 +754,7 @@ namespace Jwl
 		data[UpY] = rotation.data[mat3::UpY];
 		data[UpZ] = rotation.data[mat3::UpZ];
 		data[W1] = 0.0f;
-		
+
 		data[ForwardX] = rotation.data[mat3::ForwardX];
 		data[ForwardY] = rotation.data[mat3::ForwardY];
 		data[ForwardZ] = rotation.data[mat3::ForwardZ];
@@ -1093,7 +1082,7 @@ namespace Jwl
 		if (det == 0.0f)
 			return;
 
-		inv[1] = -data[1] * data[10] * data[15] + 
+		inv[1] = -data[1] * data[10] * data[15] +
 			data[1]  * data[11] * data[14] +
 			data[9]  * data[2] * data[15] -
 			data[9]  * data[3] * data[14] -
@@ -1461,7 +1450,4 @@ namespace Jwl
 			right.z, up.z, -forward.z, position.z,
 			0.0f, 0.0f, 0.0f, 1.0f);
 	}
-
-#pragma endregion
-
 }
