@@ -26,12 +26,12 @@ namespace AssetManager
 		public void Reset()
 		{
 			// Setup default encoders.
-			encoders.Add(new EncoderLink { extension="ttf", encoder="%JEWEL3D_PATH%\\Tools\\FontEncoder\\bin\\ReleaseWithExceptions_Win32\\FontEncoder.dll" });
-			encoders.Add(new EncoderLink { extension="obj", encoder="%JEWEL3D_PATH%\\Tools\\MeshEncoder\\bin\\ReleaseWithExceptions_Win32\\MeshEncoder.dll" });
-			encoders.Add(new EncoderLink { extension="png", encoder="%JEWEL3D_PATH%\\Tools\\TextureEncoder\\bin\\ReleaseWithExceptions_Win32\\TextureEncoder.dll" });
-			encoders.Add(new EncoderLink { extension="jpg", encoder="%JEWEL3D_PATH%\\Tools\\TextureEncoder\\bin\\ReleaseWithExceptions_Win32\\TextureEncoder.dll" });
-			encoders.Add(new EncoderLink { extension="tga", encoder="%JEWEL3D_PATH%\\Tools\\TextureEncoder\\bin\\ReleaseWithExceptions_Win32\\TextureEncoder.dll" });
-			encoders.Add(new EncoderLink { extension="bmp", encoder="%JEWEL3D_PATH%\\Tools\\TextureEncoder\\bin\\ReleaseWithExceptions_Win32\\TextureEncoder.dll" });
+			encoders.Add(new EncoderLink { extension="ttf", encoder="%JEWEL3D_PATH%\\Tools\\FontEncoder\\bin\\Release_Win32\\FontEncoder.dll" });
+			encoders.Add(new EncoderLink { extension="obj", encoder="%JEWEL3D_PATH%\\Tools\\MeshEncoder\\bin\\Release_Win32\\MeshEncoder.dll" });
+			encoders.Add(new EncoderLink { extension="png", encoder="%JEWEL3D_PATH%\\Tools\\TextureEncoder\\bin\\Release_Win32\\TextureEncoder.dll" });
+			encoders.Add(new EncoderLink { extension="jpg", encoder="%JEWEL3D_PATH%\\Tools\\TextureEncoder\\bin\\Release_Win32\\TextureEncoder.dll" });
+			encoders.Add(new EncoderLink { extension="tga", encoder="%JEWEL3D_PATH%\\Tools\\TextureEncoder\\bin\\Release_Win32\\TextureEncoder.dll" });
+			encoders.Add(new EncoderLink { extension="bmp", encoder="%JEWEL3D_PATH%\\Tools\\TextureEncoder\\bin\\Release_Win32\\TextureEncoder.dll" });
 
 			outputDirectory = "../Assets";
 			excludedExtensions = "";

@@ -7,7 +7,6 @@ if not "%1" == "-r" (
 if not "%1" == "-d" (
 	call :BuildConfiguration Release Win32 || goto :eof
 	call :BuildConfiguration Release "Any CPU" || goto :eof
-	call :BuildConfiguration ReleaseWithExceptions Win32 || goto :eof
 )
 
 title Done!

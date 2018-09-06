@@ -48,7 +48,7 @@ Future highlight features include:
 All Dependencies used under their respective licenses. Copyright is held by their respective owners.
 * [GLEW 2.0.0](http://glew.sourceforge.net/)
 * [FreeType 2](https://www.freetype.org/)
-* [Catch 2.0.1](https://github.com/philsquared/Catch)
+* [Catch 2.4.0](https://github.com/philsquared/Catch)
 * [OpenAL Soft 1.17.2](https://github.com/kcat/openal-soft)
 * [SOIL ext](https://github.com/fenbf/SOIL_ext)
 * [dirent 1.21](https://github.com/tronkko/dirent)
