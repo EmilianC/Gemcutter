@@ -47,10 +47,6 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="Jewel3D\Entity\EntityGroup.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
-    </ClCompile>
     <ClCompile Include="Jewel3D\Entity\Name.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
@@ -217,7 +213,6 @@
     <ClInclude Include="Jewel3D\Application\Threading.h" />
     <ClInclude Include="Jewel3D\Application\Timer.h" />
     <ClInclude Include="Jewel3D\Entity\Entity.h" />
-    <ClInclude Include="Jewel3D\Entity\EntityGroup.h" />
     <ClInclude Include="Jewel3D\Entity\Name.h" />
     <ClInclude Include="Jewel3D\Input\Input.h" />
     <ClInclude Include="Jewel3D\Input\XboxGamePad.h" />

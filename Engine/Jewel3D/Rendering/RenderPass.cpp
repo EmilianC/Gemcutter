@@ -10,7 +10,6 @@
 #include "Jewel3D/Application/Application.h"
 #include "Jewel3D/Application/Logging.h"
 #include "Jewel3D/Entity/Entity.h"
-#include "Jewel3D/Entity/EntityGroup.h"
 #include "Jewel3D/Math/Transform.h"
 #include "Jewel3D/Resource/Font.h"
 #include "Jewel3D/Resource/Shader.h"
@@ -172,12 +171,13 @@ namespace Jwl
 		UnBind();
 	}
 
-	void RenderPass::Render(const EntityGroup& group)
+	void RenderPass::Render(const std::vector<Entity::Ptr>& entities)
 	{
 		Bind();
 
-		for (auto& entity : group.GetEntities())
+		for (auto& entity : entities)
 		{
+			ASSERT(entity, "Entity pointer cannot be null.");
 			RenderEntity(*entity);
 		}
 

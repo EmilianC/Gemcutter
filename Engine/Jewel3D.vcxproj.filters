@@ -118,9 +118,6 @@
     <ClCompile Include="Jewel3D\Input\Input.cpp">
       <Filter>Input</Filter>
     </ClCompile>
-    <ClCompile Include="Jewel3D\Entity\EntityGroup.cpp">
-      <Filter>Entity</Filter>
-    </ClCompile>
     <ClCompile Include="Jewel3D\Entity\Entity.cpp">
       <Filter>Entity</Filter>
     </ClCompile>
@@ -281,9 +278,6 @@
       <Filter>Input</Filter>
     </ClInclude>
     <ClInclude Include="Jewel3D\Entity\Entity.h">
-      <Filter>Entity</Filter>
-    </ClInclude>
-    <ClInclude Include="Jewel3D\Entity\EntityGroup.h">
       <Filter>Entity</Filter>
     </ClInclude>
     <ClInclude Include="Jewel3D\Application\CmdArgs.h">

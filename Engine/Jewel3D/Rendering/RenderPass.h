@@ -10,7 +10,6 @@
 namespace Jwl
 {
 	class Entity;
-	class EntityGroup;
 
 	// Consolidates the three main components for rendering: input Geometry, shader pipeline and render target.
 	class RenderPass
@@ -42,8 +41,8 @@ namespace Jwl
 		void PostProcess();
 		// Traverses the root Entity and renders all renderable children.
 		void Render(const Entity& root);
-		// Renders every Entity included in the group.
-		void Render(const EntityGroup& group);
+		// Renders all Entities in the list in order.
+		void Render(const std::vector<Entity::Ptr>& entities);
 
 		// These textures will be bound during the execution of the render pass.
 		TextureList textures;
