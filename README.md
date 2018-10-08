@@ -51,7 +51,7 @@ All Dependencies used under their respective licenses. Copyright is held by thei
 * [Catch 2.4.0](https://github.com/philsquared/Catch)
 * [OpenAL Soft 1.17.2](https://github.com/kcat/openal-soft)
 * [SOIL ext](https://github.com/fenbf/SOIL_ext)
-* [dirent 1.21](https://github.com/tronkko/dirent)
+* [dirent 1.23.1](https://github.com/tronkko/dirent)
 * [XInput 1.4](https://msdn.microsoft.com/en-us/library/windows/desktop/ee417001(v=vs.85).aspx)
 
 # Notes
