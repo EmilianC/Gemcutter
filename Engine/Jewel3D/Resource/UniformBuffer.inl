@@ -6,22 +6,26 @@ namespace Jwl
 	{
 		static_assert(std::is_standard_layout_v<T>, "Uniforms cannot be complex types.");
 
-		// Due to alignment rules, some types are padded up.
-		unsigned alignment;
-		if constexpr (std::is_same_v<T, vec3>)
+		unsigned alignment = sizeof(T);
+		unsigned size = sizeof(T);
+
+		// Due to alignment rules, some types are adjusted.
+		if constexpr (std::is_same_v<T, vec3> || std::is_same_v<T, mat4>)
 		{
 			alignment = sizeof(vec4);
 		}
+		else if constexpr (std::is_same_v<T, mat2>)
+		{
+			alignment = sizeof(vec4);
+			size = sizeof(vec4) * 2;
+		}
 		else if constexpr (std::is_same_v<T, mat3>)
 		{
-			alignment = sizeof(mat4);
-		}
-		else
-		{
-			alignment = sizeof(T);
+			alignment = sizeof(vec4);
+			size = sizeof(vec4) * 3;
 		}
 
-		AddUniform(name, sizeof(T), alignment, count);
+		AddUniform(name, size, alignment, count);
 
 		return MakeHandle<T>(name);
 	}
@@ -33,7 +37,8 @@ namespace Jwl
 
 		T* dest = reinterpret_cast<T*>(GetBufferLoc(name));
 		ASSERT(dest, "Could not find uniform parameter ( %s ).", name.c_str());
-		ASSERT(dest + sizeof(T) <= reinterpret_cast<T*>(buffer) + bufferSize, "Setting uniform ( %s ) out of bounds of the buffer.", name.c_str());
+		ASSERT(reinterpret_cast<char*>(dest) + sizeof(T) <= reinterpret_cast<char*>(buffer) + bufferSize,
+			"Setting uniform ( %s ) out of bounds of the buffer.", name.c_str());
 
 		*dest = data;
 		dirty = true;
@@ -47,7 +52,8 @@ namespace Jwl
 
 		void* dest = GetBufferLoc(name);
 		ASSERT(dest, "Could not find uniform parameter ( %s ).", name.c_str());
-		ASSERT(dest + sizeof(T) * numElements <= reinterpret_cast<char*>(buffer) + bufferSize, "Setting uniform ( %s ) out of bounds of the buffer.", name.c_str());
+		ASSERT(reinterpret_cast<char*>(dest) + sizeof(T) * numElements <= reinterpret_cast<char*>(buffer) + bufferSize,
+			"Setting uniform ( %s ) out of bounds of the buffer.", name.c_str());
 
 		memcpy(dest, data, sizeof(T) * numElements);
 		dirty = true;
@@ -61,6 +67,9 @@ namespace Jwl
 
 		return UniformHandle<T>(*this, itr->second);
 	}
+
+	template<> void UniformBuffer::SetUniform<mat2>(const std::string& name, const mat2& data);
+	template<> void UniformBuffer::SetUniform<mat3>(const std::string& name, const mat3& data);
 
 	template<class T>
 	UniformHandle<T>::UniformHandle(UniformBuffer& buff, unsigned _offset)
@@ -95,6 +104,8 @@ namespace Jwl
 		return *reinterpret_cast<T*>(static_cast<char*>(uniformBuffer->buffer) + offset);
 	}
 
+	template<> void UniformHandle<mat2>::Set(const mat2& value);
 	template<> void UniformHandle<mat3>::Set(const mat3& value);
+	template<> mat2 UniformHandle<mat2>::Get() const;
 	template<> mat3 UniformHandle<mat3>::Get() const;
 }

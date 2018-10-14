@@ -154,6 +154,33 @@ namespace Jwl
 		}
 	}
 
+	template<>
+	void UniformBuffer::SetUniform<mat2>(const std::string& name, const mat2& data)
+	{
+		vec4* dest = reinterpret_cast<vec4*>(GetBufferLoc(name));
+		ASSERT(dest, "Could not find uniform parameter ( %s ).", name.c_str());
+		ASSERT(reinterpret_cast<char*>(dest) + sizeof(vec4) * 2 <= reinterpret_cast<char*>(buffer) + bufferSize,
+			"Setting uniform ( %s ) out of bounds of the buffer.", name.c_str());
+
+		dest[0].x = data[0];
+		dest[0].y = data[1];
+		dest[1].x = data[2];
+		dest[1].y = data[3];
+		dirty = true;
+	}
+
+	template<>
+	void UniformBuffer::SetUniform<mat3>(const std::string& name, const mat3& data)
+	{
+		mat4* dest = reinterpret_cast<mat4*>(GetBufferLoc(name));
+		ASSERT(dest, "Could not find uniform parameter ( %s ).", name.c_str());
+		ASSERT(reinterpret_cast<char*>(dest) + sizeof(vec4) * 3 <= reinterpret_cast<char*>(buffer) + bufferSize,
+			"Setting uniform ( %s ) out of bounds of the buffer.", name.c_str());
+
+		*dest = mat4(data);
+		dirty = true;
+	}
+
 	//-----------------------------------------------------------------------------------------------------
 
 	BufferSlot::BufferSlot(UniformBuffer::Ptr buffer, unsigned unit)
@@ -225,6 +252,21 @@ namespace Jwl
 	}
 
 	template<>
+	void UniformHandle<mat2>::Set(const mat2& value)
+	{
+		ASSERT(uniformBuffer, "Uniform handle is not associated with a UniformBuffer.");
+		ASSERT(uniformBuffer->buffer, "The associated UniformBuffer has not been initialized yet.");
+
+		vec4* ptr = reinterpret_cast<vec4*>(static_cast<char*>(uniformBuffer->buffer) + offset);
+		ptr[0].x = value[0];
+		ptr[0].y = value[1];
+		ptr[1].x = value[2];
+		ptr[1].y = value[3];
+
+		uniformBuffer->dirty = true;
+	}
+
+	template<>
 	void UniformHandle<mat3>::Set(const mat3& value)
 	{
 		ASSERT(uniformBuffer, "Uniform handle is not associated with a UniformBuffer.");
@@ -237,11 +279,24 @@ namespace Jwl
 	}
 
 	template<>
+	mat2 UniformHandle<mat2>::Get() const
+	{
+		ASSERT(uniformBuffer, "Uniform handle is not associated with a UniformBuffer.");
+		ASSERT(uniformBuffer->buffer, "The associated UniformBuffer has not been initialized yet.");
+
+		const vec4* data = reinterpret_cast<vec4*>(static_cast<char*>(uniformBuffer->buffer) + offset);
+
+		return mat2(data[0].x, data[0].y, data[1].x, data[1].y);
+	}
+
+	template<>
 	mat3 UniformHandle<mat3>::Get() const
 	{
 		ASSERT(uniformBuffer, "Uniform handle is not associated with a UniformBuffer.");
 		ASSERT(uniformBuffer->buffer, "The associated UniformBuffer has not been initialized yet.");
 
-		return mat3(*reinterpret_cast<mat4*>(static_cast<char*>(uniformBuffer->buffer) + offset));
+		const mat4* data = reinterpret_cast<mat4*>(static_cast<char*>(uniformBuffer->buffer) + offset);
+
+		return mat3(*data);
 	}
 }

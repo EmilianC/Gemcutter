@@ -343,7 +343,7 @@ namespace Jwl
 
 		// Rough estimate of total length.
 		result.reserve(defines.size() * 12);
-		
+
 		for (auto& define : defines)
 		{
 			result += "#define " + define.name + ' ' + define.value + '\n';
@@ -418,7 +418,7 @@ namespace Jwl
 			Error("Shader: ( %s )\nUnable to open file.", filePath.c_str());
 			return false;
 		}
-		
+
 		if (!LoadInternal(source))
 		{
 			Error("Shader: ( %s )", filePath.c_str());
@@ -535,7 +535,7 @@ namespace Jwl
 					{
 						indentStack--;
 					}
-					
+
 					if (indentStack == 0)
 					{
 						// We found the closing brace.
@@ -924,7 +924,7 @@ namespace Jwl
 				}
 
 				uniform.name = line.substr(nameStart + 1, nameEnd - nameStart);
-					
+
 				if (StartsWith(line, "float"))			uniform.type = GL_FLOAT;
 				else if (StartsWith(line, "vec2"))		uniform.type = GL_FLOAT_VEC2;
 				else if (StartsWith(line, "vec3"))		uniform.type = GL_FLOAT_VEC3;
@@ -982,17 +982,25 @@ namespace Jwl
 			for (auto& uniform : uniforms)
 			{
 				if (uniform.value.empty())
+				{
+					switch (uniform.type)
+					{
+					case GL_FLOAT_MAT4: buffer->SetUniform(uniform.name, mat4()); break;
+					case GL_FLOAT_MAT3: buffer->SetUniform(uniform.name, mat3()); break;
+					case GL_FLOAT_MAT2: buffer->SetUniform(uniform.name, mat2()); break;
+					}
 					continue;
+				}
 
 				ScopeGuard guard = [&]() {
-					Error("Default value assignment of ( %s ) could not be parsed.", uniform.name.c_str()); 
+					Error("Default value assignment of ( %s ) could not be parsed.", uniform.name.c_str());
 				};
 
 				vec4 vec; unsigned u; int i;
 				switch (uniform.type)
 				{
 				case GL_FLOAT:
-					if (sscanf(uniform.value.c_str(), "%f", &vec.x) != 1) 
+					if (sscanf(uniform.value.c_str(), "%f", &vec.x) != 1)
 						return false;
 
 					buffer->SetUniform(uniform.name, vec.x);
@@ -1126,7 +1134,7 @@ namespace Jwl
 
 		textures.Clear();
 		buffers.Clear();
-		
+
 		variants.clear();
 
 		textureBindings.clear();
