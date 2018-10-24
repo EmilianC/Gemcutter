@@ -428,6 +428,6 @@ namespace Jwl
 		invModel = transformBuffer.AddUniform<mat4>("InvModel");
 		normalMatrix = transformBuffer.AddUniform<mat4>("normal");
 
-		transformBuffer.InitBuffer();
+		transformBuffer.InitBuffer(VertexBufferUsage::Dynamic);
 	}
 }

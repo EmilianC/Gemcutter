@@ -96,7 +96,7 @@ namespace Jwl
 		lightBuffer->AddUniform<float>("AttenuationQuadratic");
 		lightBuffer->AddUniform<float>("Angle");
 		lightBuffer->AddUniform<Type>("Type");
-		lightBuffer->InitBuffer();
+		lightBuffer->InitBuffer(VertexBufferUsage::Dynamic);
 	}
 
 	void Light::CreateUniformHandles()

@@ -452,7 +452,7 @@ namespace Jwl
 		buffer.AddUniform<mat4>("InvView");
 		buffer.AddUniform<mat4>("InvProj");
 		buffer.AddUniform<vec3>("CameraPosition");
-		buffer.InitBuffer();
+		buffer.InitBuffer(VertexBufferUsage::Dynamic);
 	}
 
 	void Camera::CreateUniformHandles()

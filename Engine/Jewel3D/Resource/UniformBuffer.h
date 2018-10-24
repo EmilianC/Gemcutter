@@ -3,6 +3,7 @@
 #include "Shareable.h"
 #include "Jewel3D/Application/Logging.h"
 #include "Jewel3D/Math/Matrix.h"
+#include "Jewel3D/Rendering/Rendering.h"
 
 #include <string>
 #include <unordered_map>
@@ -11,7 +12,7 @@
 namespace Jwl
 {
 	// A collection of parameters that are used by a shader.
-	// To be used by a shader, an instance must either be attached to the 
+	// To be used by a shader, an instance must either be attached to the
 	// shader directly, or to a Material component.
 	class UniformBuffer : public Shareable<UniformBuffer>
 	{
@@ -29,7 +30,7 @@ namespace Jwl
 		UniformHandle<T> AddUniform(const std::string& name, unsigned count = 1);
 
 		// Once this is called, no more uniforms can be added and the buffer is ready for use.
-		void InitBuffer();
+		void InitBuffer(VertexBufferUsage usage = VertexBufferUsage::Static);
 		void UnLoad();
 
 		void Bind(unsigned slot) const;

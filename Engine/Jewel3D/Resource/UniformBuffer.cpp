@@ -52,7 +52,7 @@ namespace Jwl
 		*this = other;
 	}
 
-	void UniformBuffer::InitBuffer()
+	void UniformBuffer::InitBuffer(VertexBufferUsage usage)
 	{
 		ASSERT(bufferSize != 0, "At least one uniform must be added to the buffer before it can be initialized.");
 		ASSERT(UBO == GL_NONE, "UniformBuffer has already been initialized and locked.");
@@ -63,7 +63,7 @@ namespace Jwl
 		// GPU buffer.
 		glGenBuffers(1, &UBO);
 		glBindBuffer(GL_UNIFORM_BUFFER, UBO);
-		glBufferData(GL_UNIFORM_BUFFER, bufferSize, nullptr, GL_STREAM_DRAW);
+		glBufferData(GL_UNIFORM_BUFFER, bufferSize, nullptr, ResolveVertexBufferUsage(usage));
 		glBindBuffer(GL_UNIFORM_BUFFER, GL_NONE);
 
 		// RAM buffer.
