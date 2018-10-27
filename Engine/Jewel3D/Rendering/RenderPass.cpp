@@ -196,16 +196,16 @@ namespace Jwl
 			return;
 		}
 
-		auto material = ent.Try<Material>();
+		auto* material = ent.Try<Material>();
 		if (!material || !material->IsEnabled())
 		{
 			return;
 		}
 
-		auto mesh = ent.Try<Mesh>();
-		auto text = ent.Try<Text>();
-		auto emitter = ent.Try<ParticleEmitter>();
-		auto sprite = ent.Try<Sprite>();
+		auto* mesh = ent.Try<Mesh>();
+		auto* text = ent.Try<Text>();
+		auto* emitter = ent.Try<ParticleEmitter>();
+		auto* sprite = ent.Try<Sprite>();
 		ASSERT(mesh || text || emitter || sprite, "Entity must have a renderable component.");
 
 		// Bind override shader.
@@ -221,14 +221,17 @@ namespace Jwl
 		}
 
 		// Update transform uniforms.
-		mat4 worldTransform = ent.GetWorldTransform();
+		const mat4 worldTransform = ent.GetWorldTransform();
 
 		if (camera)
 		{
 			auto& cameraComponent = camera->Get<Camera>();
 
-			MVP.Set(cameraComponent.GetViewProjMatrix() * worldTransform);
-			modelView.Set(cameraComponent.GetViewMatrix() * worldTransform);
+			const mat4 mv = cameraComponent.GetViewMatrix() * worldTransform;
+			const mat4 mvp = cameraComponent.GetProjMatrix() * mv;
+
+			MVP.Set(mvp);
+			modelView.Set(mv);
 		}
 		else
 		{
@@ -266,10 +269,10 @@ namespace Jwl
 			auto& font = text->font;
 			ASSERT(font != nullptr, "Entity has a Text component but does not have a Font to render with.");
 
-			auto dimensions = font->GetDimensions();
-			auto positions = font->GetPositions();
-			auto advances = font->GetAdvances();
-			auto masks = font->GetMasks();
+			auto* dimensions = font->GetDimensions();
+			auto* positions = font->GetPositions();
+			auto* advances = font->GetAdvances();
+			auto* masks = font->GetMasks();
 
 			// We have to send the vertices of each character we render. We'll store them here.
 			float points[18] =
@@ -283,10 +286,10 @@ namespace Jwl
 				0.0f, 0.0f, 0.0f,
 			};
 
-			const vec3 advanceDirection = text->owner.GetWorldTransform().GetRight();
-			const vec3 upDirection = text->owner.GetWorldTransform().GetUp();
-			const vec3 initialPosition = text->owner.position;
-			vec3 linePosition = text->owner.position;
+			const vec3 advanceDirection = worldTransform.GetRight();
+			const vec3 upDirection = worldTransform.GetUp();
+			const vec3 initialPosition = ent.position;
+			vec3 linePosition = initialPosition;
 			unsigned currentLine = 1;
 
 			if (text->centeredX)
