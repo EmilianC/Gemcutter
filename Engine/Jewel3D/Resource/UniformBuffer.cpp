@@ -216,12 +216,20 @@ namespace Jwl
 		}
 	}
 
-	void BufferList::Add(UniformBuffer::Ptr buffer, unsigned unit)
+	void BufferList::Add(UniformBuffer::Ptr buff, unsigned unit)
 	{
-		ASSERT(buffer, "'buffer' cannot be null.");
+		ASSERT(buff, "'buff' cannot be null.");
 
-		Remove(unit);
-		buffers.emplace_back(std::move(buffer), unit);
+		for (auto& slot : buffers)
+		{
+			if (slot.unit == unit)
+			{
+				slot.buffer = std::move(buff);
+				return;
+			}
+		}
+
+		buffers.emplace_back(std::move(buff), unit);
 	}
 
 	void BufferList::Remove(unsigned unit)

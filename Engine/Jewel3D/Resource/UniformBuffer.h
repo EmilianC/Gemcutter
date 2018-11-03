@@ -83,7 +83,7 @@ namespace Jwl
 		void Bind() const;
 		void UnBind() const;
 
-		void Add(UniformBuffer::Ptr buffer, unsigned unit);
+		void Add(UniformBuffer::Ptr buff, unsigned unit);
 		void Remove(unsigned unit);
 		// Removes all Buffers.
 		void Clear();

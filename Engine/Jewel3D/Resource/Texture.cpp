@@ -356,7 +356,15 @@ namespace Jwl
 	{
 		ASSERT(tex, "'tex' cannot be null.");
 
-		Remove(unit);
+		for (auto& slot : textureSlots)
+		{
+			if (slot.unit == unit)
+			{
+				slot.tex = std::move(tex);
+				return;
+			}
+		}
+
 		textureSlots.emplace_back(std::move(tex), unit);
 	}
 
