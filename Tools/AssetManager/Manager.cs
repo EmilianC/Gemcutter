@@ -12,6 +12,9 @@ namespace AssetManager
 	{
 		WorkspaceConfig config = WorkspaceConfig.Load();
 
+		string inputPath;
+		string outputPath;
+
 		// Automatically refresh the asset directory if there are any changes.
 		FileSystemWatcher watcher;
 		// The actual native-code encoders.
@@ -20,6 +23,9 @@ namespace AssetManager
 		public Manager()
 		{
 			InitializeComponent();
+
+			inputPath = Directory.GetCurrentDirectory();
+			outputPath = Path.GetFullPath(Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + config.outputDirectory);
 
 			buttonEditMetadata.Click += delegate { OpenFile(GetSelectedItem() + ".meta"); };
 
@@ -94,14 +100,12 @@ namespace AssetManager
 
 			LoadEncoders();
 
-			string inputRoot = Directory.GetCurrentDirectory();
-
 			try
 			{
 				foreach (var file in GetWorkspaceFiles().Where(file =>
 					encoders.Any(x => file.EndsWith(x.Key, StringComparison.InvariantCultureIgnoreCase))))
 				{
-					string logName = file.Substring(inputRoot.Length + 1);
+					string logName = file.Substring(inputPath.Length + 1);
 					Log($"Checking: {logName}");
 
 					if (!encoders[Path.GetExtension(file).Substring(1)].Update(file))
@@ -126,11 +130,8 @@ namespace AssetManager
 		{
 			Icon = Properties.Resources.Building;
 
-			string inputRoot = Directory.GetCurrentDirectory();
-			string outputRoot = Path.GetFullPath(inputRoot + Path.DirectorySeparatorChar + config.outputDirectory);
-
 			Log(">>>>>> Started Packing <<<<<<");
-			Log($"Output Directory: {outputRoot}");
+			Log($"Output Directory: {outputPath}");
 
 			ButtonPack.Enabled = false;
 			ButtonSettings.Enabled = false;
@@ -138,10 +139,10 @@ namespace AssetManager
 			LoadEncoders();
 
 			// Duplicate the directory structure in the output folder.
-			Directory.CreateDirectory(outputRoot);
-			foreach (var path in Directory.GetDirectories(inputRoot, "*", SearchOption.AllDirectories))
+			Directory.CreateDirectory(outputPath);
+			foreach (var path in Directory.GetDirectories(inputPath, "*", SearchOption.AllDirectories))
 			{
-				Directory.CreateDirectory(path.Replace(inputRoot, outputRoot));
+				Directory.CreateDirectory(path.Replace(inputPath, outputPath));
 			}
 
 			bool result = false;
@@ -153,10 +154,10 @@ namespace AssetManager
 				foreach (string file in workspaceFiles.Where(file =>
 					encoders.Any(x => file.EndsWith(x.Key, StringComparison.InvariantCultureIgnoreCase))))
 				{
-					string logName = file.Substring(inputRoot.Length + 1);
+					string logName = file.Substring(inputPath.Length + 1);
 					Log($"Encoding: {logName}");
 
-					var outDir = Path.GetDirectoryName(file.Replace(inputRoot, outputRoot)) + Path.DirectorySeparatorChar;
+					var outDir = Path.GetDirectoryName(file.Replace(inputPath, outputPath)) + Path.DirectorySeparatorChar;
 
 					if (!encoders[Path.GetExtension(file).Substring(1)].Convert(file, outDir))
 						throw new Exception($"Failed to encode: {logName}");
@@ -166,7 +167,7 @@ namespace AssetManager
 				foreach (string file in workspaceFiles.Where(file =>
 					!encoders.Any(x => file.EndsWith(x.Key, StringComparison.InvariantCultureIgnoreCase))))
 				{
-					var outFile = file.Replace(inputRoot, outputRoot);
+					var outFile = file.Replace(inputPath, outputPath);
 
 					// Don't bother copying the file if it already exists, unchanged, in the destination folder.
 					if (File.Exists(outFile))
@@ -181,7 +182,7 @@ namespace AssetManager
 						File.Delete(outFile);
 					}
 
-					Log($"Copying:  {file.Substring(inputRoot.Length + 1)}");
+					Log($"Copying:  {file.Substring(inputPath.Length + 1)}");
 					File.Copy(file, outFile);
 				}
 
@@ -362,13 +363,14 @@ namespace AssetManager
 			var settingsForm = new Settings();
 			settingsForm.Show();
 			settingsForm.BringToFront();
-			settingsForm.FormClosed += delegate 
+			settingsForm.FormClosed += delegate
 			{
 				ButtonPack.Enabled = true;
 				ButtonSettings.Enabled = true;
 
 				// Refresh settings.
 				config = WorkspaceConfig.Load();
+				outputPath = Path.GetFullPath(Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + config.outputDirectory);
 
 				RefreshWorkspace();
 			};
