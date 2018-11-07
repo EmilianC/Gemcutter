@@ -57,7 +57,7 @@ namespace AssetManager
 
 			watcher.Deleted += (s, e) =>
 			{
-				if (e.Name.EndsWith(".meta"))
+				if (e.Name.EndsWith(".meta", StringComparison.InvariantCultureIgnoreCase))
 					return;
 
 				RefreshWorkspaceDispatch();
@@ -65,12 +65,12 @@ namespace AssetManager
 
 			watcher.Created += (s, e) =>
 			{
-				if (e.Name.EndsWith(".meta"))
+				if (e.Name.EndsWith(".meta", StringComparison.InvariantCultureIgnoreCase))
 					return;
 
 				RefreshWorkspaceDispatch();
 
-				if (config.encoders.Any(x => e.FullPath.EndsWith(x.extension)))
+				if (config.encoders.Any(x => e.FullPath.EndsWith(x.extension, StringComparison.InvariantCultureIgnoreCase)))
 				{
 					LoadEncoders();
 
