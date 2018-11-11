@@ -85,7 +85,7 @@ namespace Jwl
 
 	// Helper function to load an asset.
 	template<class Asset, typename... Args>
-	typename std::shared_ptr<Asset> Load(const std::string& filePath, Args&&... params)
+	std::shared_ptr<Asset> Load(const std::string& filePath, Args&&... params)
 	{
 		return Resource<Asset>::Load(filePath, std::forward<Args>(params)...);
 	}
