@@ -39,6 +39,7 @@
 			this.buttonExpand = new System.Windows.Forms.Button();
 			this.ButtonSettings = new System.Windows.Forms.Button();
 			this.buttonEditMetadata = new System.Windows.Forms.Button();
+			this.ButtonMode = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// ButtonPack
@@ -63,7 +64,7 @@
 			// labelWorkspace
 			// 
 			this.labelWorkspace.AutoSize = true;
-			this.labelWorkspace.Location = new System.Drawing.Point(11, 20);
+			this.labelWorkspace.Location = new System.Drawing.Point(11, 17);
 			this.labelWorkspace.Name = "labelWorkspace";
 			this.labelWorkspace.Size = new System.Drawing.Size(65, 15);
 			this.labelWorkspace.TabIndex = 12;
@@ -83,7 +84,7 @@
 			// 
 			this.label1.AutoSize = true;
 			this.label1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label1.Location = new System.Drawing.Point(375, 20);
+			this.label1.Location = new System.Drawing.Point(375, 17);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(45, 15);
 			this.label1.TabIndex = 16;
@@ -129,7 +130,7 @@
 			// 
 			this.ButtonSettings.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("ButtonSettings.BackgroundImage")));
 			this.ButtonSettings.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-			this.ButtonSettings.Location = new System.Drawing.Point(730, 12);
+			this.ButtonSettings.Location = new System.Drawing.Point(614, 12);
 			this.ButtonSettings.Name = "ButtonSettings";
 			this.ButtonSettings.Size = new System.Drawing.Size(24, 24);
 			this.ButtonSettings.TabIndex = 23;
@@ -146,11 +147,22 @@
 			this.buttonEditMetadata.Text = "Edit Metadata";
 			this.buttonEditMetadata.UseVisualStyleBackColor = true;
 			// 
+			// ButtonMode
+			// 
+			this.ButtonMode.Location = new System.Drawing.Point(644, 12);
+			this.ButtonMode.Name = "ButtonMode";
+			this.ButtonMode.Size = new System.Drawing.Size(110, 24);
+			this.ButtonMode.TabIndex = 29;
+			this.ButtonMode.Text = "Mode: Manual";
+			this.ButtonMode.UseVisualStyleBackColor = true;
+			this.ButtonMode.Click += new System.EventHandler(this.ButtonMode_Click);
+			// 
 			// Manager
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(884, 641);
+			this.Controls.Add(this.ButtonMode);
 			this.Controls.Add(this.buttonEditMetadata);
 			this.Controls.Add(this.buttonCollapse);
 			this.Controls.Add(this.buttonExpand);
@@ -183,6 +195,7 @@
 		private System.Windows.Forms.Button buttonExpand;
 		private System.Windows.Forms.Button buttonCollapse;
 		private System.Windows.Forms.Button buttonEditMetadata;
+		private System.Windows.Forms.Button ButtonMode;
 	}
 }
 

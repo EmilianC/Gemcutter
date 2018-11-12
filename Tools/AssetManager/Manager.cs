@@ -20,6 +20,13 @@ namespace AssetManager
 		// The actual native-code encoders.
 		Dictionary<string, Encoder> encoders = new Dictionary<string, Encoder>(StringComparer.InvariantCultureIgnoreCase);
 
+		enum BuildMode
+		{
+			Manual,
+			Auto
+		};
+		BuildMode buildMode = BuildMode.Manual;
+
 		public Manager()
 		{
 			InitializeComponent();
@@ -42,7 +49,7 @@ namespace AssetManager
 				Path = Directory.GetCurrentDirectory(),
 				IncludeSubdirectories = true,
 				EnableRaisingEvents = true,
-				NotifyFilter = NotifyFilters.FileName | NotifyFilters.DirectoryName
+				NotifyFilter = NotifyFilters.FileName | NotifyFilters.DirectoryName | NotifyFilters.LastWrite
 			};
 
 			watcher.Renamed += (s, e) =>
@@ -72,6 +79,22 @@ namespace AssetManager
 				LoadEncoders();
 
 				UpdateFileDispatch(e.FullPath);
+			};
+
+			watcher.Changed += (s, e) =>
+			{
+				if (buildMode == BuildMode.Manual)
+					return;
+
+				LoadEncoders();
+				if (e.FullPath.EndsWith(".meta", StringComparison.InvariantCultureIgnoreCase))
+				{
+					PackFileDispatch(e.FullPath.Substring(0, e.FullPath.Length - 5));
+				}
+				else
+				{
+					PackFileDispatch(e.FullPath);
+				}
 			};
 
 			// Populate the workspace for the first time.
@@ -164,6 +187,7 @@ namespace AssetManager
 			Log($"Output Directory: {outputPath}");
 
 			ButtonPack.Enabled = false;
+			ButtonMode.Enabled = false;
 			ButtonSettings.Enabled = false;
 
 			// Duplicate the directory structure in the output folder.
@@ -192,6 +216,7 @@ namespace AssetManager
 			finally
 			{
 				ButtonPack.Enabled = true;
+				ButtonMode.Enabled = true;
 				ButtonSettings.Enabled = true;
 
 				Icon = Properties.Resources.JewelIcon;
@@ -368,6 +393,24 @@ namespace AssetManager
 			{}
 		}
 
+		private void SetBuildMode(BuildMode mode)
+		{
+			switch (mode)
+			{
+			case BuildMode.Auto:
+				ButtonMode.Text = "Mode: Auto";
+				ButtonPack.Enabled = false;
+				break;
+
+			case BuildMode.Manual:
+				ButtonMode.Text = "Mode: Manual";
+				ButtonPack.Enabled = true;
+				break;
+			}
+
+			buildMode = mode;
+		}
+
 		private void buttonSettings_Click(object sender, EventArgs e)
 		{
 			ButtonPack.Enabled = false;
@@ -408,6 +451,20 @@ namespace AssetManager
 		private void buttonCollapse_Click(object sender, EventArgs e)
 		{
 			treeViewAssets.CollapseAll();
+		}
+
+		private void ButtonMode_Click(object sender, EventArgs e)
+		{
+			switch (buildMode)
+			{
+			case BuildMode.Manual:
+				SetBuildMode(BuildMode.Auto);
+				break;
+
+			case BuildMode.Auto:
+				SetBuildMode(BuildMode.Manual);
+				break;
+			}
 		}
 	}
 }
