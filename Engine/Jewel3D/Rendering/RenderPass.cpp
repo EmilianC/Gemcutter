@@ -189,6 +189,61 @@ namespace Jwl
 		UnBind();
 	}
 
+	void RenderPass::RenderInstanced(const Entity& entity, unsigned count)
+	{
+		if (!entity.IsEnabled() || count == 0)
+		{
+			return;
+		}
+
+		auto* material = entity.Try<Material>();
+		if (!material || !material->IsEnabled())
+		{
+			return;
+		}
+
+		Bind();
+
+		// Bind override shader.
+		if (shader)
+		{
+			material->BindState();
+			shader->Bind();
+		}
+		else
+		{
+			ASSERT(material->shader != nullptr, "Renderable Entity does not have a Shader and the RenderPass does not have an override attached.");
+			material->Bind();
+		}
+
+		// Update transform uniforms.
+		MVP.Set(mat4::Identity);
+		modelView.Set(mat4::Identity);
+		model.Set(mat4::Identity);
+		invModel.Set(mat4::Identity);
+		normalMatrix.Set(mat4::Identity);
+		transformBuffer.Bind(static_cast<unsigned>(UniformBufferSlot::Model));
+
+		auto& mesh = entity.Get<Mesh>();
+		if (mesh.IsComponentEnabled())
+		{
+			auto& vertexArray = mesh.array;
+			ASSERT(vertexArray, "Entity has a Mesh component but does not have a VertexArray to render.");
+
+			vertexArray->Bind();
+			glDrawArraysInstanced(GL_TRIANGLES, 0, vertexArray->GetVertexCount(), count);
+		}
+
+		material->UnBind();
+
+		if (skybox)
+		{
+			Primitives.DrawSkyBox(*skybox);
+		}
+
+		UnBind();
+	}
+
 	void RenderPass::RenderEntity(const Entity& ent)
 	{
 		if (!ent.IsEnabled())

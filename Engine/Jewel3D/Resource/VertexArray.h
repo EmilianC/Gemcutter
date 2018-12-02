@@ -43,9 +43,9 @@ namespace Jwl
 
 		VertexFormat format = VertexFormat::Float;
 		bool normalized = false;
-		unsigned numElements = 1;
 		unsigned startOffset = 0;
 		unsigned stride = 0;
+		unsigned divisor = 0;
 	};
 
 	namespace detail

@@ -43,6 +43,9 @@ namespace Jwl
 		void Render(const Entity& root);
 		// Renders all Entities in the list in order.
 		void Render(const std::vector<Entity::Ptr>& entities);
+		// Renders 'count' copies of the instance.
+		// Jwl_MVP, Jwl_ModelView, Jwl_Model, Jwl_InvModel, and Jwl_NormalToWorld shader uniforms will not be set.
+		void RenderInstanced(const Entity& instance, unsigned count);
 
 		// These textures will be bound during the execution of the render pass.
 		TextureList textures;

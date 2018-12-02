@@ -72,9 +72,8 @@ namespace Jwl
 		VertexStream stream = {};
 		stream.buffer		= std::move(buffer);
 		stream.bindingUnit	= 0;
-		stream.format		= VertexFormat::Float;
+		stream.format		= VertexFormat::Vec3;
 		stream.normalized	= false;
-		stream.numElements	= 3;
 		stream.startOffset	= 0;
 		stream.stride		= stride;
 
@@ -84,7 +83,7 @@ namespace Jwl
 		if (hasUvs)
 		{
 			stream.bindingUnit = 1;
-			stream.numElements = 2;
+			stream.format = VertexFormat::Vec2;
 
 			AddStream(stream);
 			stream.startOffset += sizeof(float) * 2;
@@ -92,7 +91,7 @@ namespace Jwl
 		if (hasNormals)
 		{
 			stream.bindingUnit = 2;
-			stream.numElements = 3;
+			stream.format = VertexFormat::Vec3;
 
 			AddStream(stream);
 			stream.startOffset += sizeof(float) * 3;
@@ -100,7 +99,7 @@ namespace Jwl
 		if (hasTangents)
 		{
 			stream.bindingUnit = 3;
-			stream.numElements = 4;
+			stream.format = VertexFormat::Vec4;
 
 			AddStream(stream);
 		}

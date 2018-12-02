@@ -88,7 +88,7 @@ namespace Jwl
 
 		if (ptr.stride == 0)
 		{
-			// Even though OpenGL will correctly interpret a zero as stream of tightly 
+			// Even though OpenGL will correctly interpret a zero as stream of tightly
 			// packed data, we might need the correct stride for our own use later.
 			ptr.stride = CountBytes(ptr.format);
 		}
@@ -96,12 +96,68 @@ namespace Jwl
 		glBindVertexArray(VAO);
 		ptr.buffer->Bind();
 		glEnableVertexAttribArray(ptr.bindingUnit);
+		glVertexAttribDivisor(ptr.bindingUnit, ptr.divisor);
 
 		switch (ptr.format)
 		{
 		case VertexFormat::Float:
-			glVertexAttribPointer(ptr.bindingUnit, ptr.numElements, ResolveVertexFormat(ptr.format), ptr.normalized, ptr.stride, reinterpret_cast<void*>(ptr.startOffset));
+			glVertexAttribPointer(ptr.bindingUnit, 1, GL_FLOAT, ptr.normalized, ptr.stride, reinterpret_cast<void*>(ptr.startOffset));
 			break;
+		case VertexFormat::Double:
+			glVertexAttribLPointer(ptr.bindingUnit, 1, GL_DOUBLE, ptr.stride, reinterpret_cast<void*>(ptr.startOffset));
+			break;
+
+		case VertexFormat::Vec2:
+			glVertexAttribPointer(ptr.bindingUnit, 2, GL_FLOAT, ptr.normalized, ptr.stride, reinterpret_cast<void*>(ptr.startOffset));
+			break;
+		case VertexFormat::Vec3:
+			glVertexAttribPointer(ptr.bindingUnit, 3, GL_FLOAT, ptr.normalized, ptr.stride, reinterpret_cast<void*>(ptr.startOffset));
+			break;
+		case VertexFormat::Vec4:
+			glVertexAttribPointer(ptr.bindingUnit, 4, GL_FLOAT, ptr.normalized, ptr.stride, reinterpret_cast<void*>(ptr.startOffset));
+			break;
+
+		case VertexFormat::Mat2:
+			glVertexAttribPointer(ptr.bindingUnit, 4, GL_FLOAT, ptr.normalized, ptr.stride, reinterpret_cast<void*>(ptr.startOffset));
+			break;
+		case VertexFormat::Mat3:
+		{
+			const unsigned unit0 = ptr.bindingUnit;
+			const unsigned unit1 = ptr.bindingUnit + 1;
+			const unsigned unit2 = ptr.bindingUnit + 2;
+			ASSERT(!HasStream(unit1) && !HasStream(unit2),
+				"mat3 vertex attribute requires streams [ %d, %d, %d ] to be available.", unit0, unit1, unit2);
+
+			glEnableVertexAttribArray(unit1);
+			glEnableVertexAttribArray(unit2);
+			glVertexAttribDivisor(unit1, ptr.divisor);
+			glVertexAttribDivisor(unit2, ptr.divisor);
+			glVertexAttribPointer(unit0, 3, GL_FLOAT, ptr.normalized, ptr.stride, reinterpret_cast<void*>(ptr.startOffset));
+			glVertexAttribPointer(unit1, 3, GL_FLOAT, ptr.normalized, ptr.stride, reinterpret_cast<void*>(ptr.startOffset + 12));
+			glVertexAttribPointer(unit2, 3, GL_FLOAT, ptr.normalized, ptr.stride, reinterpret_cast<void*>(ptr.startOffset + 24));
+			break;
+		}
+		case VertexFormat::Mat4:
+		{
+			const unsigned unit0 = ptr.bindingUnit;
+			const unsigned unit1 = ptr.bindingUnit + 1;
+			const unsigned unit2 = ptr.bindingUnit + 2;
+			const unsigned unit3 = ptr.bindingUnit + 3;
+			ASSERT(!HasStream(unit1) && !HasStream(unit2) && !HasStream(unit3),
+				"mat4 vertex attribute requires streams [ %d, %d, %d, %d ] to be available.", unit0, unit1, unit2, unit3);
+
+			glEnableVertexAttribArray(unit1);
+			glEnableVertexAttribArray(unit2);
+			glEnableVertexAttribArray(unit3);
+			glVertexAttribDivisor(unit1, ptr.divisor);
+			glVertexAttribDivisor(unit2, ptr.divisor);
+			glVertexAttribDivisor(unit3, ptr.divisor);
+			glVertexAttribPointer(unit0, 4, GL_FLOAT, ptr.normalized, ptr.stride, reinterpret_cast<void*>(ptr.startOffset));
+			glVertexAttribPointer(unit1, 4, GL_FLOAT, ptr.normalized, ptr.stride, reinterpret_cast<void*>(ptr.startOffset + 16));
+			glVertexAttribPointer(unit2, 4, GL_FLOAT, ptr.normalized, ptr.stride, reinterpret_cast<void*>(ptr.startOffset + 32));
+			glVertexAttribPointer(unit3, 4, GL_FLOAT, ptr.normalized, ptr.stride, reinterpret_cast<void*>(ptr.startOffset + 48));
+			break;
+		}
 
 		case VertexFormat::Int:
 		case VertexFormat::uInt:
@@ -109,11 +165,7 @@ namespace Jwl
 		case VertexFormat::uShort:
 		case VertexFormat::Byte:
 		case VertexFormat::uByte:
-			glVertexAttribIPointer(ptr.bindingUnit, ptr.numElements, ResolveVertexFormat(ptr.format), ptr.stride, reinterpret_cast<void*>(ptr.startOffset));
-			break;
-
-		case VertexFormat::Double:
-			glVertexAttribLPointer(ptr.bindingUnit, ptr.numElements, ResolveVertexFormat(ptr.format), ptr.stride, reinterpret_cast<void*>(ptr.startOffset));
+			glVertexAttribIPointer(ptr.bindingUnit, 1, ResolveVertexFormat(ptr.format), ptr.stride, reinterpret_cast<void*>(ptr.startOffset));
 			break;
 		}
 
@@ -127,8 +179,35 @@ namespace Jwl
 	{
 		for (unsigned i = 0; i < streams.size(); ++i)
 		{
-			if (streams[i].bindingUnit == bindingUnit)
+			auto& stream = streams[i];
+
+			bool found = false;
+			switch (stream.format)
 			{
+			case VertexFormat::Mat4:
+				found = stream.bindingUnit + 3 == bindingUnit;
+			case VertexFormat::Mat3:
+				found = found || stream.bindingUnit + 2 == bindingUnit;
+				found = found || stream.bindingUnit + 1 == bindingUnit;
+			default:
+				found = found || stream.bindingUnit == bindingUnit;
+			}
+
+			if (found)
+			{
+				glBindVertexArray(VAO);
+				switch (stream.format)
+				{
+				case VertexFormat::Mat4:
+					glDisableVertexAttribArray(stream.bindingUnit + 3);
+				case VertexFormat::Mat3:
+					glDisableVertexAttribArray(stream.bindingUnit + 2);
+					glDisableVertexAttribArray(stream.bindingUnit + 1);
+				default:
+					glDisableVertexAttribArray(stream.bindingUnit);
+				}
+				glBindVertexArray(GL_NONE);
+
 				streams.erase(streams.begin() + i);
 				return;
 			}
@@ -139,9 +218,15 @@ namespace Jwl
 	{
 		for (auto& stream : streams)
 		{
-			if (stream.bindingUnit == bindingUnit)
+			switch (stream.format)
 			{
-				return true;
+			case VertexFormat::Mat4:
+				if (stream.bindingUnit + 3 == bindingUnit) return true;
+			case VertexFormat::Mat3:
+				if (stream.bindingUnit + 2 == bindingUnit) return true;
+				if (stream.bindingUnit + 1 == bindingUnit) return true;
+			default:
+				if (stream.bindingUnit == bindingUnit) return true;
 			}
 		}
 
@@ -152,13 +237,19 @@ namespace Jwl
 	{
 		for (auto& stream : streams)
 		{
-			if (stream.bindingUnit == bindingUnit)
+			switch (stream.format)
 			{
-				return stream;
+			case VertexFormat::Mat4:
+				if (stream.bindingUnit + 3 == bindingUnit) return stream;
+			case VertexFormat::Mat3:
+				if (stream.bindingUnit + 2 == bindingUnit) return stream;
+				if (stream.bindingUnit + 1 == bindingUnit) return stream;
+			default:
+				if (stream.bindingUnit == bindingUnit) return stream;
 			}
 		}
 
-		ASSERT(false, "'bindingUnit' ( %d ) is out of bounds.", bindingUnit);
+		ASSERT(false, "'bindingUnit' ( %d ) is not associated with a VertexStream.", bindingUnit);
 		return streams[0];
 	}
 
