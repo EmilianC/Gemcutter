@@ -30,12 +30,6 @@ namespace Jwl
 		float operator[](unsigned index) const;
 		float& operator[](unsigned index);
 
-		float Length() const;
-		float LengthSquared() const;
-		void ClampLength(float length);
-		void Normalize();
-		vec2 GetNormalized() const;
-
 		static const vec2 Zero;
 		static const vec2 One;
 		static const vec2 Right;
@@ -74,12 +68,6 @@ namespace Jwl
 		float& operator[](unsigned index);
 
 		explicit operator vec2() const;
-
-		float Length() const;
-		float LengthSquared() const;
-		void ClampLength(float length);
-		void Normalize();
-		vec3 GetNormalized() const;
 
 		static const vec3 Zero;
 		static const vec3 One;
@@ -125,12 +113,6 @@ namespace Jwl
 		explicit operator vec2() const;
 		explicit operator vec3() const;
 
-		float Length() const;
-		float LengthSquared() const;
-		void ClampLength(float length);
-		void Normalize();
-		vec4 GetNormalized() const;
-
 		static const vec4 Zero;
 		static const vec4 One;
 		static const vec4 Right;
@@ -143,12 +125,21 @@ namespace Jwl
 		float w = 0.0f;
 	};
 
+	float Length(const vec2&);
+	float Length(const vec3&);
+	float Length(const vec4&);
+	float LengthSquared(const vec2&);
+	float LengthSquared(const vec3&);
+	float LengthSquared(const vec4&);
 	float Distance(const vec2&, const vec2&);
 	float Distance(const vec3&, const vec3&);
 	float Distance(const vec4&, const vec4&);
 	float Dot(const vec2&, const vec2&);
 	float Dot(const vec3&, const vec3&);
 	float Dot(const vec4&, const vec4&);
+	[[nodiscard]] vec2 Normalize(const vec2&);
+	[[nodiscard]] vec3 Normalize(const vec3&);
+	[[nodiscard]] vec4 Normalize(const vec4&);
 	vec3 Cross(const vec3&, const vec3&);
 	vec2 Reflect(const vec2& incident, const vec2& normal);
 	vec3 Reflect(const vec3& incident, const vec3& normal);

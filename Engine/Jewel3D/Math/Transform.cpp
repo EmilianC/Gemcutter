@@ -26,11 +26,11 @@ namespace Jwl
 
 	void Transform::LookAt(const vec3 &pos, const vec3 &target, const vec3 &up)
 	{
-		ASSERT(Abs(up.Length() - 1.0f) < 0.0001f, "'up' must be a normalized vector.");
+		ASSERT(Abs(Length(up) - 1.0f) < 0.0001f, "'up' must be a normalized vector.");
 		ASSERT(pos != target, "Transform cannot look at itself.");
 
-		vec3 forward = (target - pos).GetNormalized();
-		vec3 right = Cross(forward, up).GetNormalized();
+		vec3 forward = Normalize(target - pos);
+		vec3 right = Normalize(Cross(forward, up));
 
 		rotation = quat(right, Cross(right, forward), -forward);
 		position = pos;

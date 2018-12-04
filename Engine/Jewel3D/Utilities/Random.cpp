@@ -34,10 +34,10 @@ namespace Jwl
 	
 	vec3 RandomDirection()
 	{
-		return vec3(
+		return Normalize(vec3(
 			RandomRange(-1.0f, 1.0f),
 			RandomRange(-1.0f, 1.0f),
-			RandomRange(-1.0f, 1.0f)).GetNormalized();
+			RandomRange(-1.0f, 1.0f)));
 	}
 
 	vec3 RandomColor()

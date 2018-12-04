@@ -29,11 +29,11 @@ namespace Jwl
 
 		leftThumbStick.x = static_cast<float>(controllerState.Gamepad.sThumbLX);
 		leftThumbStick.y = static_cast<float>(controllerState.Gamepad.sThumbLY);
-		leftThumbStickMagnitude = leftThumbStick.Length();
+		leftThumbStickMagnitude = Length(leftThumbStick);
 
 		rightThumbStick.x = static_cast<float>(controllerState.Gamepad.sThumbRX);
 		rightThumbStick.y = static_cast<float>(controllerState.Gamepad.sThumbRY);
-		rightThumbStickMagnitude = rightThumbStick.Length();
+		rightThumbStickMagnitude = Length(rightThumbStick);
 	}
 
 	void XboxGamePad::SetVibration(float left, float right)

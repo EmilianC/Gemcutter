@@ -126,46 +126,6 @@ namespace Jwl
 		return *(&x + index);
 	}
 
-	float vec2::Length() const
-	{
-		return sqrt(x * x + y * y);
-	}
-
-	float vec2::LengthSquared() const
-	{
-		return x * x + y * y;
-	}
-
-	void vec2::ClampLength(float length)
-	{
-		ASSERT(length >= 0.0f, "'length' must be positive.");
-
-		float magnitude = Length();
-		if (magnitude > length)
-		{
-			*this *= (length / magnitude);
-		}
-	}
-
-	void vec2::Normalize()
-	{
-		float invLength = 1.0f / Length();
-
-		ASSERT(!std::isinf(invLength), "Zero length vector cannot be normalized.");
-
-		x *= invLength;
-		y *= invLength;
-	}
-
-	vec2 vec2::GetNormalized() const
-	{
-		float invLength = 1.0f / Length();
-
-		ASSERT(!std::isinf(invLength), "Zero length vector cannot be normalized.");
-
-		return vec2(x * invLength, y * invLength);
-	}
-
 	const vec3 vec3::Zero = vec3(0.0f, 0.0f, 0.0f);
 	const vec3 vec3::One = vec3(1.0f, 1.0f, 1.0f);
 	const vec3 vec3::Right = vec3(1.0f, 0.0f, 0.0f);
@@ -303,47 +263,6 @@ namespace Jwl
 	vec3::operator vec2() const
 	{
 		return vec2(x, y);
-	}
-
-	float vec3::Length() const
-	{
-		return sqrt(x * x + y * y + z * z);
-	}
-
-	float vec3::LengthSquared() const
-	{
-		return x * x + y * y + z * z;
-	}
-
-	void vec3::ClampLength(float length)
-	{
-		ASSERT(length >= 0.0f, "'length' must be positive.");
-
-		float magnitude = Length();
-		if (magnitude > length)
-		{
-			*this *= (length / magnitude);
-		}
-	}
-
-	void vec3::Normalize()
-	{
-		float invLength = 1.0f / Length();
-
-		ASSERT(!std::isinf(invLength), "Zero length vector cannot be normalized.");
-
-		x *= invLength;
-		y *= invLength;
-		z *= invLength;
-	}
-
-	vec3 vec3::GetNormalized() const
-	{
-		float invLength = 1.0f / Length();
-
-		ASSERT(!std::isinf(invLength), "Zero length vector cannot be normalized.");
-
-		return vec3(x * invLength, y * invLength, z * invLength);
 	}
 
 	const vec4 vec4::Zero = vec4(0.0f, 0.0f, 0.0f, 0.0f);
@@ -508,61 +427,49 @@ namespace Jwl
 		return vec3(x, y, z);
 	}
 
-	float vec4::Length() const
+	float Length(const vec2& v)
 	{
-		return sqrt(x * x + y * y + z * z + w * w);
+		return sqrt(v.x * v.x + v.y * v.y);
 	}
 
-	float vec4::LengthSquared() const
+	float Length(const vec3& v)
 	{
-		return x * x + y * y + z * z + w * w;
+		return sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
 	}
 
-	void vec4::ClampLength(float length)
+	float Length(const vec4& v)
 	{
-		ASSERT(length >= 0.0f, "'length' must be positive.");
-
-		float magnitude = Length();
-		if (magnitude > length)
-		{
-			*this *= (length / magnitude);
-		}
+		return sqrt(v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w);
 	}
 
-	void vec4::Normalize()
+	float LengthSquared(const vec2& v)
 	{
-		float invLength = 1.0f / Length();
-
-		ASSERT(!std::isinf(invLength), "Zero length vector cannot be normalized.");
-
-		x *= invLength;
-		y *= invLength;
-		z *= invLength;
-		w *= invLength;
+		return v.x * v.x + v.y * v.y;
 	}
 
-	vec4 vec4::GetNormalized() const
+	float LengthSquared(const vec3& v)
 	{
-		float invLength = 1.0f / Length();
+		return v.x * v.x + v.y * v.y + v.z * v.z;
+	}
 
-		ASSERT(!std::isinf(invLength), "Zero length vector cannot be normalized.");
-
-		return vec4(x * invLength, y * invLength, z * invLength, w * invLength);
+	float LengthSquared(const vec4& v)
+	{
+		return v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w;
 	}
 
 	float Distance(const vec2& v1, const vec2& v2)
 	{
-		return (v1 - v2).Length();
+		return Length(v1 - v2);
 	}
 
 	float Distance(const vec3& v1, const vec3& v2)
 	{
-		return (v1 - v2).Length();
+		return Length(v1 - v2);
 	}
 
 	float Distance(const vec4& v1, const vec4& v2)
 	{
-		return (v1 - v2).Length();
+		return Length(v1 - v2);
 	}
 
 	float Dot(const vec2& v1, const vec2& v2)
@@ -578,6 +485,30 @@ namespace Jwl
 	float Dot(const vec4& v1, const vec4& v2)
 	{
 		return (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z) + (v1.w * v2.w);
+	}
+
+	vec2 Normalize(const vec2& v)
+	{
+		float invLength = 1.0f / Length(v);
+		ASSERT(!std::isinf(invLength), "Zero length vector cannot be normalized.");
+
+		return v * invLength;
+	}
+
+	vec3 Normalize(const vec3& v)
+	{
+		float invLength = 1.0f / Length(v);
+		ASSERT(!std::isinf(invLength), "Zero length vector cannot be normalized.");
+
+		return v * invLength;
+	}
+
+	vec4 Normalize(const vec4& v)
+	{
+		float invLength = 1.0f / Length(v);
+		ASSERT(!std::isinf(invLength), "Zero length vector cannot be normalized.");
+
+		return v * invLength;
 	}
 
 	vec3 Cross(const vec3& v1, const vec3& v2)

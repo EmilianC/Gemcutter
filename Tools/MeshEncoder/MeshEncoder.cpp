@@ -299,7 +299,7 @@ bool MeshEncoder::Convert(std::string_view source, std::string_view destination,
 				const float handedness = Jwl::Dot(Jwl::Cross(normal, tangent), bitangent) < 0.0f ? -1.0f : 1.0f;
 
 				// Orthonormalize the tangent with respect to the normal.
-				const Jwl::vec3 t = (tangent - normal * Jwl::Dot(normal, tangent)).GetNormalized();
+				const Jwl::vec3 t = Jwl::Normalize(tangent - normal * Jwl::Dot(normal, tangent));
 
 				faceData[i].tangent[v] = Jwl::vec4(t, handedness);
 			}
