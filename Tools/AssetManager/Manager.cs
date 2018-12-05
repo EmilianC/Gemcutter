@@ -383,6 +383,9 @@ namespace AssetManager
 		// Opens the selected asset with the default associated program.
 		private void OpenFile(string file)
 		{
+			if (file == null)
+				return;
+
 			try
 			{
 				Process.Start(file);
