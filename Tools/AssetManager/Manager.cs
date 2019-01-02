@@ -12,14 +12,27 @@ namespace AssetManager
 	{
 		WorkspaceConfig config = WorkspaceConfig.Load();
 
+		string inputPath;
+		string outputPath;
+
 		// Automatically refresh the asset directory if there are any changes.
 		FileSystemWatcher watcher;
 		// The actual native-code encoders.
-		Dictionary<string, Encoder> encoders = new Dictionary<string, Encoder>();
+		Dictionary<string, Encoder> encoders = new Dictionary<string, Encoder>(StringComparer.InvariantCultureIgnoreCase);
+
+		enum BuildMode
+		{
+			Manual,
+			Auto
+		};
+		BuildMode buildMode = BuildMode.Manual;
 
 		public Manager()
 		{
 			InitializeComponent();
+
+			inputPath = Directory.GetCurrentDirectory();
+			outputPath = Path.GetFullPath(Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + config.outputDirectory);
 
 			buttonEditMetadata.Click += delegate { OpenFile(GetSelectedItem() + ".meta"); };
 
@@ -36,7 +49,7 @@ namespace AssetManager
 				Path = Directory.GetCurrentDirectory(),
 				IncludeSubdirectories = true,
 				EnableRaisingEvents = true,
-				NotifyFilter = NotifyFilters.FileName | NotifyFilters.DirectoryName
+				NotifyFilter = NotifyFilters.FileName | NotifyFilters.DirectoryName | NotifyFilters.LastWrite
 			};
 
 			watcher.Renamed += (s, e) =>
@@ -51,7 +64,7 @@ namespace AssetManager
 
 			watcher.Deleted += (s, e) =>
 			{
-				if (e.Name.EndsWith(".meta"))
+				if (e.Name.EndsWith(".meta", StringComparison.InvariantCultureIgnoreCase))
 					return;
 
 				RefreshWorkspaceDispatch();
@@ -59,23 +72,28 @@ namespace AssetManager
 
 			watcher.Created += (s, e) =>
 			{
-				if (e.Name.EndsWith(".meta"))
+				if (e.Name.EndsWith(".meta", StringComparison.InvariantCultureIgnoreCase))
 					return;
 
 				RefreshWorkspaceDispatch();
+				LoadEncoders();
 
-				if (config.encoders.Any(x => e.FullPath.EndsWith(x.extension)))
+				UpdateFileDispatch(e.FullPath);
+			};
+
+			watcher.Changed += (s, e) =>
+			{
+				if (buildMode == BuildMode.Manual)
+					return;
+
+				LoadEncoders();
+				if (e.FullPath.EndsWith(".meta", StringComparison.InvariantCultureIgnoreCase))
 				{
-					LoadEncoders();
-
-					try
-					{
-						encoders[Path.GetExtension(e.FullPath).Substring(1)].Update(e.FullPath);
-					}
-					catch (Exception ex)
-					{
-						Log($"ERROR:    {ex.Message}", ConsoleColor.Red);
-					}
+					PackFileDispatch(e.FullPath.Substring(0, e.FullPath.Length - 5));
+				}
+				else
+				{
+					PackFileDispatch(e.FullPath);
 				}
 			};
 
@@ -83,36 +101,75 @@ namespace AssetManager
 			RefreshWorkspace();
 		}
 
+		private void PackFile(string file)
+		{
+			string logName = file.Substring(inputPath.Length + 1);
+			string extension = Path.GetExtension(file).Substring(1);
+
+			if (encoders.ContainsKey(extension))
+			{
+				Log($"Encoding: {logName}");
+
+				var outDir = Path.GetDirectoryName(file.Replace(inputPath, outputPath)) + Path.DirectorySeparatorChar;
+
+				if (!encoders[extension].Convert(file, outDir))
+					throw new Exception($"Failed to encode: {logName}");
+			}
+			else
+			{
+				var outFile = file.Replace(inputPath, outputPath);
+
+				// Don't bother copying the file if it already exists, unchanged, in the destination folder.
+				if (File.Exists(outFile))
+				{
+					var destinationFileInfo = new FileInfo(outFile);
+					var sourceFileInfo = new FileInfo(file);
+
+					if (destinationFileInfo.Length == sourceFileInfo.Length &&
+						File.GetLastWriteTime(outFile) == File.GetLastWriteTime(file))
+						return;
+
+					File.Delete(outFile);
+				}
+
+				Log($"Copying:  {logName}");
+				File.Copy(file, outFile);
+			}
+		}
+
+		private void UpdateFile(string file)
+		{
+			string extension = Path.GetExtension(file).Substring(1);
+
+			if (encoders.ContainsKey(extension))
+			{
+				string logName = file.Substring(inputPath.Length + 1);
+				Log($"Checking: {logName}");
+
+				if (!encoders[extension].Update(file))
+					throw new Exception($"Failed to update: {logName}");
+			}
+		}
+
 		// Starts the updating process.
 		// Any assets without a .meta file will have one added.
 		// Any existing .meta files will be updated to the newest versions.
 		public void UpdateWorkspace()
 		{
-			Icon = Properties.Resources.Building;
-
-			Log(">>>>>> Validating Workspace <<<<<<");
-
 			LoadEncoders();
-
-			string inputRoot = Directory.GetCurrentDirectory();
+			Icon = Properties.Resources.Building;
+			Log(">>>>>> Validating Workspace <<<<<<");
 
 			try
 			{
-				foreach (var file in GetWorkspaceFiles().Where(file =>
-					encoders.Any(x => file.EndsWith(x.Key, StringComparison.InvariantCultureIgnoreCase))))
-				{
-					string logName = file.Substring(inputRoot.Length + 1);
-					Log($"Checking: {logName}");
-
-					if (!encoders[Path.GetExtension(file).Substring(1)].Update(file))
-						throw new Exception($"Failed to update: {logName}");
-				}
+				foreach (var file in GetWorkspaceFiles())
+					UpdateFile(file);
 
 				Log(">>>>>> Finished Validating <<<<<<", ConsoleColor.Green);
 			}
 			catch (Exception e)
 			{
-				Log($"ERROR:   {e.Message}", ConsoleColor.Red);
+				Log($"ERROR:    {e.Message}", ConsoleColor.Red);
 			}
 			finally
 			{
@@ -124,24 +181,20 @@ namespace AssetManager
 		// Convertible files are put through the appropriate binary converter. Other files are copied as-is.
 		public bool PackWorkspace()
 		{
+			LoadEncoders();
 			Icon = Properties.Resources.Building;
-
-			string inputRoot = Directory.GetCurrentDirectory();
-			string outputRoot = Path.GetFullPath(inputRoot + Path.DirectorySeparatorChar + config.outputDirectory);
-
-			Log(">>>>>> Started Packing <<<<<<");
-			Log($"Output Directory: {outputRoot}");
+			Log(">>>>>> Packing Workspace <<<<<<");
+			Log($"Output Directory: {outputPath}");
 
 			ButtonPack.Enabled = false;
+			ButtonMode.Enabled = false;
 			ButtonSettings.Enabled = false;
 
-			LoadEncoders();
-
 			// Duplicate the directory structure in the output folder.
-			Directory.CreateDirectory(outputRoot);
-			foreach (var path in Directory.GetDirectories(inputRoot, "*", SearchOption.AllDirectories))
+			Directory.CreateDirectory(outputPath);
+			foreach (var path in Directory.GetDirectories(inputPath, "*", SearchOption.AllDirectories))
 			{
-				Directory.CreateDirectory(path.Replace(inputRoot, outputRoot));
+				Directory.CreateDirectory(path.Replace(inputPath, outputPath));
 			}
 
 			bool result = false;
@@ -149,41 +202,8 @@ namespace AssetManager
 			workspaceFiles.RemoveAll(x => x.EndsWith(".meta", StringComparison.InvariantCultureIgnoreCase));
 			try
 			{
-				// Pack all files with an associated encoder.
-				foreach (string file in workspaceFiles.Where(file =>
-					encoders.Any(x => file.EndsWith(x.Key, StringComparison.InvariantCultureIgnoreCase))))
-				{
-					string logName = file.Substring(inputRoot.Length + 1);
-					Log($"Encoding: {logName}");
-
-					var outDir = Path.GetDirectoryName(file.Replace(inputRoot, outputRoot)) + Path.DirectorySeparatorChar;
-
-					if (!encoders[Path.GetExtension(file).Substring(1)].Convert(file, outDir))
-						throw new Exception($"Failed to encode: {logName}");
-				}
-
-				// Copy all the remaining files.
-				foreach (string file in workspaceFiles.Where(file =>
-					!encoders.Any(x => file.EndsWith(x.Key, StringComparison.InvariantCultureIgnoreCase))))
-				{
-					var outFile = file.Replace(inputRoot, outputRoot);
-
-					// Don't bother copying the file if it already exists, unchanged, in the destination folder.
-					if (File.Exists(outFile))
-					{
-						var destinationFileInfo = new FileInfo(outFile);
-						var sourceFileInfo = new FileInfo(file);
-
-						if (destinationFileInfo.Length == sourceFileInfo.Length &&
-							File.GetLastWriteTime(outFile) == File.GetLastWriteTime(file))
-							continue;
-
-						File.Delete(outFile);
-					}
-
-					Log($"Copying:  {file.Substring(inputRoot.Length + 1)}");
-					File.Copy(file, outFile);
-				}
+				foreach (string file in workspaceFiles)
+					PackFile(file);
 
 				Log(">>>>>> Finished Packing <<<<<<", ConsoleColor.Green);
 				result = true;
@@ -196,6 +216,7 @@ namespace AssetManager
 			finally
 			{
 				ButtonPack.Enabled = true;
+				ButtonMode.Enabled = true;
 				ButtonSettings.Enabled = true;
 
 				Icon = Properties.Resources.JewelIcon;
@@ -239,6 +260,24 @@ namespace AssetManager
 				RefreshWorkspace();
 		}
 
+		delegate void PackFileDelegate(string file);
+		void PackFileDispatch(string file)
+		{
+			if (treeViewAssets.InvokeRequired)
+				Invoke(new PackFileDelegate(PackFile), file);
+			else
+				PackFile(file);
+		}
+
+		delegate void UpdateFileDelegate(string file);
+		void UpdateFileDispatch(string file)
+		{
+			if (treeViewAssets.InvokeRequired)
+				Invoke(new UpdateFileDelegate(UpdateFile), file);
+			else
+				UpdateFile(file);
+		}
+
 		// Populates a tree with the contents of a directory on the disk.
 		void ParseDirectory(string rootFolder, TreeNode root = null)
 		{
@@ -255,7 +294,7 @@ namespace AssetManager
 				// Find and add all files in the folder.
 				var fileCount = 0;
 				foreach (var file in Directory.GetFiles(folder).Where(x =>
-					Path.GetExtension(x) != ".meta" && 
+					Path.GetExtension(x) != ".meta" &&
 					!config.excludedExtensions.Split(';').Contains(Path.GetExtension(x).Substring(1))))
 				{
 					var fileName = Path.GetFileName(file);
@@ -306,7 +345,7 @@ namespace AssetManager
 		private void LoadEncoders()
 		{
 			encoders.Clear();
-			
+
 			try
 			{
 				foreach (var dll in config.encoders)
@@ -344,6 +383,9 @@ namespace AssetManager
 		// Opens the selected asset with the default associated program.
 		private void OpenFile(string file)
 		{
+			if (file == null)
+				return;
+
 			try
 			{
 				Process.Start(file);
@@ -354,6 +396,24 @@ namespace AssetManager
 			{}
 		}
 
+		private void SetBuildMode(BuildMode mode)
+		{
+			switch (mode)
+			{
+			case BuildMode.Auto:
+				ButtonMode.Text = "Mode: Auto";
+				ButtonPack.Enabled = false;
+				break;
+
+			case BuildMode.Manual:
+				ButtonMode.Text = "Mode: Manual";
+				ButtonPack.Enabled = true;
+				break;
+			}
+
+			buildMode = mode;
+		}
+
 		private void buttonSettings_Click(object sender, EventArgs e)
 		{
 			ButtonPack.Enabled = false;
@@ -362,13 +422,14 @@ namespace AssetManager
 			var settingsForm = new Settings();
 			settingsForm.Show();
 			settingsForm.BringToFront();
-			settingsForm.FormClosed += delegate 
+			settingsForm.FormClosed += delegate
 			{
 				ButtonPack.Enabled = true;
 				ButtonSettings.Enabled = true;
 
 				// Refresh settings.
 				config = WorkspaceConfig.Load();
+				outputPath = Path.GetFullPath(Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + config.outputDirectory);
 
 				RefreshWorkspace();
 			};
@@ -393,6 +454,20 @@ namespace AssetManager
 		private void buttonCollapse_Click(object sender, EventArgs e)
 		{
 			treeViewAssets.CollapseAll();
+		}
+
+		private void ButtonMode_Click(object sender, EventArgs e)
+		{
+			switch (buildMode)
+			{
+			case BuildMode.Manual:
+				SetBuildMode(BuildMode.Auto);
+				break;
+
+			case BuildMode.Auto:
+				SetBuildMode(BuildMode.Manual);
+				break;
+			}
 		}
 	}
 }
