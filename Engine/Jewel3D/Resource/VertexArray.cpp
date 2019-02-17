@@ -24,6 +24,13 @@ namespace Jwl
 		glDeleteBuffers(1, &VBO);
 	}
 
+	void VertexBuffer::ClearData()
+	{
+		Bind();
+		glClearBufferData(GL_ARRAY_BUFFER, GL_R8, GL_RED, GL_UNSIGNED_BYTE, nullptr);
+		UnBind();
+	}
+
 	void VertexBuffer::SetData(unsigned start, unsigned _size, void* data)
 	{
 		ASSERT(start + _size <= size, "Out of bounds.");

@@ -16,6 +16,7 @@ namespace Jwl
 		VertexBuffer(unsigned size, VertexBufferUsage usage);
 		~VertexBuffer();
 
+		void ClearData();
 		void SetData(unsigned start, unsigned size, void* data);
 
 		// Must be followed by a call to UnmapBuffer() before rendering with the buffer.
