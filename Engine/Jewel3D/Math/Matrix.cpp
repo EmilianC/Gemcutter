@@ -649,6 +649,14 @@ namespace Jwl
 		return vec3(data[ForwardX], data[ForwardY], data[ForwardZ]);
 	}
 
+	mat3 mat3::LookAt(const vec3& forward, const vec3& upAnchor)
+	{
+		const vec3 right = Normalize(Cross(forward, upAnchor));
+		const vec3 up = Cross(right, forward);
+
+		return mat3(right, up, -forward);
+	}
+
 	const mat4 mat4::Identity = mat4();
 
 	mat4::mat4()
@@ -778,7 +786,7 @@ namespace Jwl
 		Scale(scale);
 	}
 
-	mat4::mat4(const vec3& right, const vec3& up, const vec3& forward, const vec4& translation)
+	mat4::mat4(const vec3& right, const vec3& up, const vec3& forward, const vec3& translation)
 	{
 		data[RightX] = right.x;
 		data[RightY] = right.y;
@@ -1439,15 +1447,12 @@ namespace Jwl
 		return result;
 	}
 
-	mat4 mat4::LookAt(const vec3& position, const vec3& target, const vec3& upVector)
+	mat4 mat4::LookAt(const vec3& position, const vec3& target, const vec3& upAnchor)
 	{
 		const vec3 forward = Normalize(target - position);
-		const vec3 right = Normalize(Cross(forward, upVector));
+		const vec3 right = Normalize(Cross(forward, upAnchor));
 		const vec3 up = Cross(right, forward);
 
-		return mat4(right.x, up.x, -forward.x, position.x,
-			right.y, up.y, -forward.y, position.y,
-			right.z, up.z, -forward.z, position.z,
-			0.0f, 0.0f, 0.0f, 1.0f);
+		return mat4(right, up, -forward, position);
 	}
 }

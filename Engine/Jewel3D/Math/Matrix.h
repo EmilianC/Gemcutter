@@ -125,6 +125,9 @@ namespace Jwl
 
 		static const mat3 Identity;
 
+		// 'forward' must be a normalized vector.
+		static mat3 LookAt(const vec3& forward, const vec3& upAnchor);
+
 		float data[9];
 	};
 
@@ -145,7 +148,7 @@ namespace Jwl
 		mat4(const mat3& rotation, const vec3& translation);
 		mat4(const quat& rotation, const vec3& translation, const vec3& scale);
 		mat4(const mat3& rotation, const vec3& translation, const vec3& scale);
-		mat4(const vec3& right, const vec3& up, const vec3& forward, const vec4& translation);
+		mat4(const vec3& right, const vec3& up, const vec3& forward, const vec3& translation);
 		mat4(float f0, float f4, float f8, float f12,
 			float f1, float f5, float f9, float f13,
 			float f2, float f6, float f10, float f14,
@@ -204,14 +207,14 @@ namespace Jwl
 		vec3 GetTranslation() const;
 
 		static const mat4 Identity;
-		
+
 		static mat4 PerspectiveProjection(float fovyDegrees, float aspect, float zNear, float zFar);
 		static mat4 InversePerspectiveProjection(float fovyDegrees, float aspect, float zNear, float zFar);
-		
+
 		static mat4 OrthographicProjection(float left, float right, float top, float bottom, float zNear, float zFar);
 		static mat4 InverseOrthographicProjection(float left, float right, float top, float bottom, float zNear, float zFar);
 
-		static mat4 LookAt(const vec3& position, const vec3& target, const vec3& upVector);
+		static mat4 LookAt(const vec3& position, const vec3& target, const vec3& upAnchor);
 
 		float data[16];
 	};
