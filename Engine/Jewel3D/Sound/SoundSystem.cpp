@@ -75,8 +75,11 @@ namespace Jwl
 		alcDestroyContext(context);
 		alcCloseDevice(device);
 
-		context = nullptr;
+		muted = true;
+		attenuationMode = AttenuationMode::Inverse_Distance_Clamped;
+		globalVolume = 1.0f;
 		device = nullptr;
+		context = nullptr;
 	}
 
 	void SoundSystemSingleton::SetAttenuationMode(AttenuationMode mode)
@@ -85,6 +88,13 @@ namespace Jwl
 
 		alDistanceModel(static_cast<ALenum>(mode));
 		AL_DEBUG_CHECK();
+
+		attenuationMode = mode;
+	}
+
+	AttenuationMode SoundSystemSingleton::GetAttenuationMode() const
+	{
+		return attenuationMode;
 	}
 
 	void SoundSystemSingleton::SetGlobalVolume(float volume)
@@ -92,13 +102,53 @@ namespace Jwl
 		ASSERT(IsLoaded(), "SoundSystem must be initialized to call this function.");
 		ASSERT(volume >= 0.0f, "'volume' must be non negative.");
 
-		alListenerf(AL_GAIN, volume);
+		if (!muted)
+		{
+			alListenerf(AL_GAIN, volume);
+			AL_DEBUG_CHECK();
+		}
+
+		globalVolume = volume;
+	}
+
+	float SoundSystemSingleton::GetGlobalVolume() const
+	{
+		return globalVolume;
+	}
+
+	void SoundSystemSingleton::Mute()
+	{
+		ASSERT(IsLoaded(), "SoundSystem must be initialized to call this function.");
+
+		alListenerf(AL_GAIN, 0.0f);
 		AL_DEBUG_CHECK();
+
+		muted = true;
+	}
+
+	bool SoundSystemSingleton::IsMuted() const
+	{
+		return muted;
+	}
+
+	void SoundSystemSingleton::Unmute()
+	{
+		ASSERT(IsLoaded(), "SoundSystem must be initialized to call this function.");
+
+		alListenerf(AL_GAIN, globalVolume);
+		AL_DEBUG_CHECK();
+
+		muted = false;
 	}
 
 	void SoundSystemSingleton::Update()
 	{
 		ASSERT(IsLoaded(), "SoundSystem must be initialized to call this function.");
+
+		if (muted)
+		{
+			return;
+		}
 
 		auto listener = SoundListener::GetListener();
 		if (!listener)
