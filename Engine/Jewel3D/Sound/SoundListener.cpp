@@ -1,6 +1,7 @@
 // Copyright (c) 2017 Emilian Cioca
 #include "Jewel3D/Precompiled.h"
 #include "SoundListener.h"
+#include "SoundSystem.h"
 
 namespace Jwl
 {
@@ -17,6 +18,7 @@ namespace Jwl
 		else
 		{
 			listener = owner.GetWeakPtr();
+			SoundSystem.Unmute();
 		}
 	}
 
@@ -33,18 +35,20 @@ namespace Jwl
 		if (listenerEntity.get() == &owner)
 		{
 			listener.reset();
+			SoundSystem.Mute();
 		}
 	}
-	
+
 	void SoundListener::OnEnable()
 	{
 		// If there is already an active listener, we must disable it
-		// Because OpenAL only supports one active listener at a time.
+		// because OpenAL only supports one active listener at a time.
 		if (auto listenerEntity = GetListener())
 		{
 			listenerEntity->Disable<SoundListener>();
 		}
 
 		listener = owner.GetWeakPtr();
+		SoundSystem.Unmute();
 	}
 }
