@@ -1,7 +1,10 @@
 // Copyright (c) 2017 Emilian Cioca
 #include "Jewel3D/Precompiled.h"
-#include "Jewel3D/Application/Logging.h"
 #include "Event.h"
+
+#ifdef _DEBUG
+#include "Jewel3D/Application/Logging.h"
+#endif
 
 namespace Jwl
 {
@@ -15,10 +18,7 @@ namespace Jwl
 			"Consider using Dispatch(const EventBase&) instead.");
 #endif
 
-		if (e->HasListeners())
-		{
-			eventQueue.push(std::move(e));
-		}
+		eventQueue.push(std::move(e));
 	}
 
 	void EventQueueSingleton::Dispatch(const EventBase& e) const
@@ -28,20 +28,19 @@ namespace Jwl
 
 	void EventQueueSingleton::Dispatch()
 	{
-		// Events should not be posted during this call.
 #ifdef _DEBUG
+		// Events should not be posted during this call.
 		inDispatch = true;
 #endif
 
-		// Sequence through all events.
 		while (!eventQueue.empty())
 		{
 			eventQueue.front()->Raise();
 			eventQueue.pop();
 		}
 
-		// Events can be posted again.
 #ifdef _DEBUG
+		// Events can be posted again.
 		inDispatch = false;
 #endif
 	}
