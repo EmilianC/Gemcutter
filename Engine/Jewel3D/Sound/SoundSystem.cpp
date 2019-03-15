@@ -157,27 +157,16 @@ namespace Jwl
 		}
 
 		/* Update listener */
-		ALfloat pos[] =
-		{
-			0.0f, 0.0f, 0.0f
-		};
+		ALfloat pos[3] = { 0.0f };
+		ALfloat orientation[6] = { 0.0f };
 
-		ALfloat orientation[] =
-		{
-			0.0f, 0.0f, 0.0f,
-			0.0f, 0.0f, 0.0f
-		};
-
-		mat4 pose = listener->GetWorldTransform();
-
+		const mat4 pose = listener->GetWorldTransform();
+		orientation[0] = -pose.data[mat4::ForwardX];
+		orientation[1] = -pose.data[mat4::ForwardY];
+		orientation[2] = -pose.data[mat4::ForwardZ];
 		orientation[3] = pose.data[mat4::UpX];
 		orientation[4] = pose.data[mat4::UpY];
 		orientation[5] = pose.data[mat4::UpZ];
-
-		orientation[0] = pose.data[mat4::ForwardX];
-		orientation[1] = pose.data[mat4::ForwardY];
-		orientation[2] = pose.data[mat4::ForwardZ];
-
 		pos[0] = pose.data[mat4::TransX];
 		pos[1] = pose.data[mat4::TransY];
 		pos[2] = pose.data[mat4::TransZ];
@@ -195,7 +184,6 @@ namespace Jwl
 				continue;
 
 			vec3 position = source.owner.GetWorldTransform().GetTranslation();
-
 			pos[0] = position.x;
 			pos[1] = position.y;
 			pos[2] = position.z;
