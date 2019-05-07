@@ -86,6 +86,10 @@ namespace AssetManager
 				if (buildMode == BuildMode.Manual)
 					return;
 
+				// Filter out folder names.
+				if (!File.Exists(e.FullPath))
+					return;
+
 				LoadEncoders();
 				if (e.FullPath.EndsWith(".meta", StringComparison.InvariantCultureIgnoreCase))
 				{
