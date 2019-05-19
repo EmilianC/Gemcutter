@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${Jewel3D_Path}Build/include/"
+            ],
+            "defines": [
+                "_DEBUG",
+                "WIN32_LEAN_AND_MEAN",
+                "GLEW_STATIC",
+                "NOMINMAX",
+                "_CRT_SECURE_NO_WARNINGS"
+            ],
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "msvc-x64"
+        }
+    ],
+    "version": 4
+}
