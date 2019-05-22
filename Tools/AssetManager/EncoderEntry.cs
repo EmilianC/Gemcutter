@@ -130,16 +130,27 @@ namespace AssetManager
 			extensionBox.Size = new Size(45, 23);
 			extensionBox.TabIndex = tabIndex++;
 			extensionBox.Font = font;
+			extensionBox.BackColor = Color.FromArgb(37, 37, 38);
+			extensionBox.ForeColor = SystemColors.Info;
+			extensionBox.BorderStyle = BorderStyle.FixedSingle;
 			extensionBox.TextChanged += delegate { Validate(); };
 
 			encoderBox.Size = new Size(500, 23);
 			encoderBox.TabIndex = tabIndex++;
 			encoderBox.Font = font;
+			encoderBox.BackColor = Color.FromArgb(37, 37, 38);
+			encoderBox.ForeColor = SystemColors.Info;
+			encoderBox.BorderStyle = BorderStyle.FixedSingle;
 			encoderBox.TextChanged += delegate { Validate(); };
 
 			search.Size = new Size(23, 23);
 			search.BackgroundImage = Properties.Resources.Search;
 			search.BackgroundImageLayout = ImageLayout.Stretch;
+			search.FlatAppearance.MouseOverBackColor = Color.FromArgb(69, 69, 69);
+			search.FlatAppearance.BorderSize = 0;
+			search.BackColor = Color.FromArgb(48, 48, 50);
+			search.ForeColor = SystemColors.ControlLightLight;
+			search.FlatStyle = FlatStyle.Flat;
 			search.TabIndex = tabIndex++;
 			search.UseVisualStyleBackColor = true;
 			search.Click += delegate { SearchForEncoder(); };
@@ -147,6 +158,11 @@ namespace AssetManager
 			delete.Size = new Size(23, 23);
 			delete.BackgroundImage = Properties.Resources.Delete;
 			delete.BackgroundImageLayout = ImageLayout.Stretch;
+			delete.FlatAppearance.MouseOverBackColor = Color.FromArgb(69, 69, 69);
+			delete.FlatAppearance.BorderSize = 0;
+			delete.BackColor = Color.FromArgb(48, 48, 50);
+			delete.ForeColor = SystemColors.ControlLightLight;
+			delete.FlatStyle = FlatStyle.Flat;
 			delete.TabIndex = tabIndex++;
 			delete.UseVisualStyleBackColor = true;
 			delete.Click += delegate

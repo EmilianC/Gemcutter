@@ -121,9 +121,9 @@
   <data name="ButtonSettings.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABEAAAARCAYAAAA7bUf6AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
-        wgAADsIBFShKgAAAABl0RVh0U29mdHdhcmUAcGFpbnQubmV0IDQuMC4xMzQDW3oAAABjSURBVDhPpZDR
-        CgAgDAL7/59eMViJCcN6OHCnTxsR8Y2ULlK6aLl0oW7mBBgiXZf9DjQoui77CggP+WYu8YKULlK6aLk0
-        /oBv5gQYIl2X/Q40KLou+woID/lmLvGClC5SesSYLRHQTBpbLNAAAAAASUVORK5CYII=
+        wQAADsEBuJFr7QAAABh0RVh0U29mdHdhcmUAcGFpbnQubmV0IDQuMS42/U4J6AAAAEBJREFUOE/lzzEO
+        ADAIAkD//+k2MQw1QNjrbQiLtcB5qGxhQ1I34E5SZ2HTVN4I7zeVLWxI6gbcSeosbJrKX6u6Z0Qe8Ge/
+        RTQAAAAASUVORK5CYII=
 </value>
   </data>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
