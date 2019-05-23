@@ -5,10 +5,10 @@ using namespace Jwl;
 
 TEST_CASE("Hierarchy")
 {
-	Entity::Ptr root = Entity::MakeNew();
-	Entity::Ptr e1 = root->CreateChild();
-	Entity::Ptr e2 = root->CreateChild();
-	Entity::Ptr e3 = Entity::MakeNew();
+	auto root = Entity::MakeNew();
+	auto e1 = root->CreateChild();
+	auto e2 = root->CreateChild();
+	auto e3 = Entity::MakeNew();
 	root->AddChild(e3);
 
 	SECTION("Parents")
@@ -48,5 +48,12 @@ TEST_CASE("Hierarchy")
 		CHECK(e1->IsLeaf());
 		CHECK(e2->IsLeaf());
 		CHECK(e3->IsLeaf());
+
+		root->ClearChildren();
+		CHECK(root->GetNumChildren() == 0);
+		CHECK(!root->IsChild(*e1));
+		CHECK(!root->IsChild(*e2));
+		CHECK(!root->IsChild(*e3));
+		CHECK(root->IsLeaf());
 	}
 }
