@@ -16,25 +16,15 @@ namespace Jwl
 		return __argv;
 	}
 
-	bool ArgumentExists(const char* name)
+	bool HasCommandLineArg(const char* name)
 	{
-		for (int i = 1; i < __argc; ++i)
-		{
-			// Search for the string.
-			if (strcmp(__argv[i], name) == 0)
-			{
-				return true;
-			}
-		}
-
-		return false;
+		return FindCommandLineArg(name) != -1;
 	}
 
-	int FindCommandLineArgument(const char* name)
+	int FindCommandLineArg(const char* name)
 	{
 		for (int i = 1; i < __argc; ++i)
 		{
-			// Search for the string.
 			if (strcmp(__argv[i], name) == 0)
 			{
 				return i;
@@ -44,174 +34,95 @@ namespace Jwl
 		return -1;
 	}
 
-	std::string GetExecutablePath()
+	const char* GetExecutablePath()
 	{
 		return __argv[0];
 	}
 
-	bool GetCommandLineArgument(const char* name, bool& val)
+	bool GetCommandLineArg(int index, bool& value)
 	{
-		int index = FindCommandLineArgument(name) + 1;
-
 		if (index > 0 && index < __argc)
 		{
-			val = atoi(__argv[index]) == 1;
+			value = atoi(__argv[index]) == 1;
 			return true;
 		}
 
 		return false;
 	}
 
-	bool GetCommandLineArgument(const char* name, double& val)
+	bool GetCommandLineArg(int index, double& value)
 	{
-		int index = FindCommandLineArgument(name) + 1;
-
 		if (index > 0 && index < __argc)
 		{
-			val = atof(__argv[index]);
+			value = atof(__argv[index]);
 			return true;
 		}
 
 		return false;
 	}
 
-	bool GetCommandLineArgument(const char* name, float& val)
+	bool GetCommandLineArg(int index, float& value)
 	{
-		int index = FindCommandLineArgument(name) + 1;
-
 		if (index > 0 && index < __argc)
 		{
-			val = static_cast<float>(atof(__argv[index]));
+			value = static_cast<float>(atof(__argv[index]));
 			return true;
 		}
 
 		return false;
 	}
 
-	bool GetCommandLineArgument(const char* name, int& val)
+	bool GetCommandLineArg(int index, int& value)
 	{
-		int index = FindCommandLineArgument(name) + 1;
-
 		if (index > 0 && index < __argc)
 		{
-			val = atoi(__argv[index]);
+			value = atoi(__argv[index]);
 			return true;
 		}
 
 		return false;
 	}
 
-	bool GetCommandLineArgument(const char* name, unsigned& val)
+	bool GetCommandLineArg(int index, unsigned& value)
 	{
-		int index = FindCommandLineArgument(name) + 1;
-
 		if (index > 0 && index < __argc)
 		{
-			val = atoi(__argv[index]);
+			value = atoi(__argv[index]);
 			return true;
 		}
 
 		return false;
 	}
 
-	bool GetCommandLineArgument(const char* name, char& val)
+	bool GetCommandLineArg(int index, char& value)
 	{
-		int index = FindCommandLineArgument(name) + 1;
-
 		if (index > 0 && index < __argc)
 		{
-			val = __argv[index][0];
+			value = __argv[index][0];
 			return true;
 		}
 
 		return false;
 	}
 
-	bool GetCommandLineArgument(const char* name, std::string& val)
+	bool GetCommandLineArg(int index, const char*& value)
 	{
-		int index = FindCommandLineArgument(name) + 1;
-
-		if (index > 0 && index < __argc)
-		{
-			val = __argv[index];
-			return true;
-		}
-
-		return false;
-	}
-
-	bool GetCommandLineArgument(int index, bool& val)
-	{
-		if (index > 0 && index < __argc)
-		{
-			val = atoi(__argv[index]) == 1;
-			return true;
-		}
-
-		return false;
-	}
-
-	bool GetCommandLineArgument(int index, double& val)
-	{
-		if (index > 0 && index < __argc)
-		{
-			val = atof(__argv[index]);
-			return true;
-		}
-
-		return false;
-	}
-
-	bool GetCommandLineArgument(int index, float& val)
-	{
-		if (index > 0 && index < __argc)
-		{
-			val = static_cast<float>(atof(__argv[index]));
-			return true;
-		}
-
-		return false;
-	}
-
-	bool GetCommandLineArgument(int index, int& val)
-	{
-		if (index > 0 && index < __argc)
-		{
-			val = atoi(__argv[index]);
-			return true;
-		}
-
-		return false;
-	}
-
-	bool GetCommandLineArgument(int index, unsigned& val)
-	{
-		if (index > 0 && index < __argc)
-		{
-			val = atoi(__argv[index]);
-			return true;
-		}
-
-		return false;
-	}
-
-	bool GetCommandLineArgument(int index, char& val)
-	{
-		if (index > 0 && index < __argc)
-		{
-			val = __argv[index][0];
-			return true;
-		}
-
-		return false;
-	}
-
-	bool GetCommandLineArgument(int index, std::string& val)
-	{
-		// Index 0 is valid here. The first argument is always a string.
+		// Index 0 is valueid here. The first argument is always a string.
 		if (index >= 0 && index < __argc)
 		{
-			val = __argv[index];
+			value = __argv[index];
+			return true;
+		}
+
+		return false;
+	}
+
+	bool GetCommandLineArg(int index, std::string& value)
+	{
+		// Index 0 is valueid here. The first argument is always a string.
+		if (index >= 0 && index < __argc)
+		{
+			value = __argv[index];
 			return true;
 		}
 
