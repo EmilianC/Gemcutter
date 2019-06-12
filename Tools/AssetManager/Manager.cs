@@ -390,14 +390,17 @@ namespace AssetManager
 			if (file == null)
 				return;
 
+			// Ignore folders.
+			if (Directory.Exists(file))
+				return;
+
 			try
 			{
 				Process.Start(file);
 			}
-			catch (System.ComponentModel.Win32Exception)
-			{} // The file might not have an associated program to open with.
-			catch (FileNotFoundException)
-			{}
+			// The file might not have an associated program to open with.
+			catch (System.ComponentModel.Win32Exception) {}
+			catch (FileNotFoundException) {}
 		}
 
 		private void SetBuildMode(BuildMode mode)
