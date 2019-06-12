@@ -61,9 +61,11 @@
 			this.treeViewAssets.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(48)))), ((int)(((byte)(48)))), ((int)(((byte)(48)))));
 			this.treeViewAssets.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.treeViewAssets.ForeColor = System.Drawing.Color.LightGray;
+			this.treeViewAssets.Indent = 24;
 			this.treeViewAssets.Location = new System.Drawing.Point(14, 38);
 			this.treeViewAssets.Margin = new System.Windows.Forms.Padding(5, 3, 5, 3);
 			this.treeViewAssets.Name = "treeViewAssets";
+			this.treeViewAssets.ShowLines = false;
 			this.treeViewAssets.Size = new System.Drawing.Size(354, 589);
 			this.treeViewAssets.TabIndex = 7;
 			// 

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -20,6 +21,8 @@ namespace AssetManager
 		// The actual native-code encoders.
 		Dictionary<string, Encoder> encoders = new Dictionary<string, Encoder>(StringComparer.InvariantCultureIgnoreCase);
 
+		ImageList treeViewIcons = new ImageList();
+
 		enum BuildMode
 		{
 			Manual,
@@ -35,6 +38,11 @@ namespace AssetManager
 			outputPath = Path.GetFullPath(Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + config.outputDirectory);
 
 			buttonEditMetadata.Click += delegate { OpenFile(GetSelectedItem() + ".meta"); };
+
+			treeViewIcons.ColorDepth = ColorDepth.Depth32Bit;
+			treeViewIcons.ImageSize = new Size(18, 18);
+			treeViewIcons.Images.Add("folder", Properties.Resources.Folder);
+			treeViewAssets.ImageList = treeViewIcons;
 
 			treeViewAssets.DoubleClick += delegate { OpenFile(GetSelectedItem()); };
 
@@ -76,8 +84,8 @@ namespace AssetManager
 					return;
 
 				RefreshWorkspaceDispatch();
-				LoadEncoders();
 
+				LoadEncoders();
 				UpdateFileDispatch(e.FullPath);
 			};
 
@@ -121,6 +129,9 @@ namespace AssetManager
 			}
 			else
 			{
+				if (config.IsExtensionExcluded(extension))
+					return;
+
 				var outFile = file.Replace(inputPath, outputPath);
 
 				// Don't bother copying the file if it already exists, unchanged, in the destination folder.
@@ -293,16 +304,23 @@ namespace AssetManager
 			foreach (string folder in directories)
 			{
 				var name = Path.GetFileName(folder);
-				var folderNode = nodes.Add(name, name);
+				var folderNode = nodes.Add(name, name, "folder", "folder");
 
 				// Find and add all files in the folder.
 				var fileCount = 0;
-				foreach (var file in Directory.GetFiles(folder).Where(x =>
-					Path.GetExtension(x) != ".meta" &&
-					!config.excludedExtensions.Split(';').Contains(Path.GetExtension(x).Substring(1))))
+				foreach (var file in Directory.GetFiles(folder))
 				{
+					var extension = Path.GetExtension(file).Substring(1);
+					if (extension == "meta" || config.IsExtensionExcluded(extension))
+						continue;
+
+					if (!treeViewIcons.Images.ContainsKey(extension))
+					{
+						treeViewIcons.Images.Add(extension, Icon.ExtractAssociatedIcon(file));
+					}
+
 					var fileName = Path.GetFileName(file);
-					folderNode.Nodes.Add(fileName, fileName);
+					folderNode.Nodes.Add(fileName, fileName, extension, extension);
 					fileCount++;
 				}
 

@@ -1,6 +1,7 @@
 ﻿// Copyright (c) 2017 Emilian Cioca
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml.Serialization;
 
 namespace AssetManager
@@ -17,11 +18,10 @@ namespace AssetManager
 		public string outputDirectory;
 		public string excludedExtensions;
 
-		public List<EncoderLink> encoders = new List<EncoderLink>();
+		[System.NonSerialized()]
+		private string[] _excludedExtensions;
 
-		WorkspaceConfig()
-		{
-		}
+		public List<EncoderLink> encoders = new List<EncoderLink>();
 
 		public void Reset()
 		{
@@ -35,6 +35,12 @@ namespace AssetManager
 
 			outputDirectory = "../Assets";
 			excludedExtensions = "";
+			_excludedExtensions = new string[0];
+		}
+
+		public bool IsExtensionExcluded(string extension)
+		{
+			return _excludedExtensions.Contains(extension);
 		}
 
 		public static WorkspaceConfig Load()
@@ -47,6 +53,8 @@ namespace AssetManager
 					var mySerializer = new XmlSerializer(typeof(WorkspaceConfig));
 					config = (WorkspaceConfig)mySerializer.Deserialize(myFileStream);
 				}
+
+				config._excludedExtensions = config.excludedExtensions.Split(';');
 			}
 			catch (System.Exception)
 			{
