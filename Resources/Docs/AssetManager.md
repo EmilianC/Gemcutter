@@ -7,7 +7,7 @@ This tool allows you to easily prepare your assets for run-time use by the frame
 The workspace folder holds all the raw assets that will eventually be used by the game.
 
 # Encoders
-An Encoder is a DLL that implements the interface provided by `Jewel3D\Resource\Encoder.h`.
+An Encoder is an executable that implements the interface provided by `Jewel3D\Resource\Encoder.h`.
 In the AssetManager, each Encoder is associated with a specific file extension. Assets of that type will be processed using the functions in the Encoder.
 Custom Encoders can be created for game-specific assets (levels, items, dialog-trees etc.), allowing you to easily pack game data.
 
@@ -25,7 +25,7 @@ will use the Encoder associated with that asset to generate a default metaData f
 metaData, the Encoder will be used to validate the integrity of the metaData and update it to the latest version.
 
 Packing the workspace will prepare all assets for use by the game. By default, an output folder called `Assets` will be created adjacent to the Workspace.
-All assets with an associated Encoder will be converted using the DLL and saved to the Assets folder. Any remaining assets are copied 1:1 to the folder.
+All assets with an associated Encoder will be converted and saved to the Assets folder. Any remaining assets are copied 1:1 to the folder.
 The output folder is populated with the same folder structure as the workspace.
 
 In the default `Manual` packing mode, all assets will be processed when a packing operation is started.

@@ -2,11 +2,6 @@
 
 #define CURRENT_VERSION 1
 
-std::unique_ptr<Jwl::Encoder> GetEncoder()
-{
-	return std::make_unique<Encoder>();
-}
-
 Encoder::Encoder()
 	: Jwl::Encoder(CURRENT_VERSION)
 {

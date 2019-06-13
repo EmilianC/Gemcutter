@@ -97,9 +97,9 @@ namespace AssetManager
 			}
 
 			if (encoderBox.Text.Any(x => Path.GetInvalidPathChars().Contains(x)) ||
-				!encoderBox.Text.EndsWith(".dll", StringComparison.InvariantCultureIgnoreCase))
+				!encoderBox.Text.EndsWith(".exe", StringComparison.InvariantCultureIgnoreCase))
 			{
-				statusLog.SetToolTip(status, "The Encoder is not a valid path to a dynamic library.");
+				statusLog.SetToolTip(status, "The Encoder must be an executable.");
 				return false;
 			}
 
@@ -183,7 +183,7 @@ namespace AssetManager
 		{
 			OpenFileDialog dialog = new OpenFileDialog
 			{
-				Filter = "dynamic libraries (*.dll)|*.dll",
+				Filter = "executables (*.exe)|*.exe",
 				FilterIndex = 1,
 				RestoreDirectory = true
 			};

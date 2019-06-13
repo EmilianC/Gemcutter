@@ -1,6 +1,7 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
 #include "ConfigTable.h"
+#include "Jewel3D/Application/CmdArgs.h"
 #include "Jewel3D/Application/FileSystem.h"
 #include "Jewel3D/Application/Logging.h"
 #include "Jewel3D/Utilities/ScopeGuard.h"
@@ -15,10 +16,7 @@ namespace Jwl
 	class Encoder
 	{
 	public:
-		Encoder(unsigned version)
-			: version(version)
-		{
-		}
+		Encoder(unsigned version) : version(version) {}
 		virtual ~Encoder() = default;
 
 		// Loads a .meta file and ensures that it has a valid version number.
@@ -91,19 +89,138 @@ namespace Jwl
 			return true;
 		}
 
+		// Parses the command line arguments of the program and invokes the user-provided Encoder.
+		static bool RunEncoder(Encoder& encoder)
+		{
+			const char* usage = 
+				"Jewel3D asset Encoder.\nUsage:\n"
+				"  Encoder.exe -update -src <file>\n"
+				"  Encoder.exe -pack -src <file> -dest <folder>\n"
+				"Options:\n"
+				"  -pack       Package the file into the destination folder.\n"
+				"  -update     Ensures that the asset's metadata file is up to date.";
+
+			if (HasCommandLineArg("-pack"))
+			{
+				const char* src = nullptr;
+				if (!GetCommandLineArg("-src", src))
+				{
+					Error("Invalid command line parameters: Missing '-src <file>'");
+					Log(usage);
+					return false;
+				}
+
+				const char* dest = nullptr;
+				if (!GetCommandLineArg("-dest", dest))
+				{
+					Error("Invalid command line parameters: Missing '-dest <folder>'");
+					Log(usage);
+					return false;
+				}
+
+				return encoder.Pack(src, dest);
+			}
+			else if (HasCommandLineArg("-update"))
+			{
+				const char* src = nullptr;
+				if (!GetCommandLineArg("-src", src))
+				{
+					Error("Invalid command line parameters: Missing '-src <file>'");
+					Log(usage);
+					return false;
+				}
+
+				return encoder.Update(src);
+			}
+
+			Log(usage);
+			return false;
+		}
+
 		bool ValidateData(const ConfigTable& metadata) const
 		{
 			return Validate(metadata, version);
 		}
 
+		// Update command. Load the meta file and upgrade to the newest version.
+		bool Update(const char* file)
+		{
+			defer { ResetConsoleColor(); };
+
+			const std::string metaFile = std::string(file) + ".meta";
+			if (!FileExists(metaFile))
+			{
+				auto metadata = GetDefault();
+				if (!metadata.Save(metaFile))
+				{
+					Error("Could create a new meta file.");
+					return false;
+				}
+
+				if (!ValidateData(metadata))
+				{
+					return false;
+				}
+
+				return true;
+			}
+
+			ConfigTable metadata;
+			if (!Encoder::LoadMetaData(metaFile, metadata))
+			{
+				return false;
+			}
+
+			ConfigTable upgradedData = metadata;
+			if (!UpgradeData(upgradedData))
+			{
+				return false;
+			}
+
+			// Avoid touching the file if it is not changed.
+			if (metadata != upgradedData)
+			{
+				if (!upgradedData.Save(metaFile))
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+		
+		// Pack command. Write the binary asset into the output folder.
+		bool Pack(const char* src, const char* dest)
+		{
+			defer { ResetConsoleColor(); };
+
+			ConfigTable metadata;
+			if (!Encoder::LoadMetaData(std::string(src) + ".meta", metadata))
+			{
+				return false;
+			}
+
+			if (!ValidateData(metadata))
+			{
+				return false;
+			}
+
+			if (!Convert(src, dest, metadata))
+			{
+				return false;
+			}
+
+			return true;
+		}
+
 		// Returns the default settings for the asset.
 		virtual ConfigTable GetDefault() const = 0;
-
+		
+	protected:
 		// Reads from the source file and output the packed asset to the destination file.
 		// 'metadata' will contain settings of the newest version.
 		virtual bool Convert(std::string_view source, std::string_view destination, const ConfigTable& metadata) const = 0;
 
-	protected:
 		// Ensures that all fields are present and contain valid data.
 		// Validation should be done based on the provided version, which may not be the newest version.
 		virtual bool Validate(const ConfigTable& metadata, unsigned loadedVersion) const = 0;
@@ -112,87 +229,7 @@ namespace Jwl
 		// Upgrading is a sequential process, meaning that you only need to provide code to upgrade from 1->2 and from 2->3, not 1->3.
 		virtual bool Upgrade(ConfigTable& metadata, unsigned loadedVersion) const { return true; };
 
-	private:
-		// The newest version of the asset.
+		// The newest version of the metaData.
 		const unsigned version;
 	};
-}
-
-// Must be implemented to return your derived Encoder.
-std::unique_ptr<Jwl::Encoder> GetEncoder();
-
-extern "C"
-{
-	// Convert command. Write the binary asset into the output folder.
-	__declspec(dllexport) bool __cdecl Convert(const char* src, const char* dest)
-	{
-		defer { Jwl::ResetConsoleColor(); };
-		auto encoder = GetEncoder();
-
-		Jwl::ConfigTable metadata;
-		if (!Jwl::Encoder::LoadMetaData(std::string(src) + ".meta", metadata))
-		{
-			return false;
-		}
-
-		if (!encoder->ValidateData(metadata))
-		{
-			return false;
-		}
-
-		if (!encoder->Convert(src, dest, metadata))
-		{
-			return false;
-		}
-
-		return true;
-	}
-
-	// Update command. Load the meta file and upgrade to the newest version.
-	__declspec(dllexport) bool __cdecl Update(const char* file)
-	{
-		defer { Jwl::ResetConsoleColor(); };
-		auto encoder = GetEncoder();
-
-		const std::string metaFile = std::string(file) + ".meta";
-		if (!Jwl::FileExists(metaFile))
-		{
-			auto metadata = encoder->GetDefault();
-			if (!metadata.Save(metaFile))
-			{
-				Jwl::Error("Could create a new meta file.");
-				return false;
-			}
-
-			if (!encoder->ValidateData(metadata))
-			{
-				return false;
-			}
-
-			return true;
-		}
-
-		Jwl::ConfigTable metadata;
-		if (!Jwl::Encoder::LoadMetaData(metaFile, metadata))
-		{
-			return false;
-		}
-
-		Jwl::ConfigTable upgradedData = metadata;
-		if (!encoder->UpgradeData(upgradedData))
-		{
-			return false;
-		}
-
-		// Avoid touching the file if it is not changed.
-		if (metadata != upgradedData)
-		{
-			if (!upgradedData.Save(metaFile))
-			{
-				return false;
-			}
-		}
-
-		return true;
-	}
 }

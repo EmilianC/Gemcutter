@@ -47,7 +47,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Encoder.cs" />
     <Compile Include="EncoderEntry.cs" />
     <Compile Include="Settings.cs">
       <SubType>Form</SubType>

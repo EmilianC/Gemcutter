@@ -15,11 +15,12 @@ namespace AssetManager
 
 		string inputPath;
 		string outputPath;
+		ConsoleColor state = ConsoleColor.Gray;
 
 		// Automatically refresh the asset directory if there are any changes.
 		FileSystemWatcher watcher;
 		// The actual native-code encoders.
-		Dictionary<string, Encoder> encoders = new Dictionary<string, Encoder>(StringComparer.InvariantCultureIgnoreCase);
+		Dictionary<string, Process> encoders = new Dictionary<string, Process>(StringComparer.InvariantCultureIgnoreCase);
 
 		ImageList treeViewIcons = new ImageList();
 
@@ -124,8 +125,17 @@ namespace AssetManager
 
 				var outDir = Path.GetDirectoryName(file.Replace(inputPath, outputPath)) + Path.DirectorySeparatorChar;
 
-				if (!encoders[extension].Convert(file, outDir))
+				var process = encoders[extension];
+				process.StartInfo.Arguments = $"-pack -src \"{file}\" -dest \"{outDir}\\\"";
+				process.Start();
+				process.BeginOutputReadLine();
+				process.WaitForExit();
+				process.CancelOutputRead();
+
+				if (process.ExitCode != 0)
+				{
 					throw new Exception($"Failed to encode: {logName}");
+				}
 			}
 			else
 			{
@@ -161,8 +171,17 @@ namespace AssetManager
 				string logName = file.Substring(inputPath.Length + 1);
 				Log($"Checking: {logName}");
 
-				if (!encoders[extension].Update(file))
+				var process = encoders[extension];
+				process.StartInfo.Arguments = $"-update -src \"{file}\"";
+				process.Start();
+				process.BeginOutputReadLine();
+				process.WaitForExit();
+				process.CancelOutputRead();
+
+				if (process.ExitCode != 0)
+				{
 					throw new Exception($"Failed to update: {logName}");
+				}
 			}
 		}
 
@@ -372,14 +391,45 @@ namespace AssetManager
 
 			try
 			{
-				foreach (var dll in config.encoders)
-					encoders.Add(dll.extension, new Encoder(Environment.ExpandEnvironmentVariables(dll.encoder)));
+				foreach (var link in config.encoders)
+				{
+					var process = new Process();
+					process.StartInfo.FileName = Environment.ExpandEnvironmentVariables(link.encoder);
+					process.StartInfo.UseShellExecute = false;
+					process.StartInfo.RedirectStandardOutput = true;
+					process.StartInfo.CreateNoWindow = true;
+					process.OutputDataReceived += (sender, args) => LogEncoder(args.Data);
+
+					encoders.Add(link.extension, process);
+				}
 			}
 			catch (ArgumentException e)
 			{
 				Log(e.Message, ConsoleColor.Red);
 				encoders.Clear();
 			}
+		}
+
+		private void LogEncoder(string text)
+		{
+			if (text == null)
+				return;
+
+			// These are the prefixes used by Jewel3D\Application\Logging.cpp.
+			if (text.StartsWith("Log:"))
+			{
+				state = ConsoleColor.Gray;
+			}
+			else if (text.StartsWith("WARNING:"))
+			{
+				state = ConsoleColor.Yellow;
+			}
+			else if (text.StartsWith("ERROR:"))
+			{
+				state = ConsoleColor.Red;
+			}
+
+			Log(text, state);
 		}
 
 		private void Log(string text, ConsoleColor color = ConsoleColor.Gray)

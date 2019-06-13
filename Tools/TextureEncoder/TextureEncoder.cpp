@@ -5,11 +5,6 @@
 
 #define CURRENT_VERSION 2
 
-std::unique_ptr<Jwl::Encoder> GetEncoder()
-{
-	return std::make_unique<TextureEncoder>();
-}
-
 TextureEncoder::TextureEncoder()
 	: Jwl::Encoder(CURRENT_VERSION)
 {
