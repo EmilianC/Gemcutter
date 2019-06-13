@@ -38,7 +38,6 @@ namespace AssetManager
 				// Otherwise we can start the UI normally and route output to the visual textBox.
 				Console.SetOut(new RichTextBoxStreamWriter(builder.GetOutput()));
 
-				builder.UpdateWorkspace();
 				Application.Run(builder);
 			}
 		}

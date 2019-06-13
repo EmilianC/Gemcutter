@@ -203,6 +203,7 @@ namespace AssetManager
 
 			ButtonPack.Enabled = false;
 			ButtonMode.Enabled = false;
+			ButtonUpdate.Enabled = false;
 			ButtonSettings.Enabled = false;
 
 			// Duplicate the directory structure in the output folder.
@@ -232,6 +233,7 @@ namespace AssetManager
 			{
 				ButtonPack.Enabled = true;
 				ButtonMode.Enabled = true;
+				ButtonUpdate.Enabled = true;
 				ButtonSettings.Enabled = true;
 
 				Icon = Properties.Resources.JewelIcon;
@@ -428,11 +430,13 @@ namespace AssetManager
 			case BuildMode.Auto:
 				ButtonMode.Text = "Mode: Auto";
 				ButtonPack.Enabled = false;
+				ButtonUpdate.Enabled = false;
 				break;
 
 			case BuildMode.Manual:
 				ButtonMode.Text = "Mode: Manual";
 				ButtonPack.Enabled = true;
+				ButtonUpdate.Enabled = true;
 				break;
 			}
 
@@ -442,6 +446,7 @@ namespace AssetManager
 		private void buttonSettings_Click(object sender, EventArgs e)
 		{
 			ButtonPack.Enabled = false;
+			ButtonUpdate.Enabled = false;
 			ButtonSettings.Enabled = false;
 
 			var settingsForm = new Settings();
@@ -450,6 +455,7 @@ namespace AssetManager
 			settingsForm.FormClosed += delegate
 			{
 				ButtonPack.Enabled = true;
+				ButtonUpdate.Enabled = true;
 				ButtonSettings.Enabled = true;
 
 				// Refresh settings.
@@ -464,6 +470,11 @@ namespace AssetManager
 		private void buttonWorkspaceOpen_Click(object sender, EventArgs e)
 		{
 			Process.Start("explorer.exe", Directory.GetCurrentDirectory());
+		}
+
+		private void ButtonUpdate_Click(object sender, EventArgs e)
+		{
+			UpdateWorkspace();
 		}
 
 		private void ButtonPack_Click(object sender, EventArgs e)

@@ -40,6 +40,7 @@
 			this.ButtonSettings = new System.Windows.Forms.Button();
 			this.buttonEditMetadata = new System.Windows.Forms.Button();
 			this.ButtonMode = new System.Windows.Forms.Button();
+			this.ButtonUpdate = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// ButtonPack
@@ -158,7 +159,7 @@
 			this.ButtonSettings.FlatAppearance.BorderSize = 0;
 			this.ButtonSettings.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(67)))), ((int)(((byte)(67)))), ((int)(((byte)(67)))));
 			this.ButtonSettings.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			this.ButtonSettings.Location = new System.Drawing.Point(614, 11);
+			this.ButtonSettings.Location = new System.Drawing.Point(498, 11);
 			this.ButtonSettings.Name = "ButtonSettings";
 			this.ButtonSettings.Size = new System.Drawing.Size(24, 24);
 			this.ButtonSettings.TabIndex = 23;
@@ -185,7 +186,7 @@
 			this.ButtonMode.FlatAppearance.BorderSize = 0;
 			this.ButtonMode.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
 			this.ButtonMode.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-			this.ButtonMode.Location = new System.Drawing.Point(644, 11);
+			this.ButtonMode.Location = new System.Drawing.Point(528, 11);
 			this.ButtonMode.Name = "ButtonMode";
 			this.ButtonMode.Size = new System.Drawing.Size(110, 24);
 			this.ButtonMode.TabIndex = 29;
@@ -193,12 +194,27 @@
 			this.ButtonMode.UseVisualStyleBackColor = false;
 			this.ButtonMode.Click += new System.EventHandler(this.ButtonMode_Click);
 			// 
+			// ButtonUpdate
+			// 
+			this.ButtonUpdate.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(85)))), ((int)(((byte)(85)))), ((int)(((byte)(85)))));
+			this.ButtonUpdate.FlatAppearance.BorderSize = 0;
+			this.ButtonUpdate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.ButtonUpdate.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+			this.ButtonUpdate.Location = new System.Drawing.Point(644, 11);
+			this.ButtonUpdate.Name = "ButtonUpdate";
+			this.ButtonUpdate.Size = new System.Drawing.Size(110, 24);
+			this.ButtonUpdate.TabIndex = 30;
+			this.ButtonUpdate.Text = "Update";
+			this.ButtonUpdate.UseVisualStyleBackColor = false;
+			this.ButtonUpdate.Click += new System.EventHandler(this.ButtonUpdate_Click);
+			// 
 			// Manager
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(48)))));
 			this.ClientSize = new System.Drawing.Size(884, 641);
+			this.Controls.Add(this.ButtonUpdate);
 			this.Controls.Add(this.ButtonMode);
 			this.Controls.Add(this.buttonEditMetadata);
 			this.Controls.Add(this.buttonCollapse);
@@ -233,6 +249,7 @@
 		private System.Windows.Forms.Button buttonCollapse;
 		private System.Windows.Forms.Button buttonEditMetadata;
 		private System.Windows.Forms.Button ButtonMode;
+		private System.Windows.Forms.Button ButtonUpdate;
 	}
 }
 
