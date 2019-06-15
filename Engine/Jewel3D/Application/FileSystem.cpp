@@ -107,15 +107,46 @@ namespace Jwl
 
 	bool MakeDirectory(std::string_view directory)
 	{
-		if (_mkdir(directory.data()) == ENOENT)
+		if (directory.empty())
 		{
-			Error("FileSystem: Could not create directory due to an invalid directory path.");
+			Error("FileSystem: Could not create directory: Empty path.");
 			return false;
 		}
-		else
+
+		if (directory.size() > MAX_PATH - 1)
 		{
-			return true;
+			Error("FileSystem: Could not create directory: Path is too long.");
+			return false;
 		}
+
+		char buffer[MAX_PATH];
+		memcpy(buffer, directory.data(), sizeof(char) * directory.size());
+		buffer[directory.size()] = '\0';
+
+		for (unsigned i = 1; i < directory.size() - 1; ++i)
+		{
+			if (buffer[i] == '\\' || buffer[i] == '/')
+			{
+				char saved = buffer[i + 1];
+				buffer[i + 1] = '\0';
+
+				if (_mkdir(buffer) == ENOENT)
+				{
+					Error("FileSystem: Could not create directory: Invalid path.");
+					return false;
+				}
+
+				buffer[i + 1] = saved;
+			}
+		}
+
+		if (_mkdir(buffer) == ENOENT)
+		{
+			Error("FileSystem: Could not create directory: Invalid path.");
+			return false;
+		}
+
+		return true;
 	}
 
 	std::string GetCurrentDirectory()
