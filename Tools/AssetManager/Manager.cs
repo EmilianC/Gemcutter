@@ -12,6 +12,7 @@ namespace AssetManager
 	public partial class Manager : Form
 	{
 		WorkspaceConfig config = WorkspaceConfig.Load();
+		FileCache cache = FileCache.Load();
 
 		string inputPath;
 		string outputPath;
@@ -34,6 +35,8 @@ namespace AssetManager
 		public Manager()
 		{
 			InitializeComponent();
+
+			FormClosing += delegate { cache.Save(); };
 
 			inputPath = Directory.GetCurrentDirectory();
 			outputPath = Path.GetFullPath(Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + config.outputDirectory);
@@ -114,8 +117,16 @@ namespace AssetManager
 			RefreshWorkspace();
 		}
 
+		public void SaveFileCache()
+		{
+			cache.Save();
+		}
+
 		private void PackFile(string file)
 		{
+			if (!cache.ShouldPack(file))
+				return;
+
 			string logName = file.Substring(inputPath.Length + 1);
 			string extension = Path.GetExtension(file).Substring(1);
 
@@ -144,21 +155,8 @@ namespace AssetManager
 
 				var outFile = file.Replace(inputPath, outputPath);
 
-				// Don't bother copying the file if it already exists, unchanged, in the destination folder.
-				if (File.Exists(outFile))
-				{
-					var destinationFileInfo = new FileInfo(outFile);
-					var sourceFileInfo = new FileInfo(file);
-
-					if (destinationFileInfo.Length == sourceFileInfo.Length &&
-						File.GetLastWriteTime(outFile) == File.GetLastWriteTime(file))
-						return;
-
-					File.Delete(outFile);
-				}
-
 				Log($"Copying:  {logName}");
-				File.Copy(file, outFile);
+				File.Copy(file, outFile, true);
 			}
 		}
 

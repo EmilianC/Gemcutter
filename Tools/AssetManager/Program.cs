@@ -31,6 +31,8 @@ namespace AssetManager
 				{
 					if (!builder.PackWorkspace())
 						Environment.ExitCode = 1;
+
+					builder.SaveFileCache();
 				}
 			}
 			else

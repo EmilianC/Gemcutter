@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EncoderEntry.cs" />
+    <Compile Include="FileCache.cs" />
     <Compile Include="Settings.cs">
       <SubType>Form</SubType>
     </Compile>
