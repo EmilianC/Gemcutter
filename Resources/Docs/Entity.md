@@ -1,5 +1,8 @@
 # Dynamic Queries
-A Query will only return Active Components and Entities. Any Component or Tag can be part of a query.
+A query will only return active Components and Entities. Any Component or Tag can be part of a query.
+
+Queries are implemented in a LINQ-style fashion. This means that they are very efficient (zero dynamic allocations),
+but also that Components/Tags of the queried types should not be created or deleted during the loop.
 
 # Examples
 ```cpp
