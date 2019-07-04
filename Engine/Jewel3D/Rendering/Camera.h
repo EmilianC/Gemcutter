@@ -45,11 +45,11 @@ namespace Jwl
 		void SetPerspective(float fovyDegrees, float aspectRatio, float zNear, float zFar);
 
 		// Sets the camera to Orthographic mode with the current settings.
-		void SetOrthograpic();
+		void SetOrthographic();
 		// Sets the camera to Orthographic mode, overriding the settings.
-		void SetOrthograpic(float left, float right, float top, float bottom, float zNear, float zFar);
+		void SetOrthographic(float left, float right, float top, float bottom, float zNear, float zFar);
 		// Sets the camera to Orthographic mode, overriding the settings to match the viewport's dimensions.
-		void SetOrthograpic(const Viewport& viewport, float zNear, float zFar);
+		void SetOrthographic(const Viewport& viewport, float zNear, float zFar);
 
 		bool IsPerspective() const;
 		bool IsOrthographic() const;

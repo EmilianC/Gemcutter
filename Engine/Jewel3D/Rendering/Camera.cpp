@@ -30,7 +30,7 @@ namespace Jwl
 	{
 		CreateUniformBuffer();
 		CreateUniformHandles();
-		SetOrthograpic(_left, _right, _top, _bottom, _zNear, _zFar);
+		SetOrthographic(_left, _right, _top, _bottom, _zNear, _zFar);
 	}
 
 	Camera& Camera::operator=(const Camera& other)
@@ -203,7 +203,7 @@ namespace Jwl
 		uniformInvProj.Set(invProjection);
 	}
 
-	void Camera::SetOrthograpic()
+	void Camera::SetOrthographic()
 	{
 		isPerspective = false;
 
@@ -214,7 +214,7 @@ namespace Jwl
 		uniformInvProj.Set(invProjection);
 	}
 
-	void Camera::SetOrthograpic(float _left, float _right, float _top, float _bottom, float _zNear, float _zFar)
+	void Camera::SetOrthographic(float _left, float _right, float _top, float _bottom, float _zNear, float _zFar)
 	{
 		isPerspective = false;
 		left = _left;
@@ -231,7 +231,7 @@ namespace Jwl
 		uniformInvProj.Set(invProjection);
 	}
 
-	void Camera::SetOrthograpic(const Viewport& viewport, float _zNear, float _zFar)
+	void Camera::SetOrthographic(const Viewport& viewport, float _zNear, float _zFar)
 	{
 		isPerspective = false;
 		left = static_cast<float>(viewport.x);
