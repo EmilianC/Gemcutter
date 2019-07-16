@@ -36,8 +36,6 @@ namespace AssetManager
 		{
 			InitializeComponent();
 
-			FormClosing += delegate { cache.Save(); };
-
 			inputPath = Directory.GetCurrentDirectory();
 			outputPath = Path.GetFullPath(Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + config.outputDirectory);
 
@@ -62,6 +60,12 @@ namespace AssetManager
 				IncludeSubdirectories = true,
 				EnableRaisingEvents = true,
 				NotifyFilter = NotifyFilters.FileName | NotifyFilters.DirectoryName | NotifyFilters.LastWrite
+			};
+
+			FormClosing += delegate
+			{
+				watcher.Dispose();
+				cache.Save();
 			};
 
 			watcher.Renamed += (s, e) =>
@@ -89,6 +93,10 @@ namespace AssetManager
 
 				RefreshWorkspaceDispatch();
 
+				// Filter out folder names.
+				if (!File.Exists(e.FullPath))
+					return;
+
 				LoadEncoders();
 				UpdateFileDispatch(e.FullPath);
 			};
@@ -98,7 +106,6 @@ namespace AssetManager
 				if (buildMode == BuildMode.Manual)
 					return;
 
-				// Filter out folder names.
 				if (!File.Exists(e.FullPath))
 					return;
 
