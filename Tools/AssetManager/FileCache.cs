@@ -8,8 +8,16 @@ using System.Xml;
 
 namespace AssetManager
 {
+	public struct TimeStamps
+	{
+		// Last-write time in ticks for the asset.
+		public long fileTime;
+		// Last-write time in ticks for the metadata file.
+		public long metaTime;
+	};
+
 	[XmlRoot("Cache")]
-	public class FileCacheDictionary : Dictionary<string, long>, IXmlSerializable
+	public class FileCacheDictionary : Dictionary<string, TimeStamps>, IXmlSerializable
 	{
 		public XmlSchema GetSchema() { return null; }
 
@@ -22,12 +30,14 @@ namespace AssetManager
 			while (reader.NodeType != XmlNodeType.EndElement)
 			{
 				string key = reader.GetAttribute("File");
-				string value = reader.GetAttribute("LastWriteTime");
+				string fileTime = reader.GetAttribute("LastFileWriteTime");
+				string metaTime = reader.GetAttribute("LastMetaWriteTime");
 
-				long time;
-				if (long.TryParse(value, out time))
+				TimeStamps times;
+				if (long.TryParse(fileTime, out times.fileTime) &&
+					long.TryParse(metaTime, out times.metaTime))
 				{
-					Add(key, time);
+					Add(key, times);
 				}
 
 				reader.Read();
@@ -40,7 +50,8 @@ namespace AssetManager
 			{
 				writer.WriteStartElement("Cache");
 				writer.WriteAttributeString("File", key.ToString());
-				writer.WriteAttributeString("LastWriteTime", this[key].ToString());
+				writer.WriteAttributeString("LastFileWriteTime", this[key].fileTime.ToString());
+				writer.WriteAttributeString("LastMetaWriteTime", this[key].metaTime.ToString());
 				writer.WriteEndElement();
 			}
 		}
@@ -53,23 +64,27 @@ namespace AssetManager
 
 		public bool ShouldPack(string file)
 		{
-			var info = new FileInfo(file);
+			TimeStamps item;
+			item.fileTime = GetLastWriteTime(file);
+			item.metaTime = GetLastWriteTime(file + ".meta");
 
 			if (cache.ContainsKey(file))
 			{
-				long cacheTime = cache[file];
-				if (cacheTime == info.LastWriteTime.Ticks)
+				var cached = cache[file];
+
+				if (item.fileTime == cached.fileTime &&
+					item.metaTime == cached.metaTime)
 				{
 					return false;
 				}
 				else
 				{
-					cache[file] = info.LastWriteTime.Ticks;
+					cache[file] = item;
 					return true;
 				}
 			}
 
-			cache.Add(file, info.LastWriteTime.Ticks);
+			cache.Add(file, item);
 			return true;
 		}
 
@@ -102,6 +117,16 @@ namespace AssetManager
 			{
 				serializer.Serialize(stream, this);
 			}
+		}
+
+		private long GetLastWriteTime(string file)
+		{
+			if (!File.Exists(file))
+				return 0;
+
+			var fileInfo = new FileInfo(file);
+
+			return fileInfo.LastWriteTime.Ticks;
 		}
 	}
 }
