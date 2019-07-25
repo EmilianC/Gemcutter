@@ -192,7 +192,7 @@ namespace Jwl
 	{
 		ASSERT(!isConnected, "Network is already connected.");
 
-		SOCKET TempSock = static_cast<SOCKET>(SOCKET_ERROR);
+		auto TempSock = static_cast<SOCKET>(SOCKET_ERROR);
 
 		TempSock = accept(socketId, NULL, NULL);
 		if (TempSock == SOCKET_ERROR)

@@ -24,7 +24,7 @@ namespace Jwl
 		ParticleBuffer& operator=(const ParticleBuffer&);
 		~ParticleBuffer();
 
-		void SetBuffers(unsigned numParticles, EnumFlags<ParticleBuffers> requirements);
+		void SetBuffers(unsigned numParticles, EnumFlags<ParticleBuffers> buffers);
 		void Unload();
 		// Uploads data to the GPU buffers.
 		void Update(unsigned numParticles);

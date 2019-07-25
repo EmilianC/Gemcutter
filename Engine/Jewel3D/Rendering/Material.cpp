@@ -54,7 +54,7 @@ namespace Jwl
 
 		// Deep copy the buffers.
 		buffers.Clear();
-		for (auto bufferSlot : other.buffers.GetAll())
+		for (const auto& bufferSlot : other.buffers.GetAll())
 		{
 			auto newBuff = UniformBuffer::MakeNew();
 			newBuff->Copy(*bufferSlot.buffer);

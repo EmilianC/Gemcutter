@@ -189,14 +189,14 @@ namespace Jwl
 		UnBind();
 	}
 
-	void RenderPass::RenderInstanced(const Entity& entity, unsigned count)
+	void RenderPass::RenderInstanced(const Entity& instance, unsigned count)
 	{
-		if (!entity.IsEnabled() || count == 0)
+		if (!instance.IsEnabled() || count == 0)
 		{
 			return;
 		}
 
-		auto* material = entity.Try<Material>();
+		auto* material = instance.Try<Material>();
 		if (!material || !material->IsEnabled())
 		{
 			return;
@@ -224,7 +224,7 @@ namespace Jwl
 		normalMatrix.Set(mat4::Identity);
 		transformBuffer.Bind(static_cast<unsigned>(UniformBufferSlot::Model));
 
-		auto& mesh = entity.Get<Mesh>();
+		auto& mesh = instance.Get<Mesh>();
 		if (mesh.IsComponentEnabled())
 		{
 			auto& vertexArray = mesh.array;

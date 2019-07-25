@@ -883,7 +883,7 @@ namespace Jwl
 			{
 				std::string name;
 				std::string value;
-				GLenum type;
+				GLenum type = GL_NONE;
 			};
 
 			std::vector<UniformMember> uniforms;

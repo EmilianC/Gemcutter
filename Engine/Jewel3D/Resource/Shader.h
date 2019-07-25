@@ -155,6 +155,7 @@ namespace Jwl
 		// Used to identify the content of a Program block.
 		enum class BlockType : unsigned
 		{
+			None		= 0,
 			Attributes	= 1,
 			Uniforms	= 2,
 			Samplers	= 4,
@@ -168,7 +169,7 @@ namespace Jwl
 		{
 			Block(std::string_view str) : source(str) {}
 
-			BlockType type;
+			BlockType type = BlockType::None;
 			std::string_view source;
 			size_t start = 0;
 			size_t end = 0;

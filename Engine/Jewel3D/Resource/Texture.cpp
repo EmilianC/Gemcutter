@@ -101,7 +101,7 @@ namespace Jwl
 			const unsigned dataFormat = CountChannels(format) == 3 ? GL_RGB : GL_RGBA;
 			if (isCubeMap)
 			{
-				unsigned char* image = static_cast<unsigned char*>(malloc(sizeof(unsigned char) * textureSize * 6));
+				auto* image = static_cast<unsigned char*>(malloc(sizeof(unsigned char) * textureSize * 6));
 				defer{ free(image); };
 
 				fread(image, sizeof(unsigned char), textureSize * 6, fontFile);
@@ -126,7 +126,7 @@ namespace Jwl
 			}
 			else
 			{
-				unsigned char* image = static_cast<unsigned char*>(malloc(sizeof(unsigned char) * textureSize));
+				auto* image = static_cast<unsigned char*>(malloc(sizeof(unsigned char) * textureSize));
 				defer{ free(image); };
 
 				fread(image, sizeof(unsigned char), textureSize, fontFile);
