@@ -300,6 +300,13 @@ namespace Jwl
 		return anisotropicLevel;
 	}
 
+	float Texture::GetAspectRatio() const
+	{
+		ASSERT(hTex != 0, "A texture must be loaded to call this function.");
+
+		return static_cast<float>(width) / static_cast<float>(height);
+	}
+
 	bool Texture::IsCubeMap() const
 	{
 		ASSERT(hTex != 0, "A texture must be loaded to call this function.");

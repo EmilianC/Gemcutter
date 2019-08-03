@@ -46,6 +46,7 @@ namespace Jwl
 		TextureFilter GetFilter() const;
 		TextureWraps GetWrap() const;
 		float GetAnisotropicLevel() const;
+		float GetAspectRatio() const;
 
 		bool IsCubeMap() const;
 
