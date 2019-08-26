@@ -1,0 +1,31 @@
+# http://EditorConfig.org
+root = true
+
+# Global
+[*]
+charset = utf-8
+indent_style = tab
+indent_size = 4
+tab_width = 4
+
+# c++, c#
+[*.{c,cs,cpp,h,inl}]
+curly_bracket_next_line=true
+indent_brace_style=Allman
+insert_final_newline=true
+trim_trailing_whitespace=true
+
+# MSBuild
+[*.{csproj,vcxproj}]
+indent_style = space
+indent_size = 2
+
+# Config files
+[*.{config,resx,xml,cache,workspace}]
+indent_style = space
+indent_size = 2
+
+# Batch files
+[*.cmd]
+indent_style = space
+indent_size = 4
