@@ -16,7 +16,7 @@ namespace Jwl::Meta
 	template<bool... tail> struct all_of<true, tail...> : all_of<tail...> {};
 	template<bool... tail> struct all_of<false, tail...> : std::false_type {};
 	template<> struct all_of<> : std::true_type {};
-		
+
 	template<bool... b>
 	constexpr bool all_of_v = all_of<b...>::value;
 
@@ -66,8 +66,8 @@ namespace Jwl::Meta
 
 		constexpr unsigned ComputeCRC(const char* p, unsigned len, unsigned crc)
 		{
-			return len ?
-				ComputeCRC(p + 1, len - 1, (crc >> 8) ^ CRC::table[(crc & 0xFF) ^ *p])
+			return len
+				? ComputeCRC(p + 1, len - 1, (crc >> 8) ^ CRC::table[(crc & 0xFF) ^ *p])
 				: crc;
 		}
 

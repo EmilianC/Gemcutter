@@ -33,8 +33,8 @@ namespace Jwl
 		vec3 minBounds;
 		vec3 maxBounds;
 
-		bool hasUvs		 = false;
-		bool hasNormals	 = false;
+		bool hasUvs = false;
+		bool hasNormals = false;
 		bool hasTangents = false;
 	};
 }

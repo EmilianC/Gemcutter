@@ -115,7 +115,7 @@ bool TextureEncoder::Validate(const Jwl::ConfigTable& metadata, unsigned loadedV
 			Jwl::Error("Missing \"s_rgb\" value.");
 			return false;
 		}
-		
+
 		if (metadata.GetSize() != 7)
 		{
 			Jwl::Error("Incorrect number of value entries.");

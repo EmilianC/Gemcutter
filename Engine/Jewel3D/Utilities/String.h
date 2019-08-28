@@ -15,7 +15,7 @@ namespace Jwl
 
 	// Removes all instances of comments, "// ..." and "/* ... */", from the string.
 	void RemoveComments(std::string& str);
-	
+
 	// Performs standard vsnprintf formatting on the argument list, up to 1024 characters.
 	std::string FormatString(const char* format, ...);
 

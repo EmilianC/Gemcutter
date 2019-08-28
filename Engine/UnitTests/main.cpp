@@ -11,7 +11,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	CreateConsoleWindow();
 
 	int result = Catch::Session().run(GetArgc(), GetArgv());
-	
+
 	FocusConsoleWindow();
 	if (result != 0)
 	{

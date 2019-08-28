@@ -200,7 +200,7 @@ namespace Jwl
 				requirements |= functor->GetRequirements();
 			}
 
-			requiresAgeRatio = 
+			requiresAgeRatio =
 				!requirements.Has(ParticleBuffers::Size) ||
 				!requirements.Has(ParticleBuffers::Color) ||
 				!requirements.Has(ParticleBuffers::Alpha);
@@ -279,7 +279,7 @@ namespace Jwl
 		if (!localSpace)
 		{
 			vec3 transform = owner.GetWorldTransform().GetTranslation();
-		
+
 			for (unsigned i = initialCount; i < numCurrentParticles; ++i)
 			{
 				data.positions[i] += transform;

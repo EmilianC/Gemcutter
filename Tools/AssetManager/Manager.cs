@@ -48,8 +48,7 @@ namespace AssetManager
 
 			treeViewAssets.DoubleClick += delegate { OpenFile(GetSelectedItem()); };
 
-			treeViewAssets.AfterSelect += delegate
-			{
+			treeViewAssets.AfterSelect += delegate {
 				buttonEditMetadata.Enabled = File.Exists(GetSelectedItem() + ".meta");
 			};
 
@@ -62,14 +61,12 @@ namespace AssetManager
 				NotifyFilter = NotifyFilters.FileName | NotifyFilters.DirectoryName | NotifyFilters.LastWrite
 			};
 
-			FormClosing += delegate
-			{
+			FormClosing += delegate {
 				watcher.Dispose();
 				cache.Save();
 			};
 
-			watcher.Renamed += (s, e) =>
-			{
+			watcher.Renamed += (s, e) => {
 				RefreshWorkspaceDispatch();
 
 				if (File.Exists(e.OldFullPath + ".meta"))
@@ -78,16 +75,14 @@ namespace AssetManager
 				}
 			};
 
-			watcher.Deleted += (s, e) =>
-			{
+			watcher.Deleted += (s, e) => {
 				if (e.Name.EndsWith(".meta", StringComparison.InvariantCultureIgnoreCase))
 					return;
 
 				RefreshWorkspaceDispatch();
 			};
 
-			watcher.Created += (s, e) =>
-			{
+			watcher.Created += (s, e) => {
 				if (e.Name.EndsWith(".meta", StringComparison.InvariantCultureIgnoreCase))
 					return;
 
@@ -101,8 +96,7 @@ namespace AssetManager
 				UpdateFileDispatch(e.FullPath);
 			};
 
-			watcher.Changed += (s, e) =>
-			{
+			watcher.Changed += (s, e) => {
 				if (buildMode == BuildMode.Manual)
 					return;
 
@@ -380,6 +374,7 @@ namespace AssetManager
 				path.Add(node.Name);
 				node = node.Parent;
 			}
+
 			path.Reverse();
 
 			return path.ToArray();
@@ -507,8 +502,7 @@ namespace AssetManager
 			var settingsForm = new Settings();
 			settingsForm.Show();
 			settingsForm.BringToFront();
-			settingsForm.FormClosed += delegate
-			{
+			settingsForm.FormClosed += delegate {
 				ButtonPack.Enabled = true;
 				ButtonUpdate.Enabled = true;
 				ButtonSettings.Enabled = true;

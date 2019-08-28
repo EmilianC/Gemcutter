@@ -296,7 +296,7 @@ namespace Jwl
 			}
 		}
 
-		defines.push_back({ std::string(name), "" });
+		defines.push_back({std::string(name), ""});
 	}
 
 	bool ShaderVariantControl::IsDefined(std::string_view name) const
@@ -636,7 +636,7 @@ namespace Jwl
 		return true;
 	}
 
-	bool Shader::ParseAttributes(const Block &block)
+	bool Shader::ParseAttributes(const Block& block)
 	{
 		ASSERT(block.type == BlockType::Attributes, "Expected an Attribute block type.");
 
@@ -670,7 +670,7 @@ namespace Jwl
 
 	bool Shader::ParseShader(const Block& block)
 	{
-		std::string *output = nullptr;
+		std::string* output = nullptr;
 		switch (block.type)
 		{
 		case BlockType::Vertex:
@@ -925,17 +925,17 @@ namespace Jwl
 
 				uniform.name = line.substr(nameStart + 1, nameEnd - nameStart);
 
-				if (StartsWith(line, "float"))			uniform.type = GL_FLOAT;
-				else if (StartsWith(line, "vec2"))		uniform.type = GL_FLOAT_VEC2;
-				else if (StartsWith(line, "vec3"))		uniform.type = GL_FLOAT_VEC3;
-				else if (StartsWith(line, "vec4"))		uniform.type = GL_FLOAT_VEC4;
-				else if (StartsWith(line, "mat4"))		uniform.type = GL_FLOAT_MAT4;
-				else if (StartsWith(line, "mat3"))		uniform.type = GL_FLOAT_MAT3;
-				else if (StartsWith(line, "mat2"))		uniform.type = GL_FLOAT_MAT2;
-				else if (StartsWith(line, "int"))		uniform.type = GL_INT;
-				else if (StartsWith(line, "uint"))		uniform.type = GL_UNSIGNED_INT;
-				else if (StartsWith(line, "bool"))		uniform.type = GL_BOOL;
-				else if (StartsWith(line, "double"))	uniform.type = GL_DOUBLE;
+				if (StartsWith(line, "float"))       uniform.type = GL_FLOAT;
+				else if (StartsWith(line, "vec2"))   uniform.type = GL_FLOAT_VEC2;
+				else if (StartsWith(line, "vec3"))   uniform.type = GL_FLOAT_VEC3;
+				else if (StartsWith(line, "vec4"))   uniform.type = GL_FLOAT_VEC4;
+				else if (StartsWith(line, "mat4"))   uniform.type = GL_FLOAT_MAT4;
+				else if (StartsWith(line, "mat3"))   uniform.type = GL_FLOAT_MAT3;
+				else if (StartsWith(line, "mat2"))   uniform.type = GL_FLOAT_MAT2;
+				else if (StartsWith(line, "int"))    uniform.type = GL_INT;
+				else if (StartsWith(line, "uint"))   uniform.type = GL_UNSIGNED_INT;
+				else if (StartsWith(line, "bool"))   uniform.type = GL_BOOL;
+				else if (StartsWith(line, "double")) uniform.type = GL_DOUBLE;
 				else
 				{
 					Error("Uniform member ( %s ) has an unsupported type.", uniform.name.c_str());
@@ -963,17 +963,17 @@ namespace Jwl
 			{
 				switch (uniform.type)
 				{
-				case GL_FLOAT:			buffer->AddUniform<float>(uniform.name); break;
-				case GL_FLOAT_VEC2:		buffer->AddUniform<vec2>(uniform.name); break;
-				case GL_FLOAT_VEC3:		buffer->AddUniform<vec3>(uniform.name); break;
-				case GL_FLOAT_VEC4:		buffer->AddUniform<vec4>(uniform.name); break;
-				case GL_FLOAT_MAT4:		buffer->AddUniform<mat4>(uniform.name); break;
-				case GL_FLOAT_MAT3:		buffer->AddUniform<mat3>(uniform.name); break;
-				case GL_FLOAT_MAT2:		buffer->AddUniform<mat2>(uniform.name); break;
-				case GL_INT:			buffer->AddUniform<int>(uniform.name); break;
-				case GL_UNSIGNED_INT:	buffer->AddUniform<unsigned>(uniform.name); break;
-				case GL_BOOL:			buffer->AddUniform<bool>(uniform.name); break;
-				case GL_DOUBLE:			buffer->AddUniform<double>(uniform.name); break;
+				case GL_FLOAT:        buffer->AddUniform<float>(uniform.name); break;
+				case GL_FLOAT_VEC2:   buffer->AddUniform<vec2>(uniform.name); break;
+				case GL_FLOAT_VEC3:   buffer->AddUniform<vec3>(uniform.name); break;
+				case GL_FLOAT_VEC4:   buffer->AddUniform<vec4>(uniform.name); break;
+				case GL_FLOAT_MAT4:   buffer->AddUniform<mat4>(uniform.name); break;
+				case GL_FLOAT_MAT3:   buffer->AddUniform<mat3>(uniform.name); break;
+				case GL_FLOAT_MAT2:   buffer->AddUniform<mat2>(uniform.name); break;
+				case GL_INT:          buffer->AddUniform<int>(uniform.name); break;
+				case GL_UNSIGNED_INT: buffer->AddUniform<unsigned>(uniform.name); break;
+				case GL_BOOL:         buffer->AddUniform<bool>(uniform.name); break;
+				case GL_DOUBLE:       buffer->AddUniform<double>(uniform.name); break;
 				}
 			}
 			buffer->InitBuffer();

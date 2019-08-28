@@ -96,25 +96,25 @@ namespace Jwl
 		free(rotations);
 		free(ageRatios);
 
-		positions	= nullptr;
-		velocities	= nullptr;
-		ages		= nullptr;
-		lifetimes	= nullptr;
-		sizes		= nullptr;
-		colors		= nullptr;
-		alphas		= nullptr;
-		rotations	= nullptr;
-		ageRatios	= nullptr;
+		positions  = nullptr;
+		velocities = nullptr;
+		ages       = nullptr;
+		lifetimes  = nullptr;
+		sizes      = nullptr;
+		colors     = nullptr;
+		alphas     = nullptr;
+		rotations  = nullptr;
+		ageRatios  = nullptr;
 	}
 
 	void ParticleBuffer::SetBuffers(unsigned _numParticles, EnumFlags<ParticleBuffers> _buffers)
 	{
 		if (numParticles != _numParticles)
 		{
-			positions	= static_cast<vec3*>(realloc(positions, sizeof(vec3) * _numParticles));
-			velocities	= static_cast<vec3*>(realloc(velocities, sizeof(vec3) * _numParticles));
-			ages		= static_cast<float*>(realloc(ages, sizeof(float) * _numParticles));
-			lifetimes	= static_cast<float*>(realloc(lifetimes, sizeof(float) * _numParticles));
+			positions  = static_cast<vec3*>(realloc(positions, sizeof(vec3) * _numParticles));
+			velocities = static_cast<vec3*>(realloc(velocities, sizeof(vec3) * _numParticles));
+			ages       = static_cast<float*>(realloc(ages, sizeof(float) * _numParticles));
+			lifetimes  = static_cast<float*>(realloc(lifetimes, sizeof(float) * _numParticles));
 		}
 
 		glBindVertexArray(VAO);

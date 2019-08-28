@@ -23,7 +23,7 @@ namespace Jwl
 
 	// Invokes a callback function when an instance of the respective event is dispatched.
 	// The template parameter must be the event object that the listener will subscribe to.
-	//	For example: Listener<PlayerDeath> OnPlayerDeath(&myFunc);
+	//  For example: Listener<PlayerDeath> OnPlayerDeath(&myFunc);
 	template<class EventObj>
 	class Listener
 	{

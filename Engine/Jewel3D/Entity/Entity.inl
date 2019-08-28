@@ -94,7 +94,7 @@ namespace Jwl
 			comp = &Add<T>();
 		}
 
-		if constexpr(sizeof...(Args) > 0)
+		if constexpr (sizeof...(Args) > 0)
 		{
 			(Require<Args>(), ...);
 		}

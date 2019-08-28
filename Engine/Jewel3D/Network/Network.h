@@ -48,23 +48,23 @@ namespace Jwl
 	{
 	public:
 		NetworkTCP();
-	
+
 		bool Init();
 		void Destroy();
-	
+
 		// Allow other hosts to request a TCP connection with us.
 		bool OpenToConnectionRequests(int localPortNum);
 		// Check for pending connection requests.
 		bool CheckForConnectionRequests();
-	
+
 		// Send a connection request to IP/Port.
 		bool SendConnectionRequest(std::string_view remoteIP, int remotePortNum);
 		// Returns true if a TCP connection is established.
 		bool IsConnected() const;
-	
+
 		bool Send(std::string_view packet);
 		bool Receive(std::string& out_packet);
-	
+
 	private:
 		bool isConnected;
 
@@ -82,10 +82,10 @@ namespace Jwl
 	{
 	public:
 		NetworkClient();
-	
+
 		bool Init(int localPortNumTCP, int localPortNumUDP, std::string_view remoteIP, int remotePortNumTCP, int remotePortNumUDP);
 		void Destroy();
-	
+
 		// Send a connection request to IP/Port.
 		bool SendConnectionRequest();
 		// Returns true if a connection is established.
@@ -96,7 +96,7 @@ namespace Jwl
 
 		bool SendTCP(std::string_view packet);
 		bool ReceiveTCP(std::string& out_packet);
-	
+
 	private:
 		sockaddr_in TCPAddress;
 		sockaddr_in UDPAddress;
@@ -117,10 +117,10 @@ namespace Jwl
 	{
 	public:
 		NetworkServer();
-	
+
 		bool Init(int localPortNumTCP, int localPortNumUDP);
 		void Destroy();
-	
+
 		// Allow other hosts to request a connection with us.
 		bool OpenToConnectionRequests();
 		// Check for pending connection requests. 
@@ -132,7 +132,7 @@ namespace Jwl
 		unsigned GetNumClients() const;
 
 		void RemoveClient(int ID);
-		
+
 		bool SendUDP(std::string_view packet, int ID);
 		// Sends the message to all clients.
 		bool SendUDP(std::string_view packet);
@@ -144,7 +144,7 @@ namespace Jwl
 		bool SendTCP(std::string_view packet);
 		bool SendToAllButOneTCP(std::string_view packet, int excludedID);
 		int ReceiveTCP(std::string& out_packet);
-	
+
 	private:
 		struct Client
 		{

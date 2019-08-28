@@ -1,7 +1,7 @@
 Attributes
 {
-	vec4 a_vert	: 0;
-	vec2 a_uv	: 1;
+	vec4 a_vert : 0;
+	vec2 a_uv   : 1;
 }
 
 Uniforms
@@ -11,7 +11,7 @@ Uniforms
 		float AlphaCutOff = 0.5;
 	}
 }
-	
+
 Vertex
 {
 	out vec2 texcoord;

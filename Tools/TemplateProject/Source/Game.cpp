@@ -24,7 +24,7 @@ bool Game::Init()
 {
 	// Load game assets here.
 	// ...
-	
+
 	// Setup the camera. It is also the listener for all sound in the scene.
 	camera->Add<SoundListener>();
 	camera->Add<Camera>(60.0f, Application.GetAspectRatio(), 1.0f, 1000.0f);
@@ -49,7 +49,7 @@ void Game::Update()
 
 	// The amount of time in seconds that has passed since the last update.
 	float deltaTime = Application.GetDeltaTime();
-	
+
 	// Update entities and game logic here.
 	// ...
 

@@ -119,7 +119,7 @@ namespace Jwl
 
 			return
 				value == "1" ||
-				CompareLowercase(value, "on") || 
+				CompareLowercase(value, "on") ||
 				CompareLowercase(value, "true");
 		}
 		else

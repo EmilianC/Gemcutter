@@ -73,11 +73,11 @@ namespace Jwl
 		void UpdateInternal(float deltaTime);
 
 		ParticleBuffer data;
-		
-		float numToSpawn		= 0.0f;
-		bool requiresAgeRatio	= false;
-		bool localSpace			= false;
-		unsigned maxParticles	= 0;
+
+		float numToSpawn = 0.0f;
+		bool requiresAgeRatio = false;
+		bool localSpace = false;
+		unsigned maxParticles = 0;
 		unsigned numCurrentParticles = 0;
 
 		UniformBuffer particleParameters;

@@ -30,7 +30,7 @@ TEST_CASE("String")
 	{
 		RemoveRedundantWhitespace(input);
 
-		CHECK(input == 
+		CHECK(input ==
 			"// Comment1\n"
 			"int temp = 10 ;\n"
 			"/* Comment 2 */\n");

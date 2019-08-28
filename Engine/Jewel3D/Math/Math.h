@@ -4,12 +4,12 @@
 
 namespace Jwl
 {
-	constexpr float M_PI	 = 3.14159265358979323846f;
-	constexpr float M_E		 = 2.71828182845904523536f;
-	constexpr float M_LOG2E	 = 1.44269504088896340736f;
+	constexpr float M_PI     = 3.14159265358979323846f;
+	constexpr float M_E      = 2.71828182845904523536f;
+	constexpr float M_LOG2E  = 1.44269504088896340736f;
 	constexpr float M_LOG10E = 0.434294481903251827651f;
-	constexpr float M_LN2	 = 0.693147180559945309417f;
-	constexpr float M_LN10	 = 2.30258509299404568402f;
+	constexpr float M_LN2    = 0.693147180559945309417f;
+	constexpr float M_LN10   = 2.30258509299404568402f;
 
 	constexpr float ToRadian(float degrees)
 	{

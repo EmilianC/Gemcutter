@@ -621,17 +621,23 @@ namespace Jwl
 
 	void mat3::SetRight(const vec3& V)
 	{
-		data[RightX] = V.x; data[RightY] = V.y; data[RightZ] = V.z;
+		data[RightX] = V.x;
+		data[RightY] = V.y;
+		data[RightZ] = V.z;
 	}
 
 	void mat3::SetUp(const vec3& V)
 	{
-		data[UpX] = V.x; data[UpY] = V.y; data[UpZ] = V.z;
+		data[UpX] = V.x;
+		data[UpY] = V.y;
+		data[UpZ] = V.z;
 	}
 
 	void mat3::SetForward(const vec3& V)
 	{
-		data[ForwardX] = V.x; data[ForwardY] = V.y; data[ForwardZ] = V.z;
+		data[ForwardX] = V.x;
+		data[ForwardY] = V.y;
+		data[ForwardZ] = V.z;
 	}
 
 	vec3 mat3::GetRight() const
@@ -1290,22 +1296,30 @@ namespace Jwl
 
 	void mat4::SetRight(const vec3& V)
 	{
-		data[RightX] = V.x; data[RightY] = V.y; data[RightZ] = V.z;
+		data[RightX] = V.x;
+		data[RightY] = V.y;
+		data[RightZ] = V.z;
 	}
 
 	void mat4::SetUp(const vec3& V)
 	{
-		data[UpX] = V.x; data[UpY] = V.y; data[UpZ] = V.z;
+		data[UpX] = V.x;
+		data[UpY] = V.y;
+		data[UpZ] = V.z;
 	}
 
 	void mat4::SetForward(const vec3& V)
 	{
-		data[ForwardX] = V.x; data[ForwardY] = V.y; data[ForwardZ] = V.z;
+		data[ForwardX] = V.x;
+		data[ForwardY] = V.y;
+		data[ForwardZ] = V.z;
 	}
 
 	void mat4::SetTranslation(const vec3& V)
 	{
-		data[TransX] = V.x; data[TransY] = V.y; data[TransZ] = V.z;
+		data[TransX] = V.x;
+		data[TransY] = V.y;
+		data[TransZ] = V.z;
 	}
 
 	vec3 mat4::GetRight() const

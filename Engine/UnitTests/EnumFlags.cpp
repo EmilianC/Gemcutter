@@ -5,8 +5,8 @@ using namespace Jwl;
 
 enum class Values
 {
-	One	  = 0b0001,
-	Two	  = 0b0010,
+	One   = 0b0001,
+	Two   = 0b0010,
 	Three = 0b0100,
 	Four  = 0b1000,
 };

@@ -15,7 +15,7 @@ namespace Jwl
 		Up,
 		Right,
 		Down,
-		
+
 		LeftShift = 0xA0,
 		RightShift,
 		LeftControl,

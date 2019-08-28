@@ -1,7 +1,7 @@
 Attributes
 {
 	vec4 a_vert	: 0;
-	vec2 a_uv	: 1;
+	vec2 a_uv   : 1;
 }
 
 Uniforms

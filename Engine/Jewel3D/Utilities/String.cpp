@@ -94,7 +94,7 @@ namespace Jwl
 
 		return result;
 	}
-	
+
 	std::string FormatString(const char* format, va_list args)
 	{
 		std::string result;

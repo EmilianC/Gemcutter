@@ -15,9 +15,9 @@ namespace Jwl
 	bool Mutex::Init()
 	{
 		mutex = CreateMutex(
-			NULL,	// Default security
-			FALSE,	// Not initially owned
-			NULL);	// Unnamed
+			NULL,  // Default security
+			FALSE, // Not initially owned
+			NULL); // Unnamed
 
 		return mutex != NULL;
 	}
@@ -32,8 +32,6 @@ namespace Jwl
 		ReleaseMutex(mutex);
 	}
 
-	//-----------------------------------------------------------------------------------------------------
-
 	Thread::~Thread()
 	{
 		if (threadHandle != NULL)
@@ -45,12 +43,12 @@ namespace Jwl
 	bool Thread::Start(unsigned (__stdcall *startFunc)(void* arg), void* argData)
 	{
 		threadHandle = CreateThread(
-			NULL,	// Default security
-			NULL,	// Default stack size
+			NULL,                                                // Default security
+			NULL,                                                // Default stack size
 			reinterpret_cast<LPTHREAD_START_ROUTINE>(startFunc), // Start location
-			argData, // Data argument
-			NULL,	 // Default creation
-			&id);	 // Thread ID
+			argData,                                             // Data argument
+			NULL,                                                // Default creation
+			&id);                                                // Thread ID
 
 		return threadHandle != NULL;
 	}
@@ -66,8 +64,8 @@ namespace Jwl
 		return result && reinterpret_cast<DWORD>(value) != STILL_ACTIVE;
 	}
 
-	DWORD Thread::GetID() const 
-	{ 
+	DWORD Thread::GetID() const
+	{
 		return id;
 	}
 }

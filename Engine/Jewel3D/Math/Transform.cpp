@@ -24,7 +24,7 @@ namespace Jwl
 	{
 	}
 
-	void Transform::LookAt(const vec3 &pos, const vec3 &target, const vec3 &up)
+	void Transform::LookAt(const vec3& pos, const vec3& target, const vec3& up)
 	{
 		ASSERT(Abs(Length(up) - 1.0f) < 0.0001f, "'up' must be a normalized vector.");
 		ASSERT(pos != target, "Transform cannot look at itself.");
@@ -36,7 +36,7 @@ namespace Jwl
 		position = pos;
 	}
 
-	void Transform::Rotate(const vec3 &axis, float degrees)
+	void Transform::Rotate(const vec3& axis, float degrees)
 	{
 		rotation.Rotate(axis, degrees);
 	}

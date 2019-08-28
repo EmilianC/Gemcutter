@@ -1,9 +1,9 @@
 Attributes
 {
-	vec4 a_vert		 : 0;
-	vec2 a_size		 : 1;
-	vec3 a_color	 : 2;
-	float a_alpha	 : 3;
+	vec4 a_vert      : 0;
+	vec2 a_size      : 1;
+	vec3 a_color     : 2;
+	float a_alpha    : 3;
 	float a_rotation : 4;
 	float a_ageRatio : 5;
 }

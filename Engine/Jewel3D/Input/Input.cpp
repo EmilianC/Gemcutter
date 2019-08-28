@@ -64,7 +64,7 @@ namespace Jwl
 
 	bool InputSingleton::Update(const MSG& msg)
 	{
-		switch(msg.message)
+		switch (msg.message)
 		{
 		case WM_MOUSEMOVE:
 			{

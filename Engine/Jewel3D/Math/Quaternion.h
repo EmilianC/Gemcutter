@@ -15,7 +15,7 @@ namespace Jwl
 
 		bool operator==(const quat&) const;
 		bool operator!=(const quat&) const;
-		
+
 		quat operator*(const quat&) const;
 		vec3 operator*(const vec3&) const;
 		quat& operator*=(const quat&);
@@ -38,7 +38,7 @@ namespace Jwl
 		void RotateX(float degrees);
 		void RotateY(float degrees);
 		void RotateZ(float degrees);
-		
+
 		static const quat Identity;
 
 		float x = 0.0f;

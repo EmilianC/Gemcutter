@@ -96,14 +96,14 @@ namespace Jwl
 		mutable UniformHandle<mat4> uniformInvProj;
 		mutable UniformHandle<vec3> uniformCameraPosition;
 
-		bool isPerspective	= true;
-		float fovyDegrees	= 50.0f;
-		float aspectRatio	= 1.0f;
-		float zNear			= 1.0f;
-		float zFar			= 1000.0f;
-		float left			= -100.0f;
-		float right			= 100.0f;
-		float top			= 100.0f;
-		float bottom		= -100.0f;
+		bool isPerspective = true;
+		float fovyDegrees = 50.0f;
+		float aspectRatio = 1.0f;
+		float zNear = 1.0f;
+		float zFar = 1000.0f;
+		float left = -100.0f;
+		float right = 100.0f;
+		float top = 100.0f;
+		float bottom = -100.0f;
 	};
 }

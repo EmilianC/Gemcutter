@@ -61,7 +61,7 @@ namespace Jwl
 	void Light::Update()
 	{
 		auto transform = owner.GetWorldTransform();
-		
+
 		switch (type.Get())
 		{
 		case Type::Spot:

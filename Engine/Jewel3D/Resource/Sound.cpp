@@ -19,26 +19,26 @@
 	#define AL_DEBUG_CHECK()
 #endif
 
-enum class WaveFormat: unsigned short
+enum class WaveFormat : unsigned short
 {
-	WAVE_FORMAT_PCM			= 0x0001,	// PCM
-	WAVE_FORMAT_IEEE_FLOAT	= 0x0003,	// IEEE float
-	WAVE_FORMAT_ALAW		= 0x0006,	// 8 - bit ITU - T G.711 A - law
-	WAVE_FORMAT_MULAW		= 0x0007,	// 8 - bit ITU - T G.711 µ - law
-	WAVE_FORMAT_EXTENSIBLE	= 0xFFFE,	// Determined by SubFormat
+	WAVE_FORMAT_PCM        = 0x0001, // PCM
+	WAVE_FORMAT_IEEE_FLOAT = 0x0003, // IEEE float
+	WAVE_FORMAT_ALAW       = 0x0006, // 8 - bit ITU - T G.711 A - law
+	WAVE_FORMAT_MULAW      = 0x0007, // 8 - bit ITU - T G.711 µ - law
+	WAVE_FORMAT_EXTENSIBLE = 0xFFFE, // Determined by SubFormat
 };
 
 struct WaveHeader
 {
-	WaveFormat FormatTag				= WaveFormat::WAVE_FORMAT_PCM;
-	unsigned short Channels				= 0;
-	unsigned SamplesPerSec				= 0;
-	unsigned AvgBytesPerSec				= 0;
-	unsigned short BlockAlign			= 0;
-	unsigned short BitsPerSample		= 0;
-	unsigned short ExtensionSize		= 0;
-	unsigned short ValidBitsPerSample	= 0;
-	unsigned ChannelMask				= 0;
+	WaveFormat FormatTag              = WaveFormat::WAVE_FORMAT_PCM;
+	unsigned short Channels           = 0;
+	unsigned SamplesPerSec            = 0;
+	unsigned AvgBytesPerSec           = 0;
+	unsigned short BlockAlign         = 0;
+	unsigned short BitsPerSample      = 0;
+	unsigned short ExtensionSize      = 0;
+	unsigned short ValidBitsPerSample = 0;
+	unsigned ChannelMask              = 0;
 };
 
 namespace Jwl
@@ -74,8 +74,8 @@ namespace Jwl
 		unsigned chunkSize;
 		WaveHeader header;
 		unsigned char* soundData = nullptr;
-		defer { free(soundData); };
-		
+		defer{ free(soundData); };
+
 		// Check that the WAVE file is OK.
 		fread(chunkID, sizeof(char), 4, file);
 		if (strcmp(chunkID, "RIFF") != 0)

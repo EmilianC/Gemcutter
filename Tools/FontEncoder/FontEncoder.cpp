@@ -121,7 +121,7 @@ bool FontEncoder::Convert(std::string_view source, std::string_view destination,
 	const std::string outputFile = std::string(destination) + Jwl::ExtractFilename(source) + ".font";
 	const unsigned width = static_cast<unsigned>(metadata.GetInt("width"));
 	const unsigned height = static_cast<unsigned>(metadata.GetInt("height"));
-	
+
 	Jwl::TextureFilter filter = Jwl::TextureFilter::Point;
 	{
 		std::string str = metadata.GetString("texture_filter");
@@ -265,7 +265,7 @@ bool FontEncoder::Convert(std::string_view source, std::string_view destination,
 		{
 			Jwl::Warning("%d characters were not created.\n%s", 94 - count, missingChars.c_str());
 		}
-		
+
 		return true;
 	}
 }

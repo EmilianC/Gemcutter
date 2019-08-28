@@ -55,9 +55,9 @@ namespace Jwl
 		void AddUniform(const std::string& name, unsigned bytes, unsigned alignment, unsigned count);
 		void* GetBufferLoc(const std::string& name) const;
 
-		mutable bool dirty	= true;
-		unsigned UBO		= 0;
-		void* buffer		= nullptr;
+		mutable bool dirty  = true;
+		unsigned UBO        = 0;
+		void* buffer        = nullptr;
 		unsigned bufferSize = 0;
 
 		std::unordered_map<std::string, unsigned> table;

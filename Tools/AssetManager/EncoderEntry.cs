@@ -51,13 +51,21 @@ namespace AssetManager
 		public string extension
 		{
 			get { return extensionBox.Text; }
-			private set { extensionBox.Text = value; Validate(); }
+			private set
+			{
+				extensionBox.Text = value;
+				Validate();
+			}
 		}
 
 		public string encoder
 		{
 			get { return encoderBox.Text; }
-			private set { encoderBox.Text = value; Validate(); }
+			private set
+			{
+				encoderBox.Text = value;
+				Validate();
+			}
 		}
 
 		public void SetPosition(int offset)
@@ -104,9 +112,7 @@ namespace AssetManager
 			}
 
 			var path = Environment.ExpandEnvironmentVariables(encoderBox.Text);
-			var encoderPath = Path.IsPathRooted(path) ?
-				path :
-				Directory.GetCurrentDirectory() + path;
+			var encoderPath = Path.IsPathRooted(path) ? path : Directory.GetCurrentDirectory() + path;
 			if (!File.Exists(encoderPath))
 			{
 				statusLog.SetToolTip(status, "The Encoder does not exist on the disk.");
@@ -165,8 +171,7 @@ namespace AssetManager
 			delete.FlatStyle = FlatStyle.Flat;
 			delete.TabIndex = tabIndex++;
 			delete.UseVisualStyleBackColor = true;
-			delete.Click += delegate
-			{
+			delete.Click += delegate {
 				DeleteControls();
 
 				onDelete?.Invoke(this, EventArgs.Empty);

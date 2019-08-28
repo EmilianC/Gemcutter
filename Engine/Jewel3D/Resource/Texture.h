@@ -53,11 +53,11 @@ namespace Jwl
 		void RegenerateMipmaps();
 
 	private:
-		unsigned hTex		= 0;
+		unsigned hTex       = 0;
 		unsigned numSamples = 1;
-		unsigned target		= 0;
-		int width			= 0;
-		int height			= 0;
+		unsigned target     = 0;
+		int width           = 0;
+		int height          = 0;
 		TextureFormat format = TextureFormat::RGB_8;
 		TextureFilter filter = TextureFilter::Point;
 		TextureWraps wraps = TextureWrap::Clamp;
@@ -77,7 +77,7 @@ namespace Jwl
 		// Unit the texture should be bound to when rendering.
 		unsigned unit = 0;
 	};
-	
+
 	// A group of textures that are bound and unbound together.
 	class TextureList
 	{

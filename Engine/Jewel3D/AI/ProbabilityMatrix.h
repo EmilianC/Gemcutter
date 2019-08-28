@@ -33,9 +33,9 @@ namespace Jwl
 		int GetNumActions() const;
 
 	private:
-		unsigned numStates	= 0;
-		unsigned numActions	= 0;
-		float* data			= nullptr;
+		unsigned numStates  = 0;
+		unsigned numActions = 0;
+		float* data = nullptr;
 
 		void Normalize();
 		void SetValue(unsigned state, unsigned action, float value);

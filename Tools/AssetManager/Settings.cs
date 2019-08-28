@@ -22,10 +22,7 @@ namespace AssetManager
 			foreach (var link in config.encoders)
 				AddItem(link.extension, link.encoder);
 
-			FormClosing += (_, e) =>
-			{
-				config.Save();
-			};
+			FormClosing += (_, e) => { config.Save(); };
 		}
 
 		// Reorganizes the spacing of the list.
@@ -42,8 +39,7 @@ namespace AssetManager
 			var entry = new EncoderEntry(panel, EncoderEntry.ItemHeight * entries.Count, ext, app);
 			entries.Add(entry);
 
-			entry.onDelete += (sender, e) =>
-			{
+			entry.onDelete += (sender, e) => {
 				entries.Remove(sender as EncoderEntry);
 				RepositionList();
 			};

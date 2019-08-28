@@ -24,11 +24,11 @@ namespace
 			std::cout << header << message << std::endl;
 		}
 
-		#if defined(_MSC_VER) && defined(_DEBUG)
-			OutputDebugString(header.data());
-			OutputDebugString(message.data());
-			OutputDebugString("\n");
-		#endif
+#if defined(_MSC_VER) && defined(_DEBUG)
+		OutputDebugString(header.data());
+		OutputDebugString(message.data());
+		OutputDebugString("\n");
+#endif
 	}
 
 	void PushMessage(std::string_view header, std::string_view message, Jwl::ConsoleColor color)
@@ -81,7 +81,7 @@ namespace Jwl
 		fclose(stdout);
 		fclose(stdin);
 		FreeConsole();
-		
+
 		// There might still be an output stream so we try to obtain a new handle just in case.
 		stdOutputHandle = GetStdHandle(STD_OUTPUT_HANDLE);
 	}

@@ -114,7 +114,7 @@ namespace Jwl
 		bool LoadFromSource(std::string_view source);
 		bool LoadPassThrough();
 		static Shader::Ptr MakeNewPassThrough();
-		
+
 		// Unloads all GPU-side memory and cleans the object.
 		void Unload();
 
@@ -146,7 +146,7 @@ namespace Jwl
 			void Unload();
 			void Bind() const;
 
-			unsigned hProgram	 = 0;
+			unsigned hProgram    = 0;
 			unsigned hVertShader = 0;
 			unsigned hFragShader = 0;
 			unsigned hGeomShader = 0;
@@ -155,13 +155,13 @@ namespace Jwl
 		// Used to identify the content of a Program block.
 		enum class BlockType : unsigned
 		{
-			None		= 0,
-			Attributes	= 1,
-			Uniforms	= 2,
-			Samplers	= 4,
-			Vertex		= 8,
-			Geometry	= 16,
-			Fragment	= 32
+			None       = 0,
+			Attributes = 1,
+			Uniforms   = 2,
+			Samplers   = 4,
+			Vertex     = 8,
+			Geometry   = 16,
+			Fragment   = 32
 		};
 
 		// Describes a Program block found in the shader file.

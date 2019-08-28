@@ -62,19 +62,19 @@ namespace Jwl
 
 	bool quat::operator==(const quat& other) const
 	{
-		return 
-			Equals(x, other.x) && 
-			Equals(y, other.y) && 
-			Equals(z, other.z) && 
+		return
+			Equals(x, other.x) &&
+			Equals(y, other.y) &&
+			Equals(z, other.z) &&
 			Equals(w, other.w);
 	}
 
 	bool quat::operator!=(const quat& other) const
 	{
-		return 
-			!Equals(x, other.x) || 
-			!Equals(y, other.y) || 
-			!Equals(z, other.z) || 
+		return
+			!Equals(x, other.x) ||
+			!Equals(y, other.y) ||
+			!Equals(z, other.z) ||
 			!Equals(w, other.w);
 	}
 
@@ -148,7 +148,7 @@ namespace Jwl
 	quat quat::GetNormalized() const
 	{
 		float invLength = 1.0f / sqrt(x * x + y * y + z * z + w * w);
-		
+
 		ASSERT(!std::isinf(invLength), "Zero length quaternion cannot be normalized.");
 
 		return quat(x * invLength, y * invLength, z * invLength, w * invLength);

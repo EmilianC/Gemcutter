@@ -10,8 +10,7 @@ namespace Jwl
 		public:
 			VertexIterator(const VertexIterator&) = default;
 			VertexIterator(unsigned char* _itr, unsigned _stride)
-				: itr(_itr), stride(_stride)
-			{}
+				: itr(_itr), stride(_stride) {}
 
 			VertexIterator& operator=(const VertexIterator&) = default;
 
@@ -23,7 +22,7 @@ namespace Jwl
 			bool operator>=(const VertexIterator& other) const { return itr >= other.itr; }
 
 			std::ptrdiff_t operator-(const VertexIterator& other) const { return (itr - other.itr) / stride; }
-			
+
 			Type& operator[](std::ptrdiff_t diff) const { return *(*this + diff); }
 
 			VertexIterator operator+(std::ptrdiff_t diff) const { return {itr + stride * diff, stride}; }

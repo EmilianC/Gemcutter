@@ -130,7 +130,7 @@ namespace
 		// Ignored messages.
 		if (
 			// Usage warning : Generic vertex attribute array # uses a pointer with a small value (#). Is this intended to be used as an offset into a buffer object?
-			id == 0x00020004 || 
+			id == 0x00020004 ||
 			// Buffer info : Total VBO memory usage in the system : #
 			id == 0x00020070 ||
 			// Program / shader state info : GLSL shader # failed to compile.
@@ -278,11 +278,11 @@ namespace Jwl
 		windowClass.cbWndExtra = 0;
 		windowClass.hInstance = apInstance;
 		windowClass.hIcon = LoadIcon(NULL, IDI_APPLICATION); // Default icon.
-		windowClass.hCursor = LoadCursor(NULL, IDC_ARROW);	 // Default arrow.
+		windowClass.hCursor = LoadCursor(NULL, IDC_ARROW);   // Default arrow.
 		windowClass.hbrBackground = NULL;
 		windowClass.lpszMenuName = NULL;
 		windowClass.lpszClassName = "Jewel3D";
-		windowClass.hIconSm = LoadIcon(NULL, IDI_WINLOGO);	 // Windows logo small icon.
+		windowClass.hIconSm = LoadIcon(NULL, IDI_WINLOGO);   // Windows logo small icon.
 
 		if (!RegisterClassEx(&windowClass))
 		{
@@ -296,14 +296,14 @@ namespace Jwl
 		// This will internally send a WM_CREATE message that is handled before the function returns.
 		if (!CreateWindowEx(
 			STYLE_EXTENDED,
-			"Jewel3D",		// Class name.
+			"Jewel3D",    // Class name.
 			title.data(),
 			style,
 			CW_USEDEFAULT, CW_USEDEFAULT,
 			windowRect.right - windowRect.left,
 			windowRect.bottom - windowRect.top,
-			NULL,			// Handle to parent.
-			NULL,			// Handle to menu.
+			NULL,         // Handle to parent.
+			NULL,         // Handle to menu.
 			apInstance,
 			NULL))
 		{
@@ -337,7 +337,7 @@ namespace Jwl
 		{
 			SetFullscreen(false);
 		}
-		
+
 		EnableCursor();
 
 #ifdef _DEBUG
@@ -402,7 +402,7 @@ namespace Jwl
 				// The user might have requested to exit during update().
 				if (!appIsRunning)
 					return;
-				
+
 				lastUpdate += updateStep;
 				updateCount++;
 
@@ -581,7 +581,7 @@ namespace Jwl
 			{
 				style = GetStyle(false, IsBordered(), IsResizable());
 			}
-			
+
 			if (!ApplyStyle(hwnd, style, GetScreenWidth(), GetScreenHeight()))
 			{
 				return false;

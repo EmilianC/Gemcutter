@@ -171,7 +171,7 @@ namespace Jwl
 		class LogicalIterator<SafeIterator, Operation> : public std::iterator<std::forward_iterator_tag, Entity*>
 		{
 		public:
-			LogicalIterator(SafeIterator _itr1, SafeIterator _itr2) 
+			LogicalIterator(SafeIterator _itr1, SafeIterator _itr2)
 				: itr1(_itr1), itr2(_itr2)
 			{
 				Operation::FindFirst(itr1, itr2);
@@ -281,7 +281,7 @@ namespace Jwl
 	template<typename... Args>
 	auto With()
 	{
-		static_assert(sizeof...(Args), 
+		static_assert(sizeof...(Args),
 			"With<>() must receive at least one template argument.");
 
 		static_assert(Meta::all_of_v<std::is_base_of<ComponentBase, Args>::value...>,

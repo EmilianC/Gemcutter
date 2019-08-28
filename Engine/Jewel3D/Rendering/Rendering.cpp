@@ -31,20 +31,20 @@ namespace
 	};
 
 	const int vertexFormatSize_Resolve[] = {
-		4,	// float
-		8,	// double
-		8,	// vec2
-		12,	// vec3
-		16,	// vec4
-		16,	// mat2
-		36,	// mat3
-		64,	// mat4
-		4,	// int
-		4,	// unsigned int
-		2,	// short
-		2,	// unsigned short
-		1,	// char
-		1	// unsigned char
+		4,  // float
+		8,  // double
+		8,  // vec2
+		12, // vec3
+		16, // vec4
+		16, // mat2
+		36, // mat3
+		64, // mat4
+		4,  // int
+		4,  // unsigned int
+		2,  // short
+		2,  // unsigned short
+		1,  // char
+		1   // unsigned char
 	};
 
 	const int vertexAccess_Resolve[] = {
@@ -331,7 +331,7 @@ namespace Jwl
 	{
 		glViewport(x, y, width, height);
 	}
-	
+
 	bool SetVSync(VSyncMode mode)
 	{
 		if (!wglewIsSupported("WGL_EXT_swap_control"))

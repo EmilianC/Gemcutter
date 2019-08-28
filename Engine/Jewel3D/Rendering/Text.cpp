@@ -43,7 +43,7 @@ namespace Jwl
 
 		return count;
 	}
-	
+
 	float Text::GetLineWidth(unsigned line) const
 	{
 		ASSERT(line != 0, "'line' must be greater than 0.");

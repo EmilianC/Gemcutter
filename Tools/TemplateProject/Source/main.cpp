@@ -136,6 +136,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 	DestroyConsoleWindow();
 #endif
 	CloseOutputLog();
-	
+
 	return EXIT_SUCCESS;
 }

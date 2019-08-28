@@ -63,12 +63,12 @@ namespace Jwl
 	#define DEBUG_ERROR_BOX(format, ...) Jwl::ErrorBox((format), ##__VA_ARGS__)
 	#define DEBUG_WARNING_BOX(format, ...) Jwl::WarningBox((format), ##__VA_ARGS__)
 	#define ASSERT(exp, format, ...) \
-		do {												\
-			if (!(exp)) {									\
-				Jwl::Assert(#exp, (format), ##__VA_ARGS__);	\
-				__asm { int 3 }								\
-			}												\
-			__pragma(warning(suppress:4127))				\
+		do {                                                \
+			if (!(exp)) {                                   \
+				Jwl::Assert(#exp, (format), ##__VA_ARGS__); \
+				__asm { int 3 }                             \
+			}                                               \
+			__pragma(warning(suppress:4127))                \
 		} while (false)
 #else
 	#define DEBUG_LOG __noop

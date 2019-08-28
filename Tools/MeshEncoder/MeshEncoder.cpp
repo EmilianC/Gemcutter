@@ -255,20 +255,20 @@ bool MeshEncoder::Convert(std::string_view source, std::string_view destination,
 	{
 		for (unsigned i = 0; i < faceData.size(); ++i)
 		{
-			const Jwl::vec3 edge1 = 
-				vertexData[faceData[i].vertices[0] - 1] - 
+			const Jwl::vec3 edge1 =
+				vertexData[faceData[i].vertices[0] - 1] -
 				vertexData[faceData[i].vertices[1] - 1];
 
-			const Jwl::vec3 edge2 = 
-				vertexData[faceData[i].vertices[0] - 1] - 
+			const Jwl::vec3 edge2 =
+				vertexData[faceData[i].vertices[0] - 1] -
 				vertexData[faceData[i].vertices[2] - 1];
 
 			const Jwl::vec2 edgeUV1 =
-				textureData[faceData[i].textures[0] - 1] - 
+				textureData[faceData[i].textures[0] - 1] -
 				textureData[faceData[i].textures[1] - 1];
 
 			const Jwl::vec2 edgeUV2 =
-				textureData[faceData[i].textures[0] - 1] - 
+				textureData[faceData[i].textures[0] - 1] -
 				textureData[faceData[i].textures[2] - 1];
 
 			const Jwl::mat2 UVs = Jwl::mat2(
@@ -375,7 +375,7 @@ bool MeshEncoder::Convert(std::string_view source, std::string_view destination,
 		{
 			Jwl::Warning("Output of uvs was enabled but no uvs were found in the mesh.");
 		}
-		
+
 		if (packNormals && !hasNormals)
 		{
 			Jwl::Warning("Output of normals was enabled but no normals were found in the mesh.");

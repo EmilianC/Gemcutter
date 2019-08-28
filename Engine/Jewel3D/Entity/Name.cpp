@@ -41,7 +41,7 @@ namespace Jwl
 				return child.get();
 			}
 		}
-		
+
 		for (auto& child : root.GetChildren())
 		{
 			if (auto* result = FindChild(*child, name))

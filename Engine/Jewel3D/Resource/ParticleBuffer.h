@@ -7,12 +7,12 @@ namespace Jwl
 {
 	enum class ParticleBuffers : unsigned
 	{
-		None = 0,		// Empty buffer
-		Size = 1,		// vec2 size
-		Color = 2,		// vec3 color
-		Alpha = 4,		// float alpha
-		Rotation = 8,	// float rotation
-		AgeRatio = 16	// float ageRatio (age / lifetime)
+		None = 0,       // Empty buffer
+		Size = 1,       // vec2 size
+		Color = 2,      // vec3 color
+		Alpha = 4,      // float alpha
+		Rotation = 8,   // float rotation
+		AgeRatio = 16   // float ageRatio (age / lifetime)
 	};
 
 	class ParticleBuffer
@@ -36,15 +36,15 @@ namespace Jwl
 		unsigned GetVAO() const;
 		unsigned GetNumParticles() const;
 
-		vec3*	positions	= nullptr;
-		vec3*	velocities	= nullptr;
-		float*	ages		= nullptr;
-		float*	lifetimes	= nullptr;
-		vec2*	sizes		= nullptr;
-		vec3*	colors		= nullptr;
-		float*	alphas		= nullptr;
-		float*	rotations	= nullptr;
-		float*	ageRatios	= nullptr;
+		vec3*  positions  = nullptr;
+		vec3*  velocities = nullptr;
+		float* ages       = nullptr;
+		float* lifetimes  = nullptr;
+		vec2*  sizes      = nullptr;
+		vec3*  colors     = nullptr;
+		float* alphas     = nullptr;
+		float* rotations  = nullptr;
+		float* ageRatios  = nullptr;
 
 	private:
 		EnumFlags<ParticleBuffers> buffers = ParticleBuffers::None;

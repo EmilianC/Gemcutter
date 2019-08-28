@@ -28,7 +28,7 @@ namespace Jwl
 		Thread(const Thread&) = delete;
 		~Thread();
 
-		Thread &operator=(const Thread&) = delete;
+		Thread& operator=(const Thread&) = delete;
 
 		// Start the thread on the specified function. Returns false if thread didn't start.
 		bool Start(unsigned (__stdcall *startFunc)(void* arg), void* argData = NULL);

@@ -7,13 +7,13 @@ namespace Jwl
 {
 	enum class AttenuationMode
 	{
-		None						= 0,
-		Inverse_Distance			= 0xD001,
-		Inverse_Distance_Clamped	= 0xD002,
-		Linear_Distance				= 0xD003,
-		Linear_Distance_Clamped		= 0xD004,
-		Exponent_Distance			= 0xD005,
-		Exponent_Distance_Clamped	= 0xD006
+		None                      = 0,
+		Inverse_Distance          = 0xD001,
+		Inverse_Distance_Clamped  = 0xD002,
+		Linear_Distance           = 0xD003,
+		Linear_Distance_Clamped   = 0xD004,
+		Exponent_Distance         = 0xD005,
+		Exponent_Distance_Clamped = 0xD006
 	};
 
 	// Provides global control of audio playback.

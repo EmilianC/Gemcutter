@@ -31,7 +31,7 @@ namespace Jwl
 		std::uniform_int_distribution<int> dist(min, max);
 		return dist(engine);
 	}
-	
+
 	vec3 RandomDirection()
 	{
 		return Normalize(vec3(

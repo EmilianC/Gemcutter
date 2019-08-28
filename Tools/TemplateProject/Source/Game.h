@@ -19,7 +19,7 @@ public:
 private:
 	/* Rendering */
 	RenderPass mainRenderPass;
-	
+
 	/* Scene */
 	Entity::Ptr camera = Entity::MakeNew("camera");
 	Entity::Ptr root = Entity::MakeNew("root");
