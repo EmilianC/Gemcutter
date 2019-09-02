@@ -144,7 +144,7 @@ namespace Jwl
 		modelView.Set(mat4::Identity);
 		model.Set(mat4::Identity);
 		invModel.Set(mat4::Identity);
-		normalMatrix.Set(mat4::Identity);
+		normalMatrix.Set(mat3::Identity);
 		transformBuffer.Bind(static_cast<unsigned>(UniformBufferSlot::Model));
 
 		Primitives.DrawFullScreenQuad(*shader);
@@ -221,7 +221,7 @@ namespace Jwl
 		modelView.Set(mat4::Identity);
 		model.Set(mat4::Identity);
 		invModel.Set(mat4::Identity);
-		normalMatrix.Set(mat4::Identity);
+		normalMatrix.Set(mat3::Identity);
 		transformBuffer.Bind(static_cast<unsigned>(UniformBufferSlot::Model));
 
 		auto& mesh = instance.Get<Mesh>();
@@ -296,15 +296,7 @@ namespace Jwl
 
 		model.Set(worldTransform);
 		invModel.Set(worldTransform.GetFastInverse());
-
-		if (ent.scale == vec3(1.0f))
-		{
-			normalMatrix.Set(worldTransform);
-		}
-		else
-		{
-			normalMatrix.Set(worldTransform.GetInverse().GetTranspose());
-		}
+		normalMatrix.Set(mat3(worldTransform).GetInverse().GetTranspose());
 
 		transformBuffer.Bind(static_cast<unsigned>(UniformBufferSlot::Model));
 
@@ -484,7 +476,7 @@ namespace Jwl
 		modelView = transformBuffer.AddUniform<mat4>("ModelView");
 		model = transformBuffer.AddUniform<mat4>("Model");
 		invModel = transformBuffer.AddUniform<mat4>("InvModel");
-		normalMatrix = transformBuffer.AddUniform<mat4>("normal");
+		normalMatrix = transformBuffer.AddUniform<mat3>("Normal");
 
 		transformBuffer.InitBuffer(VertexBufferUsage::Dynamic);
 	}

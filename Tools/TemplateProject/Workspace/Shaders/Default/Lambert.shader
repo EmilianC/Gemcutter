@@ -1,8 +1,8 @@
 Attributes
 {
-	vec4 a_vert		: 0;
-	vec2 a_uv		: 1;
-	vec3 a_normal	: 2;
+	vec4 a_vert   : 0;
+	vec2 a_uv     : 1;
+	vec3 a_normal : 2;
 }
 
 Samplers
@@ -41,7 +41,7 @@ Vertex
 		gl_Position = Jwl_ViewProj * vec4(pos, 1.0);
 
 		texcoord = a_uv;
-		norm = mat3(Jwl_NormalToWorld) * a_normal;
+		norm = Jwl_NormalToWorld * a_normal;
 	}
 }
 

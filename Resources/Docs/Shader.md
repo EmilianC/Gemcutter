@@ -6,7 +6,7 @@ Shader Outlines allow you to easily describe your own custom data bindings witho
 // Passthrough.shader
 Attributes
 {
-	vec4 a_vert	: 0;
+	vec4 a_vert : 0;
 	vec2 a_uv   : 1;
 }
 
@@ -87,7 +87,7 @@ mat4 Jwl_MVP;
 mat4 Jwl_ModelView;
 mat4 Jwl_Model;
 mat4 Jwl_InvModel;
-mat4 Jwl_NormalToWorld;
+mat3 Jwl_NormalToWorld;
 ```
 
 The following functions are available to use in all GLSL shader blocks.
@@ -128,9 +128,9 @@ The standard math definitions from Jewel3D/Math/Math.h are also defined in all G
 // Lambert.shader
 Attributes
 {
-	vec4 a_vert		: 0;
-	vec2 a_uv		: 1;
-	vec3 a_normal	: 2;
+	vec4 a_vert   : 0;
+	vec2 a_uv     : 1;
+	vec3 a_normal : 2;
 }
 
 Uniforms
@@ -170,7 +170,7 @@ Vertex
 
 		texcoord = a_uv;
 		// Rotate the normal into world-space.
-		norm = mat3(Jwl_NormalToWorld) * a_normal;
+		norm = Jwl_NormalToWorld * a_normal;
 	}
 }
 

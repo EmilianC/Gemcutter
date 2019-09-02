@@ -83,7 +83,7 @@ namespace
 		"	mat4 Jwl_ModelView;\n"
 		"	mat4 Jwl_Model;\n"
 		"	mat4 Jwl_InvModel;\n"
-		"	mat4 Jwl_NormalToWorld;\n"
+		"	mat3 Jwl_NormalToWorld;\n"
 		"};"
 		"\n"
 		"layout(std140) uniform Jwl_Engine_Uniforms\n"
@@ -101,8 +101,8 @@ namespace
 		"\n" // Normal mapping helper.
 		"mat3 make_TBN(vec3 normal, vec3 tangent, float handedness)\n"
 		"{\n"
-		"	vec3 N = mat3(Jwl_NormalToWorld) * normal;\n"
-		"	vec3 T = mat3(Jwl_NormalToWorld) * tangent;\n"
+		"	vec3 N = Jwl_NormalToWorld * normal;\n"
+		"	vec3 T = Jwl_NormalToWorld * tangent;\n"
 		"	vec3 B = cross(T, N) * handedness;\n"
 		"	return mat3(T, B, N);\n"
 		"}\n"
@@ -172,26 +172,21 @@ namespace
 		"#define is_directional_light(light) JWL_IS_DIRECTIONAL_LIGHT(light##.Type)\n"
 		"#define is_spot_light(light) JWL_IS_SPOT_LIGHT(light##.Type)\n"
 		"#define compute_light(light, normal, pos) JWL_COMPUTE_LIGHT(normal, pos, light##.Color, light##.Position, light##.Direction, light##.AttenuationLinear, light##.AttenuationQuadratic, light##.Angle, light##.Type)\n";
-}
 
-namespace Jwl
-{
-	static bool CompileShader(unsigned& shader)
+	bool CompileShader(unsigned shader)
 	{
-		GLint success;
+		GLint success = GL_FALSE;
 		glCompileShader(shader);
 		glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
 
 		// Output GL error to log on failure.
 		if (success == GL_FALSE)
 		{
-			char* infoLog = nullptr;
-
-			GLint infoLen;
+			GLint infoLen = 0;
 			glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLen);
 			ASSERT(infoLen > 0, "Could not retrieve shader compilation log.");
 
-			infoLog = static_cast<char*>(malloc(sizeof(char) * infoLen));
+			char* infoLog = static_cast<char*>(malloc(sizeof(char) * infoLen));
 			defer { free(infoLog); };
 
 			glGetShaderInfoLog(shader, sizeof(char) * infoLen, nullptr, infoLog);
@@ -202,10 +197,7 @@ namespace Jwl
 				infoLog[infoLen - 2] = '\0';
 			}
 
-			Error(infoLog);
-
-			glDeleteShader(shader);
-			shader = GL_NONE;
+			Jwl::Error(infoLog);
 
 			return false;
 		}
@@ -213,22 +205,20 @@ namespace Jwl
 		return true;
 	}
 
-	static bool LinkProgram(unsigned program)
+	bool LinkProgram(unsigned program)
 	{
-		GLint success;
+		GLint success = GL_FALSE;
 		glLinkProgram(program);
 		glGetProgramiv(program, GL_LINK_STATUS, &success);
 
 		// Output GL error to log on failure.
 		if (success == GL_FALSE)
 		{
-			char* infoLog = nullptr;
-
-			GLint infoLen;
+			GLint infoLen = 0;
 			glGetProgramiv(program, GL_INFO_LOG_LENGTH, &infoLen);
 			ASSERT(infoLen > 0, "Could not retrieve program compilation log.");
 
-			infoLog = static_cast<char*>(malloc(sizeof(char) * infoLen));
+			char* infoLog = static_cast<char*>(malloc(sizeof(char) * infoLen));
 			defer { free(infoLog); };
 
 			glGetProgramInfoLog(program, sizeof(char) * infoLen, nullptr, infoLog);
@@ -239,16 +229,17 @@ namespace Jwl
 				infoLog[infoLen - 2] = '\0';
 			}
 
-			Error(infoLog);
+			Jwl::Error(infoLog);
 
 			return false;
 		}
 
 		return true;
 	}
+}
 
-	//-----------------------------------------------------------------------------------------------------
-
+namespace Jwl
+{
 	void ShaderVariantControl::Define(std::string_view name, std::string_view value)
 	{
 		ASSERT(!name.empty(), "Name cannot be empty.");
@@ -1284,6 +1275,9 @@ namespace Jwl
 
 			if (!CompileShader(hVertShader))
 			{
+				glDeleteShader(hVertShader);
+				hVertShader = GL_NONE;
+
 				Error("Shader variant's vertex stage failed to compile.");
 				Unload();
 				return false;
@@ -1303,6 +1297,9 @@ namespace Jwl
 
 			if (!CompileShader(hGeomShader))
 			{
+				glDeleteShader(hGeomShader);
+				hGeomShader = GL_NONE;
+
 				Error("Shader variant's geometry stage failed to compile.");
 				Unload();
 				return false;
@@ -1322,6 +1319,9 @@ namespace Jwl
 
 			if (!CompileShader(hFragShader))
 			{
+				glDeleteShader(hFragShader);
+				hFragShader = GL_NONE;
+
 				Error("Shader variant's fragment stage failed to compile.");
 				Unload();
 				return false;

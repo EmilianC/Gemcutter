@@ -74,6 +74,6 @@ namespace Jwl
 		UniformHandle<mat4> modelView;
 		UniformHandle<mat4> model;
 		UniformHandle<mat4> invModel;
-		UniformHandle<mat4> normalMatrix;
+		UniformHandle<mat3> normalMatrix;
 	};
 }
