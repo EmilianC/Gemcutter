@@ -270,6 +270,18 @@ namespace Jwl
 		return transform;
 	}
 
+	quat Entity::GetWorldRotation() const
+	{
+		quat result = rotation;
+
+		if (auto parentEntity = GetParent())
+		{
+			result = parentEntity->GetWorldRotation() * result;
+		}
+
+		return result;
+	}
+
 	void Entity::LookAt(const vec3& pos, const vec3& target, const vec3& up)
 	{
 		// Passthrough to get around C++ name-hiding.
@@ -280,8 +292,7 @@ namespace Jwl
 	{
 		ASSERT(this != &target, "Transform cannot look at itself.");
 
-		mat4 targetTransform = target.GetWorldTransform();
-		vec3 targetPos = targetTransform.GetTranslation();
+		vec3 targetPos = target.GetWorldTransform().GetTranslation();
 
 		// If we have a parent, we are not in world-space.
 		// We must resolve for the target position in local-space.

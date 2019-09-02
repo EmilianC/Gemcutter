@@ -60,24 +60,32 @@ namespace Jwl
 
 	void Light::Update()
 	{
-		auto transform = owner.GetWorldTransform();
-
 		switch (type.Get())
 		{
 		case Type::Spot:
+		{
 			ASSERT(angle >= 0.0f && angle <= 360.0f, "Invalid SpotLight cone angle ( %f )", angle);
+
+			mat4 transform = owner.GetWorldTransform();
 			direction.Set(-transform.GetForward());
 			position.Set(transform.GetTranslation());
 			cosAngle.Set(cos(ToRadian(angle * 0.5f)));
 			break;
+		}
 		case Type::Point:
+		{
+			mat4 transform = owner.GetWorldTransform();
 			direction.Set(vec3(0.0f));
 			position.Set(transform.GetTranslation());
 			break;
+		}
 		case Type::Directional:
-			direction.Set(-transform.GetForward());
+		{
+			quat rotation = owner.GetWorldRotation();
+			direction.Set(-rotation.GetForward());
 			position.Set(vec3(0.0f));
 			break;
+		}
 		}
 	}
 

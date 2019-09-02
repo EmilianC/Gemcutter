@@ -168,8 +168,11 @@ namespace Jwl
 		// It is added if an instance does not already exist on this Entity.
 		void CopyComponent(const ComponentBase& source);
 
-		// Returns the true transformation of the Entity, accumulated from the root of the hierarchy.
+		// Returns the final transformation of the Entity, accumulated from the root of the hierarchy.
 		mat4 GetWorldTransform() const;
+
+		// Returns the final rotation of the Entity, accumulated from the root of the hierarchy.
+		quat GetWorldRotation() const;
 
 		// Positions the Entity at 'pos' looking towards the 'target' in local space.
 		void LookAt(const vec3& pos, const vec3& target, const vec3& up = vec3::Up);
