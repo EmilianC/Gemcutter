@@ -6,7 +6,7 @@ and fine-grain control of both 2D and 3D rendering.
 
 # Why use Jewel3D?
 The framework facilitates expressive and succinct code that is both easy to read, and to use.
-With a thin API and modern C++17 concepts, Jewel3D provides powerful features without feeling clunky.
+With a thin API and C++20 features, Jewel3D provides powerful features without feeling clunky.
 
 Highlight features include:
 * [A rich shader workflow](Resources/Docs/Shader.md)
@@ -55,6 +55,6 @@ All Dependencies used under their respective licenses. Copyright is held by thei
 * [XInput 1.4](https://msdn.microsoft.com/en-us/library/windows/desktop/ee417001(v=vs.85).aspx)
 
 # Notes
-* Jewel3D is built for Windows with the latest version of Visual Studio 2017 Community and is not tested on other platforms or compilers.
+* Jewel3D is built and tested on Windows with the latest version of Visual Studio 2019 Community.
 * Jewel3D requires at least OpenGL 3.3.
 * Jewel3D is provided under the MIT License.
