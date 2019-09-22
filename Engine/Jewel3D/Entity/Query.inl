@@ -13,7 +13,7 @@ namespace Jwl
 
 		// A lightweight tag representing the end of a query's range. We use this rather than creating another
 		// potentially large end-iterator. Our custom iterators already have all the information they need to
-		// detect if they have expired, so we use this tag to ask them when they has finished enumerating the range. 
+		// detect if they have expired, so we use this tag to ask them when they has finished enumerating the range.
 		struct RangeEndSentinel {};
 
 		// Enumerates a table of the componentIndex while performing a cast and a dereference.
@@ -255,16 +255,13 @@ namespace Jwl
 	template<class Component>
 	auto All()
 	{
-		static_assert(
-			std::is_base_of_v<ComponentBase, Component>,
+		static_assert(std::is_base_of_v<ComponentBase, Component>,
 			"Template argument must be a Component.");
 
-		static_assert(
-			!std::is_base_of_v<TagBase, Component>,
+		static_assert(!std::is_base_of_v<TagBase, Component>,
 			"Cannot query tags with All<>(). Use With<>() instead.");
 
-		static_assert(
-			std::is_same_v<Component, typename Component::StaticComponentType>,
+		static_assert(std::is_same_v<Component, typename Component::StaticComponentType>,
 			"Only a direct inheritor from Component<> can be used in a query.");
 
 		using namespace detail;
@@ -300,11 +297,17 @@ namespace Jwl
 	// Disabled Components and Components belonging to disabled Entities are not considered.
 	// Unlike With<>(), adding or removing Components/Tags of the queried type will NOT invalidate the returned Range.
 	// * This should only be used if necessary, as it is much slower than using With<>() *
-	template<typename... Args>
-	auto CaptureWith()
+	template<typename Arg1, typename... Args>
+	std::vector<Entity::Ptr> CaptureWith()
 	{
 		std::vector<Entity::Ptr> result;
-		for (Entity& ent : With<Args...>())
+		if constexpr (sizeof...(Args) == 0)
+		{
+			using namespace detail;
+			result.reserve(entityIndex[Arg1::GetComponentId()].size());
+		}
+
+		for (Entity& ent : With<Arg1, Args...>())
 		{
 			result.emplace_back(ent.GetPtr());
 		}
