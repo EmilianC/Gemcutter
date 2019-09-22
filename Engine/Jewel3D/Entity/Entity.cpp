@@ -255,7 +255,9 @@ namespace Jwl
 
 		// Adjust [id, component] index.
 		auto& componentTable = detail::componentIndex[comp.componentId];
-		componentTable.erase(std::find(componentTable.begin(), componentTable.end(), &comp));
+		auto itr = std::find(componentTable.begin(), componentTable.end(), &comp);
+		*itr = componentTable.back();
+		componentTable.pop_back();
 	}
 
 	mat4 Entity::GetWorldTransform() const
