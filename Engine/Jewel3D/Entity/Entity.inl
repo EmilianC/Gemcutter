@@ -66,7 +66,7 @@ namespace Jwl
 		static_assert(!std::is_base_of_v<TagBase, T>, "Template argument cannot be a Tag.");
 		ASSERT(!Has<T>(), "Component already exists on this entity.");
 
-		auto newComponent = new T(*this, std::forward<Args>(constructorParams)...);
+		auto* newComponent = new T(*this, std::forward<Args>(constructorParams)...);
 		components.push_back(newComponent);
 
 		if (IsEnabled())
@@ -112,17 +112,17 @@ namespace Jwl
 		static_assert(!std::is_base_of_v<TagBase, T>, "Template argument cannot be a Tag.");
 
 		auto itr = components.begin();
-		for (; itr != components.end(); ++itr)
+		while (true)
 		{
+			ASSERT(itr != components.end(), "Entity did not have the expected component.");
 			if ((*itr)->componentId == T::GetComponentId())
 			{
 				ASSERT(safe_cast<T>(*itr), "Entity did not have the expected component.");
-				break;
+				return *static_cast<T*>(*itr);
 			}
-		}
 
-		ASSERT(itr != components.end(), "Entity did not have the expected component.");
-		return *static_cast<T*>(*itr);
+			++itr;
+		}
 	}
 
 	template<class T>
@@ -132,7 +132,7 @@ namespace Jwl
 		static_assert(std::is_base_of_v<ComponentBase, T>, "Template argument must inherit from Component.");
 		static_assert(!std::is_base_of_v<TagBase, T>, "Template argument cannot be a Tag.");
 
-		for (auto comp : components)
+		for (auto* comp : components)
 		{
 			if (comp->componentId == T::GetComponentId())
 			{
@@ -156,7 +156,7 @@ namespace Jwl
 			{
 				if (safe_cast<T>(components[i]))
 				{
-					auto comp = components[i];
+					auto* comp = components[i];
 					components.erase(components.begin() + i);
 
 					if (comp->IsEnabled())
