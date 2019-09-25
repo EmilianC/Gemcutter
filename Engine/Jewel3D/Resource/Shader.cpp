@@ -1260,16 +1260,18 @@ namespace Jwl
 		Unload();
 	}
 
-	bool Shader::ShaderVariant::Load(const std::string& _header, const std::string& vertSource, const std::string& geomSource, const std::string& fragSource)
+	bool Shader::ShaderVariant::Load(std::string_view _header, std::string_view vertSource, std::string_view geomSource, std::string_view fragSource)
 	{
 		hProgram = glCreateProgram();
+		std::string source;
 
 		/* Load vertex shader */
 		if (!vertSource.empty())
 		{
 			hVertShader = glCreateShader(GL_VERTEX_SHADER);
 
-			std::string source = _header + vertSource;
+			source = _header;
+			source += vertSource;
 			const char* charSource = source.c_str();
 			glShaderSource(hVertShader, 1, &charSource, nullptr);
 
@@ -1291,7 +1293,8 @@ namespace Jwl
 		{
 			hGeomShader = glCreateShader(GL_GEOMETRY_SHADER);
 
-			std::string source = _header + geomSource;
+			source = _header;
+			source += geomSource;
 			const char* charSource = source.c_str();
 			glShaderSource(hGeomShader, 1, &charSource, nullptr);
 
@@ -1313,7 +1316,8 @@ namespace Jwl
 		{
 			hFragShader = glCreateShader(GL_FRAGMENT_SHADER);
 
-			std::string source = _header + fragSource;
+			source = _header;
+			source += fragSource;
 			const char* charSource = source.c_str();
 			glShaderSource(hFragShader, 1, &charSource, nullptr);
 

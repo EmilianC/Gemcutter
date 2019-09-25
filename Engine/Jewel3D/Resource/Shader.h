@@ -142,7 +142,7 @@ namespace Jwl
 		{
 			~ShaderVariant();
 
-			bool Load(const std::string& header, const std::string& vertSource, const std::string& geomSource, const std::string& fragSource);
+			bool Load(std::string_view header, std::string_view vertSource, std::string_view geomSource, std::string_view fragSource);
 			void Unload();
 			void Bind() const;
 
