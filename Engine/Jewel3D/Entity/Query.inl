@@ -132,29 +132,42 @@ namespace Jwl
 		};
 
 		// Enumerates a SafeIterator and a templated iterator while performing a logical operation between them.
-		// The templated iterator expands into a subtree of more LogicalIterators.
+		// The templated iterator can expand into a subtree of more LogicalIterators, or be a SafeIterator itself.
 		template<class Iterator, class Operation>
 		class LogicalIterator : public std::iterator<std::forward_iterator_tag, Entity*>
 		{
+			static constexpr bool isLeaf = std::is_same_v<Iterator, SafeIterator>;
 		public:
 			LogicalIterator(SafeIterator _itr1, Iterator _itr2)
 				: itr1(_itr1), itr2(_itr2)
 			{
-				Operation::FindFirst(itr1, itr2.GetCurrentItr());
+				if constexpr (isLeaf)
+				{
+					Operation::FindFirst(itr1, itr2);
+				}
+				else
+				{
+					Operation::FindFirst(itr1, itr2.GetCurrentItr());
+				}
 			}
 
 			LogicalIterator& operator++()
 			{
-				// Update the right-hand side of the iterator hierarchy.
-				++itr2;
+				if constexpr (isLeaf)
+				{
+					Operation::FindNext(itr1, itr2);
+				}
+				else
+				{
+					// Intersect the result of the right-hand subtree with our left-hand SafeIterator.
+					++itr2;
+					Operation::FindNext(itr1, itr2.GetCurrentItr());
+				}
 
-				// Intersect the result of the subtree with our left-hand SafeIterator.
-				Operation::FindNext(itr1, itr2.GetCurrentItr());
 				return *this;
 			}
 
 			SafeIterator& GetCurrentItr() { return itr1; }
-
 			Entity& operator*() const { return *itr1; }
 
 			bool operator==(RangeEndSentinel) const { return itr1.IsTerminated(); }
@@ -163,36 +176,6 @@ namespace Jwl
 		private:
 			SafeIterator itr1;
 			Iterator itr2;
-		};
-
-		// LogicalIterator specialization for the bottom of the hierarchy.
-		// Directly operates on two SafeIterators.
-		template<class Operation>
-		class LogicalIterator<SafeIterator, Operation> : public std::iterator<std::forward_iterator_tag, Entity*>
-		{
-		public:
-			LogicalIterator(SafeIterator _itr1, SafeIterator _itr2)
-				: itr1(_itr1), itr2(_itr2)
-			{
-				Operation::FindFirst(itr1, itr2);
-			}
-
-			LogicalIterator& operator++()
-			{
-				Operation::FindNext(itr1, itr2);
-				return *this;
-			}
-
-			SafeIterator& GetCurrentItr() { return itr1; }
-
-			Entity& operator*() const { return *itr1; }
-
-			bool operator==(RangeEndSentinel) const { return itr1.IsTerminated(); }
-			bool operator!=(RangeEndSentinel) const { return !itr1.IsTerminated(); }
-
-		private:
-			SafeIterator itr1;
-			SafeIterator itr2;
 		};
 
 		// Represents a lazy-evaluated range that can be used in a range-based for loop.
