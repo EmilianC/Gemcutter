@@ -16,68 +16,40 @@ namespace Jwl
 		// detect if they have expired, so we use this tag to ask them when they has finished enumerating the range.
 		struct RangeEndSentinel {};
 
-		// Enumerates a table of the componentIndex while performing a cast and a dereference.
-		template<class Component>
-		class ComponentIterator : public std::iterator<std::forward_iterator_tag, Component>
-		{
-			using Iterator = std::vector<ComponentBase*>::iterator;
-		public:
-			ComponentIterator(Iterator _itr, Iterator _itrEnd)
-				: itr(_itr), itrEnd(_itrEnd)
-			{}
-
-			ComponentIterator& operator++()
-			{
-				ASSERT(!IsTerminated(), "Invalid range is in use.");
-				++itr;
-				return *this;
-			}
-
-			Component& operator*() const
-			{
-				ASSERT(!IsTerminated(), "Invalid range is in use.");
-				return *static_cast<Component*>(*itr);
-			}
-
-			bool operator==(RangeEndSentinel) const { return IsTerminated(); }
-			bool operator!=(RangeEndSentinel) const { return !IsTerminated(); }
-
-			bool IsTerminated() const { return itr == itrEnd; }
-
-		private:
-			// The current position in the target table.
-			Iterator itr;
-			// Ensures that we don't surpass the table while we are skipping items.
-			const Iterator itrEnd;
-		};
-
-		// A safe iterator used to enumerate the entityIndex tables.
+		// Used to enumerate an Entity or Component index table.
 		// Although it models a single iterator, it knows when it has reached the end of the table.
-		class SafeIterator : public std::iterator<std::forward_iterator_tag, Entity*>
+		template<class SourcePtr, class Target>
+		class SafeIterator
 		{
-			using Iterator = std::vector<Entity*>::iterator;
+			using Iterator          = typename std::vector<SourcePtr>::iterator;
 		public:
+			using iterator_category = std::forward_iterator_tag;
+			using value_type        = Target&;
+			using difference_type   = std::ptrdiff_t;
+			using pointer           = Target*;
+			using reference         = Target&;
+
 			SafeIterator(Iterator _itr, Iterator _itrEnd)
 				: itr(_itr), itrEnd(_itrEnd)
 			{}
 
 			SafeIterator& operator++()
 			{
-				ASSERT(!IsTerminated(), "Invalid range is in use.");
+				ASSERT(!IsTerminated(), "Invalid range.");
 				++itr;
 				return *this;
 			}
 
-			Entity& operator*() const
+			Target& operator*() const
 			{
-				ASSERT(!IsTerminated(), "Invalid range is in use.");
-				return *(*itr);
+				ASSERT(!IsTerminated(), "Invalid range.");
+				return *static_cast<Target*>(*itr);
 			}
 
-			Entity* Get() const
+			Target* Get() const
 			{
-				ASSERT(!IsTerminated(), "Invalid range is in use.");
-				return *itr;
+				ASSERT(!IsTerminated(), "Invalid range.");
+				return static_cast<Target*>(*itr);
 			}
 
 			bool operator==(RangeEndSentinel) const { return IsTerminated(); }
@@ -93,11 +65,15 @@ namespace Jwl
 			const Iterator itrEnd;
 		};
 
+		template<class Component>
+		using ComponentIterator = SafeIterator<ComponentBase*, Component>;
+		using EntityIterator = SafeIterator<Entity*, Entity>;
+
 		// Provides functions to advance two SafeIterators as a logical AND of two entityIndex tables.
 		// This provider pattern will allow us to add more operations in the future.
 		struct Intersection
 		{
-			static void FindFirst(SafeIterator& itr1, SafeIterator& itr2)
+			static void FindFirst(EntityIterator& itr1, EntityIterator& itr2)
 			{
 				while (!(itr1.IsTerminated() || itr2.IsTerminated()))
 				{
@@ -125,7 +101,7 @@ namespace Jwl
 				}
 			}
 
-			static void FindNext(SafeIterator& itr1, SafeIterator& itr2)
+			static void FindNext(EntityIterator& itr1, EntityIterator& itr2)
 			{
 				FindFirst(++itr1, itr2);
 			}
@@ -136,9 +112,9 @@ namespace Jwl
 		template<class Iterator, class Operation>
 		class LogicalIterator : public std::iterator<std::forward_iterator_tag, Entity*>
 		{
-			static constexpr bool isLeaf = std::is_same_v<Iterator, SafeIterator>;
+			static constexpr bool isLeaf = std::is_same_v<Iterator, EntityIterator>;
 		public:
-			LogicalIterator(SafeIterator _itr1, Iterator _itr2)
+			LogicalIterator(EntityIterator _itr1, Iterator _itr2)
 				: itr1(_itr1), itr2(_itr2)
 			{
 				if constexpr (isLeaf)
@@ -167,14 +143,14 @@ namespace Jwl
 				return *this;
 			}
 
-			SafeIterator& GetCurrentItr() { return itr1; }
+			EntityIterator& GetCurrentItr() { return itr1; }
 			Entity& operator*() const { return *itr1; }
 
 			bool operator==(RangeEndSentinel) const { return itr1.IsTerminated(); }
 			bool operator!=(RangeEndSentinel) const { return !itr1.IsTerminated(); }
 
 		private:
-			SafeIterator itr1;
+			EntityIterator itr1;
 			Iterator itr2;
 		};
 
@@ -204,7 +180,7 @@ namespace Jwl
 
 		// Template deduction assisted construction.
 		template<class Iterator>
-		auto BuildLogicalIterator(SafeIterator&& set1, Iterator&& set2)
+		auto BuildLogicalIterator(EntityIterator&& set1, Iterator&& set2)
 		{
 			return LogicalIterator<Iterator, Intersection>(set1, set2);
 		}
@@ -217,18 +193,18 @@ namespace Jwl
 			auto begin = index.begin();
 			auto end = index.end();
 
-			return BuildLogicalIterator(SafeIterator(begin, end), BuildRootIterator<Arg2, Args...>());
+			return BuildLogicalIterator(EntityIterator(begin, end), BuildRootIterator<Arg2, Args...>());
 		}
 
 		// BuildRootIterator() base case.
 		template<typename Arg>
-		SafeIterator BuildRootIterator()
+		EntityIterator BuildRootIterator()
 		{
 			auto& index = entityIndex[Arg::GetComponentId()];
 			auto begin = index.begin();
 			auto end = index.end();
 
-			return SafeIterator(begin, end);
+			return EntityIterator(begin, end);
 		}
 	}
 
