@@ -86,7 +86,7 @@ namespace Jwl
 		friend ShareableAlloc;
 
 		Entity() = default;
-		Entity(const std::string& name);
+		Entity(std::string name);
 		Entity(const Transform& pose);
 
 	public:

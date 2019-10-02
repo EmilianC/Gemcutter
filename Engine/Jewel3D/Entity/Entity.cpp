@@ -44,9 +44,9 @@ namespace Jwl
 		return counter++;
 	}
 
-	Entity::Entity(const std::string& name)
+	Entity::Entity(std::string name)
 	{
-		Add<Name>(name);
+		Add<Name>(std::move(name));
 	}
 
 	Entity::Entity(const Transform& pose)
