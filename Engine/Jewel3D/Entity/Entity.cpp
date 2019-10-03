@@ -222,7 +222,9 @@ namespace Jwl
 			UnindexTag(tagId);
 		}
 
-		tags.erase(std::find(tags.begin(), tags.end(), tagId));
+		auto itr = std::find(tags.begin(), tags.end(), tagId);
+		*itr = tags.back();
+		tags.pop_back();
 	}
 
 	void Entity::IndexTag(unsigned tagId)
