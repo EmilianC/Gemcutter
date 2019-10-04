@@ -77,31 +77,23 @@ namespace Jwl
 		return *newComponent;
 	}
 
-	template<class T1, class T2, typename... Args>
-	void Entity::Add()
+	template<class T1, class T2, typename... Tx>
+	std::tuple<T1&, T2&, Tx&...> Entity::Add()
 	{
-		Add<T1>();
-		Add<T2>();
-		(Add<Args>(), ...);
+		return std::tie(Add<T1>(), Add<T2>(), Add<Tx>()...);
 	}
 
-	template<class T, typename... Args>
-	auto Entity::Require() -> std::conditional_t<sizeof...(Args) == 0, T&, void>
+	template<class T>
+	T& Entity::Require()
 	{
 		auto* comp = Try<T>();
-		if (!comp)
-		{
-			comp = &Add<T>();
-		}
+		return comp ? *comp : Add<T>();
+	}
 
-		if constexpr (sizeof...(Args) > 0)
-		{
-			(Require<Args>(), ...);
-		}
-		else
-		{
-			return *comp;
-		}
+	template<class T1, class T2, typename... Tx>
+	std::tuple<T1&, T2&, Tx&...> Entity::Require()
+	{
+		return std::tie(Require<T1>(), Require<T2>(), Require<Tx>()...);
 	}
 
 	template<class T>

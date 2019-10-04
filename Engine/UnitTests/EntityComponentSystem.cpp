@@ -72,30 +72,59 @@ TEST_CASE("Entity-Component-System")
 
 		CHECK(!ent->Has<Comp1>());
 		CHECK(!ent->Has<Comp2>());
+		CHECK(!ent->Has<DerivedA>());
 
-		ent->Add<Comp1, Comp2>();
+		auto [comp1, comp2, derived] = ent->Add<Comp1, Comp2, DerivedA>();
 		CHECK(ent->Has<Comp1>());
 		CHECK(ent->Has<Comp2>());
+		CHECK(ent->Has<DerivedA>());
+		CHECK(&comp1 == &ent->Get<Comp1>());
+		CHECK(&comp2 == &ent->Get<Comp2>());
+		CHECK(&derived == &ent->Get<DerivedA>());
+		CHECK(comp1.IsEnabled());
+		CHECK(comp2.IsEnabled());
+		CHECK(derived.IsEnabled());
 
 		ent->RemoveAllComponents();
 		CHECK(!ent->Has<Comp1>());
 		CHECK(!ent->Has<Comp2>());
+		CHECK(!ent->Has<DerivedA>());
 	}
 
-	SECTION("Require Components")
+	SECTION("Requiring/Removing Multiple Components")
 	{
 		auto ent = Entity::MakeNew();
 
-		CHECK(!ent->Try<Comp1>());
-		CHECK(!ent->Try<Comp2>());
+		CHECK(!ent->Has<Comp1>());
+		CHECK(!ent->Has<Comp2>());
+		CHECK(!ent->Has<DerivedA>());
 
 		ent->Require<Comp1>();
-		CHECK(ent->Try<Comp1>());
-		CHECK(!ent->Try<Comp2>());
+		CHECK(ent->Has<Comp1>());
+		CHECK(!ent->Has<Comp2>());
+		CHECK(!ent->Has<DerivedA>());
 
 		ent->Require<Comp1, Comp2>();
-		CHECK(ent->Try<Comp1>());
-		CHECK(ent->Try<Comp2>());
+		CHECK(ent->Has<Comp1>());
+		CHECK(ent->Has<Comp2>());
+		CHECK(!ent->Has<DerivedA>());
+
+		ent->RemoveAllComponents();
+		CHECK(!ent->Has<Comp1>());
+		CHECK(!ent->Has<Comp2>());
+		CHECK(!ent->Has<DerivedA>());
+
+		auto [comp1, comp2, derived] = ent->Require<Comp1, Comp2, DerivedA>();
+		CHECK(ent->Has<Comp1>());
+		CHECK(ent->Has<Comp2>());
+		CHECK(ent->Has<DerivedA>());
+
+		CHECK(&comp1 == &ent->Get<Comp1>());
+		CHECK(&comp2 == &ent->Get<Comp2>());
+		CHECK(&derived == &ent->Get<DerivedA>());
+		CHECK(comp1.IsEnabled());
+		CHECK(comp2.IsEnabled());
+		CHECK(derived.IsEnabled());
 	}
 
 	SECTION("Try getting Components")

@@ -6,6 +6,7 @@
 #include "Jewel3D/Utilities/Hierarchy.h"
 #include "Jewel3D/Utilities/Meta.h"
 
+#include <tuple>
 #include <unordered_map>
 #include <vector>
 
@@ -98,14 +99,17 @@ namespace Jwl
 		template<class T, typename... Args>
 		T& Add(Args&&... constructorParams);
 
-		// Adds all specified Components, default constructed.
-		template<class T1, class T2, typename... Args>
-		void Add();
+		// Returns new specified Components, default constructed.
+		template<class T1, class T2, typename... Tx>
+		std::tuple<T1&, T2&, Tx&...> Add();
 
-		// Adds the specified components if any don't already exist.
-		// When given a single argument, a reference is returned.
-		template<class T, typename... Args>
-		auto Require() -> std::conditional_t<sizeof...(Args) == 0, T&, void>;
+		// Adds the specified Component if it doesn't already exist.
+		template<class T>
+		T& Require();
+
+		// Adds all the specified Components if any don't already exist.
+		template<class T1, class T2, typename... Tx>
+		std::tuple<T1&, T2&, Tx&...> Require();
 
 		// Returns the requested component. Asserts if the component does not exist.
 		template<class T>
