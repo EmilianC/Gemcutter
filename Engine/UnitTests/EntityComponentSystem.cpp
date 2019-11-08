@@ -72,30 +72,59 @@ TEST_CASE("Entity-Component-System")
 
 		CHECK(!ent->Has<Comp1>());
 		CHECK(!ent->Has<Comp2>());
+		CHECK(!ent->Has<DerivedA>());
 
-		ent->Add<Comp1, Comp2>();
+		auto [comp1, comp2, derived] = ent->Add<Comp1, Comp2, DerivedA>();
 		CHECK(ent->Has<Comp1>());
 		CHECK(ent->Has<Comp2>());
+		CHECK(ent->Has<DerivedA>());
+		CHECK(&comp1 == &ent->Get<Comp1>());
+		CHECK(&comp2 == &ent->Get<Comp2>());
+		CHECK(&derived == &ent->Get<DerivedA>());
+		CHECK(comp1.IsEnabled());
+		CHECK(comp2.IsEnabled());
+		CHECK(derived.IsEnabled());
 
 		ent->RemoveAllComponents();
 		CHECK(!ent->Has<Comp1>());
 		CHECK(!ent->Has<Comp2>());
+		CHECK(!ent->Has<DerivedA>());
 	}
 
-	SECTION("Require Components")
+	SECTION("Requiring/Removing Multiple Components")
 	{
 		auto ent = Entity::MakeNew();
 
-		CHECK(!ent->Try<Comp1>());
-		CHECK(!ent->Try<Comp2>());
+		CHECK(!ent->Has<Comp1>());
+		CHECK(!ent->Has<Comp2>());
+		CHECK(!ent->Has<DerivedA>());
 
 		ent->Require<Comp1>();
-		CHECK(ent->Try<Comp1>());
-		CHECK(!ent->Try<Comp2>());
+		CHECK(ent->Has<Comp1>());
+		CHECK(!ent->Has<Comp2>());
+		CHECK(!ent->Has<DerivedA>());
 
 		ent->Require<Comp1, Comp2>();
-		CHECK(ent->Try<Comp1>());
-		CHECK(ent->Try<Comp2>());
+		CHECK(ent->Has<Comp1>());
+		CHECK(ent->Has<Comp2>());
+		CHECK(!ent->Has<DerivedA>());
+
+		ent->RemoveAllComponents();
+		CHECK(!ent->Has<Comp1>());
+		CHECK(!ent->Has<Comp2>());
+		CHECK(!ent->Has<DerivedA>());
+
+		auto [comp1, comp2, derived] = ent->Require<Comp1, Comp2, DerivedA>();
+		CHECK(ent->Has<Comp1>());
+		CHECK(ent->Has<Comp2>());
+		CHECK(ent->Has<DerivedA>());
+
+		CHECK(&comp1 == &ent->Get<Comp1>());
+		CHECK(&comp2 == &ent->Get<Comp2>());
+		CHECK(&derived == &ent->Get<DerivedA>());
+		CHECK(comp1.IsEnabled());
+		CHECK(comp2.IsEnabled());
+		CHECK(derived.IsEnabled());
 	}
 
 	SECTION("Try getting Components")
@@ -181,6 +210,11 @@ TEST_CASE("Entity-Component-System")
 		CHECK(!ent->HasTag<TagA>());
 		CHECK(!ent->HasTag<TagB>());
 		CHECK(!ent->HasTag<TagC>());
+
+		ent->Tag<TagA, TagB, TagC>();
+		CHECK(ent->HasTag<TagA>());
+		CHECK(ent->HasTag<TagB>());
+		CHECK(ent->HasTag<TagC>());
 	}
 
 	SECTION("Enabling / Disabling")
@@ -717,44 +751,82 @@ TEST_CASE("Entity-Component-System")
 				}
 				CHECK(count == 0);
 			}
+		}
 
-			SECTION("CaptureWith<>()")
+		SECTION("CaptureWith<>()")
+		{
+			ent1->Add<Comp1>();
+			ent1->Add<Comp2>();
+			ent1->Tag<TagA>();
+
+			ent2->Add<Comp1>();
+			ent2->Add<Comp2>();
+			ent2->Tag<TagC>();
+
+			ent3->Add<Comp1>();
+			ent3->Tag<TagB>();
+			ent3->Disable();
+
+			ent4->Disable();
+			ent4->Add<Comp1>();
+
+			auto count = 0;
+			bool foundEnt1 = false;
+			bool foundEnt2 = false;
+			bool foundEnt3 = false;
+			bool foundEnt4 = false;
+
+			SECTION("1 Argument")
 			{
-				// Target #1 with Comp1/Comp2
-				ent1->Add<Comp1>();
-				ent1->Add<Comp2>();
-				// Target #2 with Comp1/Comp2
-				ent2->Add<Comp1>();
-				ent2->Add<Comp2>();
-
-				// Some database noise.
-				ent1->Tag<TagA>();
-				ent2->Tag<TagC>();
-				ent3->Add<Comp1>();
-				ent3->Tag<TagB>();
-				ent3->Disable();
-				ent4->Disable();
-				ent4->Add<Comp1>();
-
 				// Query the Entity Database. We expect only our target Entities as a result.
-				auto results = CaptureWith<Comp1, Comp2>();
+				auto results = CaptureWith<Comp2>();
 
-				// The targets no longer match the query, but they have already been captured.
-				ent1->RemoveAllComponents();
-				ent2->RemoveAllComponents();
+				// The targets will no longer match the query, but they have already been captured.
+				ent1->RemoveAllComponents(); ent1->RemoveAllTags();
+				ent2->RemoveAllComponents(); ent2->RemoveAllTags();
+				ent3->RemoveAllComponents(); ent3->RemoveAllTags();
+				ent4->RemoveAllComponents(); ent4->RemoveAllTags();
 
-				auto count = 0;
-				bool foundEnt1 = false;
-				bool foundEnt2 = false;
 				for (auto& entity : results)
 				{
 					if (entity.get() == ent1.get()) foundEnt1 = true;
 					if (entity.get() == ent2.get()) foundEnt2 = true;
+					if (entity.get() == ent3.get()) foundEnt3 = true;
+					if (entity.get() == ent4.get()) foundEnt4 = true;
 					count++;
 				}
 
 				CHECK(foundEnt1);
 				CHECK(foundEnt2);
+				CHECK(!foundEnt3);
+				CHECK(!foundEnt4);
+				CHECK(count == 2);
+			}
+
+			SECTION("2 Arguments")
+			{
+				// Query the Entity Database. We expect only our target Entities as a result.
+				auto results = CaptureWith<Comp1, Comp2>();
+
+				// The targets will no longer match the query, but they have already been captured.
+				ent1->RemoveAllComponents(); ent1->RemoveAllTags();
+				ent2->RemoveAllComponents(); ent2->RemoveAllTags();
+				ent3->RemoveAllComponents(); ent3->RemoveAllTags();
+				ent4->RemoveAllComponents(); ent4->RemoveAllTags();
+
+				for (auto& entity : results)
+				{
+					if (entity.get() == ent1.get()) foundEnt1 = true;
+					if (entity.get() == ent2.get()) foundEnt2 = true;
+					if (entity.get() == ent3.get()) foundEnt3 = true;
+					if (entity.get() == ent4.get()) foundEnt4 = true;
+					count++;
+				}
+
+				CHECK(foundEnt1);
+				CHECK(foundEnt2);
+				CHECK(!foundEnt3);
+				CHECK(!foundEnt4);
 				CHECK(count == 2);
 			}
 		}

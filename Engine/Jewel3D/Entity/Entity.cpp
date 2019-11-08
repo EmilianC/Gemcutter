@@ -222,7 +222,9 @@ namespace Jwl
 			UnindexTag(tagId);
 		}
 
-		tags.erase(std::find(tags.begin(), tags.end(), tagId));
+		auto itr = std::find(tags.begin(), tags.end(), tagId);
+		*itr = tags.back();
+		tags.pop_back();
 	}
 
 	void Entity::IndexTag(unsigned tagId)
@@ -255,7 +257,9 @@ namespace Jwl
 
 		// Adjust [id, component] index.
 		auto& componentTable = detail::componentIndex[comp.componentId];
-		componentTable.erase(std::find(componentTable.begin(), componentTable.end(), &comp));
+		auto itr = std::find(componentTable.begin(), componentTable.end(), &comp);
+		*itr = componentTable.back();
+		componentTable.pop_back();
 	}
 
 	mat4 Entity::GetWorldTransform() const

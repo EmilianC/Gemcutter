@@ -66,7 +66,7 @@ namespace Jwl
 		static_assert(!std::is_base_of_v<TagBase, T>, "Template argument cannot be a Tag.");
 		ASSERT(!Has<T>(), "Component already exists on this entity.");
 
-		auto newComponent = new T(*this, std::forward<Args>(constructorParams)...);
+		auto* newComponent = new T(*this, std::forward<Args>(constructorParams)...);
 		components.push_back(newComponent);
 
 		if (IsEnabled())
@@ -77,31 +77,23 @@ namespace Jwl
 		return *newComponent;
 	}
 
-	template<class T1, class T2, typename... Args>
-	void Entity::Add()
+	template<class T1, class T2, typename... Tx>
+	std::tuple<T1&, T2&, Tx&...> Entity::Add()
 	{
-		Add<T1>();
-		Add<T2>();
-		(Add<Args>(), ...);
+		return std::tie(Add<T1>(), Add<T2>(), Add<Tx>()...);
 	}
 
-	template<class T, typename... Args>
-	auto Entity::Require() -> std::conditional_t<sizeof...(Args) == 0, T&, void>
+	template<class T>
+	T& Entity::Require()
 	{
 		auto* comp = Try<T>();
-		if (!comp)
-		{
-			comp = &Add<T>();
-		}
+		return comp ? *comp : Add<T>();
+	}
 
-		if constexpr (sizeof...(Args) > 0)
-		{
-			(Require<Args>(), ...);
-		}
-		else
-		{
-			return *comp;
-		}
+	template<class T1, class T2, typename... Tx>
+	std::tuple<T1&, T2&, Tx&...> Entity::Require()
+	{
+		return std::tie(Require<T1>(), Require<T2>(), Require<Tx>()...);
 	}
 
 	template<class T>
@@ -112,17 +104,17 @@ namespace Jwl
 		static_assert(!std::is_base_of_v<TagBase, T>, "Template argument cannot be a Tag.");
 
 		auto itr = components.begin();
-		for (; itr != components.end(); ++itr)
+		while (true)
 		{
+			ASSERT(itr != components.end(), "Entity did not have the expected component.");
 			if ((*itr)->componentId == T::GetComponentId())
 			{
 				ASSERT(safe_cast<T>(*itr), "Entity did not have the expected component.");
-				break;
+				return *static_cast<T*>(*itr);
 			}
-		}
 
-		ASSERT(itr != components.end(), "Entity did not have the expected component.");
-		return *static_cast<T*>(*itr);
+			++itr;
+		}
 	}
 
 	template<class T>
@@ -132,7 +124,7 @@ namespace Jwl
 		static_assert(std::is_base_of_v<ComponentBase, T>, "Template argument must inherit from Component.");
 		static_assert(!std::is_base_of_v<TagBase, T>, "Template argument cannot be a Tag.");
 
-		for (auto comp : components)
+		for (auto* comp : components)
 		{
 			if (comp->componentId == T::GetComponentId())
 			{
@@ -156,7 +148,7 @@ namespace Jwl
 			{
 				if (safe_cast<T>(components[i]))
 				{
-					auto comp = components[i];
+					auto* comp = components[i];
 					components.erase(components.begin() + i);
 
 					if (comp->IsEnabled())
@@ -181,16 +173,23 @@ namespace Jwl
 		return Try<T>() != nullptr;
 	}
 
-	template<class T>
+	template<class T, typename... Args>
 	void Entity::Tag()
 	{
-		static_assert(std::is_base_of_v<TagBase, T>, "Template argument must inherit from Tag.");
-		if (HasTag<T>())
+		if constexpr (sizeof...(Args))
 		{
-			return;
+			Tag<T>();
+			Tag<Args...>();
 		}
+		else
+		{
+			static_assert(std::is_base_of_v<TagBase, T>, "Template argument must inherit from Tag.");
 
-		Tag(T::GetComponentId());
+			if (!HasTag<T>())
+			{
+				Tag(T::GetComponentId());
+			}
+		}
 	}
 
 	template<class T>
