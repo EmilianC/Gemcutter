@@ -130,8 +130,8 @@ namespace Jwl
 		template<class T>
 		bool Has() const;
 
-		// Adds the specified tag ID if the Entity doesn't already have it.
-		template<class T>
+		// Adds all the specified tags if any don't already exist.
+		template<class T, typename... Args>
 		void Tag();
 
 		// Removes the specified tag ID from the Entity.

@@ -210,6 +210,11 @@ TEST_CASE("Entity-Component-System")
 		CHECK(!ent->HasTag<TagA>());
 		CHECK(!ent->HasTag<TagB>());
 		CHECK(!ent->HasTag<TagC>());
+
+		ent->Tag<TagA, TagB, TagC>();
+		CHECK(ent->HasTag<TagA>());
+		CHECK(ent->HasTag<TagB>());
+		CHECK(ent->HasTag<TagC>());
 	}
 
 	SECTION("Enabling / Disabling")

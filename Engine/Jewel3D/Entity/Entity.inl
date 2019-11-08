@@ -173,16 +173,23 @@ namespace Jwl
 		return Try<T>() != nullptr;
 	}
 
-	template<class T>
+	template<class T, typename... Args>
 	void Entity::Tag()
 	{
-		static_assert(std::is_base_of_v<TagBase, T>, "Template argument must inherit from Tag.");
-		if (HasTag<T>())
+		if constexpr (sizeof...(Args))
 		{
-			return;
+			Tag<T>();
+			Tag<Args...>();
 		}
+		else
+		{
+			static_assert(std::is_base_of_v<TagBase, T>, "Template argument must inherit from Tag.");
 
-		Tag(T::GetComponentId());
+			if (!HasTag<T>())
+			{
+				Tag(T::GetComponentId());
+			}
+		}
 	}
 
 	template<class T>
