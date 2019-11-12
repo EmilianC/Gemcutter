@@ -250,6 +250,7 @@
     <ClInclude Include="Jewel3D\Sound\SoundListener.h" />
     <ClInclude Include="Jewel3D\Sound\SoundSource.h" />
     <ClInclude Include="Jewel3D\Sound\SoundSystem.h" />
+    <ClInclude Include="Jewel3D\Utilities\Container.h" />
     <ClInclude Include="Jewel3D\Utilities\EnumFlags.h" />
     <ClInclude Include="Jewel3D\Utilities\Hierarchy.h" />
     <ClInclude Include="Jewel3D\Utilities\Meta.h" />
