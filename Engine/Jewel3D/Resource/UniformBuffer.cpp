@@ -106,7 +106,7 @@ namespace Jwl
 
 	bool UniformBuffer::IsUniform(const std::string& name) const
 	{
-		return table.find(name) != table.end();
+		return table.contains(name);
 	}
 
 	void UniformBuffer::AddUniform(const std::string& name, unsigned bytes, unsigned alignment, unsigned count)
