@@ -4,7 +4,9 @@
 #include "Jewel3D/Application/Logging.h"
 #include "Jewel3D/Math/Matrix.h"
 #include "Jewel3D/Rendering/Rendering.h"
+#include "Jewel3D/Utilities/Container.h"
 
+#include <string_view>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -27,7 +29,7 @@ namespace Jwl
 		// During the initialization phase, appends a new variable to the buffer.
 		// Returns a handle to the newly added uniform.
 		template<class T>
-		UniformHandle<T> AddUniform(const std::string& name, unsigned count = 1);
+		UniformHandle<T> AddUniform(std::string_view name, unsigned count = 1);
 
 		// Once this is called, no more uniforms can be added and the buffer is ready for use.
 		void InitBuffer(VertexBufferUsage usage = VertexBufferUsage::Static);
@@ -39,28 +41,28 @@ namespace Jwl
 		// Once initialized, this sets the value of a uniform.
 		// * If used regularly, consider caching a UniformHandle instead. It will be faster *
 		template<class T>
-		void SetUniform(const std::string& name, const T& data);
+		void SetUniform(std::string_view name, const T& data);
 		template<class T>
-		void SetUniformArray(const std::string& name, unsigned numElements, T* data);
+		void SetUniformArray(std::string_view name, unsigned numElements, T* data);
 
 		// Returns a handle that can be used to directly modify the value of a uniform.
 		// This is more performant then SetUniform() or SetUniformArray().
 		template<class T>
-		UniformHandle<T> MakeHandle(const std::string& name);
+		UniformHandle<T> MakeHandle(std::string_view name);
 
 		int GetByteSize() const;
-		bool IsUniform(const std::string& name) const;
+		bool IsUniform(std::string_view name) const;
 
 	private:
-		void AddUniform(const std::string& name, unsigned bytes, unsigned alignment, unsigned count);
-		void* GetBufferLoc(const std::string& name) const;
+		void AddUniform(std::string name, unsigned bytes, unsigned alignment, unsigned count);
+		void* GetBufferLoc(std::string_view name) const;
 
 		mutable bool dirty  = true;
 		unsigned UBO        = 0;
 		void* buffer        = nullptr;
 		unsigned bufferSize = 0;
 
-		std::unordered_map<std::string, unsigned> table;
+		std::unordered_map<std::string, unsigned, string_hash> table;
 	};
 
 	// Used to associate a UniformBuffer with a particular binding point.
