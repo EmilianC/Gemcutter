@@ -2,6 +2,7 @@
 #pragma once
 #include "Jewel3D/Application/FileSystem.h"
 #include "Jewel3D/Application/Logging.h"
+#include "Jewel3D/Utilities/Container.h"
 
 #include <string>
 #include <unordered_map>
@@ -35,7 +36,7 @@ namespace Jwl
 				Warning("Asset loaded with an absolute path. To ensure proper asset caching, it is recommended to use only relative paths.");
 			}
 
-			// Search for the cached asset. 
+			// Search for the cached asset.
 			if (auto ptr = Find(filePath))
 			{
 				return ptr;
@@ -57,7 +58,7 @@ namespace Jwl
 		}
 
 		// Searches for a loaded asset previously loaded from the specified file path.
-		static std::shared_ptr<Asset> Find(const std::string& filePath)
+		static std::shared_ptr<Asset> Find(std::string_view filePath)
 		{
 			auto itr = resourceCache.find(filePath);
 			if (itr == resourceCache.end())
@@ -77,11 +78,11 @@ namespace Jwl
 		}
 
 	private:
-		static std::unordered_map<std::string, std::shared_ptr<Asset>> resourceCache;
+		static std::unordered_map<std::string, std::shared_ptr<Asset>, string_hash> resourceCache;
 	};
 
 	template<class Asset>
-	std::unordered_map<std::string, std::shared_ptr<Asset>> Resource<Asset>::resourceCache;
+	std::unordered_map<std::string, std::shared_ptr<Asset>, string_hash> Resource<Asset>::resourceCache;
 
 	// Helper function to load an asset.
 	template<class Asset, typename... Args>

@@ -2,7 +2,7 @@
 namespace Jwl
 {
 	template<class T>
-	UniformHandle<T> UniformBuffer::AddUniform(const std::string& name, unsigned count)
+	UniformHandle<T> UniformBuffer::AddUniform(std::string_view name, unsigned count)
 	{
 		static_assert(std::is_standard_layout_v<T>, "Uniforms cannot be complex types.");
 
@@ -25,51 +25,51 @@ namespace Jwl
 			size = sizeof(vec4) * 3;
 		}
 
-		AddUniform(name, size, alignment, count);
+		AddUniform(std::string(name), size, alignment, count);
 
 		return MakeHandle<T>(name);
 	}
 
 	template<class T>
-	void UniformBuffer::SetUniform(const std::string& name, const T& data)
+	void UniformBuffer::SetUniform(std::string_view name, const T& data)
 	{
 		static_assert(std::is_standard_layout_v<T>, "Uniforms cannot be complex types.");
 
 		T* dest = reinterpret_cast<T*>(GetBufferLoc(name));
-		ASSERT(dest, "Could not find uniform parameter ( %s ).", name.c_str());
+		ASSERT(dest, "Could not find uniform parameter ( %s ).", name.data());
 		ASSERT(reinterpret_cast<char*>(dest) + sizeof(T) <= reinterpret_cast<char*>(buffer) + bufferSize,
-			"Setting uniform ( %s ) out of bounds of the buffer.", name.c_str());
+			"Setting uniform ( %s ) out of bounds of the buffer.", name.data());
 
 		*dest = data;
 		dirty = true;
 	}
 
 	template<class T>
-	void UniformBuffer::SetUniformArray(const std::string& name, unsigned numElements, T* data)
+	void UniformBuffer::SetUniformArray(std::string_view name, unsigned numElements, T* data)
 	{
 		static_assert(std::is_standard_layout_v<T>, "Uniforms cannot be complex types.");
 		ASSERT(data != nullptr, "Source data cannot be null.");
 
 		void* dest = GetBufferLoc(name);
-		ASSERT(dest, "Could not find uniform parameter ( %s ).", name.c_str());
+		ASSERT(dest, "Could not find uniform parameter ( %s ).", name.data());
 		ASSERT(reinterpret_cast<char*>(dest) + sizeof(T) * numElements <= reinterpret_cast<char*>(buffer) + bufferSize,
-			"Setting uniform ( %s ) out of bounds of the buffer.", name.c_str());
+			"Setting uniform ( %s ) out of bounds of the buffer.", name.data());
 
 		memcpy(dest, data, sizeof(T) * numElements);
 		dirty = true;
 	}
 
 	template<class T>
-	UniformHandle<T> UniformBuffer::MakeHandle(const std::string& name)
+	UniformHandle<T> UniformBuffer::MakeHandle(std::string_view name)
 	{
 		auto itr = table.find(name);
-		ASSERT(itr != table.end(), "\"%s\" does not match the name of a Uniform.", name.c_str());
+		ASSERT(itr != table.end(), "\"%s\" does not match the name of a Uniform.", name.data());
 
 		return UniformHandle<T>(*this, itr->second);
 	}
 
-	template<> void UniformBuffer::SetUniform<mat2>(const std::string& name, const mat2& data);
-	template<> void UniformBuffer::SetUniform<mat3>(const std::string& name, const mat3& data);
+	template<> void UniformBuffer::SetUniform<mat2>(std::string_view name, const mat2& data);
+	template<> void UniformBuffer::SetUniform<mat3>(std::string_view name, const mat3& data);
 
 	template<class T>
 	UniformHandle<T>::UniformHandle(UniformBuffer& buff, unsigned _offset)
