@@ -11,9 +11,12 @@ namespace Jwl
 		using std::enable_shared_from_this<Derived>::shared_from_this;
 
 	protected:
-		// If the Derived class must have a private constructor, declare "friend ShareableAlloc;"
-		// and MakeNew() will still be able to instantiate it.
-		using ShareableAlloc = std::_Ref_count_obj<Derived>;
+		// A helper allowing private constructors to participate in the Shareable pattern.
+		struct ShareableAlloc : public Derived
+		{
+			template<typename... Args>
+			ShareableAlloc(Args&&... args) : Derived(std::forward<Args>(args)...) {}
+		};
 
 	public:
 		using Ptr = std::shared_ptr<Derived>;
@@ -44,7 +47,9 @@ namespace Jwl
 		template<typename... Args>
 		static Ptr MakeNew(Args&&... params)
 		{
-			return std::make_shared<Derived>(std::forward<Args>(params)...);
+			// If you have a compile error because the Derived class has an inaccessable private constructor,
+			// declare "friend ShareableAlloc;" and MakeNew() will still be able to instantiate it.
+			return std::make_shared<ShareableAlloc>(std::forward<Args>(params)...);
 		}
 	};
 }
