@@ -61,5 +61,7 @@ namespace Jwl
 		BlendFunc blendMode = BlendFunc::None;
 		DepthFunc depthMode = DepthFunc::Normal;
 		CullFunc cullMode = CullFunc::Clockwise;
+
+		static Shader::WeakPtr passThroughShader;
 	};
 }

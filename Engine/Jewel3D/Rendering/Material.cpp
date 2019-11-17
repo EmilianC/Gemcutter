@@ -7,9 +7,20 @@
 
 namespace Jwl
 {
+	Shader::WeakPtr Material::passThroughShader;
+
 	Material::Material(Entity& _owner)
 		: Component(_owner)
 	{
+		if (auto lock = passThroughShader.lock())
+		{
+			shader = std::move(lock);
+		}
+		else
+		{
+			shader = Shader::MakeNewPassThrough();
+			passThroughShader = shader;
+		}
 	}
 
 	Material::Material(Entity& _owner, Shader::Ptr _shader)
@@ -19,7 +30,7 @@ namespace Jwl
 	}
 
 	Material::Material(Entity& _owner, Texture::Ptr texture)
-		: Component(_owner)
+		: Material(_owner)
 	{
 		if (texture)
 		{
