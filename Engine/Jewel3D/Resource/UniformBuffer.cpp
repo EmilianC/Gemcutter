@@ -104,12 +104,12 @@ namespace Jwl
 		return bufferSize;
 	}
 
-	bool UniformBuffer::IsUniform(const std::string& name) const
+	bool UniformBuffer::IsUniform(std::string_view name) const
 	{
-		return table.find(name) != table.end();
+		return table.contains(name);
 	}
 
-	void UniformBuffer::AddUniform(const std::string& name, unsigned bytes, unsigned alignment, unsigned count)
+	void UniformBuffer::AddUniform(std::string name, unsigned bytes, unsigned alignment, unsigned count)
 	{
 		ASSERT(UBO == GL_NONE, "UniformBuffer has already been initialized and locked.");
 		ASSERT(count != 0, "Must add at least one element.");
@@ -122,7 +122,7 @@ namespace Jwl
 			// Start of a single element is aligned to its own size.
 			bufferSize = round(bufferSize, alignment);
 
-			table[name] = bufferSize;
+			table.emplace(std::move(name), bufferSize);
 			bufferSize += bytes;
 		}
 		else
@@ -133,7 +133,7 @@ namespace Jwl
 			// The size of an individual element is aligned to the nearest vec4.
 			bytes = round(bytes, sizeof(vec4));
 
-			table[name] = bufferSize;
+			table.emplace(std::move(name), bufferSize);
 			bufferSize += bytes * count;
 
 			// There must be padding after an array to the next vec4.
@@ -141,7 +141,7 @@ namespace Jwl
 		}
 	}
 
-	void* UniformBuffer::GetBufferLoc(const std::string& name) const
+	void* UniformBuffer::GetBufferLoc(std::string_view name) const
 	{
 		auto loc = table.find(name);
 		if (loc != table.end())
@@ -155,12 +155,12 @@ namespace Jwl
 	}
 
 	template<>
-	void UniformBuffer::SetUniform<mat2>(const std::string& name, const mat2& data)
+	void UniformBuffer::SetUniform<mat2>(std::string_view name, const mat2& data)
 	{
 		vec4* dest = reinterpret_cast<vec4*>(GetBufferLoc(name));
-		ASSERT(dest, "Could not find uniform parameter ( %s ).", name.c_str());
+		ASSERT(dest, "Could not find uniform parameter ( %s ).", name.data());
 		ASSERT(reinterpret_cast<char*>(dest) + sizeof(vec4) * 2 <= reinterpret_cast<char*>(buffer) + bufferSize,
-			"Setting uniform ( %s ) out of bounds of the buffer.", name.c_str());
+			"Setting uniform ( %s ) out of bounds of the buffer.", name.data());
 
 		dest[0].x = data[0];
 		dest[0].y = data[1];
@@ -170,12 +170,12 @@ namespace Jwl
 	}
 
 	template<>
-	void UniformBuffer::SetUniform<mat3>(const std::string& name, const mat3& data)
+	void UniformBuffer::SetUniform<mat3>(std::string_view name, const mat3& data)
 	{
 		vec4* dest = reinterpret_cast<vec4*>(GetBufferLoc(name));
-		ASSERT(dest, "Could not find uniform parameter ( %s ).", name.c_str());
+		ASSERT(dest, "Could not find uniform parameter ( %s ).", name.data());
 		ASSERT(reinterpret_cast<char*>(dest) + sizeof(vec4) * 3 <= reinterpret_cast<char*>(buffer) + bufferSize,
-			"Setting uniform ( %s ) out of bounds of the buffer.", name.c_str());
+			"Setting uniform ( %s ) out of bounds of the buffer.", name.data());
 
 		dest[0].x = data[0];
 		dest[0].y = data[1];
