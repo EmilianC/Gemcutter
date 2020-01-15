@@ -130,7 +130,7 @@ namespace Jwl
 
 	quat quat::GetConjugate() const
 	{
-		return quat(-z, -y, -z, w);
+		return quat(-x, -y, -z, w);
 	}
 
 	void quat::Normalize()
