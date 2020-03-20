@@ -78,11 +78,11 @@ namespace Jwl
 		}
 
 	private:
-		static std::unordered_map<std::string, std::shared_ptr<Asset>, string_hash> resourceCache;
+		static std::unordered_map<std::string, std::shared_ptr<Asset>, string_hash, std::equal_to<>> resourceCache;
 	};
 
 	template<class Asset>
-	std::unordered_map<std::string, std::shared_ptr<Asset>, string_hash> Resource<Asset>::resourceCache;
+	std::unordered_map<std::string, std::shared_ptr<Asset>, string_hash, std::equal_to<>> Resource<Asset>::resourceCache;
 
 	// Helper function to load an asset.
 	template<class Asset, typename... Args>

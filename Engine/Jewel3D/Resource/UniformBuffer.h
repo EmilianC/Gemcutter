@@ -62,7 +62,7 @@ namespace Jwl
 		void* buffer        = nullptr;
 		unsigned bufferSize = 0;
 
-		std::unordered_map<std::string, unsigned, string_hash> table;
+		std::unordered_map<std::string, unsigned, string_hash, std::equal_to<>> table;
 	};
 
 	// Used to associate a UniformBuffer with a particular binding point.

@@ -5,9 +5,15 @@ namespace Jwl
 	{
 		// Enumerates a VertexBuffer with respect to a VertexStream while also performing a cast and a dereference.
 		template<typename Type>
-		class VertexIterator : public std::iterator<std::random_access_iterator_tag, Type>
+		class VertexIterator
 		{
 		public:
+			using iterator_category = std::random_access_iterator_tag;
+			using value_type        = Type;
+			using difference_type   = std::ptrdiff_t;
+			using pointer           = Type*;
+			using reference         = Type&;
+
 			VertexIterator(const VertexIterator&) = default;
 			VertexIterator(unsigned char* _itr, unsigned _stride)
 				: itr(_itr), stride(_stride) {}

@@ -110,10 +110,16 @@ namespace Jwl
 		// Enumerates a SafeIterator and a templated iterator while performing a logical operation between them.
 		// The templated iterator can expand into a subtree of more LogicalIterators, or be a SafeIterator itself.
 		template<class Iterator, class Operation>
-		class LogicalIterator : public std::iterator<std::forward_iterator_tag, Entity*>
+		class LogicalIterator
 		{
 			static constexpr bool isLeaf = std::is_same_v<Iterator, EntityIterator>;
 		public:
+			using iterator_category = std::forward_iterator_tag;
+			using value_type        = Entity*;
+			using difference_type   = ptrdiff_t;
+			using pointer           = Entity**;
+			using reference         = Entity*&;
+
 			LogicalIterator(EntityIterator _itr1, Iterator _itr2)
 				: itr1(_itr1), itr2(_itr2)
 			{

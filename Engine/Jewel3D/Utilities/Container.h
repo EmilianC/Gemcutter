@@ -9,6 +9,7 @@ namespace Jwl
 	// internal keys of type std::string.
 	struct string_hash
 	{
+		using is_transparent = void;
 		using transparent_key_equal = std::equal_to<>;
 		using hash_type = std::hash<std::string_view>;
 
