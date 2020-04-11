@@ -173,13 +173,19 @@ namespace
 		"#define is_spot_light(light) JWL_IS_SPOT_LIGHT(light##.Type)\n"
 		"#define compute_light(light, normal, pos) JWL_COMPUTE_LIGHT(normal, pos, light##.Color, light##.Position, light##.Direction, light##.AttenuationLinear, light##.AttenuationQuadratic, light##.Angle, light##.Type)\n";
 
-	bool CompileShader(unsigned shader)
+	unsigned CompileShader(unsigned program, unsigned type, std::string_view _header, std::string_view body)
 	{
-		GLint success = GL_FALSE;
-		glCompileShader(shader);
-		glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+		unsigned shader = glCreateShader(type);
+		defer { glDeleteShader(shader); };
 
-		// Output GL error to log on failure.
+		const char* sources[] = { _header.data(), body.data() };
+		const int lengths[] = { static_cast<int>(_header.size()), static_cast<int>(body.size()) };
+
+		glShaderSource(shader, 2, sources, lengths);
+		glCompileShader(shader);
+
+		GLint success = GL_FALSE;
+		glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
 		if (success == GL_FALSE)
 		{
 			GLint infoLen = 0;
@@ -192,17 +198,18 @@ namespace
 			glGetShaderInfoLog(shader, sizeof(char) * infoLen, nullptr, infoLog);
 
 			// Avoid duplicate newline characters.
-			if (infoLog[infoLen - 2] == '\n')
+			if (infoLen >= 2 && (infoLog[infoLen - 2] == '\n'))
 			{
 				infoLog[infoLen - 2] = '\0';
 			}
 
 			Jwl::Error(infoLog);
 
-			return false;
+			return GL_NONE;
 		}
 
-		return true;
+		glAttachShader(program, shader);
+		return shader;
 	}
 
 	bool LinkProgram(unsigned program)
@@ -1188,22 +1195,22 @@ namespace Jwl
 				// Make sure the samplers are all set to the correct bindings.
 				for (auto& binding : textureBindings)
 				{
-					unsigned location = glGetUniformLocation(variant.hProgram, binding.name.c_str());
+					unsigned location = glGetUniformLocation(variant.program, binding.name.c_str());
 					// Not finding a location is not an error.
 					// It is most likely because a uniform has been optimized away.
 					if (location != GL_INVALID_INDEX)
 					{
-						glProgramUniform1i(variant.hProgram, location, binding.unit);
+						glProgramUniform1i(variant.program, location, binding.unit);
 					}
 				}
 
 				// Make sure the UniformBuffers are all set to the correct bindings.
 				for (auto& binding : bufferBindings)
 				{
-					unsigned block = glGetUniformBlockIndex(variant.hProgram, ("Jwl_User_" + binding.name).c_str());
+					unsigned block = glGetUniformBlockIndex(variant.program, ("Jwl_User_" + binding.name).c_str());
 					if (block != GL_INVALID_INDEX)
 					{
-						glUniformBlockBinding(variant.hProgram, block, binding.unit);
+						glUniformBlockBinding(variant.program, block, binding.unit);
 					}
 				}
 			}
@@ -1262,133 +1269,82 @@ namespace Jwl
 
 	bool Shader::ShaderVariant::Load(std::string_view _header, std::string_view vertSource, std::string_view geomSource, std::string_view fragSource)
 	{
-		hProgram = glCreateProgram();
-		std::string source;
+		program = glCreateProgram();
+		unsigned vertShader = GL_NONE;
+		unsigned geomShader = GL_NONE;
+		unsigned fragShader = GL_NONE;
 
-		/* Load vertex shader */
 		if (!vertSource.empty())
 		{
-			hVertShader = glCreateShader(GL_VERTEX_SHADER);
-
-			source = _header;
-			source += vertSource;
-			const char* charSource = source.c_str();
-			glShaderSource(hVertShader, 1, &charSource, nullptr);
-
-			if (!CompileShader(hVertShader))
+			vertShader = CompileShader(program, GL_VERTEX_SHADER, _header, vertSource);
+			if (vertShader == GL_NONE)
 			{
-				glDeleteShader(hVertShader);
-				hVertShader = GL_NONE;
-
 				Error("Shader variant's vertex stage failed to compile.");
 				Unload();
 				return false;
 			}
-
-			glAttachShader(hProgram, hVertShader);
 		}
 
-		/* Load geometry shader */
 		if (!geomSource.empty())
 		{
-			hGeomShader = glCreateShader(GL_GEOMETRY_SHADER);
-
-			source = _header;
-			source += geomSource;
-			const char* charSource = source.c_str();
-			glShaderSource(hGeomShader, 1, &charSource, nullptr);
-
-			if (!CompileShader(hGeomShader))
+			geomShader = CompileShader(program, GL_GEOMETRY_SHADER, _header, geomSource);
+			if (geomShader == GL_NONE)
 			{
-				glDeleteShader(hGeomShader);
-				hGeomShader = GL_NONE;
-
 				Error("Shader variant's geometry stage failed to compile.");
 				Unload();
 				return false;
 			}
-
-			glAttachShader(hProgram, hGeomShader);
 		}
 
-		/* Load fragment shader */
 		if (!fragSource.empty())
 		{
-			hFragShader = glCreateShader(GL_FRAGMENT_SHADER);
-
-			source = _header;
-			source += fragSource;
-			const char* charSource = source.c_str();
-			glShaderSource(hFragShader, 1, &charSource, nullptr);
-
-			if (!CompileShader(hFragShader))
+			fragShader = CompileShader(program, GL_FRAGMENT_SHADER, _header, fragSource);
+			if (fragShader == GL_NONE)
 			{
-				glDeleteShader(hFragShader);
-				hFragShader = GL_NONE;
-
 				Error("Shader variant's fragment stage failed to compile.");
 				Unload();
 				return false;
 			}
-
-			glAttachShader(hProgram, hFragShader);
 		}
 
-		if (!LinkProgram(hProgram))
+		if (!LinkProgram(program))
 		{
 			Error("Shader variant failed to link.");
 			Unload();
 			return false;
 		}
 
-		/* Initialize built-in uniform blocks */
-		unsigned cameraBlock = glGetUniformBlockIndex(hProgram, "Jwl_Camera_Uniforms");
-		unsigned modelBlock  = glGetUniformBlockIndex(hProgram, "Jwl_Model_Uniforms");
-		unsigned engineBlock = glGetUniformBlockIndex(hProgram, "Jwl_Engine_Uniforms");
-		unsigned timeBlock   = glGetUniformBlockIndex(hProgram, "Jwl_Time_Uniforms");
+		if (vertShader != GL_NONE) glDetachShader(program, vertShader);
+		if (geomShader != GL_NONE) glDetachShader(program, geomShader);
+		if (fragShader != GL_NONE) glDetachShader(program, fragShader);
 
-		if (cameraBlock != GL_INVALID_INDEX) glUniformBlockBinding(hProgram, cameraBlock, (GLuint)UniformBufferSlot::Camera);
-		if (modelBlock  != GL_INVALID_INDEX) glUniformBlockBinding(hProgram, modelBlock, (GLuint)UniformBufferSlot::Model);
-		if (engineBlock != GL_INVALID_INDEX) glUniformBlockBinding(hProgram, engineBlock, (GLuint)UniformBufferSlot::Engine);
-		if (timeBlock   != GL_INVALID_INDEX) glUniformBlockBinding(hProgram, timeBlock, (GLuint)UniformBufferSlot::Time);
+		/* Initialize built-in uniform blocks */
+		unsigned cameraBlock = glGetUniformBlockIndex(program, "Jwl_Camera_Uniforms");
+		unsigned modelBlock  = glGetUniformBlockIndex(program, "Jwl_Model_Uniforms");
+		unsigned engineBlock = glGetUniformBlockIndex(program, "Jwl_Engine_Uniforms");
+		unsigned timeBlock   = glGetUniformBlockIndex(program, "Jwl_Time_Uniforms");
+
+		if (cameraBlock != GL_INVALID_INDEX) glUniformBlockBinding(program, cameraBlock, (GLuint)UniformBufferSlot::Camera);
+		if (modelBlock  != GL_INVALID_INDEX) glUniformBlockBinding(program, modelBlock,  (GLuint)UniformBufferSlot::Model);
+		if (engineBlock != GL_INVALID_INDEX) glUniformBlockBinding(program, engineBlock, (GLuint)UniformBufferSlot::Engine);
+		if (timeBlock   != GL_INVALID_INDEX) glUniformBlockBinding(program, timeBlock,   (GLuint)UniformBufferSlot::Time);
 
 		return true;
 	}
 
 	void Shader::ShaderVariant::Unload()
 	{
-		if (hVertShader != GL_NONE)
+		if (program != GL_NONE)
 		{
-			glDetachShader(hProgram, hVertShader);
-			glDeleteShader(hVertShader);
-			hVertShader = GL_NONE;
-		}
-
-		if (hGeomShader != GL_NONE)
-		{
-			glDetachShader(hProgram, hGeomShader);
-			glDeleteShader(hGeomShader);
-			hGeomShader = GL_NONE;
-		}
-
-		if (hFragShader != GL_NONE)
-		{
-			glDetachShader(hProgram, hFragShader);
-			glDeleteShader(hFragShader);
-			hFragShader = GL_NONE;
-		}
-
-		if (hProgram != GL_NONE)
-		{
-			glDeleteProgram(hProgram);
-			hProgram = GL_NONE;
+			glDeleteProgram(program);
+			program = GL_NONE;
 		}
 	}
 
 	void Shader::ShaderVariant::Bind() const
 	{
-		ASSERT(hProgram != GL_NONE, "ShaderVariant cannot be bound because it is not loaded.");
+		ASSERT(program != GL_NONE, "ShaderVariant cannot be bound because it is not loaded.");
 
-		glUseProgram(hProgram);
+		glUseProgram(program);
 	}
 }

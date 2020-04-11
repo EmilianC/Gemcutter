@@ -146,10 +146,7 @@ namespace Jwl
 			void Unload();
 			void Bind() const;
 
-			unsigned hProgram    = 0;
-			unsigned hVertShader = 0;
-			unsigned hFragShader = 0;
-			unsigned hGeomShader = 0;
+			unsigned program = 0;
 		};
 
 		// Used to identify the content of a Program block.
