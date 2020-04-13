@@ -357,22 +357,12 @@ namespace Jwl
 
 	bool ShaderVariantControl::operator==(const ShaderVariantControl& other) const
 	{
-		if (defines.size() != other.defines.size())
-			return false;
-
-		for (unsigned i = 0; i < defines.size(); ++i)
-		{
-			if (defines[i].name != other.defines[i].name ||
-				defines[i].value != other.defines[i].value)
-				return false;
-		}
-
-		return true;
+		return hash == other.hash;
 	}
 
 	bool ShaderVariantControl::operator!=(const ShaderVariantControl& other) const
 	{
-		return !operator==(other);
+		return hash != other.hash;
 	}
 
 	void ShaderVariantControl::UpdateHash()
