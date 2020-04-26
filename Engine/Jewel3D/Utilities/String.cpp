@@ -125,6 +125,12 @@ namespace Jwl
 		return true;
 	}
 
+	void ToLowercase(std::string& str)
+	{
+		std::transform(str.begin(), str.end(), str.begin(),
+			[](unsigned char c) { return static_cast<unsigned char>(std::tolower(c)); });
+	}
+
 	bool StartsWith(std::string_view base, std::string_view prefix)
 	{
 		if (base.size() < prefix.size())

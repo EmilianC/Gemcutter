@@ -44,6 +44,14 @@ TEST_CASE("String")
 		CHECK(input == "int temp = 10 ;\n");
 	}
 
+	SECTION("ToLowercase")
+	{
+		std::string str = "TEMP !@#$%^&*()-= temp";
+		ToLowercase(str);
+
+		CHECK(str == "temp !@#$%^&*()-= temp");
+	}
+
 	SECTION("Starts With")
 	{
 		CHECK(StartsWith("", ""));

@@ -22,8 +22,11 @@ namespace Jwl
 	// Performs standard vsnprintf formatting on the argument list, up to 1024 characters.
 	std::string FormatString(const char* format, va_list args);
 
-	// Compares two strings for equality while ignore capitalization.
+	// Compares two strings for equality while ignoring capitalization.
 	bool CompareLowercase(std::string_view, std::string_view);
+
+	// Converts all uppercase letters in the string to lowercase.
+	void ToLowercase(std::string& str);
 
 	// Returns true if the first characters of base are equal to prefix.
 	bool StartsWith(std::string_view base, std::string_view prefix);
