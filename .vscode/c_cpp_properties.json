@@ -3,8 +3,8 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/**",
-                "${Jewel3D_Path}Build/include/"
+                "${workspaceFolder}/Engine/**",
+                "${workspaceFolder}/Build/include/**"
             ],
             "defines": [
                 "_DEBUG",
