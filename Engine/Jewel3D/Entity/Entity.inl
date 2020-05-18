@@ -217,6 +217,24 @@ namespace Jwl
 	}
 
 	template<class T>
+	void Entity::GlobalRemoveTag()
+	{
+		static_assert(std::is_base_of_v<TagBase, T>, "Template argument must inherit from Tag.");
+
+		std::vector<Entity*>& taggedEntities = detail::entityIndex[T::GetComponentId()];
+		for (Entity* ent : taggedEntities)
+		{
+			auto& tags = ent->tags;
+
+			auto itr = std::find(tags.begin(), tags.end(), T::GetComponentId());
+			*itr = tags.back();
+			tags.pop_back();
+		}
+
+		taggedEntities.clear();
+	}
+
+	template<class T>
 	void Entity::Enable()
 	{
 		static_assert(std::is_base_of_v<ComponentBase, T>, "Template argument must inherit from Component.");

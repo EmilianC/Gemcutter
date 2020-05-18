@@ -145,6 +145,10 @@ namespace Jwl
 		// Removes all Tags from the entity.
 		void RemoveAllTags();
 
+		// Efficiently removes all tags of the given type from all entities.
+		template<class T>
+		static void GlobalRemoveTag();
+
 		// Enabling this Entity is equivalent to individually
 		void Enable();
 

@@ -217,6 +217,32 @@ TEST_CASE("Entity-Component-System")
 		CHECK(ent->HasTag<TagC>());
 	}
 
+	SECTION("Removing Tags Globally")
+	{
+		auto ent = Entity::MakeNew();
+		auto ent2 = Entity::MakeNew();
+		auto ent3 = Entity::MakeNew();
+		auto ent4 = Entity::MakeNew();
+
+		ent->Tag<TagA>();
+		ent2->Tag<TagA>();
+		ent3->Tag<TagA>();
+		ent4->Tag<TagB>();
+		CHECK(ent->HasTag<TagA>());
+		CHECK(ent2->HasTag<TagA>());
+		CHECK(ent3->HasTag<TagA>());
+		CHECK(ent4->HasTag<TagB>());
+
+		Entity::GlobalRemoveTag<TagA>();
+		CHECK(!ent->HasTag<TagA>());
+		CHECK(!ent2->HasTag<TagA>());
+		CHECK(!ent3->HasTag<TagA>());
+		CHECK(ent4->HasTag<TagB>());
+
+		Entity::GlobalRemoveTag<TagB>();
+		CHECK(!ent4->HasTag<TagB>());
+	}
+
 	SECTION("Enabling / Disabling")
 	{
 		auto ent1 = Entity::MakeNew();
