@@ -4,6 +4,32 @@
 #include "Jewel3D/Application/FileSystem.h"
 #include "Jewel3D/Utilities/String.h"
 
+namespace
+{
+	template<typename Func>
+	void ProcessArrayElements(std::string_view array, Func&& functor)
+	{
+		if (array.empty())
+			return;
+
+		const char* currentPos = array.data();
+		const char* currentElementStart = currentPos;
+		const char* end = currentPos + array.size();
+		while (currentPos != end)
+		{
+			if (*currentPos == ',')
+			{
+				functor(std::string_view(currentElementStart, currentPos - currentElementStart));
+				currentElementStart = currentPos + 1;
+			}
+
+			++currentPos;
+		}
+
+		functor(std::string_view(currentElementStart, end - currentElementStart));
+	}
+}
+
 namespace Jwl
 {
 	bool ConfigTable::Load(std::string_view file)
@@ -126,6 +152,69 @@ namespace Jwl
 		{
 			return false;
 		}
+	}
+
+	std::vector<std::string> ConfigTable::GetStringArray(std::string_view setting) const
+	{
+		std::vector<std::string> results;
+
+		auto itr = settings.find(setting);
+		if (itr != settings.end())
+		{
+			ProcessArrayElements(itr->second, [&](std::string_view element) {
+				results.emplace_back(element.data(), element.size());
+			});
+		}
+
+		return results;
+	}
+
+	std::vector<float> ConfigTable::GetFloatArray(std::string_view setting) const
+	{
+		std::vector<float> results;
+
+		auto itr = settings.find(setting);
+		if (itr != settings.end())
+		{
+			ProcessArrayElements(itr->second, [&](std::string_view element) {
+				results.push_back(std::stof(element.data()));
+			});
+		}
+
+		return results;
+	}
+
+	std::vector<int> ConfigTable::GetIntArray(std::string_view setting) const
+	{
+		std::vector<int> results;
+
+		auto itr = settings.find(setting);
+		if (itr != settings.end())
+		{
+			ProcessArrayElements(itr->second, [&](std::string_view element) {
+				results.push_back(std::stoi(element.data()));
+			});
+		}
+
+		return results;
+	}
+
+	std::vector<bool> ConfigTable::GetBoolArray(std::string_view setting) const
+	{
+		std::vector<bool> results;
+
+		auto itr = settings.find(setting);
+		if (itr != settings.end())
+		{
+			ProcessArrayElements(itr->second, [&](std::string_view element) {
+				results.push_back(
+					element[0] == '1' ||
+					CompareLowercase(element, "on") ||
+					CompareLowercase(element, "true"));
+			});
+		}
+
+		return results;
 	}
 
 	void ConfigTable::SetValue(const std::string& setting, std::string_view value)

@@ -3,6 +3,7 @@
 #include <string>
 #include <string_view>
 #include <map>
+#include <vector>
 
 namespace Jwl
 {
@@ -24,6 +25,11 @@ namespace Jwl
 		float GetFloat(std::string_view setting) const;
 		int GetInt(std::string_view setting) const;
 		bool GetBool(std::string_view setting) const;
+
+		std::vector<std::string> GetStringArray(std::string_view setting) const;
+		std::vector<float> GetFloatArray(std::string_view setting) const;
+		std::vector<int> GetIntArray(std::string_view setting) const;
+		std::vector<bool> GetBoolArray(std::string_view setting) const;
 
 		// Creates or overwrites an existing setting.
 		void SetValue(const std::string& setting, std::string_view value);
