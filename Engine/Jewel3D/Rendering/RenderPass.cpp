@@ -2,7 +2,6 @@
 #include "Jewel3D/Precompiled.h"
 #include "RenderPass.h"
 #include "Camera.h"
-#include "Material.h"
 #include "Primitives.h"
 #include "RenderTarget.h"
 #include "Rendering.h"
@@ -16,6 +15,7 @@
 #include "Jewel3D/Resource/Shader.h"
 #include "Jewel3D/Resource/Texture.h"
 #include "Jewel3D/Resource/UniformBuffer.h"
+#include "Jewel3D/Resource/Material.h"
 #include "Jewel3D/Resource/VertexArray.h"
 // Renderables
 #include "Mesh.h"
@@ -197,8 +197,8 @@ namespace Jwl
 			return;
 		}
 
-		auto* material = instance.Try<Material>();
-		if (!material || !material->IsEnabled())
+		auto* renderable = instance.Try<Renderable>();
+		if (!renderable || !renderable->IsEnabled())
 		{
 			return;
 		}
@@ -208,13 +208,13 @@ namespace Jwl
 		// Bind override shader.
 		if (shader)
 		{
-			material->BindState();
+			renderable->material->BindState();
 			shader->Bind();
 		}
 		else
 		{
-			ASSERT(material->shader != nullptr, "Renderable Entity does not have a Shader and the RenderPass does not have an override attached.");
-			material->Bind();
+			ASSERT(renderable->material->shader != nullptr, "Renderable Entity does not have a Shader and the RenderPass does not have an override attached.");
+			renderable->material->Bind();
 		}
 
 		// Update transform uniforms.
@@ -235,7 +235,7 @@ namespace Jwl
 			glDrawArraysInstanced(GL_TRIANGLES, 0, vertexArray->GetVertexCount(), count);
 		}
 
-		material->UnBind();
+		renderable->material->UnBind();
 
 		if (skybox)
 		{
@@ -252,8 +252,8 @@ namespace Jwl
 			return;
 		}
 
-		auto* material = ent.Try<Material>();
-		if (!material || !material->IsEnabled())
+		auto* renderable = ent.Try<Renderable>();
+		if (!renderable || !renderable->IsEnabled())
 		{
 			return;
 		}
@@ -267,13 +267,13 @@ namespace Jwl
 		// Bind override shader.
 		if (shader)
 		{
-			material->BindState();
+			renderable->material->BindState();
 			shader->Bind();
 		}
 		else
 		{
-			ASSERT(material->shader != nullptr, "Renderable Entity does not have a Shader and the RenderPass does not have an override attached.");
-			material->Bind();
+			ASSERT(renderable->material->shader != nullptr, "Renderable Entity does not have a Shader and the RenderPass does not have an override attached.");
+			renderable->material->Bind();
 		}
 
 		// Update transform uniforms.
@@ -459,7 +459,7 @@ namespace Jwl
 			Primitives.DrawUnitRectangle();
 		}
 
-		material->UnBind();
+		renderable->material->UnBind();
 	}
 
 	void RenderPass::RenderEntityRecursive(const Entity& ent)

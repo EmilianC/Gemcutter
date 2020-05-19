@@ -1,23 +1,22 @@
 // Copyright (c) 2017 Emilian Cioca
 #include "Jewel3D/Precompiled.h"
-#include "Material.h"
 #include "Sprite.h"
 
 namespace Jwl
 {
 	Sprite::Sprite(Entity& owner)
-		: Component(owner)
+		: Renderable(owner)
 	{
 	}
 
 	Sprite::Sprite(Entity& owner, Alignment pivot)
-		: Component(owner)
+		: Renderable(owner)
 	{
 		SetAlignment(pivot);
 	}
 
 	Sprite::Sprite(Entity& owner, Alignment pivot, bool billBoarded)
-		: Component(owner)
+		: Renderable(owner)
 	{
 		SetAlignment(pivot);
 		SetBillBoarded(billBoarded);
@@ -36,9 +35,8 @@ namespace Jwl
 		if (alignment == pivot)
 			return;
 
-		auto& mat = owner.Require<Material>();
-		mat.variantDefinitions.Switch("JWL_SPRITE_CENTERED_X", pivot == Alignment::Center || pivot == Alignment::BottomCenter);
-		mat.variantDefinitions.Switch("JWL_SPRITE_CENTERED_Y", pivot == Alignment::Center || pivot == Alignment::LeftCenter);
+		material->variantDefinitions.Switch("JWL_SPRITE_CENTERED_X", pivot == Alignment::Center || pivot == Alignment::BottomCenter);
+		material->variantDefinitions.Switch("JWL_SPRITE_CENTERED_Y", pivot == Alignment::Center || pivot == Alignment::LeftCenter);
 
 		alignment = pivot;
 	}
@@ -53,7 +51,7 @@ namespace Jwl
 		if (billBoarded == state)
 			return;
 
-		owner.Require<Material>().variantDefinitions.Switch("JWL_SPRITE_BILLBOARD", state);
+		material->variantDefinitions.Switch("JWL_SPRITE_BILLBOARD", state);
 
 		billBoarded = state;
 	}

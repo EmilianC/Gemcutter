@@ -1,6 +1,6 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
-#include "Jewel3D/Entity/Entity.h"
+#include "Jewel3D/Rendering/Renderable.h"
 
 namespace Jwl
 {
@@ -15,7 +15,7 @@ namespace Jwl
 	// Causes an entity to render as a 2D textured sprite.
 	// The desired textures should be set on the Material component.
 	// Alignment and BillBoard options are supported by the default sprite shader.
-	class Sprite : public Component<Sprite>
+	class Sprite : public Renderable
 	{
 	public:
 		Sprite(Entity& owner);

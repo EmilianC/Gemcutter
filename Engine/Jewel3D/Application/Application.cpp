@@ -439,9 +439,9 @@ namespace Jwl
 		EventQueue.Dispatch();
 
 		// Update engine components.
-		for (auto& emitter : All<ParticleEmitter>())
+		for (Entity& entity : With<ParticleUpdaterTag>())
 		{
-			emitter.Update();
+			entity.Get<ParticleEmitter>().Update();
 		}
 
 		for (auto& light : All<Light>())
