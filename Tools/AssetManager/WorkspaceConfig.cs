@@ -32,6 +32,7 @@ namespace AssetManager
 			encoders.Add(new EncoderLink { extension="jpg", encoder="%JEWEL3D_PATH%\\Tools\\TextureEncoder\\bin\\Release_Win32\\TextureEncoder.exe" });
 			encoders.Add(new EncoderLink { extension="tga", encoder="%JEWEL3D_PATH%\\Tools\\TextureEncoder\\bin\\Release_Win32\\TextureEncoder.exe" });
 			encoders.Add(new EncoderLink { extension="bmp", encoder="%JEWEL3D_PATH%\\Tools\\TextureEncoder\\bin\\Release_Win32\\TextureEncoder.exe" });
+			encoders.Add(new EncoderLink { extension="mat", encoder="%JEWEL3D_PATH%\\Tools\\MaterialEncoder\\bin\\Release_Win32\\MaterialEncoder.exe" });
 
 			outputDirectory = "../Assets";
 			excludedExtensions = "";
