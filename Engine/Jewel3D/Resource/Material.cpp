@@ -7,75 +7,6 @@
 
 namespace Jwl
 {
-	Shader::WeakPtr Material::passThroughShader;
-
-	Material::Material(Entity& _owner)
-		: Component(_owner)
-	{
-		if (auto lock = passThroughShader.lock())
-		{
-			shader = std::move(lock);
-		}
-		else
-		{
-			shader = Shader::MakeNewPassThrough();
-			passThroughShader = shader;
-		}
-	}
-
-	Material::Material(Entity& _owner, Shader::Ptr _shader)
-		: Component(_owner)
-		, shader(std::move(_shader))
-	{
-	}
-
-	Material::Material(Entity& _owner, Texture::Ptr texture)
-		: Material(_owner)
-	{
-		if (texture)
-		{
-			textures.Add(std::move(texture));
-		}
-	}
-
-	Material::Material(
-		Entity& _owner, Shader::Ptr _shader, Texture::Ptr texture,
-		BlendFunc _blendMode, DepthFunc _depthMode, CullFunc _cullMode)
-		: Component(_owner)
-		, shader(std::move(_shader))
-	{
-		if (texture)
-		{
-			textures.Add(std::move(texture));
-		}
-
-		SetBlendMode(_blendMode);
-		SetDepthMode(_depthMode);
-		SetCullMode(_cullMode);
-	}
-
-	Material& Material::operator=(const Material& other)
-	{
-		shader = other.shader;
-		variantDefinitions = other.variantDefinitions;
-		SetDepthMode(other.GetDepthMode());
-		SetBlendMode(other.GetBlendMode());
-		SetCullMode(other.GetCullMode());
-		textures = other.textures;
-
-		// Deep copy the buffers.
-		buffers.Clear();
-		for (const auto& bufferSlot : other.buffers.GetAll())
-		{
-			auto newBuff = UniformBuffer::MakeNew();
-			newBuff->Copy(*bufferSlot.buffer);
-
-			buffers.Add(newBuff, bufferSlot.unit);
-		}
-
-		return *this;
-	}
-
 	void Material::Bind() const
 	{
 		if (shader)
@@ -125,6 +56,17 @@ namespace Jwl
 				CreateUniformBuffer(binding.unit);
 			}
 		}
+	}
+
+	bool Material::Load(std::string filePath)
+	{
+
+		return true;
+	}
+
+	void Material::Unload()
+	{
+
 	}
 
 	void Material::SetBlendMode(BlendFunc func)

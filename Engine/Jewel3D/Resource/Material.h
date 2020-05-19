@@ -1,8 +1,10 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
-#include "Jewel3D/Entity/Entity.h"
 #include "Jewel3D/Rendering/Rendering.h"
+#include "Jewel3D/Resource/Resource.h"
 #include "Jewel3D/Resource/Shader.h"
+#include "Jewel3D/Resource/Texture.h"
+#include "Jewel3D/Resource/UniformBuffer.h"
 
 namespace Jwl
 {
@@ -12,20 +14,14 @@ namespace Jwl
 	// - The shader
 	// - Shader uniform buffers
 	// - Shader definitions and permutations
-	class Material : public Component<Material>
+	class Material : public Resource<Material>, public Shareable<Material>
 	{
 		friend class RenderPass;
 	public:
-		Material(Entity& owner);
-		Material(Entity& owner, Shader::Ptr shader);
-		Material(Entity& owner, Texture::Ptr texture);
-		Material(
-			Entity& owner, Shader::Ptr shader, Texture::Ptr texture,
-			BlendFunc blendMode = BlendFunc::None,
-			DepthFunc depthMode = DepthFunc::Normal,
-			CullFunc cullMode = CullFunc::Clockwise);
+		Material();
 
-		Material& operator=(const Material&);
+		bool Load(std::string filePath);
+		void Unload();
 
 		void SetBlendMode(BlendFunc func);
 		void SetDepthMode(DepthFunc func);
@@ -61,7 +57,5 @@ namespace Jwl
 		BlendFunc blendMode = BlendFunc::None;
 		DepthFunc depthMode = DepthFunc::Normal;
 		CullFunc cullMode = CullFunc::Clockwise;
-
-		static Shader::WeakPtr passThroughShader;
 	};
 }
