@@ -10,6 +10,7 @@ namespace Jwl
 	{
 	public:
 		Renderable(Entity& owner);
+		Renderable(Entity& owner, Material::Ptr material);
 
 		Material::Ptr material;
 	};
