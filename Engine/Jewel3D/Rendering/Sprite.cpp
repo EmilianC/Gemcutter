@@ -9,14 +9,19 @@ namespace Jwl
 	{
 	}
 
+	Sprite::Sprite(Entity& owner, Material::Ptr material)
+		: Renderable(owner, std::move(material))
+	{
+	}
+
 	Sprite::Sprite(Entity& owner, Alignment pivot)
 		: Renderable(owner)
 	{
 		SetAlignment(pivot);
 	}
 
-	Sprite::Sprite(Entity& owner, Alignment pivot, bool billBoarded)
-		: Renderable(owner)
+	Sprite::Sprite(Entity& owner, Alignment pivot, bool billBoarded, Material::Ptr material)
+		: Renderable(owner, std::move(material))
 	{
 		SetAlignment(pivot);
 		SetBillBoarded(billBoarded);

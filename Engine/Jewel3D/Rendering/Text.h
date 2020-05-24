@@ -14,7 +14,8 @@ namespace Jwl
 		Text(Entity& owner);
 		Text(Entity& owner, Font::Ptr font);
 		Text(Entity& owner, std::string text);
-		Text(Entity& owner, Font::Ptr font, std::string text);
+		Text(Entity& owner, Material::Ptr material);
+		Text(Entity& owner, Font::Ptr font, std::string text, Material::Ptr material);
 
 		unsigned GetNumLines() const;
 		float GetLineWidth(unsigned line) const;

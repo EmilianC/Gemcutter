@@ -13,21 +13,17 @@ namespace Jwl
 		ASSERT(maxParticles > 0, "'maxParticles' must be greater than 0.");
 
 		owner.Tag<ParticleUpdaterTag>();
+		InitUniformBuffer();
+	}
 
-		particleParameters.AddUniform<vec2>("StartSize");
-		particleParameters.AddUniform<vec2>("EndSize");
-		particleParameters.AddUniform<vec3>("StartColor");
-		particleParameters.AddUniform<vec3>("EndColor");
-		particleParameters.AddUniform<float>("StartAlpha");
-		particleParameters.AddUniform<float>("EndAlpha");
-		particleParameters.InitBuffer();
+	ParticleEmitter::ParticleEmitter(Entity& _owner, Material::Ptr material, unsigned _maxParticles)
+		: Renderable(_owner, std::move(material))
+		, maxParticles(_maxParticles)
+	{
+		ASSERT(maxParticles > 0, "'maxParticles' must be greater than 0.");
 
-		particleParameters.SetUniform("StartSize", vec2(1.0f));
-		particleParameters.SetUniform("EndSize", vec2(0.5f));
-		particleParameters.SetUniform("StartColor", vec3(1.0f));
-		particleParameters.SetUniform("EndColor", vec3(1.0f));
-		particleParameters.SetUniform("StartAlpha", 1.0f);
-		particleParameters.SetUniform("EndAlpha", 0.0f);
+		owner.Tag<ParticleUpdaterTag>();
+		InitUniformBuffer();
 	}
 
 	ParticleEmitter::~ParticleEmitter()
@@ -310,5 +306,23 @@ namespace Jwl
 				data.ageRatios[i] = data.ages[i] / data.lifetimes[i];
 			}
 		}
+	}
+
+	void ParticleEmitter::InitUniformBuffer()
+	{
+		particleParameters.AddUniform<vec2>("StartSize");
+		particleParameters.AddUniform<vec2>("EndSize");
+		particleParameters.AddUniform<vec3>("StartColor");
+		particleParameters.AddUniform<vec3>("EndColor");
+		particleParameters.AddUniform<float>("StartAlpha");
+		particleParameters.AddUniform<float>("EndAlpha");
+		particleParameters.InitBuffer();
+
+		particleParameters.SetUniform("StartSize", vec2(1.0f));
+		particleParameters.SetUniform("EndSize", vec2(0.5f));
+		particleParameters.SetUniform("StartColor", vec3(1.0f));
+		particleParameters.SetUniform("EndColor", vec3(1.0f));
+		particleParameters.SetUniform("StartAlpha", 1.0f);
+		particleParameters.SetUniform("EndAlpha", 0.0f);
 	}
 }

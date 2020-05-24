@@ -11,6 +11,8 @@ namespace Jwl
 	public:
 		Mesh(Entity& owner);
 		Mesh(Entity& owner, VertexArray::Ptr array);
+		Mesh(Entity& owner, Material::Ptr material);
+		Mesh(Entity& owner, VertexArray::Ptr array, Material::Ptr material);
 
 		VertexArray::Ptr array;
 	};

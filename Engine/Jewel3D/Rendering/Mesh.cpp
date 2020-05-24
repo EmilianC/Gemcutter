@@ -14,4 +14,15 @@ namespace Jwl
 		, array(std::move(_array))
 	{
 	}
+
+	Mesh::Mesh(Entity& _owner, Material::Ptr material)
+		: Renderable(_owner, std::move(material))
+	{
+	}
+
+	Mesh::Mesh(Entity& _owner, VertexArray::Ptr _array, Material::Ptr material)
+		: Renderable(_owner, std::move(material))
+		, array(std::move(_array))
+	{
+	}
 }

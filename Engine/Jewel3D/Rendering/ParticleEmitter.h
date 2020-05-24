@@ -7,8 +7,6 @@
 #include "Jewel3D/Resource/UniformBuffer.h"
 #include "Jewel3D/Utilities/Random.h"
 
-#include <vector>
-
 namespace Jwl
 {
 	struct vec2;
@@ -22,6 +20,7 @@ namespace Jwl
 	{
 	public:
 		ParticleEmitter(Entity& owner, unsigned maxParticles = 100);
+		ParticleEmitter(Entity& owner, Material::Ptr material, unsigned maxParticles = 100);
 		~ParticleEmitter();
 
 		ParticleEmitter& operator=(const ParticleEmitter&);
@@ -79,6 +78,7 @@ namespace Jwl
 
 	private:
 		void UpdateInternal(float deltaTime);
+		void InitUniformBuffer();
 
 		ParticleBuffer data;
 
