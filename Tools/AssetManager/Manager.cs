@@ -224,8 +224,13 @@ namespace AssetManager
 			ButtonUpdate.Enabled = false;
 			ButtonSettings.Enabled = false;
 
+			if (!Directory.Exists(outputPath))
+			{
+				Directory.CreateDirectory(outputPath);
+				cache.Clear(); // Ignore the cache and rebuild everything.
+			}
+
 			// Duplicate the directory structure in the output folder.
-			Directory.CreateDirectory(outputPath);
 			foreach (var path in Directory.GetDirectories(inputPath, "*", SearchOption.AllDirectories))
 			{
 				Directory.CreateDirectory(path.Replace(inputPath, outputPath));

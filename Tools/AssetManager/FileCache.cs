@@ -119,6 +119,11 @@ namespace AssetManager
 			}
 		}
 
+		public void Clear()
+		{
+			cache.Clear();
+		}
+
 		private long GetLastWriteTime(string file)
 		{
 			if (!File.Exists(file))
