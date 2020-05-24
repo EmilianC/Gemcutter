@@ -18,7 +18,7 @@ namespace Jwl
 
 		// Used to enumerate an Entity or Component index table.
 		// Although it models a single iterator, it knows when it has reached the end of the table.
-		template<class SourcePtr, class Target>
+		template<class SourcePtr, class Target, bool UseDynamicCast = false>
 		class SafeIterator
 		{
 			using Iterator          = typename std::vector<SourcePtr>::iterator;
@@ -31,12 +31,32 @@ namespace Jwl
 
 			SafeIterator(Iterator _itr, Iterator _itrEnd)
 				: itr(_itr), itrEnd(_itrEnd)
-			{}
+			{
+				if constexpr (UseDynamicCast)
+				{
+					if (!IsTerminated() && !dynamic_cast<Target*>(*itr))
+					{
+						++(*this);
+					}
+				}
+			}
 
 			SafeIterator& operator++()
 			{
 				ASSERT(!IsTerminated(), "Invalid range.");
 				++itr;
+
+				if constexpr (UseDynamicCast)
+				{
+					while (!IsTerminated())
+					{
+						if (dynamic_cast<Target*>(*itr))
+							break;
+
+						++itr;
+					}
+				}
+
 				return *this;
 			}
 
@@ -66,7 +86,7 @@ namespace Jwl
 		};
 
 		template<class Component>
-		using ComponentIterator = SafeIterator<ComponentBase*, Component>;
+		using ComponentIterator = SafeIterator<ComponentBase*, Component, !std::is_same_v<Component, typename Component::StaticComponentType>>;
 		using EntityIterator = SafeIterator<Entity*, Entity>;
 
 		// Provides functions to advance two SafeIterators as a logical AND of two entityIndex tables.
@@ -226,9 +246,6 @@ namespace Jwl
 		static_assert(!std::is_base_of_v<TagBase, Component>,
 			"Cannot query tags with All<>(). Use With<>() instead.");
 
-		static_assert(std::is_same_v<Component, typename Component::StaticComponentType>,
-			"Only a direct inheritor from Component<> can be used in a query.");
-
 		using namespace detail;
 		auto& index = componentIndex[Component::GetComponentId()];
 		auto itr = ComponentIterator<Component>(index.begin(), index.end());
@@ -250,7 +267,7 @@ namespace Jwl
 			"All template arguments must be either Components or Tags.");
 
 		static_assert(Meta::all_of_v<std::is_same<Args, typename Args::StaticComponentType>::value...>,
-			"Only a direct inheritor from Component<> can be used in a query.");
+			"Only a direct inheritor from Component<> can be used in a With<>() query. Use All<>() instead.");
 
 		using namespace detail;
 		auto&& itr = BuildRootIterator<Args...>();

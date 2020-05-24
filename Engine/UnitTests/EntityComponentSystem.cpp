@@ -365,6 +365,42 @@ TEST_CASE("Entity-Component-System")
 			CHECK(count == 2);
 		}
 
+		SECTION("Derived Components")
+		{
+			ent1->Add<DerivedA>();
+			ent2->Add<DerivedA>();
+			ent3->Add<DerivedA>();
+			ent4->Add<DerivedB>();
+
+			ent3->Disable<DerivedA>();
+
+			// Some extra noise that shouldn't change the results.
+			ent4->Add<Comp2>();
+			ent4->Tag<TagA>();
+			ent1->Add<Comp1>();
+			ent1->Tag<TagB>();
+
+			auto count = 0;
+			for (DerivedA& comp : All<DerivedA>())
+			{
+				count++;
+				CHECK(comp.IsEnabled());
+				CHECK(comp.IsComponentEnabled());
+				CHECK(comp.owner.IsEnabled());
+			}
+			CHECK(count == 2);
+
+			count = 0;
+			for (DerivedB& comp : All<DerivedB>())
+			{
+				count++;
+				CHECK(comp.IsEnabled());
+				CHECK(comp.IsComponentEnabled());
+				CHECK(comp.owner.IsEnabled());
+			}
+			CHECK(count == 1);
+		}
+
 		SECTION("With<>()")
 		{
 			SECTION("1 Component")
