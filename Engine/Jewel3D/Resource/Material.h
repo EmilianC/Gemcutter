@@ -18,10 +18,9 @@ namespace Jwl
 	{
 		friend class RenderPass;
 	public:
-		Material();
+		Material() = default;
 
 		bool Load(std::string filePath);
-		void Unload();
 
 		void SetBlendMode(BlendFunc func);
 		void SetDepthMode(DepthFunc func);
