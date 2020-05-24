@@ -21,6 +21,11 @@ namespace
 
 namespace Jwl
 {
+	unsigned GetMaxPathLength()
+	{
+		return MAX_PATH;
+	}
+
 	bool ParseDirectory(DirectoryData& outData)
 	{
 		return ParseDirectory(outData, GetCurrentDirectory());

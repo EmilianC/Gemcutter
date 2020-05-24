@@ -14,6 +14,9 @@ namespace Jwl
 		std::vector<std::string> folders;
 	};
 
+	// Returns the maximum length of a filepath on the system (null terminator included).
+	unsigned GetMaxPathLength();
+
 	// Enumerates the current directory caches all filenames and folder names it contains.
 	bool ParseDirectory(DirectoryData& outData);
 
