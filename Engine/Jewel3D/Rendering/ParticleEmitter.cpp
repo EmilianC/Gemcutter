@@ -182,6 +182,11 @@ namespace Jwl
 		return localSpace;
 	}
 
+	const UniformBuffer& ParticleEmitter::GetBuffer() const
+	{
+		return particleParameters;
+	}
+
 	UniformBuffer& ParticleEmitter::GetBuffer()
 	{
 		return particleParameters;
@@ -215,7 +220,7 @@ namespace Jwl
 
 			if (requiresAgeRatio)
 			{
-				// We are using uniform [start, end] values for some properties and require the age of the particle 
+				// We are using uniform [start, end] values for some properties and require the age of the particle
 				// as a percentage. This will LERP in the shader based on the global [start, end] values.
 				requirements |= ParticleBuffers::AgeRatio;
 			}

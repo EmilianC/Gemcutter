@@ -48,6 +48,7 @@ namespace Jwl
 		void SetLocalSpace(bool isLocal);
 		bool IsLocalSpace() const;
 
+		const UniformBuffer& GetBuffer() const;
 		UniformBuffer& GetBuffer();
 
 		// Custom Particle Functors can be added her to customize the behaviour of the emitter.

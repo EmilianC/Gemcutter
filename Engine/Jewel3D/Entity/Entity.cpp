@@ -79,7 +79,7 @@ namespace Jwl
 		auto material = this->Try<Material>();
 		if (material)
 		{
-			static_cast<ComponentBase*>(material)->Copy(*newEntity);
+			static_cast<const ComponentBase*>(material)->Copy(*newEntity);
 		}
 
 		// Mirror all components to the other entity.

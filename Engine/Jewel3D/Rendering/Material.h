@@ -52,11 +52,11 @@ namespace Jwl
 
 	private:
 		// Bind all textures, buffers, state, and the shader for rendering.
-		void Bind();
+		void Bind() const;
 		// Bind all textures, buffers, and state.
-		void BindState();
+		void BindState() const;
 		// Unbinds all textures, buffers, and the shader.
-		void UnBind();
+		void UnBind() const;
 
 		BlendFunc blendMode = BlendFunc::None;
 		DepthFunc depthMode = DepthFunc::Normal;

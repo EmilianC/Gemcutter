@@ -97,42 +97,27 @@ namespace Jwl
 	}
 
 	template<class T>
-	T& Entity::Get() const
+	const T& Entity::Get() const
 	{
-		using namespace detail;
-		static_assert(std::is_base_of_v<ComponentBase, T>, "Template argument must inherit from Component.");
-		static_assert(!std::is_base_of_v<TagBase, T>, "Template argument cannot be a Tag.");
-
-		auto itr = components.begin();
-		while (true)
-		{
-			ASSERT(itr != components.end(), "Entity did not have the expected component.");
-			if ((*itr)->componentId == T::GetComponentId())
-			{
-				ASSERT(safe_cast<T>(*itr), "Entity did not have the expected component.");
-				return *static_cast<T*>(*itr);
-			}
-
-			++itr;
-		}
+		return GetComponent<T>();
 	}
 
 	template<class T>
-	T* Entity::Try() const
+	T& Entity::Get()
 	{
-		using namespace detail;
-		static_assert(std::is_base_of_v<ComponentBase, T>, "Template argument must inherit from Component.");
-		static_assert(!std::is_base_of_v<TagBase, T>, "Template argument cannot be a Tag.");
+		return GetComponent<T>();
+	}
 
-		for (auto* comp : components)
-		{
-			if (comp->componentId == T::GetComponentId())
-			{
-				return safe_cast<T>(comp);
-			}
-		}
+	template<class T>
+	const T* Entity::Try() const
+	{
+		return TryComponent<T>();
+	}
 
-		return nullptr;
+	template<class T>
+	T* Entity::Try()
+	{
+		return TryComponent<T>();
 	}
 
 	template<class T>
@@ -280,5 +265,44 @@ namespace Jwl
 			Unindex(comp);
 			static_cast<ComponentBase&>(comp).OnDisable();
 		}
+	}
+
+	template<class T>
+	T& Entity::GetComponent() const
+	{
+		using namespace detail;
+		static_assert(std::is_base_of_v<ComponentBase, T>, "Template argument must inherit from Component.");
+		static_assert(!std::is_base_of_v<TagBase, T>, "Template argument cannot be a Tag.");
+
+		auto itr = components.begin();
+		while (true)
+		{
+			ASSERT(itr != components.end(), "Entity did not have the expected component.");
+			if ((*itr)->componentId == T::GetComponentId())
+			{
+				ASSERT(safe_cast<T>(*itr), "Entity did not have the expected component.");
+				return *static_cast<T*>(*itr);
+			}
+
+			++itr;
+		}
+	}
+
+	template<class T>
+	T* Entity::TryComponent() const
+	{
+		using namespace detail;
+		static_assert(std::is_base_of_v<ComponentBase, T>, "Template argument must inherit from Component.");
+		static_assert(!std::is_base_of_v<TagBase, T>, "Template argument cannot be a Tag.");
+
+		for (auto* comp : components)
+		{
+			if (comp->componentId == T::GetComponentId())
+			{
+				return safe_cast<T>(comp);
+			}
+		}
+
+		return nullptr;
 	}
 }

@@ -112,12 +112,12 @@ namespace Jwl
 		std::tuple<T1&, T2&, Tx&...> Require();
 
 		// Returns the requested component. Asserts if the component does not exist.
-		template<class T>
-		T& Get() const;
+		template<class T> const T& Get() const;
+		template<class T>       T& Get();
 
 		// Attempt to fetch a component. Returns null if component does not exist.
-		template<class T>
-		T* Try() const;
+		template<class T> const T* Try() const;
+		template<class T>       T* Try();
 
 		// Removes the instance of the specified component from this Entity if one exists.
 		template<class T>
@@ -189,6 +189,12 @@ namespace Jwl
 		void LookAt(const Entity& target, const vec3& up = vec3::Up);
 
 	private:
+		template<class T>
+		T& GetComponent() const;
+
+		template<class T>
+		T* TryComponent() const;
+
 		void Tag(unsigned tagId);
 		void RemoveTag(unsigned tagId);
 

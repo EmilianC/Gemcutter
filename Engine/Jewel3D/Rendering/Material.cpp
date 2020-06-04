@@ -76,7 +76,7 @@ namespace Jwl
 		return *this;
 	}
 
-	void Material::Bind()
+	void Material::Bind() const
 	{
 		if (shader)
 		{
@@ -86,7 +86,7 @@ namespace Jwl
 		BindState();
 	}
 
-	void Material::BindState()
+	void Material::BindState() const
 	{
 		textures.Bind();
 		buffers.Bind();
@@ -96,7 +96,7 @@ namespace Jwl
 		SetCullFunc(cullMode);
 	}
 
-	void Material::UnBind()
+	void Material::UnBind() const
 	{
 		textures.UnBind();
 		buffers.UnBind();
