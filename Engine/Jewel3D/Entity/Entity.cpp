@@ -217,14 +217,17 @@ namespace Jwl
 
 	void Entity::RemoveTag(unsigned tagId)
 	{
+		auto itr = std::find(tags.begin(), tags.end(), tagId);
+		if (itr == tags.end())
+			return;
+
+		*itr = tags.back();
+		tags.pop_back();
+
 		if (IsEnabled())
 		{
 			UnindexTag(tagId);
 		}
-
-		auto itr = std::find(tags.begin(), tags.end(), tagId);
-		*itr = tags.back();
-		tags.pop_back();
 	}
 
 	void Entity::IndexTag(unsigned tagId)
