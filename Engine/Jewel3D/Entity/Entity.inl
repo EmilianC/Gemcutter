@@ -96,29 +96,11 @@ namespace Jwl
 		return std::tie(Require<T1>(), Require<T2>(), Require<Tx>()...);
 	}
 
-	template<class T>
-	const T& Entity::Get() const
-	{
-		return GetComponent<T>();
-	}
+	template<class T> const T& Entity::Get() const { return GetComponent<T>(); }
+	template<class T>       T& Entity::Get()       { return GetComponent<T>(); }
 
-	template<class T>
-	T& Entity::Get()
-	{
-		return GetComponent<T>();
-	}
-
-	template<class T>
-	const T* Entity::Try() const
-	{
-		return TryComponent<T>();
-	}
-
-	template<class T>
-	T* Entity::Try()
-	{
-		return TryComponent<T>();
-	}
+	template<class T> const T* Entity::Try() const { return TryComponent<T>(); }
+	template<class T>       T* Entity::Try()       { return TryComponent<T>(); }
 
 	template<class T>
 	void Entity::Remove()

@@ -1,8 +1,9 @@
 // Copyright (c) 2017 Emilian Cioca
 #include "Jewel3D/Precompiled.h"
 #include "Entity.h"
-#include "Name.h"
 #include "Jewel3D/Application/Logging.h"
+#include "Jewel3D/Entity/Hierarchy.h"
+#include "Jewel3D/Entity/Name.h"
 #include "Jewel3D/Rendering/Material.h"
 
 #include <algorithm>
@@ -60,12 +61,36 @@ namespace Jwl
 		RemoveAllTags();
 	}
 
+	Entity::Ptr Entity::MakeNewRoot()
+	{
+		auto entity = MakeNew();
+		entity->Add<Hierarchy>();
+
+		return entity;
+	}
+
+	Entity::Ptr Entity::MakeNewRoot(std::string name)
+	{
+		auto entity = MakeNew();
+		entity->Add<Hierarchy>();
+		entity->Add<Name>(std::move(name));
+
+		return entity;
+	}
+
+	Entity::Ptr Entity::MakeNewRoot(const Transform& pose)
+	{
+		auto entity = MakeNew(pose);
+		entity->Add<Hierarchy>();
+
+		return entity;
+	}
+
 	Entity::Ptr Entity::Duplicate() const
 	{
 		auto newEntity = MakeNew();
 
 		newEntity->Transform::operator=(*this);
-		newEntity->Hierarchy<Entity>::operator=(*this);
 
 		/* Copy all tags */
 		for (auto tag : this->tags)
@@ -103,6 +128,67 @@ namespace Jwl
 	void Entity::CopyComponent(const ComponentBase& source)
 	{
 		source.Copy(*this);
+	}
+
+	mat4 Entity::GetWorldTransform() const
+	{
+		mat4 result;
+		if (auto* hierarchy = Try<Hierarchy>())
+		{
+			result = hierarchy->GetWorldTransform();
+		}
+		else
+		{
+			result = mat4(rotation, position, scale);
+		}
+
+		return result;
+	}
+
+	quat Entity::GetWorldRotation() const
+	{
+		quat result;
+		if (auto* hierarchy = Try<Hierarchy>())
+		{
+			result = hierarchy->GetWorldRotation();
+		}
+		else
+		{
+			result = rotation;
+		}
+
+		return result;
+	}
+
+	void Entity::LookAt(const vec3& pos, const vec3& target, const vec3& up)
+	{
+		// Passthrough to get around C++ name-hiding.
+		Transform::LookAt(pos, target, up);
+	}
+
+	void Entity::LookAt(const Entity& target, const vec3& up)
+	{
+		ASSERT(&target != this, "Entity cannot look at itself.");
+
+		vec3 targetPos;
+		if (auto* targetHierarchy = target.Try<Hierarchy>())
+		{
+			targetPos = targetHierarchy->GetWorldTransform().GetTranslation();
+		}
+		else
+		{
+			targetPos = target.position;
+		}
+
+		// If we have a parent, we are not in world-space.
+		// We must resolve for the target position in local-space.
+		auto* hierarchy = Try<Hierarchy>();
+		if (hierarchy && !hierarchy->IsRoot())
+		{
+			targetPos = vec3(hierarchy->GetWorldTransform() * vec4(targetPos, 1.0f));
+		}
+
+		LookAt(position, targetPos, up);
 	}
 
 	void Entity::RemoveAllComponents()
@@ -197,14 +283,6 @@ namespace Jwl
 		return isEnabled;
 	}
 
-	Entity::Ptr Entity::CreateChild()
-	{
-		auto child = Entity::MakeNew();
-		AddChild(child);
-
-		return child;
-	}
-
 	void Entity::Tag(unsigned tagId)
 	{
 		if (IsEnabled())
@@ -263,51 +341,5 @@ namespace Jwl
 		auto itr = std::find(componentTable.begin(), componentTable.end(), &comp);
 		*itr = componentTable.back();
 		componentTable.pop_back();
-	}
-
-	mat4 Entity::GetWorldTransform() const
-	{
-		mat4 transform(rotation, position, scale);
-
-		if (auto parentEntity = GetParent())
-		{
-			transform = parentEntity->GetWorldTransform() * transform;
-		}
-
-		return transform;
-	}
-
-	quat Entity::GetWorldRotation() const
-	{
-		quat result = rotation;
-
-		if (auto parentEntity = GetParent())
-		{
-			result = parentEntity->GetWorldRotation() * result;
-		}
-
-		return result;
-	}
-
-	void Entity::LookAt(const vec3& pos, const vec3& target, const vec3& up)
-	{
-		// Passthrough to get around C++ name-hiding.
-		Transform::LookAt(pos, target, up);
-	}
-
-	void Entity::LookAt(const Entity& target, const vec3& up)
-	{
-		ASSERT(this != &target, "Transform cannot look at itself.");
-
-		vec3 targetPos = target.GetWorldTransform().GetTranslation();
-
-		// If we have a parent, we are not in world-space.
-		// We must resolve for the target position in local-space.
-		if (auto parentEntity = GetParent())
-		{
-			targetPos = vec3(parentEntity->GetWorldTransform() * vec4(targetPos, 1.0f));
-		}
-
-		LookAt(position, targetPos, up);
 	}
 }

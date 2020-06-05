@@ -1,13 +1,13 @@
 // Copyright (c) 2017 Emilian Cioca
 #include "Jewel3D/Precompiled.h"
 #include "SoundSystem.h"
-#include "SoundListener.h"
-#include "SoundSource.h"
 #include "Jewel3D/Application/Logging.h"
 #include "Jewel3D/Entity/Entity.h"
 #include "Jewel3D/Math/Matrix.h"
 #include "Jewel3D/Math/Vector.h"
 #include "Jewel3D/Resource/Sound.h"
+#include "Jewel3D/Sound/SoundListener.h"
+#include "Jewel3D/Sound/SoundSource.h"
 
 #include <OpenAL_Soft/al.h>
 #include <OpenAL_Soft/alc.h>

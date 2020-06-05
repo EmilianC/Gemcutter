@@ -47,6 +47,10 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="Jewel3D\Entity\Hierarchy.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
+    </ClCompile>
     <ClCompile Include="Jewel3D\Entity\Name.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
@@ -213,6 +217,7 @@
     <ClInclude Include="Jewel3D\Application\Threading.h" />
     <ClInclude Include="Jewel3D\Application\Timer.h" />
     <ClInclude Include="Jewel3D\Entity\Entity.h" />
+    <ClInclude Include="Jewel3D\Entity\Hierarchy.h" />
     <ClInclude Include="Jewel3D\Entity\Name.h" />
     <ClInclude Include="Jewel3D\Input\Input.h" />
     <ClInclude Include="Jewel3D\Input\XboxGamePad.h" />
@@ -252,7 +257,6 @@
     <ClInclude Include="Jewel3D\Sound\SoundSystem.h" />
     <ClInclude Include="Jewel3D\Utilities\Container.h" />
     <ClInclude Include="Jewel3D\Utilities\EnumFlags.h" />
-    <ClInclude Include="Jewel3D\Utilities\Hierarchy.h" />
     <ClInclude Include="Jewel3D\Utilities\Meta.h" />
     <ClInclude Include="Jewel3D\Utilities\Random.h" />
     <ClInclude Include="Jewel3D\Utilities\ScopeGuard.h" />
@@ -264,7 +268,6 @@
     <None Include="Jewel3D\Entity\Query.inl" />
     <None Include="Jewel3D\Resource\UniformBuffer.inl" />
     <None Include="Jewel3D\Resource\VertexArray.inl" />
-    <None Include="Jewel3D\Utilities\Hierarchy.inl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{3954E1F3-B90E-4883-AD0A-5EEF757A3726}</ProjectGuid>

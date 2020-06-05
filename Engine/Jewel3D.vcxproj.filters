@@ -181,6 +181,9 @@
     <ClCompile Include="Jewel3D\Resource\VertexArray.cpp">
       <Filter>Resource</Filter>
     </ClCompile>
+    <ClCompile Include="Jewel3D\Entity\Hierarchy.cpp">
+      <Filter>Entity</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Jewel3D\Precompiled.h" />
@@ -197,9 +200,6 @@
       <Filter>Utilities</Filter>
     </ClInclude>
     <ClInclude Include="Jewel3D\Utilities\EnumFlags.h">
-      <Filter>Utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="Jewel3D\Utilities\Hierarchy.h">
       <Filter>Utilities</Filter>
     </ClInclude>
     <ClInclude Include="Jewel3D\Sound\SoundSystem.h">
@@ -343,11 +343,11 @@
     <ClInclude Include="Jewel3D\Utilities\Container.h">
       <Filter>Utilities</Filter>
     </ClInclude>
+    <ClInclude Include="Jewel3D\Entity\Hierarchy.h">
+      <Filter>Entity</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Jewel3D\Utilities\Hierarchy.inl">
-      <Filter>Utilities</Filter>
-    </None>
     <None Include="Jewel3D\Entity\Entity.inl">
       <Filter>Entity</Filter>
     </None>

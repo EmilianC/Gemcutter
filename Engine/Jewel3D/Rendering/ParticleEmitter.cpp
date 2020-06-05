@@ -1,9 +1,9 @@
 // Copyright (c) 2017 Emilian Cioca
 #include "Jewel3D/Precompiled.h"
 #include "ParticleEmitter.h"
-#include "Material.h"
 #include "Jewel3D/Application/Application.h"
 #include "Jewel3D/Application/Logging.h"
+#include "Jewel3D/Rendering/Material.h"
 
 namespace Jwl
 {

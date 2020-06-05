@@ -3,7 +3,7 @@
 #include "Jewel3D/Application/Logging.h"
 #include "Jewel3D/Math/Matrix.h"
 #include "Jewel3D/Math/Transform.h"
-#include "Jewel3D/Utilities/Hierarchy.h"
+#include "Jewel3D/Resource/Shareable.h"
 #include "Jewel3D/Utilities/Meta.h"
 
 #include <tuple>
@@ -82,7 +82,7 @@ namespace Jwl
 	// An Entity is a container for Components.
 	// This is the primary object representing an element of a scene.
 	// All Entities MUST be created through Entity::MakeNew().
-	class Entity : public Hierarchy<Entity>, public Transform
+	class Entity : public Transform, public Shareable<Entity>
 	{
 		friend ShareableAlloc;
 
@@ -166,8 +166,10 @@ namespace Jwl
 		// Whether or not this Entity is visible to queries.
 		bool IsEnabled() const;
 
-		// Creates and returns a new child entity.
-		Entity::Ptr CreateChild();
+		// Creates and returns a new Entity with a Hierarchy component.
+		static Entity::Ptr MakeNewRoot();
+		static Entity::Ptr MakeNewRoot(std::string name);
+		static Entity::Ptr MakeNewRoot(const Transform& pose);
 
 		// Creates and returns a new Entity that is a copy of this one.
 		Entity::Ptr Duplicate() const;
@@ -176,10 +178,12 @@ namespace Jwl
 		// It is added if an instance does not already exist on this Entity.
 		void CopyComponent(const ComponentBase& source);
 
-		// Returns the final transformation of the Entity, accumulated from the root of the hierarchy.
+		// Returns the world-space transformation of the Entity,
+		// accumulated from the root of the hierarchy if there is one.
 		mat4 GetWorldTransform() const;
 
-		// Returns the final rotation of the Entity, accumulated from the root of the hierarchy.
+		// Returns the world-space rotation of the Entity,
+		// accumulated from the root of the hierarchy if there is one.
 		quat GetWorldRotation() const;
 
 		// Positions the Entity at 'pos' looking towards the 'target' in local space.

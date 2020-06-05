@@ -1,6 +1,7 @@
 // Copyright (c) 2017 Emilian Cioca
 #include "Jewel3D/Precompiled.h"
 #include "Name.h"
+#include "Jewel3D/Entity/Hierarchy.h"
 
 namespace Jwl
 {
@@ -20,9 +21,12 @@ namespace Jwl
 
 		Log(output);
 
-		for (auto& child : entity.GetChildren())
+		if (auto* hierarchy = entity.Try<Hierarchy>())
 		{
-			LogSceneGraphRecursive(*child, tabLevel + 1);
+			for (auto& child : hierarchy->GetChildren())
+			{
+				LogSceneGraphRecursive(*child, tabLevel + 1);
+			}
 		}
 	}
 
@@ -33,7 +37,9 @@ namespace Jwl
 
 	Entity* FindChild(const Entity& root, std::string_view name)
 	{
-		for (auto& child : root.GetChildren())
+		auto& hierarchy = root.Get<Hierarchy>();
+
+		for (auto& child : hierarchy.GetChildren())
 		{
 			auto* nameComp = child->Try<Name>();
 			if (nameComp && nameComp->name == name)
@@ -42,7 +48,7 @@ namespace Jwl
 			}
 		}
 
-		for (auto& child : root.GetChildren())
+		for (auto& child : hierarchy.GetChildren())
 		{
 			if (auto* result = FindChild(*child, name))
 			{

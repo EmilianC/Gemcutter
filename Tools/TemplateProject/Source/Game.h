@@ -22,7 +22,7 @@ private:
 
 	/* Scene */
 	Entity::Ptr camera = Entity::MakeNew("camera");
-	Entity::Ptr root = Entity::MakeNew("root");
+	Entity::Ptr root = Entity::MakeNewRoot("root");
 
 	/* Assets */
 	// The config contains all the properties found in Settings.cfg.

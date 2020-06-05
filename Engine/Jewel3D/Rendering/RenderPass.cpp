@@ -10,6 +10,7 @@
 #include "Jewel3D/Application/Application.h"
 #include "Jewel3D/Application/Logging.h"
 #include "Jewel3D/Entity/Entity.h"
+#include "Jewel3D/Entity/Hierarchy.h"
 #include "Jewel3D/Math/Transform.h"
 #include "Jewel3D/Resource/Font.h"
 #include "Jewel3D/Resource/Shader.h"
@@ -396,6 +397,8 @@ namespace Jwl
 				characterPosition += upDirection * static_cast<float>(positions[charIndex].y);
 				text->owner.position += characterPosition;
 
+				const mat4 newTransform = ent.GetWorldTransform();
+
 				/* Construct a polygon based on the current character's dimensions. */
 				points[3] = static_cast<float>(dimensions[charIndex].x);
 				points[7] = static_cast<float>(dimensions[charIndex].y);
@@ -408,21 +411,20 @@ namespace Jwl
 				glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * 18, points);
 
 				/* Render */
-				// TODO: these sends' are duplicated. get rid of them!
 				if (camera)
 				{
 					auto& cameraComponent = camera->Get<Camera>();
 
-					MVP.Set(cameraComponent.GetViewProjMatrix() * text->owner.GetWorldTransform());
-					modelView.Set(cameraComponent.GetViewMatrix() * text->owner.GetWorldTransform());
+					MVP.Set(cameraComponent.GetViewProjMatrix() * newTransform);
+					modelView.Set(cameraComponent.GetViewMatrix() * newTransform);
 				}
 				else
 				{
 					MVP.Set(mat4::Identity);
 					modelView.Set(mat4::Identity);
 				}
-				model.Set(text->owner.GetWorldTransform());
-				invModel.Set(text->owner.GetWorldTransform().GetFastInverse());
+				model.Set(newTransform);
+				invModel.Set(newTransform.GetFastInverse());
 				transformBuffer.Bind(static_cast<unsigned>(UniformBufferSlot::Model));
 
 				glBindTexture(GL_TEXTURE_2D, font->GetTextures()[charIndex]);
@@ -464,9 +466,12 @@ namespace Jwl
 	{
 		RenderEntity(ent);
 
-		for (auto& child : ent.GetChildren())
+		if (auto* hierarchy = ent.Try<Hierarchy>())
 		{
-			RenderEntityRecursive(*child);
+			for (auto& child : hierarchy->GetChildren())
+			{
+				RenderEntityRecursive(*child);
+			}
 		}
 	}
 
