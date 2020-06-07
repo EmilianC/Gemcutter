@@ -823,6 +823,7 @@ namespace Jwl
 			GPUInfo.ScanDevice();
 			SetCullFunc(CullFunc::Clockwise);
 			SetDepthFunc(DepthFunc::Normal);
+			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 			if (GLEW_ARB_seamless_cube_map)
 			{
 				glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);

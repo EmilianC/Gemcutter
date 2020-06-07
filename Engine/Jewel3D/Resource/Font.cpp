@@ -133,7 +133,6 @@ namespace Jwl
 
 		// Upload data to OpenGL.
 		glGenTextures(94, textures);
-		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
 		unsigned char* bitmapItr = bitmap;
 		for (unsigned i = 0; i < 94; ++i)
@@ -168,8 +167,6 @@ namespace Jwl
 		}
 
 		glBindTexture(GL_TEXTURE_2D, GL_NONE);
-		// Restore default unpack behaviour.
-		glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
 
 		return true;
 	}
