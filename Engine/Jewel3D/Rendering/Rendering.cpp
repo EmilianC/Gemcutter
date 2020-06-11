@@ -176,6 +176,48 @@ namespace Jwl
 			return TextureWrap::Clamp;
 	}
 
+	CullFunc StringToCullFunc(std::string_view str)
+	{
+		if (CompareLowercase(str, "none"))
+			return CullFunc::None;
+		else if (CompareLowercase(str, "clockwise"))
+			return CullFunc::Clockwise;
+		else if (CompareLowercase(str, "counterclockwise"))
+			return CullFunc::CounterClockwise;
+		else
+			return CullFunc::None;
+	}
+
+	BlendFunc StringToBlendFunc(std::string_view str)
+	{
+		if (CompareLowercase(str, "none"))
+			return BlendFunc::None;
+		else if (CompareLowercase(str, "linear"))
+			return BlendFunc::Linear;
+		else if (CompareLowercase(str, "additive"))
+			return BlendFunc::Additive;
+		else if (CompareLowercase(str, "multiplicative"))
+			return BlendFunc::Multiplicative;
+		else if (CompareLowercase(str, "cutout"))
+			return BlendFunc::CutOut;
+		else
+			return BlendFunc::None;
+	}
+
+	DepthFunc StringToDepthFunc(std::string_view str)
+	{
+		if (CompareLowercase(str, "none"))
+			return DepthFunc::None;
+		else if (CompareLowercase(str, "writeonly"))
+			return DepthFunc::WriteOnly;
+		else if (CompareLowercase(str, "testonly"))
+			return DepthFunc::TestOnly;
+		else if (CompareLowercase(str, "normal"))
+			return DepthFunc::Normal;
+		else
+			return DepthFunc::None;
+	}
+
 	unsigned CountBytes(VertexFormat format)
 	{
 		return vertexFormatSize_Resolve[static_cast<unsigned>(format)];

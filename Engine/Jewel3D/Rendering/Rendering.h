@@ -152,6 +152,9 @@ namespace Jwl
 
 	TextureFilter StringToTextureFilter(std::string_view);
 	TextureWrap StringToTextureWrap(std::string_view);
+	CullFunc StringToCullFunc(std::string_view);
+	BlendFunc StringToBlendFunc(std::string_view);
+	DepthFunc StringToDepthFunc(std::string_view);
 
 	unsigned CountBytes(VertexFormat);
 	unsigned CountMipLevels(unsigned width, unsigned height, TextureFilter);
