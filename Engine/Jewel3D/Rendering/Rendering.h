@@ -168,6 +168,8 @@ namespace Jwl
 	void SetBlendFunc(BlendFunc func);
 	void SetDepthFunc(DepthFunc func);
 	void SetViewport(unsigned x, unsigned y, unsigned width, unsigned height);
+	void SetScissor(unsigned x, unsigned y, unsigned width, unsigned height);
+	void SetScissor(bool enabled);
 	bool SetVSync(VSyncMode mode);
 
 	// Saves a screenshot of the currently bound RenderTarget or the backbuffer.

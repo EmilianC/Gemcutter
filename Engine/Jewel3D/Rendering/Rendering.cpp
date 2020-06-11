@@ -332,6 +332,23 @@ namespace Jwl
 		glViewport(x, y, width, height);
 	}
 
+	void SetScissor(unsigned x, unsigned y, unsigned width, unsigned height)
+	{
+		glScissor(x, y, width, height);
+	}
+
+	void SetScissor(bool enabled)
+	{
+		if (enabled)
+		{
+			glEnable(GL_SCISSOR_TEST);
+		}
+		else
+		{
+			glDisable(GL_SCISSOR_TEST);
+		}
+	}
+
 	bool SetVSync(VSyncMode mode)
 	{
 		if (!wglewIsSupported("WGL_EXT_swap_control"))
