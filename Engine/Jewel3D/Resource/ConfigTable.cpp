@@ -47,15 +47,18 @@ namespace Jwl
 			if (line.empty() || line[0] == ':')
 				continue;
 
-			// Check that the position is valid and not the last character.
 			size_t pos = line.find('=');
-			if (pos == std::string::npos || pos == line.size() - 1)
+			if (pos == std::string::npos)
 				continue;
 
 			std::string leftSide = line.substr(0, pos);
-			std::string rightSide = line.substr(pos + 1);
+			std::string rightSide;
+			if (pos != line.size() - 1)
+			{
+				rightSide = line.substr(pos + 1);
+			}
 
-			settings[leftSide] = rightSide;
+			settings[std::move(leftSide)] = std::move(rightSide);
 		}
 
 		return true;
