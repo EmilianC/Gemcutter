@@ -71,15 +71,6 @@ namespace Jwl
 
 	void Material::SetBlendMode(BlendFunc func)
 	{
-		if (func == BlendFunc::CutOut && blendMode != BlendFunc::CutOut)
-		{
-			variantDefinitions.Define("JWL_CUTOUT");
-		}
-		else if (func != BlendFunc::CutOut && blendMode == BlendFunc::CutOut)
-		{
-			variantDefinitions.Undefine("JWL_CUTOUT");
-		}
-
 		blendMode = func;
 	}
 

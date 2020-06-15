@@ -114,9 +114,7 @@ namespace Jwl
 		// Color is added onto the pixels in the renderTarget.
 		Additive,
 		// Color is multiplied with the pixels in the renderTarget.
-		Multiplicative,
-		// Blending is disabled, but pixels with less than 1.0 alpha are discarded.
-		CutOut
+		Multiplicative
 	};
 
 	enum class DepthFunc
