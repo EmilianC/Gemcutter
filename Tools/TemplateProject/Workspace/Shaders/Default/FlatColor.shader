@@ -5,7 +5,7 @@ Attributes
 
 Uniforms
 {
-	template static Material : 0
+	instance Material : 0
 	{
 		vec4 Color = (0.0, 0.0, 0.0, 1.0);
 	}

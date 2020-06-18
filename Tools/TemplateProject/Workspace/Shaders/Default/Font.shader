@@ -1,12 +1,12 @@
 Attributes
 {
-	vec4 a_vert	: 0;
+	vec4 a_vert : 0;
 	vec2 a_uv   : 1;
 }
 
 Uniforms
 {
-	template static Material : 0
+	instance Material : 0
 	{
 		vec3 Color = (1.0, 1.0, 1.0);
 	}

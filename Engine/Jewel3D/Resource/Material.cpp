@@ -57,6 +57,18 @@ namespace Jwl
 			}
 		}
 
+		// Create instance copies of any non-static uniform buffers.
+		for (const BufferBinding& binding : shader->GetBufferBindings())
+		{
+			if (binding.templateBuff)
+			{
+				auto newBuffer = UniformBuffer::MakeNew();
+				newBuffer->Copy(*binding.templateBuff);
+
+				buffers.Add(std::move(newBuffer), binding.unit);
+			}
+		}
+
 		size_t textureCount = 0;
 		fread(&textureCount, sizeof(size_t), 1, binaryFile);
 		if (textureCount > GPUInfo.GetMaxTextureSlots())
@@ -89,13 +101,6 @@ namespace Jwl
 			}
 
 			textures.Add(std::move(texture), unit);
-		}
-
-		bool overrideUniformBuffers = false;
-		fread(&overrideUniformBuffers, sizeof(bool), 1, binaryFile);
-		if (overrideUniformBuffers)
-		{
-			CreateUniformBuffers();
 		}
 
 		BlendFunc blend;
@@ -141,26 +146,6 @@ namespace Jwl
 	CullFunc Material::GetCullMode() const
 	{
 		return cullMode;
-	}
-
-	void Material::CreateUniformBuffer(unsigned unit)
-	{
-		ASSERT(shader, "Must have a Shader attached.");
-
-		buffers.Add(shader->CreateBufferFromTemplate(unit), unit);
-	}
-
-	void Material::CreateUniformBuffers()
-	{
-		ASSERT(shader, "Must have a Shader attached.");
-
-		for (const auto& binding : shader->GetBufferBindings())
-		{
-			if (binding.templateBuff)
-			{
-				CreateUniformBuffer(binding.unit);
-			}
-		}
 	}
 
 	void Material::Bind() const

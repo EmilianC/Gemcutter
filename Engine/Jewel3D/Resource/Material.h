@@ -32,12 +32,6 @@ namespace Jwl
 		// The set of definitions used to permute the shader.
 		ShaderVariantControl variantDefinitions;
 
-		// Mirror the current shader's UniformBuffer bound to the specified index.
-		// The specified buffer must be marked as a 'template' in the shader.
-		void CreateUniformBuffer(unsigned unit);
-		// Enumerates and mirrors all the current shader's 'template' UniformBuffers.
-		void CreateUniformBuffers();
-
 		// The shader used to render the entity.
 		Shader::Ptr shader;
 		// These textures will be bound whenever the material is used in rendering.
