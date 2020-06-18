@@ -1,21 +1,21 @@
 // Copyright (c) 2017 Emilian Cioca
 #include "Jewel3D/Precompiled.h"
 #include "RenderPass.h"
-#include "Camera.h"
-#include "Primitives.h"
-#include "RenderTarget.h"
-#include "Rendering.h"
-#include "Viewport.h"
 #include "Jewel3D/Application/Application.h"
 #include "Jewel3D/Application/Logging.h"
 #include "Jewel3D/Entity/Entity.h"
 #include "Jewel3D/Entity/Hierarchy.h"
 #include "Jewel3D/Math/Transform.h"
+#include "Jewel3D/Rendering/Camera.h"
+#include "Jewel3D/Rendering/Primitives.h"
+#include "Jewel3D/Rendering/Rendering.h"
+#include "Jewel3D/Rendering/RenderTarget.h"
+#include "Jewel3D/Rendering/Viewport.h"
 #include "Jewel3D/Resource/Font.h"
+#include "Jewel3D/Resource/Material.h"
 #include "Jewel3D/Resource/Shader.h"
 #include "Jewel3D/Resource/Texture.h"
 #include "Jewel3D/Resource/UniformBuffer.h"
-#include "Jewel3D/Resource/Material.h"
 #include "Jewel3D/Resource/VertexArray.h"
 // Renderables
 #include "Mesh.h"
@@ -24,6 +24,48 @@
 #include "Text.h"
 
 #include <GLEW/GL/glew.h>
+
+namespace
+{
+	void BindRenderable(const Jwl::Renderable& renderable, Jwl::Shader* overrideShader)
+	{
+		const Jwl::Material& material = *renderable.GetMaterial();
+
+		if (overrideShader)
+		{
+			overrideShader->Bind();
+		}
+		else
+		{
+			ASSERT(material.shader, "Renderable Entity does not have a Shader and the RenderPass does not have an override attached.");
+
+			material.shader->Bind(renderable.variants);
+		}
+
+		renderable.buffers.Bind();
+		material.textures.Bind();
+		Jwl::SetBlendFunc(material.blendMode);
+		Jwl::SetDepthFunc(material.depthMode);
+		Jwl::SetCullFunc(material.cullMode);
+	}
+
+	void UnBindRenderable(const Jwl::Renderable& renderable, Jwl::Shader* overrideShader)
+	{
+		const Jwl::Material& material = *renderable.GetMaterial();
+
+		if (overrideShader)
+		{
+			overrideShader->UnBind();
+		}
+		else
+		{
+			material.shader->UnBind();
+		}
+
+		renderable.buffers.UnBind();
+		material.textures.UnBind();
+	}
+}
 
 namespace Jwl
 {
@@ -204,18 +246,7 @@ namespace Jwl
 		}
 
 		Bind();
-
-		// Bind override shader.
-		if (shader)
-		{
-			renderable->material->BindState();
-			shader->Bind();
-		}
-		else
-		{
-			ASSERT(renderable->material->shader != nullptr, "Renderable Entity does not have a Shader and the RenderPass does not have an override attached.");
-			renderable->material->Bind();
-		}
+		BindRenderable(*renderable, shader.get());
 
 		// Update transform uniforms.
 		MVP.Set(mat4::Identity);
@@ -235,7 +266,7 @@ namespace Jwl
 			glDrawArraysInstanced(GL_TRIANGLES, 0, vertexArray->GetVertexCount(), count);
 		}
 
-		renderable->material->UnBind();
+		UnBindRenderable(*renderable, shader.get());
 
 		if (skybox)
 		{
@@ -258,23 +289,7 @@ namespace Jwl
 			return;
 		}
 
-		auto* mesh = ent.Try<Mesh>();
-		auto* text = ent.Try<Text>();
-		auto* emitter = ent.Try<ParticleEmitter>();
-		auto* sprite = ent.Try<Sprite>();
-		ASSERT(mesh || text || emitter || sprite, "Entity must have a renderable component.");
-
-		// Bind override shader.
-		if (shader)
-		{
-			renderable->material->BindState();
-			shader->Bind();
-		}
-		else
-		{
-			ASSERT(renderable->material->shader != nullptr, "Renderable Entity does not have a Shader and the RenderPass does not have an override attached.");
-			renderable->material->Bind();
-		}
+		BindRenderable(*renderable, shader.get());
 
 		// Update transform uniforms.
 		const mat4 worldTransform = ent.GetWorldTransform();
@@ -301,8 +316,7 @@ namespace Jwl
 
 		transformBuffer.Bind(static_cast<unsigned>(UniformBufferSlot::Model));
 
-		// Render Models.
-		if (mesh && mesh->IsComponentEnabled())
+		if (auto* mesh = dynamic_cast<const Mesh*>(renderable))
 		{
 			auto& vertexArray = mesh->array;
 			ASSERT(vertexArray, "Entity has a Mesh component but does not have a VertexArray to render.");
@@ -310,9 +324,7 @@ namespace Jwl
 			vertexArray->Bind();
 			glDrawArrays(GL_TRIANGLES, 0, vertexArray->GetVertexCount());
 		}
-
-		// Render Text.
-		if (text && text->IsComponentEnabled())
+		else if (auto* text = dynamic_cast<const Text*>(renderable))
 		{
 			auto& font = text->font;
 			ASSERT(font != nullptr, "Entity has a Text component but does not have a Font to render with.");
@@ -441,25 +453,28 @@ namespace Jwl
 
 			text->owner.position = initialPosition;
 		}
-
-		// Render Particles.
-		if (emitter && emitter->IsComponentEnabled() && emitter->GetNumAliveParticles() > 0)
+		else if (auto* emitter = dynamic_cast<const ParticleEmitter*>(renderable))
 		{
-			emitter->GetBuffer().Bind(static_cast<unsigned>(UniformBufferSlot::Particle));
+			if (emitter->GetNumAliveParticles() > 0)
+			{
+				emitter->GetBuffer().Bind(static_cast<unsigned>(UniformBufferSlot::Particle));
 
-			glBindVertexArray(emitter->GetVAO());
-			glDrawArrays(GL_POINTS, 0, emitter->GetNumAliveParticles());
+				glBindVertexArray(emitter->GetVAO());
+				glDrawArrays(GL_POINTS, 0, emitter->GetNumAliveParticles());
+			}
 		}
-
-		// Render Sprites.
-		if (sprite && sprite->IsComponentEnabled())
+		else if (auto* sprite = dynamic_cast<const Sprite*>(renderable))
 		{
 			ASSERT(Primitives.IsLoaded(), "Primitives system must be initialized in order to render sprites.");
 
 			Primitives.DrawUnitRectangle();
 		}
+		else
+		{
+			ASSERT(false, "Entity must have a renderable component.");
+		}
 
-		renderable->material->UnBind();
+		UnBindRenderable(*renderable, shader.get());
 	}
 
 	void RenderPass::RenderEntityRecursive(const Entity& ent)

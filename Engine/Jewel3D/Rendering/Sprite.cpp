@@ -40,8 +40,8 @@ namespace Jwl
 		if (alignment == pivot)
 			return;
 
-		material->variantDefinitions.Switch("JWL_SPRITE_CENTERED_X", pivot == Alignment::Center || pivot == Alignment::BottomCenter);
-		material->variantDefinitions.Switch("JWL_SPRITE_CENTERED_Y", pivot == Alignment::Center || pivot == Alignment::LeftCenter);
+		variants.Switch("JWL_SPRITE_CENTERED_X", pivot == Alignment::Center || pivot == Alignment::BottomCenter);
+		variants.Switch("JWL_SPRITE_CENTERED_Y", pivot == Alignment::Center || pivot == Alignment::LeftCenter);
 
 		alignment = pivot;
 	}
@@ -56,7 +56,7 @@ namespace Jwl
 		if (billBoarded == state)
 			return;
 
-		material->variantDefinitions.Switch("JWL_SPRITE_BILLBOARD", state);
+		variants.Switch("JWL_SPRITE_BILLBOARD", state);
 
 		billBoarded = state;
 	}

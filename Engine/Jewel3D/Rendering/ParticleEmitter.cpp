@@ -157,7 +157,7 @@ namespace Jwl
 		if (localSpace == isLocal)
 			return;
 
-		material->variantDefinitions.Switch("JWL_PARTICLE_LOCAL_SPACE", isLocal);
+		variants.Switch("JWL_PARTICLE_LOCAL_SPACE", isLocal);
 
 		vec3 transform;
 		if (isLocal)
@@ -213,11 +213,11 @@ namespace Jwl
 				!requirements.Has(ParticleBuffers::Alpha);
 
 			/* Update shader variant to match the buffers and effect requirements */
-			material->variantDefinitions.Switch("JWL_PARTICLE_SIZE", requirements.Has(ParticleBuffers::Size));
-			material->variantDefinitions.Switch("JWL_PARTICLE_COLOR", requirements.Has(ParticleBuffers::Color));
-			material->variantDefinitions.Switch("JWL_PARTICLE_ALPHA", requirements.Has(ParticleBuffers::Alpha));
-			material->variantDefinitions.Switch("JWL_PARTICLE_ROTATION", requirements.Has(ParticleBuffers::Rotation));
-			material->variantDefinitions.Switch("JWL_PARTICLE_AGERATIO", requiresAgeRatio);
+			variants.Switch("JWL_PARTICLE_SIZE", requirements.Has(ParticleBuffers::Size));
+			variants.Switch("JWL_PARTICLE_COLOR", requirements.Has(ParticleBuffers::Color));
+			variants.Switch("JWL_PARTICLE_ALPHA", requirements.Has(ParticleBuffers::Alpha));
+			variants.Switch("JWL_PARTICLE_ROTATION", requirements.Has(ParticleBuffers::Rotation));
+			variants.Switch("JWL_PARTICLE_AGERATIO", requiresAgeRatio);
 
 			if (requiresAgeRatio)
 			{

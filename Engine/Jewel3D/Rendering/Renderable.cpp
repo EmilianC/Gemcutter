@@ -13,7 +13,36 @@ namespace Jwl
 
 	Renderable::Renderable(Entity& _owner, Material::Ptr _material)
 		: Component(_owner)
-		, material(std::move(_material))
 	{
+		SetMaterial(std::move(_material));
+	}
+
+	void Renderable::SetMaterial(Material::Ptr newMaterial)
+	{
+		ASSERT(newMaterial, "'newMaterial' cannot be null.");
+
+		// Create any instance buffer copies needed per-entity.
+		for (const BufferBinding& binding : newMaterial->shader->GetBufferBindings())
+		{
+			if (binding.templateBuff)
+			{
+				auto newBuffer = UniformBuffer::MakeNew();
+				newBuffer->Copy(*binding.templateBuff);
+
+				buffers.Add(std::move(newBuffer), binding.unit);
+			}
+		}
+
+		material = std::move(newMaterial);
+	}
+
+	const Material::Ptr& Renderable::GetMaterial() const
+	{
+		return material;
+	}
+
+	Material::Ptr& Renderable::GetMaterial()
+	{
+		return material;
 	}
 }
