@@ -3,30 +3,32 @@
 #include "ParticleEmitter.h"
 #include "Jewel3D/Application/Application.h"
 #include "Jewel3D/Application/Logging.h"
-#include "Jewel3D/Rendering/Material.h"
 
 namespace Jwl
 {
 	ParticleEmitter::ParticleEmitter(Entity& _owner, unsigned _maxParticles)
-		: Component(_owner)
+		: Renderable(_owner)
 		, maxParticles(_maxParticles)
 	{
 		ASSERT(maxParticles > 0, "'maxParticles' must be greater than 0.");
 
-		particleParameters.AddUniform<vec2>("StartSize");
-		particleParameters.AddUniform<vec2>("EndSize");
-		particleParameters.AddUniform<vec3>("StartColor");
-		particleParameters.AddUniform<vec3>("EndColor");
-		particleParameters.AddUniform<float>("StartAlpha");
-		particleParameters.AddUniform<float>("EndAlpha");
-		particleParameters.InitBuffer();
+		owner.Tag<ParticleUpdaterTag>();
+		InitUniformBuffer();
+	}
 
-		particleParameters.SetUniform("StartSize", vec2(1.0f));
-		particleParameters.SetUniform("EndSize", vec2(0.5f));
-		particleParameters.SetUniform("StartColor", vec3(1.0f));
-		particleParameters.SetUniform("EndColor", vec3(1.0f));
-		particleParameters.SetUniform("StartAlpha", 1.0f);
-		particleParameters.SetUniform("EndAlpha", 0.0f);
+	ParticleEmitter::ParticleEmitter(Entity& _owner, Material::Ptr material, unsigned _maxParticles)
+		: Renderable(_owner, std::move(material))
+		, maxParticles(_maxParticles)
+	{
+		ASSERT(maxParticles > 0, "'maxParticles' must be greater than 0.");
+
+		owner.Tag<ParticleUpdaterTag>();
+		InitUniformBuffer();
+	}
+
+	ParticleEmitter::~ParticleEmitter()
+	{
+		owner.RemoveTag<ParticleUpdaterTag>();
 	}
 
 	ParticleEmitter& ParticleEmitter::operator=(const ParticleEmitter& other)
@@ -155,7 +157,7 @@ namespace Jwl
 		if (localSpace == isLocal)
 			return;
 
-		owner.Get<Material>().variantDefinitions.Switch("JWL_PARTICLE_LOCAL_SPACE", isLocal);
+		variants.Switch("JWL_PARTICLE_LOCAL_SPACE", isLocal);
 
 		vec3 transform;
 		if (isLocal)
@@ -211,12 +213,11 @@ namespace Jwl
 				!requirements.Has(ParticleBuffers::Alpha);
 
 			/* Update shader variant to match the buffers and effect requirements */
-			auto& material = owner.Get<Material>();
-			material.variantDefinitions.Switch("JWL_PARTICLE_SIZE", requirements.Has(ParticleBuffers::Size));
-			material.variantDefinitions.Switch("JWL_PARTICLE_COLOR", requirements.Has(ParticleBuffers::Color));
-			material.variantDefinitions.Switch("JWL_PARTICLE_ALPHA", requirements.Has(ParticleBuffers::Alpha));
-			material.variantDefinitions.Switch("JWL_PARTICLE_ROTATION", requirements.Has(ParticleBuffers::Rotation));
-			material.variantDefinitions.Switch("JWL_PARTICLE_AGERATIO", requiresAgeRatio);
+			variants.Switch("JWL_PARTICLE_SIZE", requirements.Has(ParticleBuffers::Size));
+			variants.Switch("JWL_PARTICLE_COLOR", requirements.Has(ParticleBuffers::Color));
+			variants.Switch("JWL_PARTICLE_ALPHA", requirements.Has(ParticleBuffers::Alpha));
+			variants.Switch("JWL_PARTICLE_ROTATION", requirements.Has(ParticleBuffers::Rotation));
+			variants.Switch("JWL_PARTICLE_AGERATIO", requiresAgeRatio);
 
 			if (requiresAgeRatio)
 			{
@@ -305,5 +306,23 @@ namespace Jwl
 				data.ageRatios[i] = data.ages[i] / data.lifetimes[i];
 			}
 		}
+	}
+
+	void ParticleEmitter::InitUniformBuffer()
+	{
+		particleParameters.AddUniform<vec2>("StartSize");
+		particleParameters.AddUniform<vec2>("EndSize");
+		particleParameters.AddUniform<vec3>("StartColor");
+		particleParameters.AddUniform<vec3>("EndColor");
+		particleParameters.AddUniform<float>("StartAlpha");
+		particleParameters.AddUniform<float>("EndAlpha");
+		particleParameters.InitBuffer();
+
+		particleParameters.SetUniform("StartSize", vec2(1.0f));
+		particleParameters.SetUniform("EndSize", vec2(0.5f));
+		particleParameters.SetUniform("StartColor", vec3(1.0f));
+		particleParameters.SetUniform("EndColor", vec3(1.0f));
+		particleParameters.SetUniform("StartAlpha", 1.0f);
+		particleParameters.SetUniform("EndAlpha", 0.0f);
 	}
 }

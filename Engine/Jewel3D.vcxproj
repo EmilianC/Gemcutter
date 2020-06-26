@@ -101,10 +101,6 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="Jewel3D\Rendering\Material.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
-    </ClCompile>
     <ClCompile Include="Jewel3D\Rendering\Mesh.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
@@ -114,6 +110,10 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="Jewel3D\Rendering\Primitives.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Rendering\Renderable.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -146,6 +146,10 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="Jewel3D\Resource\Font.cpp">
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="Jewel3D\Resource\Material.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Jewel3D/Precompiled.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -230,10 +234,10 @@
     <ClInclude Include="Jewel3D\Precompiled.h" />
     <ClInclude Include="Jewel3D\Rendering\Camera.h" />
     <ClInclude Include="Jewel3D\Rendering\Light.h" />
-    <ClInclude Include="Jewel3D\Rendering\Material.h" />
     <ClInclude Include="Jewel3D\Rendering\Mesh.h" />
     <ClInclude Include="Jewel3D\Rendering\ParticleEmitter.h" />
     <ClInclude Include="Jewel3D\Rendering\Primitives.h" />
+    <ClInclude Include="Jewel3D\Rendering\Renderable.h" />
     <ClInclude Include="Jewel3D\Rendering\Rendering.h" />
     <ClInclude Include="Jewel3D\Rendering\RenderPass.h" />
     <ClInclude Include="Jewel3D\Rendering\RenderTarget.h" />
@@ -242,6 +246,7 @@
     <ClInclude Include="Jewel3D\Rendering\Viewport.h" />
     <ClInclude Include="Jewel3D\Resource\ConfigTable.h" />
     <ClInclude Include="Jewel3D\Resource\Font.h" />
+    <ClInclude Include="Jewel3D\Resource\Material.h" />
     <ClInclude Include="Jewel3D\Resource\Model.h" />
     <ClInclude Include="Jewel3D\Resource\ParticleBuffer.h" />
     <ClInclude Include="Jewel3D\Resource\ParticleFunctor.h" />

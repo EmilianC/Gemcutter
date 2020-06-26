@@ -9,6 +9,8 @@ Tools/TemplateEncoder/obj/
 Tools/TemplateEncoder/bin/
 Tools/FontEncoder/obj/
 Tools/FontEncoder/bin/
+Tools/MaterialEncoder/obj/
+Tools/MaterialEncoder/bin/
 Tools/MeshEncoder/obj/
 Tools/MeshEncoder/bin/
 Tools/TextureEncoder/obj/

@@ -23,7 +23,7 @@ Uniforms
 		uint Type;
 	}
 
-	template static Ambient : 1
+	static Ambient : 1
 	{
 		vec3 Color = (0.1, 0.1, 0.1);
 	}

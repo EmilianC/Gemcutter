@@ -727,42 +727,26 @@ namespace Jwl
 
 		size_t pos = block.start;
 
-		char modifer1[128] = { '\0' };
-		char modifer2[128] = { '\0' };
+		char modifer[32] = { '\0' };
 		char name[128] = { '\0' };
 		unsigned Id = 0;
 
 		while (pos < block.end)
 		{
-			bool isStatic = false;
-			bool isTemplate = false;
-
 			if (!std::isspace(block.source[pos]))
 			{
-				if (sscanf(&block.source[pos], "%127s %127s %127s : %u;", modifer1, modifer2, name, &Id) == 4)
+				bool isStatic = false;
+				bool isInstance = false;
+
+				if (sscanf(&block.source[pos], "%31s %127s : %u;", modifer, name, &Id) == 3)
 				{
-					// There are only two possible modifier keywords and both are being used.
-					if ((strcmp(modifer1, "template") == 0 && strcmp(modifer2, "static") == 0) ||
-						(strcmp(modifer1, "static") == 0 && strcmp(modifer2, "template") == 0))
+					if (strcmp(modifer, "static") == 0)
 					{
 						isStatic = true;
-						isTemplate = true;
 					}
-					else
+					else if (strcmp(modifer, "instance") == 0)
 					{
-						Error("Unrecognized modifier keyword on Uniform buffer.");
-						return false;
-					}
-				}
-				else if (sscanf(&block.source[pos], "%127s %127s : %u;", modifer1, name, &Id) == 3)
-				{
-					if (strcmp(modifer1, "template") == 0)
-					{
-						isTemplate = true;
-					}
-					else if (strcmp(modifer1, "static") == 0)
-					{
-						isStatic = true;
+						isInstance = true;
 					}
 					else
 					{
@@ -820,7 +804,7 @@ namespace Jwl
 					return false;
 				}
 
-				if (!ParseUniformBlock(buffer, name, Id, isTemplate, isStatic))
+				if (!ParseUniformBlock(buffer, name, Id, isInstance, isStatic))
 				{
 					return false;
 				}
@@ -832,7 +816,7 @@ namespace Jwl
 		return true;
 	}
 
-	bool Shader::ParseUniformBlock(const Block& block, const char* name, unsigned Id, bool makeTemplate, bool makeStatic)
+	bool Shader::ParseUniformBlock(const Block& block, const char* name, unsigned Id, bool isInstance, bool isStatic)
 	{
 		ASSERT(block.type == BlockType::Uniforms, "Expected a Uniform block type.");
 		ASSERT(name != nullptr, "Must provide name.");
@@ -863,7 +847,7 @@ namespace Jwl
 		uniformStruct = FormatString("layout(std140) uniform Jwl_User_%s\n{%s} %s;\n", name, uniformStruct.c_str(), name);
 
 		/* Create template and the shader owned buffer */
-		if (makeTemplate || makeStatic)
+		if (isInstance || isStatic)
 		{
 			auto buffer = UniformBuffer::MakeNew();
 
@@ -1050,21 +1034,18 @@ namespace Jwl
 				guard.Dismiss();
 			}
 
-			bufferBindings.emplace_back(name, Id, makeTemplate ? buffer : nullptr);
-
-			if (makeStatic)
+			if (isStatic)
 			{
-				auto staticBuf = UniformBuffer::MakeNew();
-				staticBuf->Copy(*buffer);
-
-				buffers.Add(staticBuf, Id);
+				buffers.Add(std::move(buffer), Id);
 			}
+
+			bufferBindings.emplace_back(name, Id, isStatic ? nullptr : std::move(buffer));
 		}
 		else
 		{
 			if (rawStruct.find('=') != std::string::npos)
 			{
-				Error("Default uniform buffer member assignment is only available on buffers that are marked as 'template' or 'static'.");
+				Error("Default uniform buffer member assignment is only available on buffers that are marked as 'instance' or 'static'.");
 				return false;
 			}
 
@@ -1223,26 +1204,6 @@ namespace Jwl
 
 		textures.UnBind();
 		buffers.UnBind();
-	}
-
-	UniformBuffer::Ptr Shader::CreateBufferFromTemplate(unsigned unit) const
-	{
-		auto newBuf = UniformBuffer::MakeNew();
-
-		for (auto& binding : bufferBindings)
-		{
-			if (binding.unit == unit)
-			{
-				ASSERT(binding.templateBuff, "Binding unit ( %d ) is not marked as 'template' in the shader.", unit);
-
-				newBuf->Copy(*binding.templateBuff);
-
-				return newBuf;
-			}
-		}
-
-		ASSERT(false, "Specified binding unit ( %d ) does not have a uniform buffer bound to it.", unit);
-		return newBuf;
 	}
 
 	const std::vector<BufferBinding>& Shader::GetBufferBindings() const

@@ -1,7 +1,7 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
-#include "RenderTarget.h"
-#include "Viewport.h"
+#include "Jewel3D/Rendering/RenderTarget.h"
+#include "Jewel3D/Rendering/Viewport.h"
 #include "Jewel3D/Resource/Shader.h"
 #include "Jewel3D/Resource/Texture.h"
 

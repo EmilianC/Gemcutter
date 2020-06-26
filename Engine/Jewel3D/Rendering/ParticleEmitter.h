@@ -2,6 +2,7 @@
 #pragma once
 #include "Jewel3D/Entity/Entity.h"
 #include "Jewel3D/Resource/ParticleBuffer.h"
+#include "Jewel3D/Rendering/Renderable.h"
 #include "Jewel3D/Resource/ParticleFunctor.h"
 #include "Jewel3D/Resource/UniformBuffer.h"
 #include "Jewel3D/Utilities/Random.h"
@@ -11,12 +12,17 @@ namespace Jwl
 	struct vec2;
 	struct vec3;
 
+	struct ParticleUpdaterTag : public Tag<ParticleUpdaterTag> {};
+
 	// Spawns particles and updates their positions.
 	// Can be extended with ParticleFunctors to add custom functionality.
-	class ParticleEmitter : public Component<ParticleEmitter>
+	class ParticleEmitter : public Renderable
 	{
 	public:
 		ParticleEmitter(Entity& owner, unsigned maxParticles = 100);
+		ParticleEmitter(Entity& owner, Material::Ptr material, unsigned maxParticles = 100);
+		~ParticleEmitter();
+
 		ParticleEmitter& operator=(const ParticleEmitter&);
 
 		enum Type : unsigned
@@ -72,6 +78,7 @@ namespace Jwl
 
 	private:
 		void UpdateInternal(float deltaTime);
+		void InitUniformBuffer();
 
 		ParticleBuffer data;
 

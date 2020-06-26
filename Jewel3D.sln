@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2036
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30104.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Jewel3D", "Engine\Jewel3D.vcxproj", "{3954E1F3-B90E-4883-AD0A-5EEF757A3726}"
 EndProject
@@ -35,6 +35,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TemplateEncoder", "Tools\Te
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TextureEncoder", "Tools\TextureEncoder\TextureEncoder.vcxproj", "{45E8B245-E74F-41CE-A2FB-2044792DB0C2}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3954E1F3-B90E-4883-AD0A-5EEF757A3726} = {3954E1F3-B90E-4883-AD0A-5EEF757A3726}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MaterialEncoder", "Tools\MaterialEncoder\MaterialEncoder.vcxproj", "{98CE9CF5-8399-4CE3-B603-270A890092E8}"
 	ProjectSection(ProjectDependencies) = postProject
 		{3954E1F3-B90E-4883-AD0A-5EEF757A3726} = {3954E1F3-B90E-4883-AD0A-5EEF757A3726}
 	EndProjectSection
@@ -95,6 +100,12 @@ Global
 		{45E8B245-E74F-41CE-A2FB-2044792DB0C2}.Release|Any CPU.ActiveCfg = Release|Win32
 		{45E8B245-E74F-41CE-A2FB-2044792DB0C2}.Release|Win32.ActiveCfg = Release|Win32
 		{45E8B245-E74F-41CE-A2FB-2044792DB0C2}.Release|Win32.Build.0 = Release|Win32
+		{98CE9CF5-8399-4CE3-B603-270A890092E8}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{98CE9CF5-8399-4CE3-B603-270A890092E8}.Debug|Win32.ActiveCfg = Debug|Win32
+		{98CE9CF5-8399-4CE3-B603-270A890092E8}.Debug|Win32.Build.0 = Debug|Win32
+		{98CE9CF5-8399-4CE3-B603-270A890092E8}.Release|Any CPU.ActiveCfg = Release|Win32
+		{98CE9CF5-8399-4CE3-B603-270A890092E8}.Release|Win32.ActiveCfg = Release|Win32
+		{98CE9CF5-8399-4CE3-B603-270A890092E8}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -106,6 +117,7 @@ Global
 		{99A4C321-FA72-4426-94BF-F16431D8C77F} = {7EFC9B41-1C48-4AE3-98F8-A5EA701459C0}
 		{6D5238A1-B5F5-44D5-9E36-FBAAA7207CEB} = {7EFC9B41-1C48-4AE3-98F8-A5EA701459C0}
 		{45E8B245-E74F-41CE-A2FB-2044792DB0C2} = {7EFC9B41-1C48-4AE3-98F8-A5EA701459C0}
+		{98CE9CF5-8399-4CE3-B603-270A890092E8} = {7EFC9B41-1C48-4AE3-98F8-A5EA701459C0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {436B9A89-8EDA-4060-8D8D-228AE4DB5D63}

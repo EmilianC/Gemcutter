@@ -198,8 +198,6 @@ namespace Jwl
 			return BlendFunc::Additive;
 		else if (CompareLowercase(str, "multiplicative"))
 			return BlendFunc::Multiplicative;
-		else if (CompareLowercase(str, "cutout"))
-			return BlendFunc::CutOut;
 		else
 			return BlendFunc::None;
 	}
@@ -320,7 +318,6 @@ namespace Jwl
 		switch (func)
 		{
 		default:
-		case BlendFunc::CutOut:
 		case BlendFunc::None:
 			glDisable(GL_BLEND);
 			break;

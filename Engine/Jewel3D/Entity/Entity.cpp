@@ -4,7 +4,6 @@
 #include "Jewel3D/Application/Logging.h"
 #include "Jewel3D/Entity/Hierarchy.h"
 #include "Jewel3D/Entity/Name.h"
-#include "Jewel3D/Rendering/Material.h"
 
 #include <algorithm>
 
@@ -99,21 +98,8 @@ namespace Jwl
 		}
 
 		/* Copy all components */
-		// The material is always copied first in order to have the Shader Variants updated from
-		// any of the new components initializing.
-		auto material = this->Try<Material>();
-		if (material)
-		{
-			static_cast<const ComponentBase*>(material)->Copy(*newEntity);
-		}
-
-		// Mirror all components to the other entity.
 		for (auto comp : this->components)
 		{
-			// Material component has already been copied over.
-			if (comp == material)
-				continue;
-
 			comp->Copy(*newEntity);
 		}
 

@@ -7,24 +7,29 @@
 namespace Jwl
 {
 	Text::Text(Entity& _owner)
-		: Component(_owner)
+		: Renderable(_owner)
 	{
 	}
 
 	Text::Text(Entity& _owner, Font::Ptr _font)
-		: Component(_owner)
+		: Renderable(_owner)
 		, font(std::move(_font))
 	{
 	}
 
 	Text::Text(Entity& _owner, std::string _text)
-		: Component(_owner)
+		: Renderable(_owner)
 		, text(std::move(_text))
 	{
 	}
 
-	Text::Text(Entity& _owner, Font::Ptr _font, std::string _text)
-		: Component(_owner)
+	Text::Text(Entity& _owner, Material::Ptr material)
+		: Renderable(_owner, std::move(material))
+	{
+	}
+
+	Text::Text(Entity& _owner, Font::Ptr _font, std::string _text, Material::Ptr material)
+		: Renderable(_owner, std::move(material))
 		, font(std::move(_font))
 		, text(std::move(_text))
 	{

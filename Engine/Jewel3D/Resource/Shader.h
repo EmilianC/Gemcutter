@@ -84,8 +84,7 @@ namespace Jwl
 		const std::string name;
 		// The unit connecting this buffer to a BufferSlot of the same unit.
 		const unsigned unit;
-		// Holds a template buffer that can be duplicated.
-		// Created only for buffers that are defined with the "template" keyword in the shader.
+		// A template of the shader's buffer which can be copied from. Only exists for 'instance' buffers.
 		const UniformBuffer::Ptr templateBuff;
 	};
 
@@ -130,10 +129,6 @@ namespace Jwl
 		// These buffers will be bound whenever the shader is used in rendering.
 		BufferList buffers;
 
-		// Creates a new UniformBuffer from the specified buffer slot.
-		// The slot must be marked as 'template' in the shader's source.
-		UniformBuffer::Ptr CreateBufferFromTemplate(unsigned unit) const;
-
 		const std::vector<BufferBinding>& GetBufferBindings() const;
 
 	private:
@@ -177,7 +172,7 @@ namespace Jwl
 		bool ParseAttributes(const Block& block);
 		bool ParseShader(const Block& block);
 		bool ParseUniforms(const Block& block);
-		bool ParseUniformBlock(const Block& block, const char* name, unsigned Id, bool makeTemplate, bool makeStatic);
+		bool ParseUniformBlock(const Block& block, const char* name, unsigned Id, bool isInstance, bool isStatic);
 		bool ParseSamplers(const Block& block);
 
 		bool loaded = false;

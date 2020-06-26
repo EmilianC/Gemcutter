@@ -6,7 +6,7 @@ Attributes
 
 Uniforms
 {
-	template static Material : 0
+	instance Material : 0
 	{
 		float AlphaCutOff = 0.5;
 	}
