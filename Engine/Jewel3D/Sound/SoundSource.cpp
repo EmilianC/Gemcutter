@@ -59,8 +59,9 @@ namespace Jwl
 	{
 		ASSERT(sound, "SoundHandle is not valid.");
 
-		data = std::move(sound);
+		Stop();
 
+		data = std::move(sound);
 		alSourcei(hSound, AL_BUFFER, data->GetBufferHandle());
 		AL_DEBUG_CHECK();
 	}
