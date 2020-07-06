@@ -21,7 +21,7 @@ namespace Jwl
 		ComponentBase() = delete;
 		ComponentBase(const ComponentBase&) = delete;
 		ComponentBase(Entity& owner, unsigned componentId);
-		ComponentBase& operator=(const ComponentBase&);
+		ComponentBase& operator=(const ComponentBase&) = delete;
 		virtual ~ComponentBase() = default;
 
 		// Returns true if the component and its owner are both enabled and visible to queries.
@@ -43,8 +43,6 @@ namespace Jwl
 		static unsigned GenerateID();
 
 	private:
-		virtual void Copy(Entity& newOwner) const = 0;
-
 		// The unique ID used by the derived component.
 		const unsigned componentId;
 
@@ -67,8 +65,6 @@ namespace Jwl
 		static unsigned GetComponentId();
 
 	private:
-		void Copy(Entity& newOwner) const final override;
-
 		// A unique Id given to each component type.
 		static unsigned componentId;
 	};
@@ -170,13 +166,6 @@ namespace Jwl
 		static Entity::Ptr MakeNewRoot();
 		static Entity::Ptr MakeNewRoot(std::string name);
 		static Entity::Ptr MakeNewRoot(const Transform& pose);
-
-		// Creates and returns a new Entity that is a copy of this one.
-		Entity::Ptr Duplicate() const;
-
-		// Copies the component onto this Entity.
-		// It is added if an instance does not already exist on this Entity.
-		void CopyComponent(const ComponentBase& source);
 
 		// Returns the world-space transformation of the Entity,
 		// accumulated from the root of the hierarchy if there is one.

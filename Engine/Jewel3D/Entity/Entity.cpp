@@ -21,13 +21,6 @@ namespace Jwl
 	{
 	}
 
-	ComponentBase& ComponentBase::operator=(const ComponentBase& other)
-	{
-		ASSERT(componentId == other.componentId, "Assignment operator between incompatible components.");
-		// The owner reference is left untouched.
-		return *this;
-	}
-
 	bool ComponentBase::IsEnabled() const
 	{
 		return isEnabled && owner.IsEnabled();
@@ -83,37 +76,6 @@ namespace Jwl
 		entity->Add<Hierarchy>();
 
 		return entity;
-	}
-
-	Entity::Ptr Entity::Duplicate() const
-	{
-		auto newEntity = MakeNew();
-
-		newEntity->Transform::operator=(*this);
-
-		/* Copy all tags */
-		for (auto tag : this->tags)
-		{
-			newEntity->Tag(tag);
-		}
-
-		/* Copy all components */
-		for (auto comp : this->components)
-		{
-			comp->Copy(*newEntity);
-		}
-
-		if (!this->IsEnabled())
-		{
-			newEntity->Disable();
-		}
-
-		return newEntity;
-	}
-
-	void Entity::CopyComponent(const ComponentBase& source)
-	{
-		source.Copy(*this);
 	}
 
 	mat4 Entity::GetWorldTransform() const

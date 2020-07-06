@@ -31,34 +31,6 @@ namespace Jwl
 		return componentId;
 	}
 
-	template<class derived>
-	void Component<derived>::Copy(Entity& newOwner) const
-	{
-		if constexpr (std::is_base_of_v<TagBase, derived>)
-		{
-			Error("Tag was attempted to be copied as if it was a Component.");
-		}
-		else
-		{
-			if constexpr (std::is_copy_assignable_v<derived>)
-			{
-				const derived& source = *static_cast<const derived*>(this);
-
-				auto& dest = newOwner.Require<derived>();
-				dest = source;
-
-				if (!source.IsEnabled())
-				{
-					newOwner.Disable<derived>();
-				}
-			}
-			else
-			{
-				Warning("Component could not be copied. It does not have a valid assignment operator.");
-			}
-		}
-	}
-
 	template<class T, typename... Args>
 	T& Entity::Add(Args&&... constructorParams)
 	{

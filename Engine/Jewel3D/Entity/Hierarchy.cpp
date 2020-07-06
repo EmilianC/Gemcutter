@@ -10,24 +10,6 @@ namespace Jwl
 		owner.Tag<HierarchyRoot>();
 	}
 
-	Hierarchy& Hierarchy::operator=(const Hierarchy& other)
-	{
-		if (auto lock = other.parent.lock())
-		{
-			other.parentHierarchy->AddChild(owner.GetPtr());
-		}
-		else
-		{
-			parentHierarchy = nullptr;
-			parent.reset();
-			owner.Tag<HierarchyRoot>();
-		}
-
-		ClearChildren();
-
-		return *this;
-	}
-
 	Hierarchy::~Hierarchy()
 	{
 		if (auto lock = parent.lock())

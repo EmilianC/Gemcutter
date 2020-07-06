@@ -19,8 +19,6 @@ namespace Jwl
 		Hierarchy(Entity& owner);
 		~Hierarchy();
 
-		Hierarchy& operator=(const Hierarchy&);
-
 		// Attaches a child.
 		void AddChild(Entity::Ptr entity);
 
