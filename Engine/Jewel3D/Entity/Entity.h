@@ -35,9 +35,9 @@ namespace Jwl
 
 	protected:
 		// Called when the component is removed from queries.
-		virtual void OnDisable() {};
+		virtual void OnDisable() {}
 		// Called when the component is added from queries.
-		virtual void OnEnable() {};
+		virtual void OnEnable() {}
 
 		// Consumes a new component-Id. Used statically by derived components.
 		static unsigned GenerateID();

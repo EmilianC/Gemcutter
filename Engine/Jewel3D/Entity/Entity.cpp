@@ -148,7 +148,7 @@ namespace Jwl
 		{
 			if (i < components.size())
 			{
-				auto comp = components[i];
+				auto* comp = components[i];
 				components.erase(components.begin() + i);
 
 				if (comp->IsEnabled())
@@ -182,7 +182,7 @@ namespace Jwl
 		}
 
 		// Re-Index all active components.
-		for (auto comp : components)
+		for (auto* comp : components)
 		{
 			if (comp->IsComponentEnabled())
 			{
@@ -208,7 +208,7 @@ namespace Jwl
 		}
 
 		// UnIndex all active components.
-		for (auto comp : components)
+		for (auto* comp : components)
 		{
 			if (comp->IsComponentEnabled())
 			{

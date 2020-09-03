@@ -70,7 +70,7 @@ namespace Jwl
 
 	bool DirectoryExists(std::string_view directory)
 	{
-		if (auto dir = opendir(directory.data()))
+		if (auto* dir = opendir(directory.data()))
 		{
 			closedir(dir);
 			return true;

@@ -155,13 +155,13 @@ namespace Jwl
 
 	float mat2::operator[](unsigned index) const
 	{
-		ASSERT(index >= 0 && index < 9, "'index' must be in the range of [0, 8].");
+		ASSERT(index < 9, "'index' must be in the range of [0, 8].");
 		return data[index];
 	}
 
 	float& mat2::operator[](unsigned index)
 	{
-		ASSERT(index >= 0 && index < 9, "'index' must be in the range of [0, 8].");
+		ASSERT(index < 9, "'index' must be in the range of [0, 8].");
 		return data[index];
 	}
 
@@ -489,13 +489,13 @@ namespace Jwl
 
 	float mat3::operator[](unsigned index) const
 	{
-		ASSERT(index >= 0 && index < 9, "'index' must be in the range of [0, 8].");
+		ASSERT(index < 9, "'index' must be in the range of [0, 8].");
 		return data[index];
 	}
 
 	float& mat3::operator[](unsigned index)
 	{
-		ASSERT(index >= 0 && index < 9, "'index' must be in the range of [0, 8].");
+		ASSERT(index < 9, "'index' must be in the range of [0, 8].");
 		return data[index];
 	}
 
@@ -1040,13 +1040,13 @@ namespace Jwl
 
 	float mat4::operator[](unsigned index) const
 	{
-		ASSERT(index >= 0 && index < 16, "'index' must be in the range of [0, 15].");
+		ASSERT(index < 16, "'index' must be in the range of [0, 15].");
 		return data[index];
 	}
 
 	float& mat4::operator[](unsigned index)
 	{
-		ASSERT(index >= 0 && index < 16, "'index' must be in the range of [0, 15].");
+		ASSERT(index < 16, "'index' must be in the range of [0, 15].");
 		return data[index];
 	}
 

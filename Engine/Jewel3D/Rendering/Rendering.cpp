@@ -178,9 +178,7 @@ namespace Jwl
 
 	CullFunc StringToCullFunc(std::string_view str)
 	{
-		if (CompareLowercase(str, "none"))
-			return CullFunc::None;
-		else if (CompareLowercase(str, "clockwise"))
+		if (CompareLowercase(str, "clockwise"))
 			return CullFunc::Clockwise;
 		else if (CompareLowercase(str, "counterclockwise"))
 			return CullFunc::CounterClockwise;
@@ -190,9 +188,7 @@ namespace Jwl
 
 	BlendFunc StringToBlendFunc(std::string_view str)
 	{
-		if (CompareLowercase(str, "none"))
-			return BlendFunc::None;
-		else if (CompareLowercase(str, "linear"))
+		if (CompareLowercase(str, "linear"))
 			return BlendFunc::Linear;
 		else if (CompareLowercase(str, "additive"))
 			return BlendFunc::Additive;
@@ -204,9 +200,7 @@ namespace Jwl
 
 	DepthFunc StringToDepthFunc(std::string_view str)
 	{
-		if (CompareLowercase(str, "none"))
-			return DepthFunc::None;
-		else if (CompareLowercase(str, "writeonly"))
+		if (CompareLowercase(str, "writeonly"))
 			return DepthFunc::WriteOnly;
 		else if (CompareLowercase(str, "testonly"))
 			return DepthFunc::TestOnly;

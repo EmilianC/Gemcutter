@@ -33,7 +33,7 @@ namespace Jwl
 		if (!drawBuffers)
 		{
 			unsigned maxTextureAttachments = GPUInfo.GetMaxRenderTargetTextures();
-			drawBuffers = reinterpret_cast<GLenum*>(malloc(sizeof(GLenum) * maxTextureAttachments));
+			drawBuffers = static_cast<GLenum*>(malloc(sizeof(GLenum) * maxTextureAttachments));
 
 			for (unsigned i = 0; i < maxTextureAttachments; ++i)
 			{

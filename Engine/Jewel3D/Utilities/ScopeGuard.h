@@ -45,27 +45,28 @@ namespace Jwl
 		ScopeGuard(const ScopeGuard&) = delete;
 		ScopeGuard& operator=(const ScopeGuard&) = delete;
 
-		ScopeGuard(ScopeGuard&& rhs)
-			: func(std::move(rhs.func))
+		ScopeGuard(ScopeGuard&& rhs) noexcept
+			: functor(std::move(rhs.functor))
 			, active(rhs.active)
 		{
 			rhs.Dismiss();
 		}
 
 		ScopeGuard(Functor func)
-			: func(std::move(func))
+			: functor(std::move(func))
 		{
 		}
 
 		~ScopeGuard()
 		{
-			if (active) func();
+			if (active) functor();
 		}
 
-		// Executes the function early. It will not be called again when the scope is terminated.
+		// Executes the function if it hasn't already.
+		// It will not be called again when the scope is terminated.
 		void Execute()
 		{
-			func();
+			if (active) functor();
 			Dismiss();
 		}
 
@@ -76,7 +77,7 @@ namespace Jwl
 		}
 
 	private:
-		Functor func;
+		Functor functor;
 		bool active = true;
 	};
 }

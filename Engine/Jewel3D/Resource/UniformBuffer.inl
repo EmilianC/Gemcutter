@@ -35,9 +35,9 @@ namespace Jwl
 	{
 		static_assert(std::is_standard_layout_v<T>, "Uniforms cannot be complex types.");
 
-		T* dest = reinterpret_cast<T*>(GetBufferLoc(name));
+		T* dest = static_cast<T*>(GetBufferLoc(name));
 		ASSERT(dest, "Could not find uniform parameter ( %s ).", name.data());
-		ASSERT(reinterpret_cast<char*>(dest) + sizeof(T) <= reinterpret_cast<char*>(buffer) + bufferSize,
+		ASSERT(reinterpret_cast<char*>(dest) + sizeof(T) <= static_cast<char*>(buffer) + bufferSize,
 			"Setting uniform ( %s ) out of bounds of the buffer.", name.data());
 
 		*dest = data;
@@ -52,7 +52,7 @@ namespace Jwl
 
 		void* dest = GetBufferLoc(name);
 		ASSERT(dest, "Could not find uniform parameter ( %s ).", name.data());
-		ASSERT(reinterpret_cast<char*>(dest) + sizeof(T) * numElements <= reinterpret_cast<char*>(buffer) + bufferSize,
+		ASSERT(reinterpret_cast<char*>(dest) + sizeof(T) * numElements <= static_cast<char*>(buffer) + bufferSize,
 			"Setting uniform ( %s ) out of bounds of the buffer.", name.data());
 
 		memcpy(dest, data, sizeof(T) * numElements);
@@ -78,9 +78,10 @@ namespace Jwl
 	}
 
 	template<class T>
-	void UniformHandle<T>::operator=(const T& value)
+	UniformHandle<T>& UniformHandle<T>::operator=(const T& value)
 	{
 		Set(value);
+		return *this;
 	}
 
 	template<class T>

@@ -111,7 +111,7 @@ namespace Jwl
 		UniformHandle<T>(UniformBuffer& buff, unsigned offset);
 
 		// Set the value of the uniform.
-		void operator=(const T& value);
+		UniformHandle<T>& operator=(const T& value);
 
 		// Set the value of the uniform.
 		void Set(const T& value);

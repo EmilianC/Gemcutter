@@ -9,11 +9,11 @@ namespace Jwl
 	public:
 		ProbabilityMatrix(unsigned numStates, unsigned numActions);
 		ProbabilityMatrix(const ProbabilityMatrix&);
-		ProbabilityMatrix(ProbabilityMatrix&&);
+		ProbabilityMatrix(ProbabilityMatrix&&) noexcept;
 		~ProbabilityMatrix();
 
 		ProbabilityMatrix& operator=(const ProbabilityMatrix&);
-		ProbabilityMatrix& operator=(ProbabilityMatrix&&);
+		ProbabilityMatrix& operator=(ProbabilityMatrix&&) noexcept;
 
 		// Re-initialize the matrix with uniform probabilities.
 		void Reset();

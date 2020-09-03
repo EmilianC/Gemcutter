@@ -571,7 +571,7 @@ namespace Jwl
 			// Wait for message with client's port.
 			memset(receiveBuffer, '\0', PACKET_LENGTH);
 			while (recv(newClient.TCPSocket, receiveBuffer, PACKET_LENGTH, 0) == SOCKET_ERROR || WSAGetLastError() == WSAEWOULDBLOCK)
-			{};
+			{}
 
 			int port = std::atoi(receiveBuffer);
 

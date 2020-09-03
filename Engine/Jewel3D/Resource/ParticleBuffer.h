@@ -1,10 +1,12 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
-#include "Jewel3D/Math/Vector.h"
 #include "Jewel3D/Utilities/EnumFlags.h"
 
 namespace Jwl
 {
+	struct vec2;
+	struct vec3;
+
 	enum class ParticleBuffers : unsigned
 	{
 		None = 0,       // Empty buffer
@@ -20,7 +22,7 @@ namespace Jwl
 	public:
 		ParticleBuffer();
 		ParticleBuffer(const ParticleBuffer&);
-		ParticleBuffer(ParticleBuffer&&);
+		ParticleBuffer(ParticleBuffer&&) noexcept;
 		ParticleBuffer& operator=(const ParticleBuffer&);
 		~ParticleBuffer();
 

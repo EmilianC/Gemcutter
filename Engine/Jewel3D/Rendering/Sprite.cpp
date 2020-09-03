@@ -20,11 +20,11 @@ namespace Jwl
 		SetAlignment(pivot);
 	}
 
-	Sprite::Sprite(Entity& owner, Alignment pivot, bool billBoarded, Material::Ptr material)
+	Sprite::Sprite(Entity& owner, Alignment pivot, bool billBoard, Material::Ptr material)
 		: Renderable(owner, std::move(material))
 	{
 		SetAlignment(pivot);
-		SetBillBoarded(billBoarded);
+		SetBillBoarded(billBoard);
 	}
 
 	Sprite& Sprite::operator=(const Sprite& other)

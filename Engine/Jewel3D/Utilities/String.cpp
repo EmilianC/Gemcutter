@@ -89,7 +89,7 @@ namespace Jwl
 	{
 		va_list argptr;
 		va_start(argptr, format);
-		const std::string result = FormatString(format, argptr);
+		std::string result = FormatString(format, argptr);
 		va_end(argptr);
 
 		return result;

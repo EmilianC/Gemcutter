@@ -1,7 +1,6 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
 #include "Resource.h"
-#include "Shareable.h"
 #include "VertexArray.h"
 #include "Jewel3D\Math\Vector.h"
 

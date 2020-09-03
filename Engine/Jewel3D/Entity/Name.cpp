@@ -10,7 +10,7 @@ namespace Jwl
 		std::string output;
 		output.append(tabLevel * 2, ' ');
 
-		if (auto nameComp = entity.Try<Name>())
+		if (auto* nameComp = entity.Try<Name>())
 		{
 			output += "|- " + nameComp->name;
 		}

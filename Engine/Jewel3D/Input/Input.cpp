@@ -138,7 +138,7 @@ namespace Jwl
 		default:
 			// Message was not handled.
 			return false;
-		};
+		}
 
 		return true;
 	}

@@ -24,7 +24,7 @@ namespace Jwl
 		*this = other;
 	}
 
-	ProbabilityMatrix::ProbabilityMatrix(ProbabilityMatrix&& other)
+	ProbabilityMatrix::ProbabilityMatrix(ProbabilityMatrix&& other) noexcept
 		: numStates(other.numStates)
 		, numActions(other.numActions)
 		, data(other.data)
@@ -55,7 +55,7 @@ namespace Jwl
 		return *this;
 	}
 
-	ProbabilityMatrix& ProbabilityMatrix::operator=(ProbabilityMatrix&& other)
+	ProbabilityMatrix& ProbabilityMatrix::operator=(ProbabilityMatrix&& other) noexcept
 	{
 		numStates = other.numStates;
 		numActions = other.numActions;

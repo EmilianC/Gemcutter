@@ -116,13 +116,13 @@ namespace Jwl
 
 	float vec2::operator[](unsigned index) const
 	{
-		ASSERT(index >= 0 && index < 2, "'index' must be in the range of [0, 1].");
+		ASSERT(index < 2, "'index' must be in the range of [0, 1].");
 		return *(&x + index);
 	}
 
 	float& vec2::operator[](unsigned index)
 	{
-		ASSERT(index >= 0 && index < 2, "'index' must be in the range of [0, 1].");
+		ASSERT(index < 2, "'index' must be in the range of [0, 1].");
 		return *(&x + index);
 	}
 
@@ -250,13 +250,13 @@ namespace Jwl
 
 	float vec3::operator[](unsigned index) const
 	{
-		ASSERT(index >= 0 && index < 3, "'index' must be in the range of [0, 2].");
+		ASSERT(index < 3, "'index' must be in the range of [0, 2].");
 		return *(&x + index);
 	}
 
 	float& vec3::operator[](unsigned index)
 	{
-		ASSERT(index >= 0 && index < 3, "'index' must be in the range of [0, 2].");
+		ASSERT(index < 3, "'index' must be in the range of [0, 2].");
 		return *(&x + index);
 	}
 
@@ -407,13 +407,13 @@ namespace Jwl
 
 	float vec4::operator[](unsigned index) const
 	{
-		ASSERT(index >= 0 && index < 4, "'index' must be in the range of [0, 3].");
+		ASSERT(index < 4, "'index' must be in the range of [0, 3].");
 		return *(&x + index);
 	}
 
 	float& vec4::operator[](unsigned index)
 	{
-		ASSERT(index >= 0 && index < 4, "'index' must be in the range of [0, 3].");
+		ASSERT(index < 4, "'index' must be in the range of [0, 3].");
 		return *(&x + index);
 	}
 

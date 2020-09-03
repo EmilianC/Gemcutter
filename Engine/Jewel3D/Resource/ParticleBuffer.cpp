@@ -2,6 +2,7 @@
 #include "Jewel3D/Precompiled.h"
 #include "ParticleBuffer.h"
 #include "Jewel3D/Application/Logging.h"
+#include "Jewel3D/Math/Vector.h"
 
 #include <GLEW/GL/glew.h>
 
@@ -31,7 +32,7 @@ namespace Jwl
 		*this = other;
 	}
 
-	ParticleBuffer::ParticleBuffer(ParticleBuffer&& other)
+	ParticleBuffer::ParticleBuffer(ParticleBuffer&& other) noexcept
 		: positions(other.positions)
 		, velocities(other.velocities)
 		, ages(other.ages)

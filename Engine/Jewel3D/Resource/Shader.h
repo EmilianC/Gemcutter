@@ -65,7 +65,7 @@ namespace std
 	template<>
 	struct hash<Jwl::ShaderVariantControl>
 	{
-		size_t operator()(const Jwl::ShaderVariantControl& svc) const
+		size_t operator()(const Jwl::ShaderVariantControl& svc) const noexcept
 		{
 			return svc.GetHash();
 		}

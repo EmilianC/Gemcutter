@@ -21,7 +21,7 @@ namespace Jwl
 		Sprite(Entity& owner);
 		Sprite(Entity& owner, Material::Ptr material);
 		Sprite(Entity& owner, Alignment pivot);
-		Sprite(Entity& owner, Alignment pivot, bool billBoarded, Material::Ptr material);
+		Sprite(Entity& owner, Alignment pivot, bool billBoard, Material::Ptr material);
 		Sprite& operator=(const Sprite&);
 
 		// The sprite will render with the specified point on the entity's position.
