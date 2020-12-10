@@ -211,17 +211,6 @@ namespace Jwl
 			return LogicalIterator<Iterator, Intersection>(set1, set2);
 		}
 
-		// Constructs a logical iterator representing the start of the sequence.
-		template<typename Arg1, typename Arg2, typename... Args>
-		auto BuildRootIterator()
-		{
-			auto& index = entityIndex[Arg1::GetComponentId()];
-			auto begin = index.begin();
-			auto end = index.end();
-
-			return BuildLogicalIterator(EntityIterator(begin, end), BuildRootIterator<Arg2, Args...>());
-		}
-
 		// BuildRootIterator() base case.
 		template<typename Arg>
 		EntityIterator BuildRootIterator()
@@ -231,6 +220,17 @@ namespace Jwl
 			auto end = index.end();
 
 			return EntityIterator(begin, end);
+		}
+
+		// Constructs a logical iterator representing the start of the sequence.
+		template<typename Arg1, typename Arg2, typename... Args>
+		auto BuildRootIterator()
+		{
+			auto& index = entityIndex[Arg1::GetComponentId()];
+			auto begin = index.begin();
+			auto end = index.end();
+
+			return BuildLogicalIterator(EntityIterator(begin, end), BuildRootIterator<Arg2, Args...>());
 		}
 	}
 

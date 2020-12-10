@@ -7,8 +7,9 @@ namespace Jwl
 	template<class Derived>
 	class Shareable : public std::enable_shared_from_this<Derived>
 	{
-		// Hide this function from user code.
+		// Hide these functions from user code.
 		using std::enable_shared_from_this<Derived>::shared_from_this;
+		using std::enable_shared_from_this<Derived>::weak_from_this;
 
 	protected:
 		// A helper allowing private constructors to participate in the Shareable pattern.

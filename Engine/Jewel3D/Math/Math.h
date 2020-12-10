@@ -40,22 +40,40 @@ namespace Jwl
 	template<typename T0, typename T1, typename... Args>
 	auto Min(T0&& val1, T1&& val2, Args&&... args)
 	{
-		using namespace detail;
-		if (val2 > val1)
-			return Min(val1, std::forward<Args>(args)...);
+		if constexpr (sizeof...(Args) == 0)
+		{
+			if (val2 > val1)
+				return val1;
+			else
+				return val2;
+		}
 		else
-			return Min(val2, std::forward<Args>(args)...);
+		{
+			if (val2 > val1)
+				return Min(val1, std::forward<Args>(args)...);
+			else
+				return Min(val2, std::forward<Args>(args)...);
+		}
 	}
 
 	// Returns the greater of all arguments.
 	template<typename T0, typename T1, typename... Args>
 	auto Max(T0&& val1, T1&& val2, Args&&... args)
 	{
-		using namespace detail;
-		if (val1 < val2)
-			return Max(val2, std::forward<Args>(args)...);
+		if constexpr (sizeof...(Args) == 0)
+		{
+			if (val1 < val2)
+				return val2;
+			else
+				return val1;
+		}
 		else
-			return Max(val1, std::forward<Args>(args)...);
+		{
+			if (val1 < val2)
+				return Max(val2, std::forward<Args>(args)...);
+			else
+				return Max(val1, std::forward<Args>(args)...);
+		}
 	}
 
 	// Clamps data to the range [low, high]
@@ -116,20 +134,5 @@ namespace Jwl
 	constexpr float EaseInOut(float percent)
 	{
 		return SmoothStep(0.0f, 1.0f, percent);
-	}
-
-	namespace detail
-	{
-		template<typename T>
-		T&& Min(T&& val)
-		{
-			return std::forward<T>(val);
-		}
-
-		template<typename T>
-		T&& Max(T&& val)
-		{
-			return std::forward<T>(val);
-		}
 	}
 }

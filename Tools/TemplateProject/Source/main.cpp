@@ -54,12 +54,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine,
 
 	if (config.GetInt("resolution_x") == 0)
 	{
-		config.SetValue("resolution_x", desktopResolutionOkay ? desktop.right : 1280);
+		config.SetValue("resolution_x", desktopResolutionOkay ? static_cast<int>(desktop.right) : 1280);
 	}
 
 	if (config.GetInt("resolution_y") == 0)
 	{
-		config.SetValue("resolution_y", desktopResolutionOkay ? desktop.bottom : 720);
+		config.SetValue("resolution_y", desktopResolutionOkay ? static_cast<int>(desktop.bottom) : 720);
 	}
 
 	/* Seed RNG */
