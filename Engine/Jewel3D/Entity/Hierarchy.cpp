@@ -80,6 +80,14 @@ namespace Jwl
 		children.clear();
 	}
 
+	void Hierarchy::DetachFromParent()
+	{
+		if (auto lock = parent.lock())
+		{
+			lock->Get<Hierarchy>().RemoveChild(owner);
+		}
+	}
+
 	Entity::ConstPtr Hierarchy::GetRoot() const
 	{
 		if (auto lock = parent.lock())

@@ -31,6 +31,9 @@ namespace Jwl
 		// Detaches all children.
 		void ClearChildren();
 
+		// Detaches from the parent, if we have one.
+		void DetachFromParent();
+
 		// Finds the root of the hierarchy, which could be this Entity.
 		Entity::ConstPtr GetRoot() const;
 
