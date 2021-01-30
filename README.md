@@ -1,4 +1,4 @@
-![Jewel3D Logo](JewelLogo.png)
+![Jewel3D Logo](docs/JewelLogo.png)
 
 # What is Jewel3D?
 Jewel3D is a free C++ game development framework for Windows. It features a powerful Entity-Component-System
@@ -9,13 +9,13 @@ The framework facilitates expressive and succinct code that is both easy to read
 With a thin API and C++20 features, Jewel3D provides powerful features without feeling clunky.
 
 Highlight features include:
-* [A rich shader workflow](Resources/Docs/Shader.md)
-* [Efficient entity queries](Resources/Docs/Entity.md)
-* [Extendable asset management](Resources/Docs/AssetManager.md)
+* [A rich shader workflow](docs/Shader.md)
+* [Efficient entity queries](docs/Entity.md)
+* [Extendable asset management](docs/AssetManager.md)
 * A modular and extendable particle system
 * Audio powered by OpenAL
 * Mesh and Texture loading
-* [FreeType text rendering](Resources/Docs/Text.md)
+* [FreeType text rendering](docs/Text.md)
 * Event dispatching and response
 * Robust fixed-timestep updates
 * A complete math library
