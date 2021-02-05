@@ -1,0 +1,3 @@
+[submodule "external/scaffold"]
+	path = external/scaffold
+	url = https://github.com/EmilianC/scaffold.git

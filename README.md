@@ -50,6 +50,7 @@ All Dependencies used under their respective licenses. Copyright is held by thei
 * [FreeType 2](https://www.freetype.org/)
 * [Catch 2.7.2](https://github.com/philsquared/Catch)
 * [OpenAL Soft 1.17.2](https://github.com/kcat/openal-soft)
+* [Scaffold](https://github.com/EmilianC/scaffold)
 * [SOIL ext](https://github.com/fenbf/SOIL_ext)
 * [dirent 1.23.1](https://github.com/tronkko/dirent)
 * [XInput 1.4](https://msdn.microsoft.com/en-us/library/windows/desktop/ee417001(v=vs.85).aspx)
