@@ -49,7 +49,7 @@ All Dependencies used under their respective licenses. Copyright is held by thei
 * [GLEW 2.0.0](http://glew.sourceforge.net/)
 * [FreeType 2](https://www.freetype.org/)
 * [Catch 2.7.2](https://github.com/philsquared/Catch)
-* [OpenAL Soft 1.17.2](https://github.com/kcat/openal-soft)
+* [OpenAL Soft 1.21.1](https://github.com/kcat/openal-soft)
 * [Scaffold](https://github.com/EmilianC/scaffold)
 * [SOIL ext](https://github.com/fenbf/SOIL_ext)
 * [dirent 1.23.1](https://github.com/tronkko/dirent)
