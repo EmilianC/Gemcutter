@@ -1,7 +1,6 @@
 // Copyright (c) 2017 Emilian Cioca
-#include "Jewel3D/Precompiled.h"
 #include "Random.h"
-#include "Jewel3D/Math/Vector.h"
+#include "gemcutter/Math/Vector.h"
 
 #include <random>
 

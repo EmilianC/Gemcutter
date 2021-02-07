@@ -1,6 +1,6 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
-#include "Jewel3D/Utilities/EnumFlags.h"
+#include "gemcutter/Utilities/EnumFlags.h"
 
 namespace Jwl
 {

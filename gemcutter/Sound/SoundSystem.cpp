@@ -1,16 +1,15 @@
 // Copyright (c) 2017 Emilian Cioca
-#include "Jewel3D/Precompiled.h"
 #include "SoundSystem.h"
-#include "Jewel3D/Application/Logging.h"
-#include "Jewel3D/Entity/Entity.h"
-#include "Jewel3D/Math/Matrix.h"
-#include "Jewel3D/Math/Vector.h"
-#include "Jewel3D/Resource/Sound.h"
-#include "Jewel3D/Sound/SoundListener.h"
-#include "Jewel3D/Sound/SoundSource.h"
+#include "gemcutter/Application/Logging.h"
+#include "gemcutter/Entity/Entity.h"
+#include "gemcutter/Math/Matrix.h"
+#include "gemcutter/Math/Vector.h"
+#include "gemcutter/Resource/Sound.h"
+#include "gemcutter/Sound/SoundListener.h"
+#include "gemcutter/Sound/SoundSource.h"
 
-#include <OpenAL_Soft/al.h>
-#include <OpenAL_Soft/alc.h>
+#include <AL/al.h>
+#include <AL/alc.h>
 
 #ifdef _DEBUG
 	#define AL_DEBUG_CHECK() \

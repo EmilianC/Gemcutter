@@ -1,7 +1,7 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
-#include "Jewel3D/Application/Event.h"
-#include "Jewel3D/Rendering/Viewport.h"
+#include "gemcutter/Application/Event.h"
+#include "gemcutter/Rendering/Viewport.h"
 
 #include <functional>
 #include <string_view>

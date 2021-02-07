@@ -1,9 +1,8 @@
 // Copyright (c) 2017 Emilian Cioca
-#include "Jewel3D/Precompiled.h"
 #include "SoundSource.h"
-#include "Jewel3D/Application/Logging.h"
+#include "gemcutter/Application/Logging.h"
 
-#include <OpenAL_Soft/al.h>
+#include <AL/al.h>
 
 #ifdef _DEBUG
 	#define AL_DEBUG_CHECK() \

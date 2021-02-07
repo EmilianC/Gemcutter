@@ -1,6 +1,6 @@
-#include <catch.hpp>
-#include <Jewel3D/Entity/Entity.h>
-#include <Jewel3D/Entity/Hierarchy.h>
+#include <catch/catch.hpp>
+#include <gemcutter/Entity/Entity.h>
+#include <gemcutter/Entity/Hierarchy.h>
 
 using namespace Jwl;
 

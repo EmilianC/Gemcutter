@@ -1,7 +1,6 @@
 // Copyright (c) 2017 Emilian Cioca
-#include "Jewel3D/Precompiled.h"
 #include "Input.h"
-#include "Jewel3D/Application/Application.h"
+#include "gemcutter/Application/Application.h"
 
 #include <windowsx.h> // GET_X_LPARAM and GET_Y_LPARAM
 

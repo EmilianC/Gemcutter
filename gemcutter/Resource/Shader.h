@@ -1,9 +1,9 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
-#include "Resource.h"
-#include "Shareable.h"
-#include "Texture.h"
-#include "UniformBuffer.h"
+#include "gemcutter/Resource/Resource.h"
+#include "gemcutter/Resource/Shareable.h"
+#include "gemcutter/Resource/Texture.h"
+#include "gemcutter/Resource/UniformBuffer.h"
 
 #include <string_view>
 #include <unordered_map>

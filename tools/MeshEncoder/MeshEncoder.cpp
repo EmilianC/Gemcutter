@@ -1,9 +1,9 @@
 // Copyright (c) 2017 Emilian Cioca
 #include "MeshEncoder.h"
 
-#include "Jewel3D/Math/Matrix.h"
-#include "Jewel3D/Math/Vector.h"
-#include "Jewel3D/Resource/Encoder.h"
+#include <gemcutter/Math/Matrix.h>
+#include <gemcutter/Math/Vector.h>
+#include <gemcutter/Resource/Encoder.h>
 
 #include <fstream>
 #include <vector>

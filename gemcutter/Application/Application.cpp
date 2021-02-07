@@ -1,21 +1,20 @@
 // Copyright (c) 2017 Emilian Cioca
-#include "Jewel3D/Precompiled.h"
 #include "Application.h"
-#include "Logging.h"
-#include "Timer.h"
-#include "Jewel3D/Input/Input.h"
-#include "Jewel3D/Rendering/Light.h"
-#include "Jewel3D/Rendering/ParticleEmitter.h"
-#include "Jewel3D/Rendering/Rendering.h"
-#include "Jewel3D/Resource/Font.h"
-#include "Jewel3D/Resource/Model.h"
-#include "Jewel3D/Resource/ParticleBuffer.h"
-#include "Jewel3D/Resource/Shader.h"
-#include "Jewel3D/Resource/Texture.h"
-#include "Jewel3D/Sound/SoundSystem.h"
+#include "gemcutter/Application/Logging.h"
+#include "gemcutter/Application/Timer.h"
+#include "gemcutter/Input/Input.h"
+#include "gemcutter/Rendering/Light.h"
+#include "gemcutter/Rendering/ParticleEmitter.h"
+#include "gemcutter/Rendering/Rendering.h"
+#include "gemcutter/Resource/Font.h"
+#include "gemcutter/Resource/Model.h"
+#include "gemcutter/Resource/ParticleBuffer.h"
+#include "gemcutter/Resource/Shader.h"
+#include "gemcutter/Resource/Texture.h"
+#include "gemcutter/Sound/SoundSystem.h"
 
-#include <GLEW/GL/glew.h>
-#include <GLEW/GL/wglew.h>
+#include <glew/glew.h>
+#include <glew/wglew.h>
 
 // This is the HINSTANCE of the application.
 extern "C" IMAGE_DOS_HEADER __ImageBase;
@@ -385,7 +384,7 @@ namespace Jwl
 			__int64 currentTime = Timer::GetCurrentTick();
 			if (currentTime - lastFpsCapture >= Timer::GetTicksPerSecond())
 			{
-				// We don't want to update the timer variable with "+= 1.0" here. After a lag spike this 
+				// We don't want to update the timer variable with "+= 1.0" here. After a lag spike this
 				// would cause FPS to suddenly be recorded more often than once a second.
 				lastFpsCapture = currentTime;
 

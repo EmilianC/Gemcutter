@@ -1,8 +1,7 @@
 // Copyright (c) 2017 Emilian Cioca
-#include "Jewel3D/Precompiled.h"
 #include "ConfigTable.h"
-#include "Jewel3D/Application/FileSystem.h"
-#include "Jewel3D/Utilities/String.h"
+#include "gemcutter/Application/FileSystem.h"
+#include "gemcutter/Utilities/String.h"
 
 namespace
 {

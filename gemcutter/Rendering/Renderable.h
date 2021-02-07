@@ -1,7 +1,7 @@
 // Copyright (c) 2020 Emilian Cioca
 #pragma once
-#include "Jewel3D/Entity/Entity.h"
-#include "Jewel3D/Resource/Material.h"
+#include "gemcutter/Entity/Entity.h"
+#include "gemcutter/Resource/Material.h"
 
 namespace Jwl
 {

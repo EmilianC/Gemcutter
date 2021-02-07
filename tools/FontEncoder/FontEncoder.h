@@ -1,6 +1,6 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
-#include "Jewel3D/Resource/Encoder.h"
+#include <gemcutter/Resource/Encoder.h>
 
 class FontEncoder final : public Jwl::Encoder
 {

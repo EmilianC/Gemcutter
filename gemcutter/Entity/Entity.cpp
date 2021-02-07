@@ -1,9 +1,8 @@
 // Copyright (c) 2017 Emilian Cioca
-#include "Jewel3D/Precompiled.h"
 #include "Entity.h"
-#include "Jewel3D/Application/Logging.h"
-#include "Jewel3D/Entity/Hierarchy.h"
-#include "Jewel3D/Entity/Name.h"
+#include "gemcutter/Application/Logging.h"
+#include "gemcutter/Entity/Hierarchy.h"
+#include "gemcutter/Entity/Name.h"
 
 #include <algorithm>
 

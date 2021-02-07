@@ -1,10 +1,10 @@
 // Copyright (c) 2017 Emilian Cioca
 #include "FontEncoder.h"
-#include "Jewel3D/Rendering/Rendering.h"
-#include "Jewel3D/Utilities/String.h"
+#include <gemcutter/Rendering/Rendering.h>
+#include <gemcutter/Utilities/String.h>
 
-#include <ft2build.h>
-#include <Freetype/freetype.h>
+#include <freetype/config/ftheader.h>
+#include <freetype/freetype.h>
 #include <vector>
 
 #define CURRENT_VERSION 2

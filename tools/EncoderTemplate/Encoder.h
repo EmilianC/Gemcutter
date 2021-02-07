@@ -1,5 +1,5 @@
 #pragma once
-#include "Jewel3D/Resource/Encoder.h"
+#include <gemcutter/Resource/Encoder.h>
 
 class Encoder final : public Jwl::Encoder
 {

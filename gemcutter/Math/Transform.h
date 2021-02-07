@@ -1,7 +1,7 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
-#include "Vector.h"
-#include "Quaternion.h"
+#include "gemcutter/Math/Quaternion.h"
+#include "gemcutter/Math/Vector.h"
 
 namespace Jwl
 {

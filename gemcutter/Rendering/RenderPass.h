@@ -1,9 +1,9 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
-#include "Jewel3D/Rendering/RenderTarget.h"
-#include "Jewel3D/Rendering/Viewport.h"
-#include "Jewel3D/Resource/Shader.h"
-#include "Jewel3D/Resource/Texture.h"
+#include "gemcutter/Rendering/RenderTarget.h"
+#include "gemcutter/Rendering/Viewport.h"
+#include "gemcutter/Resource/Shader.h"
+#include "gemcutter/Resource/Texture.h"
 
 #include <optional>
 

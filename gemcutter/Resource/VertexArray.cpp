@@ -1,9 +1,8 @@
 // Copyright (c) 2017 Emilian Cioca
-#include "Jewel3D/Precompiled.h"
 #include "VertexArray.h"
-#include "Jewel3D/Application/Logging.h"
+#include "gemcutter/Application/Logging.h"
 
-#include <GLEW/GL/glew.h>
+#include <glew/glew.h>
 
 namespace Jwl
 {

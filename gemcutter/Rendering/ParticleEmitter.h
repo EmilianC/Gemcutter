@@ -1,11 +1,11 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
-#include "Jewel3D/Entity/Entity.h"
-#include "Jewel3D/Resource/ParticleBuffer.h"
-#include "Jewel3D/Rendering/Renderable.h"
-#include "Jewel3D/Resource/ParticleFunctor.h"
-#include "Jewel3D/Resource/UniformBuffer.h"
-#include "Jewel3D/Utilities/Random.h"
+#include "gemcutter/Entity/Entity.h"
+#include "gemcutter/Resource/ParticleBuffer.h"
+#include "gemcutter/Rendering/Renderable.h"
+#include "gemcutter/Resource/ParticleFunctor.h"
+#include "gemcutter/Resource/UniformBuffer.h"
+#include "gemcutter/Utilities/Random.h"
 
 namespace Jwl
 {

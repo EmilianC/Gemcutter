@@ -1,7 +1,6 @@
 // Copyright (c) 2017 Emilian Cioca
-#include "Jewel3D/Precompiled.h"
 #include "Timer.h"
-#include "Logging.h"
+#include "gemcutter/Application/Logging.h"
 
 #include <Windows.h>
 

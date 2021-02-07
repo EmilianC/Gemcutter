@@ -1,5 +1,5 @@
-#include <catch.hpp>
-#include <Jewel3D/Application/FileSystem.h>
+#include <catch/catch.hpp>
+#include <gemcutter/Application/FileSystem.h>
 
 using namespace Jwl;
 

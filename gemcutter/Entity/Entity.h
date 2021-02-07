@@ -1,10 +1,10 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
-#include "Jewel3D/Application/Logging.h"
-#include "Jewel3D/Math/Matrix.h"
-#include "Jewel3D/Math/Transform.h"
-#include "Jewel3D/Resource/Shareable.h"
-#include "Jewel3D/Utilities/Meta.h"
+#include "gemcutter/Application/Logging.h"
+#include "gemcutter/Math/Matrix.h"
+#include "gemcutter/Math/Transform.h"
+#include "gemcutter/Resource/Shareable.h"
+#include "gemcutter/Utilities/Meta.h"
 
 #include <tuple>
 #include <unordered_map>

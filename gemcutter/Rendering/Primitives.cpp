@@ -1,11 +1,10 @@
 // Copyright (c) 2017 Emilian Cioca
-#include "Jewel3D/Precompiled.h"
 #include "Primitives.h"
-#include "Jewel3D/Application/Logging.h"
-#include "Jewel3D/Math/Vector.h"
-#include "Jewel3D/Resource/Texture.h"
+#include "gemcutter/Application/Logging.h"
+#include "gemcutter/Math/Vector.h"
+#include "gemcutter/Resource/Texture.h"
 
-#include <GLEW/GL/glew.h>
+#include <glew/glew.h>
 
 namespace
 {

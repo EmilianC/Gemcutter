@@ -1,8 +1,8 @@
 // Copyright (c) 2020 Emilian Cioca
 #pragma once
-#include "Jewel3D/Entity/Entity.h"
-#include "Jewel3D/Math/Matrix.h"
-#include "Jewel3D/Math/Quaternion.h"
+#include "gemcutter/Entity/Entity.h"
+#include "gemcutter/Math/Matrix.h"
+#include "gemcutter/Math/Quaternion.h"
 
 #include <vector>
 

@@ -1,5 +1,5 @@
-#include <catch.hpp>
-#include <Jewel3D/Utilities/EnumFlags.h>
+#include <catch/catch.hpp>
+#include <gemcutter/Utilities/EnumFlags.h>
 
 using namespace Jwl;
 

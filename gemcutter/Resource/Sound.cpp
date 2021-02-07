@@ -1,11 +1,10 @@
 // Copyright (c) 2017 Emilian Cioca
-#include "Jewel3D/Precompiled.h"
 #include "Sound.h"
-#include "Jewel3D/Application/Logging.h"
-#include "Jewel3D/Utilities/ScopeGuard.h"
-#include "Jewel3D/Utilities/String.h"
+#include "gemcutter/Application/Logging.h"
+#include "gemcutter/Utilities/ScopeGuard.h"
+#include "gemcutter/Utilities/String.h"
 
-#include <OpenAL_Soft/al.h>
+#include <AL/al.h>
 #include <cstdio>
 
 #ifdef _DEBUG
@@ -24,7 +23,7 @@ enum class WaveFormat : unsigned short
 	WAVE_FORMAT_PCM        = 0x0001, // PCM
 	WAVE_FORMAT_IEEE_FLOAT = 0x0003, // IEEE float
 	WAVE_FORMAT_ALAW       = 0x0006, // 8 - bit ITU - T G.711 A - law
-	WAVE_FORMAT_MULAW      = 0x0007, // 8 - bit ITU - T G.711 µ - law
+	WAVE_FORMAT_MULAW      = 0x0007, // 8 - bit ITU - T G.711 Âµ - law
 	WAVE_FORMAT_EXTENSIBLE = 0xFFFE, // Determined by SubFormat
 };
 

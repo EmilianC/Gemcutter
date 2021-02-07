@@ -1,11 +1,11 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
-#include "ConfigTable.h"
-#include "Jewel3D/Application/CmdArgs.h"
-#include "Jewel3D/Application/FileSystem.h"
-#include "Jewel3D/Application/Logging.h"
-#include "Jewel3D/Utilities/ScopeGuard.h"
-#include "Jewel3D/Utilities/String.h"
+#include "gemcutter/Application/CmdArgs.h"
+#include "gemcutter/Application/FileSystem.h"
+#include "gemcutter/Application/Logging.h"
+#include "gemcutter/Resource/ConfigTable.h"
+#include "gemcutter/Utilities/ScopeGuard.h"
+#include "gemcutter/Utilities/String.h"
 
 #include <memory>
 
@@ -92,7 +92,7 @@ namespace Jwl
 		// Parses the command line arguments of the program and invokes the user-provided Encoder.
 		static bool RunEncoder(Encoder& encoder)
 		{
-			const char* usage = 
+			const char* usage =
 				"Jewel3D asset Encoder.\nUsage:\n"
 				"  Encoder.exe -update -src <file>\n"
 				"  Encoder.exe -pack -src <file> -dest <folder>\n"
@@ -188,7 +188,7 @@ namespace Jwl
 
 			return true;
 		}
-		
+
 		// Pack command. Write the binary asset into the output folder.
 		bool Pack(const char* src, const char* dest)
 		{
@@ -215,7 +215,7 @@ namespace Jwl
 
 		// Returns the default settings for the asset.
 		virtual ConfigTable GetDefault() const = 0;
-		
+
 	protected:
 		// Reads from the source file and output the packed asset to the destination file.
 		// 'metadata' will contain settings of the newest version.

@@ -1,5 +1,5 @@
-#include <catch.hpp>
-#include <Jewel3D/Entity/Entity.h>
+#include <catch/catch.hpp>
+#include <gemcutter/Entity/Entity.h>
 
 using namespace Jwl;
 

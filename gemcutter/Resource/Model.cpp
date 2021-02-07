@@ -1,9 +1,8 @@
 // Copyright (c) 2017 Emilian Cioca
-#include "Jewel3D/Precompiled.h"
 #include "Model.h"
-#include "Jewel3D/Application/Logging.h"
-#include "Jewel3D/Utilities/ScopeGuard.h"
-#include "Jewel3D/Utilities/String.h"
+#include "gemcutter/Application/Logging.h"
+#include "gemcutter/Utilities/ScopeGuard.h"
+#include "gemcutter/Utilities/String.h"
 
 namespace Jwl
 {

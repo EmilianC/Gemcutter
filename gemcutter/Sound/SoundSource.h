@@ -1,7 +1,7 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
-#include "Jewel3D/Entity/Entity.h"
-#include "Jewel3D/Resource/Sound.h"
+#include "gemcutter/Entity/Entity.h"
+#include "gemcutter/Resource/Sound.h"
 
 namespace Jwl
 {

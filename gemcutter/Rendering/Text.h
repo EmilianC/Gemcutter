@@ -1,7 +1,7 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
-#include "Jewel3D/Rendering/Renderable.h"
-#include "Jewel3D/Resource/Font.h"
+#include "gemcutter/Rendering/Renderable.h"
+#include "gemcutter/Resource/Font.h"
 
 #include <string>
 

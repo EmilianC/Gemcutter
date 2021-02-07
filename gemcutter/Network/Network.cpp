@@ -1,8 +1,7 @@
 // Copyright (c) 2017 Emilian Cioca
-#include "Jewel3D/Precompiled.h"
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 #include "Network.h"
-#include "Jewel3D/Application/Logging.h"
+#include "gemcutter/Application/Logging.h"
 
 namespace Jwl
 {

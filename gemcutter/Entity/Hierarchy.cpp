@@ -1,5 +1,4 @@
 // Copyright (c) 2020 Emilian Cioca
-#include "Jewel3D/Precompiled.h"
 #include "Hierarchy.h"
 
 namespace Jwl

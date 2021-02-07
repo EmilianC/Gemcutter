@@ -1,7 +1,6 @@
 // Copyright (c) 2017 Emilian Cioca
-#include "Jewel3D/Precompiled.h"
 #include "Name.h"
-#include "Jewel3D/Entity/Hierarchy.h"
+#include "gemcutter/Entity/Hierarchy.h"
 
 namespace Jwl
 {

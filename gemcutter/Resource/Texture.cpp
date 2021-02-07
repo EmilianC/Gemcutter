@@ -1,13 +1,12 @@
 // Copyright (c) 2017 Emilian Cioca
-#include "Jewel3D/Precompiled.h"
 #include "Texture.h"
-#include "Jewel3D/Application/Logging.h"
-#include "Jewel3D/Utilities/ScopeGuard.h"
-#include "Jewel3D/Utilities/String.h"
+#include "gemcutter/Application/Logging.h"
+#include "gemcutter/Utilities/ScopeGuard.h"
+#include "gemcutter/Utilities/String.h"
 
 #include <algorithm>
-#include <GLEW/GL/glew.h>
-#include <SOIL/SOIL.h>
+#include <glew/glew.h>
+#include <soil/SOIL.h>
 
 namespace Jwl
 {

@@ -1,8 +1,8 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
-#include "Jewel3D/Application/FileSystem.h"
-#include "Jewel3D/Application/Logging.h"
-#include "Jewel3D/Utilities/Container.h"
+#include "gemcutter/Application/FileSystem.h"
+#include "gemcutter/Application/Logging.h"
+#include "gemcutter/Utilities/Container.h"
 
 #include <string>
 #include <unordered_map>

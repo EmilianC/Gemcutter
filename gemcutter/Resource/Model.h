@@ -1,8 +1,8 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
-#include "Resource.h"
-#include "VertexArray.h"
-#include "Jewel3D\Math\Vector.h"
+#include "gemcutter/Math/Vector.h"
+#include "gemcutter/Resource/Resource.h"
+#include "gemcutter/Resource/VertexArray.h"
 
 namespace Jwl
 {

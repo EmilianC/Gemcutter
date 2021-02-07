@@ -1,10 +1,9 @@
 // Copyright (c) 2017 Emilian Cioca
-#include "Jewel3D/Precompiled.h"
 #include "Matrix.h"
-#include "Math.h"
-#include "Quaternion.h"
-#include "Vector.h"
-#include "Jewel3D/Application/Logging.h"
+#include "gemcutter/Application/Logging.h"
+#include "gemcutter/Math/Math.h"
+#include "gemcutter/Math/Quaternion.h"
+#include "gemcutter/Math/Vector.h"
 
 namespace Jwl
 {

@@ -1,7 +1,6 @@
 // Copyright (c) 2017 Emilian Cioca
-#include "Jewel3D/Precompiled.h"
 #include "SoundListener.h"
-#include "SoundSystem.h"
+#include "gemcutter/Sound/SoundSystem.h"
 
 namespace Jwl
 {

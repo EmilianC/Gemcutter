@@ -1,9 +1,8 @@
 // Copyright (c) 2017 Emilian Cioca
-#include "Jewel3D/Precompiled.h"
 #include "Event.h"
 
 #ifdef _DEBUG
-#include "Jewel3D/Application/Logging.h"
+#include "gemcutter/Application/Logging.h"
 #endif
 
 namespace Jwl

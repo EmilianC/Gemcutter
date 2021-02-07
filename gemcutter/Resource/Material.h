@@ -1,9 +1,9 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
-#include "Jewel3D/Rendering/Rendering.h"
-#include "Jewel3D/Resource/Resource.h"
-#include "Jewel3D/Resource/Shader.h"
-#include "Jewel3D/Resource/Texture.h"
+#include "gemcutter/Rendering/Rendering.h"
+#include "gemcutter/Resource/Resource.h"
+#include "gemcutter/Resource/Shader.h"
+#include "gemcutter/Resource/Texture.h"
 
 namespace Jwl
 {

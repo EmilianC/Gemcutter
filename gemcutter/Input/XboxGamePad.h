@@ -1,6 +1,6 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
-#include "Jewel3D/Math/Vector.h"
+#include "gemcutter/Math/Vector.h"
 
 #include <Windows.h>
 #include <Xinput.h>

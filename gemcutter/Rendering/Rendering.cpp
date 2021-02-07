@@ -1,14 +1,13 @@
 // Copyright (c) 2017 Emilian Cioca
-#include "Jewel3D/Precompiled.h"
 #include "Rendering.h"
-#include "Jewel3D/Application/FileSystem.h"
-#include "Jewel3D/Application/Logging.h"
-#include "Jewel3D/Math/Math.h"
-#include "Jewel3D/Math/Vector.h"
-#include "Jewel3D/Utilities/String.h"
+#include "gemcutter/Application/FileSystem.h"
+#include "gemcutter/Application/Logging.h"
+#include "gemcutter/Math/Math.h"
+#include "gemcutter/Math/Vector.h"
+#include "gemcutter/Utilities/String.h"
 
-#include <GLEW/GL/glew.h>
-#include <GLEW/GL/wglew.h>
+#include <glew/glew.h>
+#include <glew/wglew.h>
 #include <SOIL/SOIL.h>
 
 namespace

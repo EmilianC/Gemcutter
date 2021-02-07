@@ -1,6 +1,6 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
-#include "Jewel3D/Entity/Entity.h"
+#include "gemcutter/Entity/Entity.h"
 
 #include <string>
 #include <string_view>

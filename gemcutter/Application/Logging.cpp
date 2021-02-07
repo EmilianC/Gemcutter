@@ -1,7 +1,6 @@
 // Copyright (c) 2017 Emilian Cioca
-#include "Jewel3D/Precompiled.h"
 #include "Logging.h"
-#include "Jewel3D/Utilities/String.h"
+#include "gemcutter/Utilities/String.h"
 
 #include <iostream>
 #include <fstream>

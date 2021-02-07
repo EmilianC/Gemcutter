@@ -1,7 +1,7 @@
 #include "TextureEncoder.h"
-#include "Jewel3D/Rendering/Rendering.h"
-#include "Jewel3D/Resource/Texture.h"
-#include "Jewel3D/Utilities/String.h"
+#include <gemcutter/Rendering/Rendering.h>
+#include <gemcutter/Resource/Texture.h>
+#include <gemcutter/Utilities/String.h>
 
 #define CURRENT_VERSION 2
 

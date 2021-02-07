@@ -1,5 +1,5 @@
 #include "MaterialEncoder.h"
-#include "Jewel3D/Rendering/Rendering.h"
+#include <gemcutter/Rendering/Rendering.h>
 
 #define CURRENT_VERSION 1
 

@@ -1,8 +1,8 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
-#include "ParticleBuffer.h"
-#include "Shareable.h"
-#include "Jewel3D/Utilities/Random.h"
+#include "gemcutter/Resource/ParticleBuffer.h"
+#include "gemcutter/Resource/Shareable.h"
+#include "gemcutter/Utilities/Random.h"
 
 #include <vector>
 

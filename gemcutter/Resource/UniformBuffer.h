@@ -1,10 +1,10 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
-#include "Shareable.h"
-#include "Jewel3D/Application/Logging.h"
-#include "Jewel3D/Math/Matrix.h"
-#include "Jewel3D/Rendering/Rendering.h"
-#include "Jewel3D/Utilities/Container.h"
+#include "gemcutter/Application/Logging.h"
+#include "gemcutter/Math/Matrix.h"
+#include "gemcutter/Rendering/Rendering.h"
+#include "gemcutter/Resource/Shareable.h"
+#include "gemcutter/Utilities/Container.h"
 
 #include <string_view>
 #include <string>

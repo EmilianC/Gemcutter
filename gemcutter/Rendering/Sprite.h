@@ -1,6 +1,6 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
-#include "Jewel3D/Rendering/Renderable.h"
+#include "gemcutter/Rendering/Renderable.h"
 
 namespace Jwl
 {

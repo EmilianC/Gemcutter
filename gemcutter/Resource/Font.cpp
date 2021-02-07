@@ -1,15 +1,14 @@
 // Copyright (c) 2017 Emilian Cioca
-#include "Jewel3D/Precompiled.h"
 #include "Font.h"
-#include "Texture.h"
-#include "Jewel3D/Application/Logging.h"
-#include "Jewel3D/Math/Math.h"
-#include "Jewel3D/Rendering/Rendering.h"
-#include "Jewel3D/Utilities/ScopeGuard.h"
-#include "Jewel3D/Utilities/String.h"
+#include "gemcutter/Application/Logging.h"
+#include "gemcutter/Math/Math.h"
+#include "gemcutter/Rendering/Rendering.h"
+#include "gemcutter/Resource/Texture.h"
+#include "gemcutter/Utilities/ScopeGuard.h"
+#include "gemcutter/Utilities/String.h"
 
 #include <cstdio>
-#include <GLEW/GL/glew.h>
+#include <glew/glew.h>
 
 namespace Jwl
 {

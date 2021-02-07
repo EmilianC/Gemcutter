@@ -1,5 +1,5 @@
-#include <catch.hpp>
-#include <Jewel3D/Math/Math.h>
+#include <catch/catch.hpp>
+#include <gemcutter/Math/Math.h>
 
 using namespace Jwl;
 

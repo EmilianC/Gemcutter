@@ -1,7 +1,7 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
-#include "Jewel3D/Rendering/Rendering.h"
-#include "Jewel3D/Resource/Shareable.h"
+#include "gemcutter/Rendering/Rendering.h"
+#include "gemcutter/Resource/Shareable.h"
 
 #include <vector>
 

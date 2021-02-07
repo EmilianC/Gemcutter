@@ -1,7 +1,7 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
-struct ALCdevice_struct;
-struct ALCcontext_struct;
+struct ALCdevice;
+struct ALCcontext;
 
 namespace Jwl
 {
@@ -45,7 +45,7 @@ namespace Jwl
 		AttenuationMode attenuationMode = AttenuationMode::Inverse_Distance_Clamped;
 		float globalVolume = 1.0f;
 
-		ALCdevice_struct* device = nullptr;
-		ALCcontext_struct* context = nullptr;
+		ALCdevice* device = nullptr;
+		ALCcontext* context = nullptr;
 	};
 }

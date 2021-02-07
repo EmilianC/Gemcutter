@@ -1,7 +1,6 @@
 // Copyright (c) 2017 Emilian Cioca
-#include "Jewel3D/Precompiled.h"
 #include "Light.h"
-#include "Jewel3D/Math/Math.h"
+#include "gemcutter/Math/Math.h"
 
 namespace Jwl
 {

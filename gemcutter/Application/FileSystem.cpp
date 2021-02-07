@@ -1,9 +1,8 @@
 // Copyright (c) 2017 Emilian Cioca
-#include "Jewel3D/Precompiled.h"
 #include "FileSystem.h"
-#include "Logging.h"
+#include "gemcutter/Application/Logging.h"
 
-#include <Dirent/dirent.h>
+#include <dirent/dirent.h>
 #include <direct.h>
 #include <sstream>
 #include <stack>
