@@ -116,7 +116,7 @@ namespace gem
 	void SoundSource::SetLooping(bool _loop)
 	{
 		loop = _loop;
-		alSourcef(hSound, AL_LOOPING, _loop);
+		alSourcei(hSound, AL_LOOPING, _loop);
 		AL_DEBUG_CHECK();
 	}
 
