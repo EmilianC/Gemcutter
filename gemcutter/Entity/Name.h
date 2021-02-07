@@ -5,7 +5,7 @@
 #include <string>
 #include <string_view>
 
-namespace Jwl
+namespace gem
 {
 	// Writes the sub-tree of Entity names to the program log.
 	void LogSceneGraph(const Entity& root);

@@ -4,7 +4,7 @@
 #include "gemcutter/Resource/Resource.h"
 #include "gemcutter/Resource/VertexArray.h"
 
-namespace Jwl
+namespace gem
 {
 	// A 3D model resource. Can be attached to an Entity's Mesh component.
 	//

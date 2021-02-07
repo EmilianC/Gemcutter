@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2017 Emilian Cioca
+// Copyright (c) 2017 Emilian Cioca
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -420,7 +420,7 @@ namespace AssetManager
 			if (text == null)
 				return;
 
-			// These are the prefixes used by Jewel3D\Application\Logging.cpp.
+			// These are the prefixes used by gemcutter\Application\Logging.cpp.
 			if (text.StartsWith("Log:"))
 			{
 				state = ConsoleColor.Gray;

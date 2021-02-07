@@ -7,7 +7,7 @@
 #include <string_view>
 #include <Windows.h>
 
-namespace Jwl
+namespace gem
 {
 	// Provides an interface to the operating system and the game window.
 	// The class also responsible for scheduling and executing the game-loop.

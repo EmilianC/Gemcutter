@@ -26,9 +26,9 @@
 
 namespace
 {
-	void BindRenderable(const Jwl::Renderable& renderable, Jwl::Shader* overrideShader)
+	void BindRenderable(const gem::Renderable& renderable, gem::Shader* overrideShader)
 	{
-		const Jwl::Material& material = *renderable.GetMaterial();
+		const gem::Material& material = *renderable.GetMaterial();
 
 		if (overrideShader)
 		{
@@ -43,14 +43,14 @@ namespace
 
 		renderable.buffers.Bind();
 		material.textures.Bind();
-		Jwl::SetBlendFunc(material.blendMode);
-		Jwl::SetDepthFunc(material.depthMode);
-		Jwl::SetCullFunc(material.cullMode);
+		gem::SetBlendFunc(material.blendMode);
+		gem::SetDepthFunc(material.depthMode);
+		gem::SetCullFunc(material.cullMode);
 	}
 
-	void UnBindRenderable(const Jwl::Renderable& renderable, Jwl::Shader* overrideShader)
+	void UnBindRenderable(const gem::Renderable& renderable, gem::Shader* overrideShader)
 	{
-		const Jwl::Material& material = *renderable.GetMaterial();
+		const gem::Material& material = *renderable.GetMaterial();
 
 		if (overrideShader)
 		{
@@ -66,7 +66,7 @@ namespace
 	}
 }
 
-namespace Jwl
+namespace gem
 {
 	RenderPass::RenderPass()
 	{

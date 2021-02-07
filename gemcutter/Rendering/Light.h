@@ -4,7 +4,7 @@
 #include "gemcutter/Math/Vector.h"
 #include "gemcutter/Resource/UniformBuffer.h"
 
-namespace Jwl
+namespace gem
 {
 	class Light : public Component<Light>
 	{

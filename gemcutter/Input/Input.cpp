@@ -32,7 +32,7 @@ namespace
 	}
 }
 
-namespace Jwl
+namespace gem
 {
 	InputSingleton Input;
 

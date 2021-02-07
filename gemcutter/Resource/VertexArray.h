@@ -5,7 +5,7 @@
 
 #include <vector>
 
-namespace Jwl
+namespace gem
 {
 	// A single OpenGL buffer object.
 	// This owns and provides access to the raw data used for rendering.

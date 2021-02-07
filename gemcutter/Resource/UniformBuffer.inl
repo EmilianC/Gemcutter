@@ -1,5 +1,5 @@
 // Copyright (c) 2017 Emilian Cioca
-namespace Jwl
+namespace gem
 {
 	template<class T>
 	UniformHandle<T> UniformBuffer::AddUniform(std::string_view name, unsigned count)

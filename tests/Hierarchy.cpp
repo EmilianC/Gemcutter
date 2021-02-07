@@ -2,7 +2,7 @@
 #include <gemcutter/Entity/Entity.h>
 #include <gemcutter/Entity/Hierarchy.h>
 
-using namespace Jwl;
+using namespace gem;
 
 TEST_CASE("Hierarchy")
 {

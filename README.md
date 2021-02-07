@@ -1,12 +1,12 @@
-![Jewel3D Logo](docs/JewelLogo.png)
+![Gemcutter Logo](docs/Logo.png)
 
-# What is Jewel3D?
-Jewel3D is a free C++ game development framework for Windows. It features a powerful Entity-Component-System
+# What is Gemcutter?
+Gemcutter is a free C++ game development framework for Windows. It features a powerful Entity-Component-System
 and fine-grain control of both 2D and 3D rendering.
 
-# Why use Jewel3D?
+# Why use Gemcutter?
 The framework facilitates expressive and succinct code that is both easy to read, and to use.
-With a thin API and C++20 features, Jewel3D provides powerful features without feeling clunky.
+With a thin API and C++20 features, Gemcutter provides powerful features without feeling clunky.
 
 Highlight features include:
 * [A rich shader workflow](docs/Shader.md)
@@ -22,16 +22,10 @@ Highlight features include:
 * Keyboard/Mouse/Xbox-Controller support
 * Local networking
 
-# Quick Start
-1. Run "INSTALL.cmd" to save the checkout path to the environment and install project templates.
-	- You might have to restart your computer for this to take effect.
-2. Run "BUILD.cmd" to compile the engine and tools.
-3. Create a new game project by selecting `Add New Project -> Visual C++ -> Jewel3D Project`.
-
-Code samples are available and maintained [here](https://github.com/EmilianC/Jewel3D-Samples).
+Code samples are available and maintained [here](https://github.com/EmilianC/Gemcutter-Samples).
 
 # Upcoming Features
-Jewel3D is always being updated and improved. See the [Trello board](https://trello.com/b/Oc2GFT2A/jewel3d) to follow development.
+Gemcutter is always being updated and improved. See the [Trello board](https://trello.com/b/Oc2GFT2A/gemcutter) to follow development.
 
 Future highlight features include:
 * GUI support
@@ -56,6 +50,6 @@ All Dependencies used under their respective licenses. Copyright is held by thei
 * [XInput 1.4](https://msdn.microsoft.com/en-us/library/windows/desktop/ee417001(v=vs.85).aspx)
 
 # Notes
-* Jewel3D is built and tested on Windows with the latest version of Visual Studio 2019 Community.
-* Jewel3D requires at least OpenGL 3.3.
-* Jewel3D is provided under the MIT License.
+* Gemcutter is built and tested on Windows with the latest version of Visual Studio.
+* Gemcutter requires at least OpenGL 3.3.
+* Gemcutter is provided under the MIT License.

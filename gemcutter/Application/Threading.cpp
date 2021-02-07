@@ -1,7 +1,7 @@
 // Copyright (c) 2017 Emilian Cioca
 #include "Threading.h"
 
-namespace Jwl
+namespace gem
 {
 	Mutex::~Mutex()
 	{

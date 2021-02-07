@@ -6,7 +6,7 @@
 struct tagMSG;
 typedef tagMSG MSG;
 
-namespace Jwl
+namespace gem
 {
 	enum class Key
 	{

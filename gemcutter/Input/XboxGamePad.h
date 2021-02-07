@@ -5,7 +5,7 @@
 #include <Windows.h>
 #include <Xinput.h>
 
-namespace Jwl
+namespace gem
 {
 	class XboxGamePad
 	{

@@ -4,7 +4,7 @@
 
 #include <random>
 
-namespace Jwl
+namespace gem
 {
 	std::mt19937 engine;
 

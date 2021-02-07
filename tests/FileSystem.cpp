@@ -1,7 +1,7 @@
 #include <catch/catch.hpp>
 #include <gemcutter/Application/FileSystem.h>
 
-using namespace Jwl;
+using namespace gem;
 
 TEST_CASE("FileSystem")
 {

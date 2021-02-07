@@ -35,7 +35,7 @@
  Based on the implementation by Andrei Alexandrescu.
 */
 
-namespace Jwl
+namespace gem
 {
 	template<typename Functor>
 	class ScopeGuard
@@ -85,4 +85,4 @@ namespace Jwl
 #define CONCATENATE(s1, s2) s1##s2
 #define CONCATENATE_INDIRECT(s1, s2) CONCATENATE(s1, s2)
 #define ANONYMOUS_VARIABLE(str) CONCATENATE_INDIRECT(str, __COUNTER__)
-#define defer Jwl::ScopeGuard ANONYMOUS_VARIABLE(SCOPE_GUARD_) = [&]()
+#define defer gem::ScopeGuard ANONYMOUS_VARIABLE(SCOPE_GUARD_) = [&]()

@@ -7,7 +7,7 @@
 
 #include <optional>
 
-namespace Jwl
+namespace gem
 {
 	class Entity;
 
@@ -44,7 +44,7 @@ namespace Jwl
 		// Renders all Entities in the list in order.
 		void Render(const std::vector<Entity::Ptr>& entities);
 		// Renders 'count' copies of the instance.
-		// Jwl_MVP, Jwl_ModelView, Jwl_Model, Jwl_InvModel, and Jwl_NormalToWorld shader uniforms will not be set.
+		// Gem_MVP, Gem_ModelView, Gem_Model, Gem_InvModel, and Gem_NormalToWorld shader uniforms will not be set.
 		void RenderInstanced(const Entity& instance, unsigned count);
 
 		// These textures will be bound during the execution of the render pass.

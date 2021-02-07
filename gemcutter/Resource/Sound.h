@@ -3,7 +3,7 @@
 #include "gemcutter/Resource/Resource.h"
 #include "gemcutter/Resource/Shareable.h"
 
-namespace Jwl
+namespace gem
 {
 	// An audio clip.
 	// To be played, the clip must be set on an Entity's SoundSource component.

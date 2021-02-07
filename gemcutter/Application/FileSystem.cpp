@@ -18,7 +18,7 @@ namespace
 	std::stack<std::string> currentDirectoryStack;
 }
 
-namespace Jwl
+namespace gem
 {
 	unsigned GetMaxPathLength()
 	{

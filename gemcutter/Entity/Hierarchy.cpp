@@ -1,7 +1,7 @@
 // Copyright (c) 2020 Emilian Cioca
 #include "Hierarchy.h"
 
-namespace Jwl
+namespace gem
 {
 	Hierarchy::Hierarchy(Entity& _owner)
 		: Component(_owner)

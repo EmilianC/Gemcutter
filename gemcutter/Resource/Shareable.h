@@ -2,7 +2,7 @@
 #pragma once
 #include <memory>
 
-namespace Jwl
+namespace gem
 {
 	template<class Derived>
 	class Shareable : public std::enable_shared_from_this<Derived>

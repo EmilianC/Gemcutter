@@ -19,7 +19,7 @@ namespace
 		"out vec2 texcoord;\n"
 		"void main()\n"
 		"{\n"
-		"	gl_Position = Jwl_MVP * a_vert;\n"
+		"	gl_Position = Gem_MVP * a_vert;\n"
 		"	texcoord = a_uv;\n"
 		"}\n";
 
@@ -41,7 +41,7 @@ namespace
 		"	out vec2 texcoord;\n"
 		"	void main()\n"
 		"	{\n"
-		"		gl_Position = Jwl_MVP * a_vert;\n"
+		"		gl_Position = Gem_MVP * a_vert;\n"
 		"		texcoord = a_uv;\n"
 		"	}\n"
 		"}\n"
@@ -66,42 +66,42 @@ namespace
 		"#define M_LN2 0.693147180559945309417\n"
 		"#define M_LN10 2.30258509299404568402\n"
 		"\n"
-		"layout(std140) uniform Jwl_Camera_Uniforms\n"
+		"layout(std140) uniform Gem_Camera_Uniforms\n"
 		"{\n"
-		"	mat4 Jwl_View;\n"
-		"	mat4 Jwl_Proj;\n"
-		"	mat4 Jwl_ViewProj;\n"
-		"	mat4 Jwl_InvView;\n"
-		"	mat4 Jwl_InvProj;\n"
-		"	vec3 Jwl_CameraPosition;\n"
+		"	mat4 Gem_View;\n"
+		"	mat4 Gem_Proj;\n"
+		"	mat4 Gem_ViewProj;\n"
+		"	mat4 Gem_InvView;\n"
+		"	mat4 Gem_InvProj;\n"
+		"	vec3 Gem_CameraPosition;\n"
 		"};"
 		"\n"
-		"layout(std140) uniform Jwl_Model_Uniforms\n"
+		"layout(std140) uniform Gem_Model_Uniforms\n"
 		"{\n"
-		"	mat4 Jwl_MVP;\n"
-		"	mat4 Jwl_ModelView;\n"
-		"	mat4 Jwl_Model;\n"
-		"	mat4 Jwl_InvModel;\n"
-		"	mat3 Jwl_NormalToWorld;\n"
+		"	mat4 Gem_MVP;\n"
+		"	mat4 Gem_ModelView;\n"
+		"	mat4 Gem_Model;\n"
+		"	mat4 Gem_InvModel;\n"
+		"	mat3 Gem_NormalToWorld;\n"
 		"};"
 		"\n"
-		"layout(std140) uniform Jwl_Engine_Uniforms\n"
+		"layout(std140) uniform Gem_Engine_Uniforms\n"
 		"{\n"
 		"	vec4 ScreenParams;\n"
 		"};"
 		"\n"
-		"layout(std140) uniform Jwl_Time_Uniforms\n"
+		"layout(std140) uniform Gem_Time_Uniforms\n"
 		"{\n"
-		"	vec4 Jwl_Time;\n"
-		"	vec4 Jwl_Sin;\n"
-		"	vec4 Jwl_Cos;\n"
-		"	float Jwl_DeltaTime;\n"
+		"	vec4 Gem_Time;\n"
+		"	vec4 Gem_Sin;\n"
+		"	vec4 Gem_Cos;\n"
+		"	float Gem_DeltaTime;\n"
 		"};\n"
 		"\n" // Normal mapping helper.
 		"mat3 make_TBN(vec3 normal, vec3 tangent, float handedness)\n"
 		"{\n"
-		"	vec3 N = Jwl_NormalToWorld * normal;\n"
-		"	vec3 T = Jwl_NormalToWorld * tangent;\n"
+		"	vec3 N = Gem_NormalToWorld * normal;\n"
+		"	vec3 T = Gem_NormalToWorld * tangent;\n"
 		"	vec3 B = cross(T, N) * handedness;\n"
 		"	return mat3(T, B, N);\n"
 		"}\n"
@@ -119,14 +119,14 @@ namespace
 		"	else return pow((x + 0.055) / 1.055, 2.4);\n"
 		"}\n"
 		"vec3 sRGB_to_linear(vec3 v) { return vec3(sRGB_to_linear(v.x), sRGB_to_linear(v.y), sRGB_to_linear(v.z)); }\n"
-		"\n" // These are enum values from Jwl::Light::Type
-		"bool JWL_IS_POINT_LIGHT(uint type) { return type == 0u; }\n"
-		"bool JWL_IS_DIRECTIONAL_LIGHT(uint type) { return type == 1u; }\n"
-		"bool JWL_IS_SPOT_LIGHT(uint type) { return type == 2u; }\n"
+		"\n" // These are enum values from gem::Light::Type
+		"bool GEM_IS_POINT_LIGHT(uint type) { return type == 0u; }\n"
+		"bool GEM_IS_DIRECTIONAL_LIGHT(uint type) { return type == 1u; }\n"
+		"bool GEM_IS_SPOT_LIGHT(uint type) { return type == 2u; }\n"
 		"\n"
-		"vec3 JWL_COMPUTE_LIGHT(vec3 normal, vec3 surfacePos, vec3 color, vec3 lightPos, vec3 direction, float attenLinear, float attenQuadratic, float angle, uint type)\n"
+		"vec3 GEM_COMPUTE_LIGHT(vec3 normal, vec3 surfacePos, vec3 color, vec3 lightPos, vec3 direction, float attenLinear, float attenQuadratic, float angle, uint type)\n"
 		"{\n"
-		"	if (JWL_IS_POINT_LIGHT(type))\n"
+		"	if (GEM_IS_POINT_LIGHT(type))\n"
 		"	{\n"
 		"		vec3 lightDir = lightPos - surfacePos;\n"
 		"		float dist = length(lightDir);\n"
@@ -139,7 +139,7 @@ namespace
 		"			return color * NdotL * attenuation;\n"
 		"		}\n"
 		"	}\n"
-		"	else if (JWL_IS_DIRECTIONAL_LIGHT(type))\n"
+		"	else if (GEM_IS_DIRECTIONAL_LIGHT(type))\n"
 		"	{\n"
 		"		float NdotL = dot(normal, -direction);\n"
 		""
@@ -167,10 +167,10 @@ namespace
 		"	return vec3(0.0);\n"
 		"}"
 		"\n\n"
-		"#define is_point_light(light) JWL_IS_POINT_LIGHT(light##.Type)\n"
-		"#define is_directional_light(light) JWL_IS_DIRECTIONAL_LIGHT(light##.Type)\n"
-		"#define is_spot_light(light) JWL_IS_SPOT_LIGHT(light##.Type)\n"
-		"#define compute_light(light, normal, pos) JWL_COMPUTE_LIGHT(normal, pos, light##.Color, light##.Position, light##.Direction, light##.AttenuationLinear, light##.AttenuationQuadratic, light##.Angle, light##.Type)\n";
+		"#define is_point_light(light) GEM_IS_POINT_LIGHT(light##.Type)\n"
+		"#define is_directional_light(light) GEM_IS_DIRECTIONAL_LIGHT(light##.Type)\n"
+		"#define is_spot_light(light) GEM_IS_SPOT_LIGHT(light##.Type)\n"
+		"#define compute_light(light, normal, pos) GEM_COMPUTE_LIGHT(normal, pos, light##.Color, light##.Position, light##.Direction, light##.AttenuationLinear, light##.AttenuationQuadratic, light##.Angle, light##.Type)\n";
 
 	unsigned CompileShader(unsigned program, unsigned type, std::string_view _header, std::string_view body)
 	{
@@ -202,7 +202,7 @@ namespace
 				infoLog[infoLen - 2] = '\0';
 			}
 
-			Jwl::Error(infoLog);
+			gem::Error(infoLog);
 
 			return GL_NONE;
 		}
@@ -235,7 +235,7 @@ namespace
 				infoLog[infoLen - 2] = '\0';
 			}
 
-			Jwl::Error(infoLog);
+			gem::Error(infoLog);
 
 			return false;
 		}
@@ -244,7 +244,7 @@ namespace
 	}
 }
 
-namespace Jwl
+namespace gem
 {
 	void ShaderVariantControl::Define(std::string_view name, std::string_view value)
 	{
@@ -843,7 +843,7 @@ namespace Jwl
 			assignmentPos = uniformStruct.find('=', assignmentPos);
 		}
 
-		uniformStruct = FormatString("layout(std140) uniform Jwl_User_%s\n{%s} %s;\n", name, uniformStruct.c_str(), name);
+		uniformStruct = FormatString("layout(std140) uniform Gem_User_%s\n{%s} %s;\n", name, uniformStruct.c_str(), name);
 
 		/* Create template and the shader owned buffer */
 		if (isInstance || isStatic)
@@ -1149,7 +1149,7 @@ namespace Jwl
 					commonHeader,
 					"layout(location = 0) in vec4 a_vert;\n"
 					"void main()\n{\n"
-					"	gl_Position = Jwl_MVP * a_vert;\n"
+					"	gl_Position = Gem_MVP * a_vert;\n"
 					"}\n",
 					"",
 					"out vec4 outColor;\n"
@@ -1177,7 +1177,7 @@ namespace Jwl
 				// Make sure the UniformBuffers are all set to the correct bindings.
 				for (auto& binding : bufferBindings)
 				{
-					unsigned block = glGetUniformBlockIndex(variant.program, ("Jwl_User_" + binding.name).c_str());
+					unsigned block = glGetUniformBlockIndex(variant.program, ("Gem_User_" + binding.name).c_str());
 					if (block != GL_INVALID_INDEX)
 					{
 						glUniformBlockBinding(variant.program, block, binding.unit);
@@ -1269,10 +1269,10 @@ namespace Jwl
 		if (fragShader != GL_NONE) glDetachShader(program, fragShader);
 
 		/* Initialize built-in uniform blocks */
-		unsigned cameraBlock = glGetUniformBlockIndex(program, "Jwl_Camera_Uniforms");
-		unsigned modelBlock  = glGetUniformBlockIndex(program, "Jwl_Model_Uniforms");
-		unsigned engineBlock = glGetUniformBlockIndex(program, "Jwl_Engine_Uniforms");
-		unsigned timeBlock   = glGetUniformBlockIndex(program, "Jwl_Time_Uniforms");
+		unsigned cameraBlock = glGetUniformBlockIndex(program, "Gem_Camera_Uniforms");
+		unsigned modelBlock  = glGetUniformBlockIndex(program, "Gem_Model_Uniforms");
+		unsigned engineBlock = glGetUniformBlockIndex(program, "Gem_Engine_Uniforms");
+		unsigned timeBlock   = glGetUniformBlockIndex(program, "Gem_Time_Uniforms");
 
 		if (cameraBlock != GL_INVALID_INDEX) glUniformBlockBinding(program, cameraBlock, (GLuint)UniformBufferSlot::Camera);
 		if (modelBlock  != GL_INVALID_INDEX) glUniformBlockBinding(program, modelBlock,  (GLuint)UniformBufferSlot::Model);

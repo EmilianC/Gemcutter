@@ -6,7 +6,7 @@
 
 #include <vector>
 
-namespace Jwl
+namespace gem
 {
 	// A Tag identifying an Entity with no parents.
 	struct HierarchyRoot : public Tag<HierarchyRoot> {};

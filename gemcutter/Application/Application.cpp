@@ -50,7 +50,7 @@ namespace
 
 		if (!AdjustWindowRectEx(&windowRect, style, FALSE, STYLE_EXTENDED))
 		{
-			Jwl::Warning("Console: Could not resolve the window's size.");
+			gem::Warning("Console: Could not resolve the window's size.");
 		}
 
 		return windowRect;
@@ -69,13 +69,13 @@ namespace
 
 			if (ChangeDisplaySettings(&dmScreenSettings, CDS_FULLSCREEN) != DISP_CHANGE_SUCCESSFUL)
 			{
-				Jwl::Warning("Console: Could not enter fullscreen mode.");
+				gem::Warning("Console: Could not enter fullscreen mode.");
 				return false;
 			}
 
 			if (SetWindowPos(window, 0, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW) == ERROR)
 			{
-				Jwl::Warning("Console: Could not enter fullscreen mode.");
+				gem::Warning("Console: Could not enter fullscreen mode.");
 				return false;
 			}
 		}
@@ -83,13 +83,13 @@ namespace
 		{
 			if (ChangeDisplaySettings(NULL, 0) != DISP_CHANGE_SUCCESSFUL)
 			{
-				Jwl::Warning("Console: Could not successfully exit fullscreen mode.");
+				gem::Warning("Console: Could not successfully exit fullscreen mode.");
 				return false;
 			}
 
 			if (SetWindowPos(window, 0, 20, 20, 0, 0, SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW) == ERROR)
 			{
-				Jwl::Warning("Console: Could not successfully exit fullscreen mode.");
+				gem::Warning("Console: Could not successfully exit fullscreen mode.");
 				return false;
 			}
 		}
@@ -104,7 +104,7 @@ namespace
 		if (SetWindowLongPtr(window, GWL_STYLE, style) == ERROR ||
 			SetWindowPos(window, 0, 0, 0, windowRect.right - windowRect.left, windowRect.bottom - windowRect.top, SWP_NOMOVE | SWP_NOZORDER | SWP_FRAMECHANGED | SWP_SHOWWINDOW) == ERROR)
 		{
-			Jwl::Warning("Console: Could not apply the window's border style.");
+			gem::Warning("Console: Could not apply the window's border style.");
 			return false;
 		}
 
@@ -116,7 +116,7 @@ namespace
 		RECT windowRect = GetWindowSize(style, clientWidth, clientHeight);
 		if (SetWindowPos(window, 0, 0, 0, windowRect.right - windowRect.left, windowRect.bottom - windowRect.top, SWP_NOMOVE | SWP_NOZORDER | SWP_SHOWWINDOW) == ERROR)
 		{
-			Jwl::Warning("Console: Could not apply the resolution.");
+			gem::Warning("Console: Could not apply the resolution.");
 			return false;
 		}
 
@@ -220,17 +220,17 @@ namespace
 
 		if (type == GL_DEBUG_TYPE_ERROR)
 		{
-			Jwl::Error(message);
+			gem::Error(message);
 		}
 		else
 		{
-			Jwl::Log(message);
+			gem::Log(message);
 		}
 	}
 #endif
 }
 
-namespace Jwl
+namespace gem
 {
 	ApplicationSingleton Application;
 
@@ -280,7 +280,7 @@ namespace Jwl
 		windowClass.hCursor = LoadCursor(NULL, IDC_ARROW);   // Default arrow.
 		windowClass.hbrBackground = NULL;
 		windowClass.lpszMenuName = NULL;
-		windowClass.lpszClassName = "Jewel3D";
+		windowClass.lpszClassName = "Gemcutter";
 		windowClass.hIconSm = LoadIcon(NULL, IDI_WINLOGO);   // Windows logo small icon.
 
 		if (!RegisterClassEx(&windowClass))
@@ -295,7 +295,7 @@ namespace Jwl
 		// This will internally send a WM_CREATE message that is handled before the function returns.
 		if (!CreateWindowEx(
 			STYLE_EXTENDED,
-			"Jewel3D",    // Class name.
+			"Gemcutter",  // Class name.
 			title.data(),
 			style,
 			CW_USEDEFAULT, CW_USEDEFAULT,
@@ -348,7 +348,7 @@ namespace Jwl
 		wglDeleteContext(renderContext);
 		ReleaseDC(hwnd, deviceContext);
 		DestroyWindow(hwnd);
-		UnregisterClass("Jewel3D", apInstance);
+		UnregisterClass("Gemcutter", apInstance);
 
 		renderContext = NULL;
 		deviceContext = NULL;

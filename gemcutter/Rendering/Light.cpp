@@ -2,7 +2,7 @@
 #include "Light.h"
 #include "gemcutter/Math/Math.h"
 
-namespace Jwl
+namespace gem
 {
 	Light::Light(Entity& _owner)
 		: Component(_owner)

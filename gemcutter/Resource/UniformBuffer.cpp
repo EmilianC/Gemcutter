@@ -21,7 +21,7 @@ namespace
 	}
 }
 
-namespace Jwl
+namespace gem
 {
 	UniformBuffer::~UniformBuffer()
 	{

@@ -2,11 +2,11 @@
 #pragma once
 #include <string_view>
 
-namespace Jwl
+namespace gem
 {
 	struct vec4;
 
-	// Binding locations for Jewel3D uniform buffers.
+	// Binding locations for built-in uniform buffers.
 	enum class UniformBufferSlot : unsigned
 	{
 		Camera = 10,

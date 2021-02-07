@@ -11,7 +11,7 @@
 #include <unordered_map>
 #include <vector>
 
-namespace Jwl
+namespace gem
 {
 	// A collection of parameters that are used by a shader.
 	// To be used by a shader, an instance must either be attached to the

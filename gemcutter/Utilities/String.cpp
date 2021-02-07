@@ -10,7 +10,7 @@ namespace
 	char buffer[BUFFER_SIZE] = { '\0' };
 }
 
-namespace Jwl
+namespace gem
 {
 	void RemoveWhitespace(std::string& str)
 	{

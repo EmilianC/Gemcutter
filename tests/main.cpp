@@ -6,7 +6,7 @@
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, INT nCmdShow)
 {
-	using namespace Jwl;
+	using namespace gem;
 
 	CreateConsoleWindow();
 

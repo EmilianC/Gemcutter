@@ -9,10 +9,10 @@
  Console output can be toggled as well with CreateConsoleWindow() and DestroyConsoleWindow().
  DEBUG_* macros allow you to log only when in debug mode.
 
- To force macros off, define JWL_DISABLE_DEBUG_MESSAGES.
+ To force macros off, define GEM_DISABLE_DEBUG_MESSAGES.
 */
 
-namespace Jwl
+namespace gem
 {
 	enum class ConsoleColor
 	{
@@ -56,16 +56,16 @@ namespace Jwl
 	void Assert(const char* exp, const char* format, ...);
 }
 
-#if defined(_DEBUG) && !defined(JWL_DISABLE_DEBUG_MESSAGES)
-	#define DEBUG_LOG(format, ...) Jwl::Log((format), ##__VA_ARGS__)
-	#define DEBUG_ERROR(format, ...) Jwl::Error((format), ##__VA_ARGS__)
-	#define DEBUG_WARNING(format, ...) Jwl::Warning((format), ##__VA_ARGS__)
-	#define DEBUG_ERROR_BOX(format, ...) Jwl::ErrorBox((format), ##__VA_ARGS__)
-	#define DEBUG_WARNING_BOX(format, ...) Jwl::WarningBox((format), ##__VA_ARGS__)
+#if defined(_DEBUG) && !defined(GEM_DISABLE_DEBUG_MESSAGES)
+	#define DEBUG_LOG(format, ...) gem::Log((format), ##__VA_ARGS__)
+	#define DEBUG_ERROR(format, ...) gem::Error((format), ##__VA_ARGS__)
+	#define DEBUG_WARNING(format, ...) gem::Warning((format), ##__VA_ARGS__)
+	#define DEBUG_ERROR_BOX(format, ...) gem::ErrorBox((format), ##__VA_ARGS__)
+	#define DEBUG_WARNING_BOX(format, ...) gem::WarningBox((format), ##__VA_ARGS__)
 	#define ASSERT(exp, format, ...) \
 		do {                                                \
 			if (!(exp)) {                                   \
-				Jwl::Assert(#exp, (format), ##__VA_ARGS__); \
+				gem::Assert(#exp, (format), ##__VA_ARGS__); \
 				__asm { int 3 }                             \
 			}                                               \
 			__pragma(warning(suppress:4127))                \

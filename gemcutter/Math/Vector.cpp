@@ -3,7 +3,7 @@
 #include "gemcutter/Application/Logging.h"
 #include "gemcutter/Math/Math.h"
 
-namespace Jwl
+namespace gem
 {
 	const vec2 vec2::Zero = vec2(0.0f, 0.0f);
 	const vec2 vec2::One = vec2(1.0f, 1.0f);

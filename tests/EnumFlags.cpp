@@ -1,7 +1,7 @@
 #include <catch/catch.hpp>
 #include <gemcutter/Utilities/EnumFlags.h>
 
-using namespace Jwl;
+using namespace gem;
 
 enum class Values
 {

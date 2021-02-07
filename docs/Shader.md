@@ -1,5 +1,5 @@
 # Shader Outlines
-Although Jewel3D uses GLSL as its core shading language, shaders in Jewel3D are written as a single, complete, program outline.
+Although Gemcutter uses GLSL as its core shading language, shaders in Gemcutter are written as a single, complete, program outline.
 Shader outlines allow you to easily describe your own custom data bindings without having to fumble with C++ or OpenGL.
 
 ```cpp
@@ -16,7 +16,7 @@ Vertex
 
 	void main()
 	{
-		gl_Position = Jwl_MVP * a_vert;
+		gl_Position = Gem_MVP * a_vert;
 		texcoord = a_uv;
 	}
 }
@@ -59,32 +59,32 @@ This allows you to easily create post-process shaders. A ```Fragment``` block ca
 
 # Uniforms
 A Uniform block can itself contain multiple Uniform Buffers. A Uniform Buffer is simply a structure of data bound to a specific ID.
-The actual values of a Uniform Buffer are managed by game code with the ```Jwl::UniformBuffer``` resource. Data will assume any default values specified inline for ```instance``` and ```static``` buffers.
+The actual values of a Uniform Buffer are managed by game code with the ```gem::UniformBuffer``` resource. Data will assume any default values specified inline for ```instance``` and ```static``` buffers.
 
 A Uniform Buffer qualified as ```static``` will be shared by all instances of a shader. It is owned by the shader resource itself and is initialized the first time the shader is loaded.
 A buffer created this way can be found in the shader's ```buffers``` data member after loading.
 
 Buffers qualified as ```instance``` are instantiated per-entity and can be found in the Renderable Component's ```buffers``` data member.
 
-```Jwl::UniformBuffer```'s can be attached to either the shader for global control of the shader's behaviour, or they can
-be attached to the Renderable for per-object control. When rendering, Jewel3D will bind all Textures and Buffers from the currently rendering Shader, Material, and Renderable.
+```gem::UniformBuffer```'s can be attached to either the shader for global control of the shader's behaviour, or they can
+be attached to the Renderable for per-object control. When rendering, Gemcutter will bind all Textures and Buffers from the currently rendering Shader, Material, and Renderable.
 If both the shader and object bind a buffer or texture to the same ID, the object's data is used.
 
 # System Uniforms, Functions, and Variables
 A series of uniforms are available for all GLSL shader blocks.
 ```cpp
-mat4 Jwl_View;
-mat4 Jwl_Proj;
-mat4 Jwl_ViewProj;
-mat4 Jwl_InvView;
-mat4 Jwl_InvProj;
-vec3 Jwl_CameraPosition; // World space.
+mat4 Gem_View;
+mat4 Gem_Proj;
+mat4 Gem_ViewProj;
+mat4 Gem_InvView;
+mat4 Gem_InvProj;
+vec3 Gem_CameraPosition; // World space.
 
-mat4 Jwl_MVP;
-mat4 Jwl_ModelView;
-mat4 Jwl_Model;
-mat4 Jwl_InvModel;
-mat3 Jwl_NormalToWorld;
+mat4 Gem_MVP;
+mat4 Gem_ModelView;
+mat4 Gem_Model;
+mat4 Gem_InvModel;
+mat3 Gem_NormalToWorld;
 ```
 
 The following functions are available to use in all GLSL shader blocks.
@@ -110,7 +110,7 @@ bool is_directional_light(Light light);
 bool is_spot_light(Light light);
 ```
 
-The standard math definitions from Jewel3D/Math/Math.h are also defined in all GLSL shader blocks.
+The standard math definitions from `gemcutter/Math/Math.h` are also defined in all GLSL shader blocks.
 ```cpp
 #define M_PI     3.14159265358979323846
 #define M_E      2.71828182845904523536
@@ -161,13 +161,13 @@ Vertex
 	void main()
 	{
 		// Save the world-space position for per-pixel lighting.
-		pos = (Jwl_Model * a_vert).xyz;
+		pos = (Gem_Model * a_vert).xyz;
 		// Complete the transformation for the vertex.
-		gl_Position = Jwl_ViewProj * vec4(pos, 1.0);
+		gl_Position = Gem_ViewProj * vec4(pos, 1.0);
 
 		texcoord = a_uv;
 		// Rotate the normal into world-space.
-		norm = Jwl_NormalToWorld * a_normal;
+		norm = Gem_NormalToWorld * a_normal;
 	}
 }
 
@@ -200,10 +200,10 @@ Fragment
 ```
 
 # Variants
-A single Jewel3D shader resource can actually represent different compiled variants of the original shader source. Such shaders are often referred to as "Uber Shaders".
+A single Gemcutter shader resource can actually represent different compiled variants of the original shader source. Such shaders are often referred to as "Uber Shaders".
 This allows you to switch the behaviour of your shaders dynamically without having to juggle many different shader instances.
 
-Shader variants in Jewel3D are managed by the ```Jwl::ShaderVariantControl variants``` member of a Renderable Component.
+Shader variants in Gemcutter are managed by the ```gem::ShaderVariantControl variants``` member of a Renderable Component.
 
 ```cpp
 auto& renderable = entity.Get<Renderable>();
@@ -214,9 +214,9 @@ renderable.variants.Define("Use_Feature_X");
 // #define BlurAmount 3
 renderable.variants.Define("BlurAmount", 3);
 
-// #define JWL_CUTOUT
+// #define GEM_CUTOUT
 // Enables alpha threshold discarding for some of the default shaders
-renderable.variants.Define("JWL_CUTOUT");
+renderable.variants.Define("GEM_CUTOUT");
 
 // Removes #define Use_Feature_X
 renderable.variants.Undefine("Use_Feature_X");

@@ -2,7 +2,7 @@
 #pragma once
 #include <cmath>
 
-namespace Jwl
+namespace gem
 {
 	constexpr float M_PI     = 3.14159265358979323846f;
 	constexpr float M_E      = 2.71828182845904523536f;

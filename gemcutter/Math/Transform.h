@@ -3,7 +3,7 @@
 #include "gemcutter/Math/Quaternion.h"
 #include "gemcutter/Math/Vector.h"
 
-namespace Jwl
+namespace gem
 {
 	// A pose in space - Position / Rotation / Scale.
 	struct Transform

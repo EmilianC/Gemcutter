@@ -1,7 +1,7 @@
 // Copyright (c) 2017 Emilian Cioca
 #include "Sprite.h"
 
-namespace Jwl
+namespace gem
 {
 	Sprite::Sprite(Entity& owner)
 		: Renderable(owner)
@@ -39,8 +39,8 @@ namespace Jwl
 		if (alignment == pivot)
 			return;
 
-		variants.Switch("JWL_SPRITE_CENTERED_X", pivot == Alignment::Center || pivot == Alignment::BottomCenter);
-		variants.Switch("JWL_SPRITE_CENTERED_Y", pivot == Alignment::Center || pivot == Alignment::LeftCenter);
+		variants.Switch("GEM_SPRITE_CENTERED_X", pivot == Alignment::Center || pivot == Alignment::BottomCenter);
+		variants.Switch("GEM_SPRITE_CENTERED_Y", pivot == Alignment::Center || pivot == Alignment::LeftCenter);
 
 		alignment = pivot;
 	}
@@ -55,7 +55,7 @@ namespace Jwl
 		if (billBoarded == state)
 			return;
 
-		variants.Switch("JWL_SPRITE_BILLBOARD", state);
+		variants.Switch("GEM_SPRITE_BILLBOARD", state);
 
 		billBoarded = state;
 	}

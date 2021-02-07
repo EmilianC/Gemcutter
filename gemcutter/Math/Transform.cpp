@@ -3,7 +3,7 @@
 #include "gemcutter/Application/Logging.h"
 #include "gemcutter/Math/Math.h"
 
-namespace Jwl
+namespace gem
 {
 	Transform::Transform(const vec3& _position)
 		: position(_position)

@@ -1,7 +1,7 @@
 #include <catch/catch.hpp>
 #include <gemcutter/Entity/Entity.h>
 
-using namespace Jwl;
+using namespace gem;
 
 class Comp1 : public Component<Comp1>
 {

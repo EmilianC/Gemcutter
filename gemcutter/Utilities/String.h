@@ -4,7 +4,7 @@
 #include <string>
 #include <string_view>
 
-namespace Jwl
+namespace gem
 {
 	// Remove all instances of whitespace from the string.
 	void RemoveWhitespace(std::string& str);

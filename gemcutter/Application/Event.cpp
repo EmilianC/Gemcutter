@@ -5,7 +5,7 @@
 #include "gemcutter/Application/Logging.h"
 #endif
 
-namespace Jwl
+namespace gem
 {
 	EventQueueSingleton EventQueue;
 

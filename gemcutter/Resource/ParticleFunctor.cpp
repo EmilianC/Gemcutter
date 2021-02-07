@@ -3,7 +3,7 @@
 #include "gemcutter/Application/Logging.h"
 #include "gemcutter/Rendering/ParticleEmitter.h"
 
-namespace Jwl
+namespace gem
 {
 	FunctorList::FunctorList(const FunctorList& other)
 		: functors(other.functors)

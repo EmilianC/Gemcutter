@@ -1,17 +1,17 @@
 #pragma once
 #include <gemcutter/Resource/Encoder.h>
 
-class TextureEncoder final : public Jwl::Encoder
+class TextureEncoder final : public gem::Encoder
 {
 public:
 	TextureEncoder();
 
-	Jwl::ConfigTable GetDefault() const override;
+	gem::ConfigTable GetDefault() const override;
 
-	bool Validate(const Jwl::ConfigTable& metadata, unsigned loadedVersion) const override;
+	bool Validate(const gem::ConfigTable& metadata, unsigned loadedVersion) const override;
 
 private:
-	bool Convert(std::string_view source, std::string_view destination, const Jwl::ConfigTable& metadata) const override;
+	bool Convert(std::string_view source, std::string_view destination, const gem::ConfigTable& metadata) const override;
 
-	bool Upgrade(Jwl::ConfigTable& metadata, unsigned loadedVersion) const override;
+	bool Upgrade(gem::ConfigTable& metadata, unsigned loadedVersion) const override;
 };

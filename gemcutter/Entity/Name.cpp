@@ -2,7 +2,7 @@
 #include "Name.h"
 #include "gemcutter/Entity/Hierarchy.h"
 
-namespace Jwl
+namespace gem
 {
 	void LogSceneGraphRecursive(const Entity& entity, unsigned tabLevel)
 	{

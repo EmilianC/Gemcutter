@@ -30,15 +30,15 @@ namespace
 #endif
 	}
 
-	void PushMessage(std::string_view header, std::string_view message, Jwl::ConsoleColor color)
+	void PushMessage(std::string_view header, std::string_view message, gem::ConsoleColor color)
 	{
-		Jwl::SetConsoleColor(color);
+		gem::SetConsoleColor(color);
 		PushMessage(header, message);
-		Jwl::ResetConsoleColor();
+		gem::ResetConsoleColor();
 	}
 }
 
-namespace Jwl
+namespace gem
 {
 	void OpenOutputLog()
 	{

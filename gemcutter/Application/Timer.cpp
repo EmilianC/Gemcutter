@@ -14,7 +14,7 @@ namespace
 			return temp.QuadPart;
 		}
 
-		Jwl::Error("Timer: High performance timer is not supported by your CPU.");
+		gem::Error("Timer: High performance timer is not supported by your CPU.");
 		return 0;
 	}
 
@@ -26,7 +26,7 @@ namespace
 	const double d_ticksPerMS = static_cast<double>(ticksPerMS);
 }
 
-namespace Jwl
+namespace gem
 {
 	Timer::Timer()
 	{

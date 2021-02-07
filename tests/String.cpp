@@ -1,7 +1,7 @@
 #include <catch/catch.hpp>
 #include <gemcutter/Utilities/String.h>
 
-using namespace Jwl;
+using namespace gem;
 
 TEST_CASE("String")
 {

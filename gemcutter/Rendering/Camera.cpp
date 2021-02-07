@@ -6,7 +6,7 @@
 #include "gemcutter/Rendering/Rendering.h"
 #include "gemcutter/Rendering/Viewport.h"
 
-namespace Jwl
+namespace gem
 {
 	Camera::Camera(Entity& _owner)
 		: Component(_owner)

@@ -20,7 +20,7 @@ struct MeshFace
 
 	// Calculated after indices have been read.
 	// xyz = normalized tangent, w = handedness.
-	Jwl::vec4 tangent[3];
+	gem::vec4 tangent[3];
 };
 
 MeshEncoder::MeshEncoder()
@@ -28,9 +28,9 @@ MeshEncoder::MeshEncoder()
 {
 }
 
-Jwl::ConfigTable MeshEncoder::GetDefault() const
+gem::ConfigTable MeshEncoder::GetDefault() const
 {
-	Jwl::ConfigTable defaultConfig;
+	gem::ConfigTable defaultConfig;
 
 	defaultConfig.SetValue("version", CURRENT_VERSION);
 	defaultConfig.SetValue("scale", 1);
@@ -41,23 +41,23 @@ Jwl::ConfigTable MeshEncoder::GetDefault() const
 	return defaultConfig;
 }
 
-bool MeshEncoder::Validate(const Jwl::ConfigTable& metadata, unsigned loadedVersion) const
+bool MeshEncoder::Validate(const gem::ConfigTable& metadata, unsigned loadedVersion) const
 {
 	if (!metadata.HasSetting("uvs"))
 	{
-		Jwl::Error("Missing \"uvs\" value.");
+		gem::Error("Missing \"uvs\" value.");
 		return false;
 	}
 
 	if (!metadata.HasSetting("scale"))
 	{
-		Jwl::Error("Missing \"scale\" value.");
+		gem::Error("Missing \"scale\" value.");
 		return false;
 	}
 
 	if (!metadata.HasSetting("normals"))
 	{
-		Jwl::Error("Missing \"normals\" value.");
+		gem::Error("Missing \"normals\" value.");
 		return false;
 	}
 
@@ -66,7 +66,7 @@ bool MeshEncoder::Validate(const Jwl::ConfigTable& metadata, unsigned loadedVers
 	case 1:
 		if (metadata.GetSize() != 4)
 		{
-			Jwl::Error("Incorrect number of value entries.");
+			gem::Error("Incorrect number of value entries.");
 			return false;
 		}
 		break;
@@ -74,13 +74,13 @@ bool MeshEncoder::Validate(const Jwl::ConfigTable& metadata, unsigned loadedVers
 	case 2:
 		if (!metadata.HasSetting("tangents"))
 		{
-			Jwl::Error("Missing \"tangents\" value.");
+			gem::Error("Missing \"tangents\" value.");
 			return false;
 		}
 
 		if (metadata.GetSize() != 5)
 		{
-			Jwl::Error("Incorrect number of value entries.");
+			gem::Error("Incorrect number of value entries.");
 			return false;
 		}
 		break;
@@ -89,9 +89,9 @@ bool MeshEncoder::Validate(const Jwl::ConfigTable& metadata, unsigned loadedVers
 	return true;
 }
 
-bool MeshEncoder::Convert(std::string_view source, std::string_view destination, const Jwl::ConfigTable& metadata) const
+bool MeshEncoder::Convert(std::string_view source, std::string_view destination, const gem::ConfigTable& metadata) const
 {
-	const std::string outputFile = std::string(destination) + Jwl::ExtractFilename(source) + ".model";
+	const std::string outputFile = std::string(destination) + gem::ExtractFilename(source) + ".model";
 	const float scale = metadata.GetFloat("scale");
 	const bool packUvs = metadata.GetBool("uvs");
 	const bool packNormals = metadata.GetBool("normals");
@@ -102,7 +102,7 @@ bool MeshEncoder::Convert(std::string_view source, std::string_view destination,
 	input.open(source.data());
 	if (!input)
 	{
-		Jwl::Error("Input file could not be opened or processed.");
+		gem::Error("Input file could not be opened or processed.");
 		return false;
 	}
 
@@ -111,14 +111,14 @@ bool MeshEncoder::Convert(std::string_view source, std::string_view destination,
 	bool hasNormals = false;
 
 	// Unique data.
-	std::vector<Jwl::vec3> vertexData;
-	std::vector<Jwl::vec2> textureData;
-	std::vector<Jwl::vec3> normalData;
+	std::vector<gem::vec3> vertexData;
+	std::vector<gem::vec2> textureData;
+	std::vector<gem::vec3> normalData;
 	// Indexing data.
 	std::vector<MeshFace> faceData;
 
-	Jwl::vec3 minBounds{ FLT_MAX };
-	Jwl::vec3 maxBounds{ FLT_MIN };
+	gem::vec3 minBounds{ FLT_MAX };
+	gem::vec3 maxBounds{ FLT_MIN };
 
 	while (!input.eof())
 	{
@@ -135,7 +135,7 @@ bool MeshEncoder::Convert(std::string_view source, std::string_view destination,
 
 				// Load texture coordinates.
 				char* endPtr;
-				Jwl::vec2 temp;
+				gem::vec2 temp;
 				temp.x = std::strtof(inputString + 3, &endPtr);
 				temp.y = std::strtof(endPtr + 1, nullptr);
 
@@ -150,7 +150,7 @@ bool MeshEncoder::Convert(std::string_view source, std::string_view destination,
 
 				// Load normals.
 				char* endPtr;
-				Jwl::vec3 temp;
+				gem::vec3 temp;
 				temp.x = std::strtof(inputString + 3, &endPtr);
 				temp.y = std::strtof(endPtr + 1, &endPtr);
 				temp.z = std::strtof(endPtr + 1, nullptr);
@@ -161,7 +161,7 @@ bool MeshEncoder::Convert(std::string_view source, std::string_view destination,
 			{
 				// Load vertices.
 				char* endPtr;
-				Jwl::vec3 temp;
+				gem::vec3 temp;
 				temp.x = std::strtof(inputString + 2, &endPtr);
 				temp.y = std::strtof(endPtr + 1, &endPtr);
 				temp.z = std::strtof(endPtr + 1, nullptr);
@@ -255,32 +255,32 @@ bool MeshEncoder::Convert(std::string_view source, std::string_view destination,
 	{
 		for (unsigned i = 0; i < faceData.size(); ++i)
 		{
-			const Jwl::vec3 edge1 =
+			const gem::vec3 edge1 =
 				vertexData[faceData[i].vertices[0] - 1] -
 				vertexData[faceData[i].vertices[1] - 1];
 
-			const Jwl::vec3 edge2 =
+			const gem::vec3 edge2 =
 				vertexData[faceData[i].vertices[0] - 1] -
 				vertexData[faceData[i].vertices[2] - 1];
 
-			const Jwl::vec2 edgeUV1 =
+			const gem::vec2 edgeUV1 =
 				textureData[faceData[i].textures[0] - 1] -
 				textureData[faceData[i].textures[1] - 1];
 
-			const Jwl::vec2 edgeUV2 =
+			const gem::vec2 edgeUV2 =
 				textureData[faceData[i].textures[0] - 1] -
 				textureData[faceData[i].textures[2] - 1];
 
-			const Jwl::mat2 UVs = Jwl::mat2(
+			const gem::mat2 UVs = gem::mat2(
 				edgeUV1.x, edgeUV1.y,
 				edgeUV2.x, edgeUV2.y).GetInverse();
 
-			const Jwl::vec3 tangent = Jwl::vec3(
+			const gem::vec3 tangent = gem::vec3(
 				UVs[0] * edge1.x + UVs[2] * edge2.x,
 				UVs[0] * edge1.y + UVs[2] * edge2.y,
 				UVs[0] * edge1.z + UVs[2] * edge2.z);
 
-			const Jwl::vec3 bitangent = Jwl::vec3(
+			const gem::vec3 bitangent = gem::vec3(
 				UVs[1] * edge1.x + UVs[3] * edge2.x,
 				UVs[1] * edge1.y + UVs[3] * edge2.y,
 				UVs[1] * edge1.z + UVs[3] * edge2.z);
@@ -288,15 +288,15 @@ bool MeshEncoder::Convert(std::string_view source, std::string_view destination,
 			// Each face's tangent is further refined per-vertex by using their respective normals.
 			for (unsigned v = 0; v < 3; ++v)
 			{
-				const Jwl::vec3 normal = normalData[faceData[i].normals[v] - 1];
+				const gem::vec3 normal = normalData[faceData[i].normals[v] - 1];
 
 				// Calculate handedness.
-				const float handedness = Jwl::Dot(Jwl::Cross(normal, tangent), bitangent) < 0.0f ? -1.0f : 1.0f;
+				const float handedness = gem::Dot(gem::Cross(normal, tangent), bitangent) < 0.0f ? -1.0f : 1.0f;
 
 				// Orthonormalize the tangent with respect to the normal.
-				const Jwl::vec3 t = Jwl::Normalize(tangent - normal * Jwl::Dot(normal, tangent));
+				const gem::vec3 t = gem::Normalize(tangent - normal * gem::Dot(normal, tangent));
 
-				faceData[i].tangent[v] = Jwl::vec4(t, handedness);
+				faceData[i].tangent[v] = gem::vec4(t, handedness);
 			}
 		}
 	}
@@ -347,13 +347,13 @@ bool MeshEncoder::Convert(std::string_view source, std::string_view destination,
 	FILE* modelFile = fopen(outputFile.c_str(), "wb");
 	if (modelFile == nullptr)
 	{
-		Jwl::Error("Output file could not be created.");
+		gem::Error("Output file could not be created.");
 		return false;
 	}
 
 	// Write header.
-	fwrite(&minBounds, sizeof(Jwl::vec3), 1, modelFile);
-	fwrite(&maxBounds, sizeof(Jwl::vec3), 1, modelFile);
+	fwrite(&minBounds, sizeof(gem::vec3), 1, modelFile);
+	fwrite(&maxBounds, sizeof(gem::vec3), 1, modelFile);
 	fwrite(&useUvs, sizeof(bool), 1, modelFile);
 	fwrite(&useNormals, sizeof(bool), 1, modelFile);
 	fwrite(&useTangents, sizeof(bool), 1, modelFile);
@@ -366,36 +366,36 @@ bool MeshEncoder::Convert(std::string_view source, std::string_view destination,
 	// Report results.
 	if (result != 0)
 	{
-		Jwl::Error("Failed to generate mesh Binary\nOutput file could not be saved.");
+		gem::Error("Failed to generate mesh Binary\nOutput file could not be saved.");
 		return false;
 	}
 	else
 	{
 		if (packUvs && !hasUvs)
 		{
-			Jwl::Warning("Output of uvs was enabled but no uvs were found in the mesh.");
+			gem::Warning("Output of uvs was enabled but no uvs were found in the mesh.");
 		}
 
 		if (packNormals && !hasNormals)
 		{
-			Jwl::Warning("Output of normals was enabled but no normals were found in the mesh.");
+			gem::Warning("Output of normals was enabled but no normals were found in the mesh.");
 		}
 
 		if (packTangents && !hasUvs)
 		{
-			Jwl::Warning("Output of tangents was enabled but the mesh has no uvs. UVs are required to compute tangents.");
+			gem::Warning("Output of tangents was enabled but the mesh has no uvs. UVs are required to compute tangents.");
 		}
 
 		if (packTangents && !hasNormals)
 		{
-			Jwl::Warning("Output of tangents was enabled but the mesh has no normals. Normals are required to compute tangents.");
+			gem::Warning("Output of tangents was enabled but the mesh has no normals. Normals are required to compute tangents.");
 		}
 
 		return true;
 	}
 }
 
-bool MeshEncoder::Upgrade(Jwl::ConfigTable& metadata, unsigned loadedVersion) const
+bool MeshEncoder::Upgrade(gem::ConfigTable& metadata, unsigned loadedVersion) const
 {
 	switch (loadedVersion)
 	{

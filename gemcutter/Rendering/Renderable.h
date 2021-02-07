@@ -3,7 +3,7 @@
 #include "gemcutter/Entity/Entity.h"
 #include "gemcutter/Resource/Material.h"
 
-namespace Jwl
+namespace gem
 {
 	// Base class for all renderable components.
 	class Renderable : public Component<Renderable>

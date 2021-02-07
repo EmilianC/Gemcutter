@@ -29,7 +29,7 @@ namespace
 	}
 }
 
-namespace Jwl
+namespace gem
 {
 	bool ConfigTable::Load(std::string_view file)
 	{

@@ -5,7 +5,7 @@
 
 #include <glew/glew.h>
 
-namespace Jwl
+namespace gem
 {
 	ParticleBuffer::ParticleBuffer()
 	{

@@ -5,7 +5,7 @@
 #include "gemcutter/Math/Matrix.h"
 #include "gemcutter/Math/Vector.h"
 
-namespace Jwl
+namespace gem
 {
 	const quat quat::Identity = quat();
 

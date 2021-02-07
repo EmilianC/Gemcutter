@@ -1,7 +1,7 @@
 #include <catch/catch.hpp>
 #include <gemcutter/Math/Math.h>
 
-using namespace Jwl;
+using namespace gem;
 
 TEST_CASE("Math")
 {

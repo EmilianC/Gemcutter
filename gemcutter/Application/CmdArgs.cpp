@@ -3,7 +3,7 @@
 
 #include <cstdlib>
 
-namespace Jwl
+namespace gem
 {
 	int GetArgc()
 	{

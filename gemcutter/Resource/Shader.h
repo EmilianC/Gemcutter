@@ -9,7 +9,7 @@
 #include <unordered_map>
 #include <vector>
 
-namespace Jwl
+namespace gem
 {
 	// Manages a set of defines used to control shaders.
 	class ShaderVariantControl
@@ -63,16 +63,16 @@ namespace std
 {
 	// Custom hash functor for the variant control.
 	template<>
-	struct hash<Jwl::ShaderVariantControl>
+	struct hash<gem::ShaderVariantControl>
 	{
-		size_t operator()(const Jwl::ShaderVariantControl& svc) const noexcept
+		size_t operator()(const gem::ShaderVariantControl& svc) const noexcept
 		{
 			return svc.GetHash();
 		}
 	};
 }
 
-namespace Jwl
+namespace gem
 {
 	// Used internally to expose Uniform buffers from the shader to BufferSlots.
 	struct BufferBinding

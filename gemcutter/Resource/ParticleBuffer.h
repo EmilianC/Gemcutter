@@ -2,7 +2,7 @@
 #pragma once
 #include "gemcutter/Utilities/EnumFlags.h"
 
-namespace Jwl
+namespace gem
 {
 	struct vec2;
 	struct vec3;

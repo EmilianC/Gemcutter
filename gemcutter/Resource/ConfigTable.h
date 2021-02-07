@@ -5,7 +5,7 @@
 #include <map>
 #include <vector>
 
-namespace Jwl
+namespace gem
 {
 	class ConfigTable
 	{

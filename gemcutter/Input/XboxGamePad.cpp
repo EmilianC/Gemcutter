@@ -4,7 +4,7 @@
 
 #define MAX_VAL 32767
 
-namespace Jwl
+namespace gem
 {
 	XboxGamePad::XboxGamePad(unsigned gamepadID)
 		: gamepadID(gamepadID)

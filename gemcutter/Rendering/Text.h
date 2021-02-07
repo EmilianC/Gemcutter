@@ -5,7 +5,7 @@
 
 #include <string>
 
-namespace Jwl
+namespace gem
 {
 	// Causes text to render at the entity's position.
 	class Text : public Renderable

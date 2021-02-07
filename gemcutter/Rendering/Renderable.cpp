@@ -1,7 +1,7 @@
 // Copyright (c) 2020 Emilian Cioca
 #include "Renderable.h"
 
-namespace Jwl
+namespace gem
 {
 	Renderable::Renderable(Entity& _owner)
 		: Component(_owner)

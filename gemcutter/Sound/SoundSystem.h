@@ -3,7 +3,7 @@
 struct ALCdevice;
 struct ALCcontext;
 
-namespace Jwl
+namespace gem
 {
 	enum class AttenuationMode
 	{

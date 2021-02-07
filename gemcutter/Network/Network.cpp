@@ -3,7 +3,7 @@
 #include "Network.h"
 #include "gemcutter/Application/Logging.h"
 
-namespace Jwl
+namespace gem
 {
 	bool InitWinSock()
 	{

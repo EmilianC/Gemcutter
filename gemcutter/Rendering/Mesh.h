@@ -3,7 +3,7 @@
 #include "gemcutter/Rendering/Renderable.h"
 #include "gemcutter/Resource/VertexArray.h"
 
-namespace Jwl
+namespace gem
 {
 	// Causes an entity to render as a 3D mesh.
 	class Mesh : public Renderable

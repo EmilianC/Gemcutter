@@ -2,7 +2,7 @@
 #include "SoundListener.h"
 #include "gemcutter/Sound/SoundSystem.h"
 
-namespace Jwl
+namespace gem
 {
 	Entity::WeakPtr SoundListener::listener;
 

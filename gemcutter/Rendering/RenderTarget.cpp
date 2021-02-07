@@ -13,7 +13,7 @@ namespace
 	GLenum* drawBuffers = nullptr;
 }
 
-namespace Jwl
+namespace gem
 {
 	RenderTarget::RenderTarget(unsigned _width, unsigned _height, unsigned _numColorTextures, bool hasDepth, unsigned _numSamples)
 		: FBO(GL_NONE)

@@ -2,7 +2,7 @@
 #pragma once
 #include <Windows.h>
 
-namespace Jwl
+namespace gem
 {
 	class Mutex
 	{

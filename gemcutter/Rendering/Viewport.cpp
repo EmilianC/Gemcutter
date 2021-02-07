@@ -2,7 +2,7 @@
 #include "Viewport.h"
 #include "gemcutter/Rendering/Rendering.h"
 
-namespace Jwl
+namespace gem
 {
 	Viewport::Viewport(unsigned _x, unsigned _y, unsigned _width, unsigned _height)
 		: x(_x)

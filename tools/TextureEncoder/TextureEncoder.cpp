@@ -6,13 +6,13 @@
 #define CURRENT_VERSION 2
 
 TextureEncoder::TextureEncoder()
-	: Jwl::Encoder(CURRENT_VERSION)
+	: gem::Encoder(CURRENT_VERSION)
 {
 }
 
-Jwl::ConfigTable TextureEncoder::GetDefault() const
+gem::ConfigTable TextureEncoder::GetDefault() const
 {
-	Jwl::ConfigTable defaultConfig;
+	gem::ConfigTable defaultConfig;
 
 	defaultConfig.SetValue("version", CURRENT_VERSION);
 	defaultConfig.SetValue("anisotropic_level", 1.0f);
@@ -25,63 +25,63 @@ Jwl::ConfigTable TextureEncoder::GetDefault() const
 	return defaultConfig;
 }
 
-bool TextureEncoder::Validate(const Jwl::ConfigTable& metadata, unsigned loadedVersion) const
+bool TextureEncoder::Validate(const gem::ConfigTable& metadata, unsigned loadedVersion) const
 {
-	auto validateAnisotropicLevel = [](const Jwl::ConfigTable& data)
+	auto validateAnisotropicLevel = [](const gem::ConfigTable& data)
 	{
 		if (!data.HasSetting("anisotropic_level"))
 		{
-			Jwl::Error("Missing \"anisotropic_level\" value.");
+			gem::Error("Missing \"anisotropic_level\" value.");
 			return false;
 		}
 
 		float anisotropicLevel = data.GetFloat("anisotropic_level");
 		if (anisotropicLevel < 1.0f || anisotropicLevel > 16.0f)
 		{
-			Jwl::Error("\"anisotropic_level\" must be in the range of [1, 16].");
+			gem::Error("\"anisotropic_level\" must be in the range of [1, 16].");
 			return false;
 		}
 
 		return true;
 	};
 
-	auto validateTextureFilter = [](const Jwl::ConfigTable& data)
+	auto validateTextureFilter = [](const gem::ConfigTable& data)
 	{
 		if (!data.HasSetting("filter"))
 		{
-			Jwl::Error("Missing \"filter\" value.");
+			gem::Error("Missing \"filter\" value.");
 			return false;
 		}
 
 		auto str = data.GetString("filter");
-		if (!Jwl::CompareLowercase(str, "point") &&
-			!Jwl::CompareLowercase(str, "linear") &&
-			!Jwl::CompareLowercase(str, "bilinear") &&
-			!Jwl::CompareLowercase(str, "trilinear"))
+		if (!gem::CompareLowercase(str, "point") &&
+			!gem::CompareLowercase(str, "linear") &&
+			!gem::CompareLowercase(str, "bilinear") &&
+			!gem::CompareLowercase(str, "trilinear"))
 		{
-			Jwl::Error("\"filter\" is invalid. Valid options are \"point\", \"linear\", \"bilinear\", or \"trilinear\".");
+			gem::Error("\"filter\" is invalid. Valid options are \"point\", \"linear\", \"bilinear\", or \"trilinear\".");
 			return false;
 		}
 
 		return true;
 	};
 
-	auto validateWrap = [](const Jwl::ConfigTable& data, const char* mode)
+	auto validateWrap = [](const gem::ConfigTable& data, const char* mode)
 	{
 		if (!data.HasSetting(mode))
 		{
-			Jwl::Error("Missing \"%s\" value.", mode);
+			gem::Error("Missing \"%s\" value.", mode);
 			return false;
 		}
 
 		auto str = data.GetString(mode);
-		if (!Jwl::CompareLowercase(str, "clamp") &&
-			!Jwl::CompareLowercase(str, "clampWithBorder") &&
-			!Jwl::CompareLowercase(str, "repeat") &&
-			!Jwl::CompareLowercase(str, "repeatMirrored") &&
-			!Jwl::CompareLowercase(str, "repeatMirroredOnce"))
+		if (!gem::CompareLowercase(str, "clamp") &&
+			!gem::CompareLowercase(str, "clampWithBorder") &&
+			!gem::CompareLowercase(str, "repeat") &&
+			!gem::CompareLowercase(str, "repeatMirrored") &&
+			!gem::CompareLowercase(str, "repeatMirroredOnce"))
 		{
-			Jwl::Error("\"%s\" is invalid. Valid options are \"clamp\", \"clampWithBorder\", \"repeat\", \"repeatMirrored\", or \"repeatMirroredOnce\".", mode);
+			gem::Error("\"%s\" is invalid. Valid options are \"clamp\", \"clampWithBorder\", \"repeat\", \"repeatMirrored\", or \"repeatMirroredOnce\".", mode);
 			return false;
 		}
 
@@ -90,7 +90,7 @@ bool TextureEncoder::Validate(const Jwl::ConfigTable& metadata, unsigned loadedV
 
 	if (!metadata.HasSetting("cubemap"))
 	{
-		Jwl::Error("Missing \"cubemap\" value.");
+		gem::Error("Missing \"cubemap\" value.");
 		return false;
 	}
 
@@ -104,7 +104,7 @@ bool TextureEncoder::Validate(const Jwl::ConfigTable& metadata, unsigned loadedV
 	case 1:
 		if (metadata.GetSize() != 6)
 		{
-			Jwl::Error("Incorrect number of value entries.");
+			gem::Error("Incorrect number of value entries.");
 			return false;
 		}
 		break;
@@ -112,13 +112,13 @@ bool TextureEncoder::Validate(const Jwl::ConfigTable& metadata, unsigned loadedV
 	case 2:
 		if (!metadata.HasSetting("s_rgb"))
 		{
-			Jwl::Error("Missing \"s_rgb\" value.");
+			gem::Error("Missing \"s_rgb\" value.");
 			return false;
 		}
 
 		if (metadata.GetSize() != 7)
 		{
-			Jwl::Error("Incorrect number of value entries.");
+			gem::Error("Incorrect number of value entries.");
 			return false;
 		}
 		break;
@@ -127,27 +127,27 @@ bool TextureEncoder::Validate(const Jwl::ConfigTable& metadata, unsigned loadedV
 	return true;
 }
 
-bool TextureEncoder::Convert(std::string_view source, std::string_view destination, const Jwl::ConfigTable& metadata) const
+bool TextureEncoder::Convert(std::string_view source, std::string_view destination, const gem::ConfigTable& metadata) const
 {
-	const std::string outputFile = std::string(destination) + Jwl::ExtractFilename(source) + ".texture";
+	const std::string outputFile = std::string(destination) + gem::ExtractFilename(source) + ".texture";
 	const float anisotropicLevel = metadata.GetFloat("anisotropic_level");
 	const bool isCubemap = metadata.GetBool("cubemap");
 	const bool isSRGB = metadata.GetBool("s_rgb");
-	const Jwl::TextureFilter filter = Jwl::StringToTextureFilter(metadata.GetString("filter"));
-	const Jwl::TextureWrap wrapX = Jwl::StringToTextureWrap(metadata.GetString("wrap_x"));
-	const Jwl::TextureWrap wrapY = Jwl::StringToTextureWrap(metadata.GetString("wrap_y"));
+	const gem::TextureFilter filter = gem::StringToTextureFilter(metadata.GetString("filter"));
+	const gem::TextureWrap wrapX = gem::StringToTextureWrap(metadata.GetString("wrap_x"));
+	const gem::TextureWrap wrapY = gem::StringToTextureWrap(metadata.GetString("wrap_y"));
 
-	auto image = Jwl::Image::Load(source, !isCubemap, isSRGB);
+	auto image = gem::Image::Load(source, !isCubemap, isSRGB);
 	if (image.data == nullptr)
 		return false;
 
-	const unsigned elementCount = Jwl::CountChannels(image.format);
+	const unsigned elementCount = gem::CountChannels(image.format);
 
 	// Save file.
 	FILE* fontFile = fopen(outputFile.c_str(), "wb");
 	if (fontFile == nullptr)
 	{
-		Jwl::Error("Output file could not be created.");
+		gem::Error("Output file could not be created.");
 		return false;
 	}
 
@@ -157,27 +157,27 @@ bool TextureEncoder::Convert(std::string_view source, std::string_view destinati
 		if (image.width * 3 != image.height * 4)
 		{
 			fclose(fontFile);
-			Jwl::Error("Cubemap texture layout is incorrect.");
+			gem::Error("Cubemap texture layout is incorrect.");
 			return false;
 		}
 
-		if (wrapX != Jwl::TextureWrap::Clamp ||
-			wrapY != Jwl::TextureWrap::Clamp)
+		if (wrapX != gem::TextureWrap::Clamp ||
+			wrapY != gem::TextureWrap::Clamp)
 		{
-			Jwl::Warning("Cubemaps must have \"clamp\" wrap modes. Forcing wrap modes to \"clamp\".");
+			gem::Warning("Cubemaps must have \"clamp\" wrap modes. Forcing wrap modes to \"clamp\".");
 		}
 
 		const unsigned faceSize = image.width / 4;
-		const Jwl::TextureWrap cubeMapWrapMode = Jwl::TextureWrap::Clamp;
+		const gem::TextureWrap cubeMapWrapMode = gem::TextureWrap::Clamp;
 
 		// Write header.
 		fwrite(&isCubemap, sizeof(bool), 1, fontFile);
 		fwrite(&faceSize, sizeof(unsigned), 1, fontFile);
 		fwrite(&faceSize, sizeof(unsigned), 1, fontFile);
-		fwrite(&image.format, sizeof(Jwl::TextureFormat), 1, fontFile);
-		fwrite(&filter, sizeof(Jwl::TextureFilter), 1, fontFile);
-		fwrite(&cubeMapWrapMode, sizeof(Jwl::TextureWrap), 1, fontFile);
-		fwrite(&cubeMapWrapMode, sizeof(Jwl::TextureWrap), 1, fontFile);
+		fwrite(&image.format, sizeof(gem::TextureFormat), 1, fontFile);
+		fwrite(&filter, sizeof(gem::TextureFilter), 1, fontFile);
+		fwrite(&cubeMapWrapMode, sizeof(gem::TextureWrap), 1, fontFile);
+		fwrite(&cubeMapWrapMode, sizeof(gem::TextureWrap), 1, fontFile);
 		fwrite(&anisotropicLevel, sizeof(float), 1, fontFile);
 
 		// Write faces.
@@ -215,10 +215,10 @@ bool TextureEncoder::Convert(std::string_view source, std::string_view destinati
 		fwrite(&isCubemap, sizeof(bool), 1, fontFile);
 		fwrite(&image.width, sizeof(unsigned), 1, fontFile);
 		fwrite(&image.height, sizeof(unsigned), 1, fontFile);
-		fwrite(&image.format, sizeof(Jwl::TextureFormat), 1, fontFile);
-		fwrite(&filter, sizeof(Jwl::TextureFilter), 1, fontFile);
-		fwrite(&wrapX, sizeof(Jwl::TextureWrap), 1, fontFile);
-		fwrite(&wrapY, sizeof(Jwl::TextureWrap), 1, fontFile);
+		fwrite(&image.format, sizeof(gem::TextureFormat), 1, fontFile);
+		fwrite(&filter, sizeof(gem::TextureFilter), 1, fontFile);
+		fwrite(&wrapX, sizeof(gem::TextureWrap), 1, fontFile);
+		fwrite(&wrapY, sizeof(gem::TextureWrap), 1, fontFile);
 		fwrite(&anisotropicLevel, sizeof(float), 1, fontFile);
 
 		// Write Data.
@@ -229,14 +229,14 @@ bool TextureEncoder::Convert(std::string_view source, std::string_view destinati
 	auto result = fclose(fontFile);
 	if (result != 0)
 	{
-		Jwl::Error("Failed to generate Texture Binary\nOutput file could not be saved.");
+		gem::Error("Failed to generate Texture Binary\nOutput file could not be saved.");
 		return false;
 	}
 
 	return true;
 }
 
-bool TextureEncoder::Upgrade(Jwl::ConfigTable& metadata, unsigned loadedVersion) const
+bool TextureEncoder::Upgrade(gem::ConfigTable& metadata, unsigned loadedVersion) const
 {
 	switch (loadedVersion)
 	{

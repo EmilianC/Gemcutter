@@ -1,7 +1,7 @@
 // Copyright (c) 2017 Emilian Cioca
 #include "Mesh.h"
 
-namespace Jwl
+namespace gem
 {
 	Mesh::Mesh(Entity& _owner)
 		: Renderable(_owner)

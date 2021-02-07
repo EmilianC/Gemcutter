@@ -5,7 +5,7 @@
 #include "gemcutter/Math/Vector.h"
 #include "gemcutter/Resource/UniformBuffer.h"
 
-namespace Jwl
+namespace gem
 {
 	struct Viewport;
 

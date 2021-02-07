@@ -3,7 +3,7 @@
 #include <type_traits>
 
 // Contains various helpers and utilities for compile-time metaprogramming.
-namespace Jwl::Meta
+namespace gem::Meta
 {
 	// Allows for the use of complex template types as macro parameters.
 	// Normally the ','s in a template parameter list would interfere with the macro expansion.
@@ -127,14 +127,14 @@ namespace Jwl::Meta
 	};
 
 	#define EXPAND_STRING_16(n,str) \
-		Jwl::Meta::detail::getChar<0x##n##0>(str), Jwl::Meta::detail::getChar<0x##n##1>(str), \
-		Jwl::Meta::detail::getChar<0x##n##2>(str), Jwl::Meta::detail::getChar<0x##n##3>(str), \
-		Jwl::Meta::detail::getChar<0x##n##4>(str), Jwl::Meta::detail::getChar<0x##n##5>(str), \
-		Jwl::Meta::detail::getChar<0x##n##6>(str), Jwl::Meta::detail::getChar<0x##n##7>(str), \
-		Jwl::Meta::detail::getChar<0x##n##8>(str), Jwl::Meta::detail::getChar<0x##n##9>(str), \
-		Jwl::Meta::detail::getChar<0x##n##A>(str), Jwl::Meta::detail::getChar<0x##n##B>(str), \
-		Jwl::Meta::detail::getChar<0x##n##C>(str), Jwl::Meta::detail::getChar<0x##n##D>(str), \
-		Jwl::Meta::detail::getChar<0x##n##E>(str), Jwl::Meta::detail::getChar<0x##n##F>(str)
+		gem::Meta::detail::getChar<0x##n##0>(str), gem::Meta::detail::getChar<0x##n##1>(str), \
+		gem::Meta::detail::getChar<0x##n##2>(str), gem::Meta::detail::getChar<0x##n##3>(str), \
+		gem::Meta::detail::getChar<0x##n##4>(str), gem::Meta::detail::getChar<0x##n##5>(str), \
+		gem::Meta::detail::getChar<0x##n##6>(str), gem::Meta::detail::getChar<0x##n##7>(str), \
+		gem::Meta::detail::getChar<0x##n##8>(str), gem::Meta::detail::getChar<0x##n##9>(str), \
+		gem::Meta::detail::getChar<0x##n##A>(str), gem::Meta::detail::getChar<0x##n##B>(str), \
+		gem::Meta::detail::getChar<0x##n##C>(str), gem::Meta::detail::getChar<0x##n##D>(str), \
+		gem::Meta::detail::getChar<0x##n##E>(str), gem::Meta::detail::getChar<0x##n##F>(str)
 
 	#define EXPAND_STRING_32(str) EXPAND_STRING_16(0,str), EXPAND_STRING_16(1,str)
 	#define EXPAND_STRING_48(str) EXPAND_STRING_32(str), EXPAND_STRING_16(2,str)
@@ -144,12 +144,12 @@ namespace Jwl::Meta
 	#define EXPAND_STRING_112(str) EXPAND_STRING_96(str), EXPAND_STRING_16(6,str)
 	#define EXPAND_STRING_128(str) EXPAND_STRING_112(str), EXPAND_STRING_16(7,str)
 
-	#define STRING_32(str) Jwl::Meta::string<EXPAND_STRING_32(str)>
-	#define STRING_48(str) Jwl::Meta::string<EXPAND_STRING_48(str)>
-	#define STRING_64(str) Jwl::Meta::string<EXPAND_STRING_64(str)>
-	#define STRING_80(str) Jwl::Meta::string<EXPAND_STRING_80(str)>
-	#define STRING_96(str) Jwl::Meta::string<EXPAND_STRING_96(str)>
-	#define STRING_112(str) Jwl::Meta::string<EXPAND_STRING_112(str)>
-	#define STRING_128(str) Jwl::Meta::string<EXPAND_STRING_128(str)>
+	#define STRING_32(str) gem::Meta::string<EXPAND_STRING_32(str)>
+	#define STRING_48(str) gem::Meta::string<EXPAND_STRING_48(str)>
+	#define STRING_64(str) gem::Meta::string<EXPAND_STRING_64(str)>
+	#define STRING_80(str) gem::Meta::string<EXPAND_STRING_80(str)>
+	#define STRING_96(str) gem::Meta::string<EXPAND_STRING_96(str)>
+	#define STRING_112(str) gem::Meta::string<EXPAND_STRING_112(str)>
+	#define STRING_128(str) gem::Meta::string<EXPAND_STRING_128(str)>
 	#define STRING(str) STRING_64(str)
 }

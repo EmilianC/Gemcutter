@@ -3,7 +3,7 @@
 #include <string>
 #include <string_view>
 
-namespace Jwl
+namespace gem
 {
 	// Enables a container to compare lightweight strings directly to
 	// internal keys of type std::string.

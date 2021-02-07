@@ -5,7 +5,7 @@
 #include <queue>
 #include <vector>
 
-namespace Jwl
+namespace gem
 {
 	// The base class for event objects.
 	class EventBase

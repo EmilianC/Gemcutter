@@ -4,9 +4,9 @@
 #include "gemcutter/Utilities/ScopeGuard.h"
 #include "gemcutter/Utilities/String.h"
 
-#include <Dirent/dirent.h>
+#include <dirent/dirent.h>
 
-namespace Jwl
+namespace gem
 {
 	bool Material::Load(std::string filePath)
 	{
@@ -48,7 +48,7 @@ namespace Jwl
 			fread(pathBuffer, sizeof(char), shaderLen, binaryFile);
 			pathBuffer[shaderLen] = '\0';
 
-			shader = Jwl::Load<Shader>(pathBuffer);
+			shader = gem::Load<Shader>(pathBuffer);
 			if (!shader)
 			{
 				Error("Material: ( %s )\nFailed to load Shader ( %s ).", filePath.c_str(), pathBuffer);
@@ -80,7 +80,7 @@ namespace Jwl
 			fread(pathBuffer, sizeof(char), textureLen, binaryFile);
 			pathBuffer[textureLen] = '\0';
 
-			auto texture = Jwl::Load<Texture>(pathBuffer);
+			auto texture = gem::Load<Texture>(pathBuffer);
 			if (!texture)
 			{
 				Error("Material: ( %s )\nFailed to load Texture ( %s ).", filePath.c_str(), pathBuffer);

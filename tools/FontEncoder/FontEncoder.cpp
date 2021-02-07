@@ -20,9 +20,9 @@ FontEncoder::FontEncoder()
 {
 }
 
-Jwl::ConfigTable FontEncoder::GetDefault() const
+gem::ConfigTable FontEncoder::GetDefault() const
 {
-	Jwl::ConfigTable defaultConfig;
+	gem::ConfigTable defaultConfig;
 
 	defaultConfig.SetValue("version", CURRENT_VERSION);
 	defaultConfig.SetValue("width", 64);
@@ -32,57 +32,57 @@ Jwl::ConfigTable FontEncoder::GetDefault() const
 	return defaultConfig;
 }
 
-bool FontEncoder::Validate(const Jwl::ConfigTable& metadata, unsigned loadedVersion) const
+bool FontEncoder::Validate(const gem::ConfigTable& metadata, unsigned loadedVersion) const
 {
-	auto checkWidth = [](const Jwl::ConfigTable& data)
+	auto checkWidth = [](const gem::ConfigTable& data)
 	{
 		if (!data.HasSetting("width"))
 		{
-			Jwl::Error("Missing \"width\" value.");
+			gem::Error("Missing \"width\" value.");
 			return false;
 		}
 
 		if (data.GetInt("width") == 0)
 		{
-			Jwl::Error("Width must be greater than 0.");
+			gem::Error("Width must be greater than 0.");
 			return false;
 		}
 
 		return true;
 	};
 
-	auto checkHeight = [](const Jwl::ConfigTable& data)
+	auto checkHeight = [](const gem::ConfigTable& data)
 	{
 		if (!data.HasSetting("height"))
 		{
-			Jwl::Error("Missing \"height\" value.");
+			gem::Error("Missing \"height\" value.");
 			return false;
 		}
 
 		if (data.GetInt("height") == 0)
 		{
-			Jwl::Error("Height must be greater than 0.");
+			gem::Error("Height must be greater than 0.");
 			return false;
 		}
 
 		return true;
 	};
 
-	auto checkTextureFilter = [](const Jwl::ConfigTable& data)
+	auto checkTextureFilter = [](const gem::ConfigTable& data)
 	{
 		if (!data.HasSetting("texture_filter"))
 		{
-			Jwl::Error("Missing \"texture_filter\" value.");
+			gem::Error("Missing \"texture_filter\" value.");
 			return false;
 		}
 
 		auto str = data.GetString("texture_filter");
-		if (!Jwl::CompareLowercase(str, "point") &&
-			!Jwl::CompareLowercase(str, "linear") &&
-			!Jwl::CompareLowercase(str, "bilinear") &&
-			!Jwl::CompareLowercase(str, "trilinear"))
+		if (!gem::CompareLowercase(str, "point") &&
+			!gem::CompareLowercase(str, "linear") &&
+			!gem::CompareLowercase(str, "bilinear") &&
+			!gem::CompareLowercase(str, "trilinear"))
 		{
-			Jwl::Error("\"texture_filter\" is invalid. Valid options are \"point\", \"linear\", \"bilinear\", or \"trilinear\".");
+			gem::Error("\"texture_filter\" is invalid. Valid options are \"point\", \"linear\", \"bilinear\", or \"trilinear\".");
 			return false;
 		}
 
@@ -97,7 +97,7 @@ bool FontEncoder::Validate(const Jwl::ConfigTable& metadata, unsigned loadedVers
 	case 1:
 		if (metadata.GetSize() != 3)
 		{
-			Jwl::Error("Incorrect number of value entries.");
+			gem::Error("Incorrect number of value entries.");
 			return false;
 		}
 		break;
@@ -107,7 +107,7 @@ bool FontEncoder::Validate(const Jwl::ConfigTable& metadata, unsigned loadedVers
 
 		if (metadata.GetSize() != 4)
 		{
-			Jwl::Error("Incorrect number of value entries.");
+			gem::Error("Incorrect number of value entries.");
 			return false;
 		}
 		break;
@@ -116,21 +116,21 @@ bool FontEncoder::Validate(const Jwl::ConfigTable& metadata, unsigned loadedVers
 	return true;
 }
 
-bool FontEncoder::Convert(std::string_view source, std::string_view destination, const Jwl::ConfigTable& metadata) const
+bool FontEncoder::Convert(std::string_view source, std::string_view destination, const gem::ConfigTable& metadata) const
 {
-	const std::string outputFile = std::string(destination) + Jwl::ExtractFilename(source) + ".font";
+	const std::string outputFile = std::string(destination) + gem::ExtractFilename(source) + ".font";
 	const unsigned width = static_cast<unsigned>(metadata.GetInt("width"));
 	const unsigned height = static_cast<unsigned>(metadata.GetInt("height"));
 
-	Jwl::TextureFilter filter = Jwl::TextureFilter::Point;
+	gem::TextureFilter filter = gem::TextureFilter::Point;
 	{
 		std::string str = metadata.GetString("texture_filter");
-		if (Jwl::CompareLowercase(str, "linear"))
-			filter = Jwl::TextureFilter::Linear;
-		else if (Jwl::CompareLowercase(str, "bilinear"))
-			filter = Jwl::TextureFilter::Bilinear;
-		else if (Jwl::CompareLowercase(str, "trilinear"))
-			filter = Jwl::TextureFilter::Trilinear;
+		if (gem::CompareLowercase(str, "linear"))
+			filter = gem::TextureFilter::Linear;
+		else if (gem::CompareLowercase(str, "bilinear"))
+			filter = gem::TextureFilter::Bilinear;
+		else if (gem::CompareLowercase(str, "trilinear"))
+			filter = gem::TextureFilter::Trilinear;
 	}
 
 	// File preparation.
@@ -146,7 +146,7 @@ bool FontEncoder::Convert(std::string_view source, std::string_view destination,
 
 	if (FT_Init_FreeType(&library))
 	{
-		Jwl::Error("FreeType failed to initialize.");
+		gem::Error("FreeType failed to initialize.");
 		return false;
 	}
 	defer { FT_Done_FreeType(library); };
@@ -154,14 +154,14 @@ bool FontEncoder::Convert(std::string_view source, std::string_view destination,
 	// Create the face data.
 	if (FT_New_Face(library, source.data(), 0, &face))
 	{
-		Jwl::Error("Input file could not be opened or processed.");
+		gem::Error("Input file could not be opened or processed.");
 		return false;
 	}
 
 	// Set font size.
 	if (FT_Set_Char_Size(face, width * 64, height * 64, 96, 96))
 	{
-		Jwl::Error("The width and height could not be processed.");
+		gem::Error("The width and height could not be processed.");
 		return false;
 	}
 
@@ -177,7 +177,7 @@ bool FontEncoder::Convert(std::string_view source, std::string_view destination,
 		// Prepare bitmap.
 		if (FT_Load_Glyph(face, charIndex, FT_LOAD_RENDER))
 		{
-			Jwl::Error("Glyph (%c) could not be processed.", c);
+			gem::Error("Glyph (%c) could not be processed.", c);
 			return false;
 		}
 
@@ -214,7 +214,7 @@ bool FontEncoder::Convert(std::string_view source, std::string_view destination,
 	FILE* fontFile = fopen(outputFile.c_str(), "wb");
 	if (fontFile == nullptr)
 	{
-		Jwl::Error("Output file could not be created.");
+		gem::Error("Output file could not be created.");
 		return false;
 	}
 
@@ -223,7 +223,7 @@ bool FontEncoder::Convert(std::string_view source, std::string_view destination,
 	fwrite(&bitmapSize, sizeof(unsigned long int), 1, fontFile);
 	fwrite(&width, sizeof(unsigned), 1, fontFile);
 	fwrite(&height, sizeof(unsigned), 1, fontFile);
-	fwrite(&filter, sizeof(Jwl::TextureFilter), 1, fontFile);
+	fwrite(&filter, sizeof(gem::TextureFilter), 1, fontFile);
 
 	// Write Data.
 	fwrite(bitmapBuffer.data(), sizeof(unsigned char), bitmapSize, fontFile);
@@ -245,32 +245,32 @@ bool FontEncoder::Convert(std::string_view source, std::string_view destination,
 		}
 		else
 		{
-			missingChars += Jwl::FormatString("'%c' ", static_cast<char>(i + 33));
+			missingChars += gem::FormatString("'%c' ", static_cast<char>(i + 33));
 		}
 	}
 
 	if (result != 0)
 	{
-		Jwl::Error("Failed to generate Font Binary\nOutput file could not be saved.");
+		gem::Error("Failed to generate Font Binary\nOutput file could not be saved.");
 		return false;
 	}
 	else if (count == 0)
 	{
-		Jwl::Error("Failed to generate Font Binary\n0 out of 94 characters loaded.");
+		gem::Error("Failed to generate Font Binary\n0 out of 94 characters loaded.");
 		return false;
 	}
 	else
 	{
 		if (count != 94)
 		{
-			Jwl::Warning("%d characters were not created.\n%s", 94 - count, missingChars.c_str());
+			gem::Warning("%d characters were not created.\n%s", 94 - count, missingChars.c_str());
 		}
 
 		return true;
 	}
 }
 
-bool FontEncoder::Upgrade(Jwl::ConfigTable& metadata, unsigned loadedVersion) const
+bool FontEncoder::Upgrade(gem::ConfigTable& metadata, unsigned loadedVersion) const
 {
 	switch (loadedVersion)
 	{

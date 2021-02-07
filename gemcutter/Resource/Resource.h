@@ -7,7 +7,7 @@
 #include <string>
 #include <unordered_map>
 
-namespace Jwl
+namespace gem
 {
 	extern std::string RootAssetDirectory;
 

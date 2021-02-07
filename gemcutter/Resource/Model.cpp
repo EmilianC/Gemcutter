@@ -4,7 +4,7 @@
 #include "gemcutter/Utilities/ScopeGuard.h"
 #include "gemcutter/Utilities/String.h"
 
-namespace Jwl
+namespace gem
 {
 	bool Model::Load(std::string filePath)
 	{

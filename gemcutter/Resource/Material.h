@@ -5,7 +5,7 @@
 #include "gemcutter/Resource/Shader.h"
 #include "gemcutter/Resource/Texture.h"
 
-namespace Jwl
+namespace gem
 {
 	// When rendering an Entity, the Material specifies:
 	// - Textures

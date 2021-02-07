@@ -2,7 +2,7 @@
 #pragma once
 #include <type_traits>
 
-namespace Jwl
+namespace gem
 {
 	// Allows you to easily use a strongly-typed enum as if it was a bit-field.
 	template<typename Enumeration, typename Primitive = std::underlying_type_t<Enumeration>>

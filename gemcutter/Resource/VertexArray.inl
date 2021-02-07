@@ -1,5 +1,5 @@
 // Copyright (c) 2017 Emilian Cioca
-namespace Jwl
+namespace gem
 {
 	namespace detail
 	{

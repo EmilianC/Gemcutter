@@ -3,7 +3,7 @@
 #include "gemcutter/Entity/Entity.h"
 #include "gemcutter/Resource/Sound.h"
 
-namespace Jwl
+namespace gem
 {
 	// Plays audio clips in 3D space.
 	class SoundSource : public Component<SoundSource>

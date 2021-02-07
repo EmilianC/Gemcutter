@@ -3,7 +3,7 @@
 #include "gemcutter/Resource/Shader.h"
 #include "gemcutter/Resource/Texture.h"
 
-namespace Jwl
+namespace gem
 {
 	struct vec3;
 	struct vec4;

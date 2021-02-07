@@ -12,7 +12,7 @@
 		{ \
 			ALenum error = alGetError(); \
 			if (error != AL_NO_ERROR) \
-				Jwl::Error("Sound: %s", alGetString(error)); \
+				gem::Error("Sound: %s", alGetString(error)); \
 		}
 #else
 	#define AL_DEBUG_CHECK()
@@ -40,7 +40,7 @@ struct WaveHeader
 	unsigned ChannelMask              = 0;
 };
 
-namespace Jwl
+namespace gem
 {
 	Sound::~Sound()
 	{

@@ -4,7 +4,7 @@ int main()
 {
 	auto encoder = Encoder();
 
-	if (!Jwl::Encoder::RunEncoder(encoder))
+	if (!gem::Encoder::RunEncoder(encoder))
 	{
 		return EXIT_FAILURE;
 	}

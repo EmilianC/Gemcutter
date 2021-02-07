@@ -5,7 +5,7 @@
 #include "gemcutter/Math/Quaternion.h"
 #include "gemcutter/Math/Vector.h"
 
-namespace Jwl
+namespace gem
 {
 	const mat2 mat2::Identity = mat2();
 

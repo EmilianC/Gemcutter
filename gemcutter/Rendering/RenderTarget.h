@@ -3,7 +3,7 @@
 #include "gemcutter/Resource/Shareable.h"
 #include "gemcutter/Resource/Texture.h"
 
-namespace Jwl
+namespace gem
 {
 	struct vec4;
 	struct Viewport;

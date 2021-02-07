@@ -5,7 +5,7 @@
 
 #include <functional>
 
-namespace Jwl
+namespace gem
 {
 	// Responds to events given from an EventDispatcher component higher in the hierarchy.
 	template<class EventObj>

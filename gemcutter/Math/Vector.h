@@ -1,7 +1,7 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
 
-namespace Jwl
+namespace gem
 {
 	struct vec2
 	{

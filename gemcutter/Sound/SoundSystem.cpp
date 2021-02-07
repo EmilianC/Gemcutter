@@ -16,13 +16,13 @@
 		{ \
 			ALenum error = alGetError(); \
 			if (error != AL_NO_ERROR) \
-				Jwl::Error("SoundSystem: %s", alGetString(error)); \
+				gem::Error("SoundSystem: %s", alGetString(error)); \
 		}
 #else
 	#define AL_DEBUG_CHECK()
 #endif
 
-namespace Jwl
+namespace gem
 {
 	SoundSystemSingleton SoundSystem;
 

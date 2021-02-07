@@ -3,7 +3,7 @@
 #include "gemcutter/Application/Logging.h"
 #include "gemcutter/Resource/Font.h"
 
-namespace Jwl
+namespace gem
 {
 	Text::Text(Entity& _owner)
 		: Renderable(_owner)

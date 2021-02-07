@@ -10,7 +10,7 @@
 #include <unordered_map>
 #include <vector>
 
-namespace Jwl
+namespace gem
 {
 	class Entity;
 

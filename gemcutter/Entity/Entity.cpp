@@ -6,7 +6,7 @@
 
 #include <algorithm>
 
-namespace Jwl
+namespace gem
 {
 	namespace detail
 	{

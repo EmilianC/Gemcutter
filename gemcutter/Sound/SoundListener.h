@@ -2,7 +2,7 @@
 #pragma once
 #include "gemcutter/Entity/Entity.h"
 
-namespace Jwl
+namespace gem
 {
 	// The Entity with this component is also the location where sounds are heard from.
 	// The first instance of the component is active be default, others are inactive by default.

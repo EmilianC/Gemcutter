@@ -9,7 +9,7 @@
 
 #include <memory>
 
-namespace Jwl
+namespace gem
 {
 	// A base class for all asset packers that exposes a common interface to the AssetManager.
 	// Derive from this class to create a custom asset packing tool for integration with the AssetManager.
@@ -93,7 +93,7 @@ namespace Jwl
 		static bool RunEncoder(Encoder& encoder)
 		{
 			const char* usage =
-				"Jewel3D asset Encoder.\nUsage:\n"
+				"Gemcutter asset Encoder.\nUsage:\n"
 				"  Encoder.exe -update -src <file>\n"
 				"  Encoder.exe -pack -src <file> -dest <folder>\n"
 				"Options:\n"

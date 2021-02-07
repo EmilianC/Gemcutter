@@ -16,7 +16,7 @@
  GetCommandLineArg("-speed", &float)
 */
 
-namespace Jwl
+namespace gem
 {
 	int GetArgc();
 	char** GetArgv();

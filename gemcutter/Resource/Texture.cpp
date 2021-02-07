@@ -8,7 +8,7 @@
 #include <glew/glew.h>
 #include <soil/SOIL.h>
 
-namespace Jwl
+namespace gem
 {
 	Texture::~Texture()
 	{
@@ -425,7 +425,7 @@ namespace Jwl
 		unsigned char* data = SOIL_load_image(file.data(), &width, &height, &numChannels, SOIL_LOAD_AUTO);
 		if (data == nullptr)
 		{
-			Jwl::Error("Texture: ( %s )\n%s", file.data(), SOIL_last_result());
+			Error("Texture: ( %s )\n%s", file.data(), SOIL_last_result());
 			return Image(0, 0, TextureFormat::RGB_8, nullptr);
 		}
 
@@ -454,7 +454,7 @@ namespace Jwl
 		}
 		else
 		{
-			Jwl::Error("Texture: ( %s )\nUnsupported format. Must have 3 or 4 color channels.", file.data());
+			Error("Texture: ( %s )\nUnsupported format. Must have 3 or 4 color channels.", file.data());
 			return Image(0, 0, TextureFormat::RGB_8, nullptr);
 		}
 	}

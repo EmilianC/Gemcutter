@@ -5,7 +5,7 @@
 
 #include <string_view>
 
-namespace Jwl
+namespace gem
 {
 	struct CharData
 	{

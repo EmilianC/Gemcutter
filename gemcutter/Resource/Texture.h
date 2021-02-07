@@ -7,7 +7,7 @@
 #include <string_view>
 #include <vector>
 
-namespace Jwl
+namespace gem
 {
 	// A 2D texture, renderTarget, or cubemap.
 	class Texture : public Resource<Texture>, public Shareable<Texture>

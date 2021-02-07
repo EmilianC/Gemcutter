@@ -6,7 +6,7 @@
 
 #include <vector>
 
-namespace Jwl
+namespace gem
 {
 	class ParticleEmitter;
 
@@ -56,7 +56,7 @@ namespace Jwl
 		bool dirty = true;
 	};
 
-	/* Default Jewel3D Particle Functors */
+	/* Built-in Particle Functors */
 	// Rotates particles.
 	class RotationFunc : public ParticleFunctor, public Shareable<RotationFunc>
 	{

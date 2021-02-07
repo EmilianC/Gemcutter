@@ -2,7 +2,7 @@
 #pragma once
 #include "gemcutter/Rendering/Renderable.h"
 
-namespace Jwl
+namespace gem
 {
 	enum class Alignment
 	{
@@ -25,12 +25,12 @@ namespace Jwl
 		Sprite& operator=(const Sprite&);
 
 		// The sprite will render with the specified point on the entity's position.
-		// Defines "JWL_SPRITE_CENTERED_X" and "JWL_SPRITE_CENTERED_Y" on the Material Component if needed.
+		// Defines "GEM_SPRITE_CENTERED_X" and "GEM_SPRITE_CENTERED_Y" on the Material Component if needed.
 		void SetAlignment(Alignment pivot);
 		Alignment GetAlignment() const;
 
 		// Causes the Sprite to face the camera.
-		// Defines "JWL_SPRITE_BILLBOARD" on the Material Component if needed.
+		// Defines "GEM_SPRITE_BILLBOARD" on the Material Component if needed.
 		void SetBillBoarded(bool state);
 		bool GetBillBoarded() const;
 

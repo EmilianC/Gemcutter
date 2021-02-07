@@ -231,7 +231,7 @@
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximizeBox = false;
 			this.Name = "Manager";
-			this.Text = "Jewel3D - Asset Manager";
+			this.Text = "Gemcutter - Asset Manager";
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

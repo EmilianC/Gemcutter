@@ -5,7 +5,7 @@
 #include <string_view>
 #include <vector>
 
-namespace Jwl
+namespace gem
 {
 	#define PACKET_LENGTH 512
 

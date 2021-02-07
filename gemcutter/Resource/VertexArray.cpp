@@ -4,7 +4,7 @@
 
 #include <glew/glew.h>
 
-namespace Jwl
+namespace gem
 {
 	VertexBuffer::VertexBuffer(unsigned _size, VertexBufferUsage _usage)
 		: size(_size)

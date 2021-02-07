@@ -3,7 +3,7 @@
 #include "gemcutter/Application/Application.h"
 #include "gemcutter/Application/Logging.h"
 
-namespace Jwl
+namespace gem
 {
 	ParticleEmitter::ParticleEmitter(Entity& _owner, unsigned _maxParticles)
 		: Renderable(_owner)
@@ -156,7 +156,7 @@ namespace Jwl
 		if (localSpace == isLocal)
 			return;
 
-		variants.Switch("JWL_PARTICLE_LOCAL_SPACE", isLocal);
+		variants.Switch("GEM_PARTICLE_LOCAL_SPACE", isLocal);
 
 		vec3 transform;
 		if (isLocal)
@@ -212,11 +212,11 @@ namespace Jwl
 				!requirements.Has(ParticleBuffers::Alpha);
 
 			/* Update shader variant to match the buffers and effect requirements */
-			variants.Switch("JWL_PARTICLE_SIZE", requirements.Has(ParticleBuffers::Size));
-			variants.Switch("JWL_PARTICLE_COLOR", requirements.Has(ParticleBuffers::Color));
-			variants.Switch("JWL_PARTICLE_ALPHA", requirements.Has(ParticleBuffers::Alpha));
-			variants.Switch("JWL_PARTICLE_ROTATION", requirements.Has(ParticleBuffers::Rotation));
-			variants.Switch("JWL_PARTICLE_AGERATIO", requiresAgeRatio);
+			variants.Switch("GEM_PARTICLE_SIZE", requirements.Has(ParticleBuffers::Size));
+			variants.Switch("GEM_PARTICLE_COLOR", requirements.Has(ParticleBuffers::Color));
+			variants.Switch("GEM_PARTICLE_ALPHA", requirements.Has(ParticleBuffers::Alpha));
+			variants.Switch("GEM_PARTICLE_ROTATION", requirements.Has(ParticleBuffers::Rotation));
+			variants.Switch("GEM_PARTICLE_AGERATIO", requiresAgeRatio);
 
 			if (requiresAgeRatio)
 			{

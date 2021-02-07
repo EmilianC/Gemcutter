@@ -4,13 +4,13 @@
 #define CURRENT_VERSION 1
 
 MaterialEncoder::MaterialEncoder()
-	: Jwl::Encoder(CURRENT_VERSION)
+	: gem::Encoder(CURRENT_VERSION)
 {
 }
 
-Jwl::ConfigTable MaterialEncoder::GetDefault() const
+gem::ConfigTable MaterialEncoder::GetDefault() const
 {
-	Jwl::ConfigTable defaultConfig;
+	gem::ConfigTable defaultConfig;
 
 	defaultConfig.SetValue("version", CURRENT_VERSION);
 	defaultConfig.SetValue("shader", "");
@@ -23,37 +23,37 @@ Jwl::ConfigTable MaterialEncoder::GetDefault() const
 	return defaultConfig;
 }
 
-bool MaterialEncoder::Validate(const Jwl::ConfigTable& metadata, unsigned loadedVersion) const
+bool MaterialEncoder::Validate(const gem::ConfigTable& metadata, unsigned loadedVersion) const
 {
-	auto validateShader = [](const Jwl::ConfigTable& data)
+	auto validateShader = [](const gem::ConfigTable& data)
 	{
 		if (!data.HasSetting("shader"))
 		{
-			Jwl::Error("Missing \"shader\" value.");
+			gem::Error("Missing \"shader\" value.");
 			return false;
 		}
 
 		std::string file = data.GetString("shader");
-		if (!file.empty() && !Jwl::FileExists(file))
+		if (!file.empty() && !gem::FileExists(file))
 		{
-			Jwl::Error("\"shader\" specifies a file ( %s ) that does not exist.", file.c_str());
+			gem::Error("\"shader\" specifies a file ( %s ) that does not exist.", file.c_str());
 			return false;
 		}
 
 		return true;
 	};
 
-	auto validateTextures = [](const Jwl::ConfigTable& data)
+	auto validateTextures = [](const gem::ConfigTable& data)
 	{
 		if (!data.HasSetting("texture_bind_points"))
 		{
-			Jwl::Error("Missing \"texture_bind_points\" array.");
+			gem::Error("Missing \"texture_bind_points\" array.");
 			return false;
 		}
 
 		if (!data.HasSetting("textures"))
 		{
-			Jwl::Error("Missing \"textures\" array.");
+			gem::Error("Missing \"textures\" array.");
 			return false;
 		}
 
@@ -62,7 +62,7 @@ bool MaterialEncoder::Validate(const Jwl::ConfigTable& metadata, unsigned loaded
 
 		if (units.size() != textures.size())
 		{
-			Jwl::Error("\"texture_bind_points\" and \"textures\" must have the same number of elements.");
+			gem::Error("\"texture_bind_points\" and \"textures\" must have the same number of elements.");
 			return false;
 		}
 
@@ -70,7 +70,7 @@ bool MaterialEncoder::Validate(const Jwl::ConfigTable& metadata, unsigned loaded
 		{
 			if (units[i] < 0)
 			{
-				Jwl::Error("\"texture_bind_points\" elements cannot be negative.");
+				gem::Error("\"texture_bind_points\" elements cannot be negative.");
 				return false;
 			}
 
@@ -78,7 +78,7 @@ bool MaterialEncoder::Validate(const Jwl::ConfigTable& metadata, unsigned loaded
 			{
 				if (units[i] == units[j])
 				{
-					Jwl::Error("\"texture_bind_points\" elements must all be unique.");
+					gem::Error("\"texture_bind_points\" elements must all be unique.");
 					return false;
 				}
 			}
@@ -86,9 +86,9 @@ bool MaterialEncoder::Validate(const Jwl::ConfigTable& metadata, unsigned loaded
 
 		for (std::string& texture : textures)
 		{
-			if (!Jwl::FileExists(texture))
+			if (!gem::FileExists(texture))
 			{
-				Jwl::Error("\"textures\" element refers to a file ( %s ) that does not exist.", texture.c_str());
+				gem::Error("\"textures\" element refers to a file ( %s ) that does not exist.", texture.c_str());
 				return false;
 			}
 		}
@@ -96,62 +96,62 @@ bool MaterialEncoder::Validate(const Jwl::ConfigTable& metadata, unsigned loaded
 		return true;
 	};
 
-	auto validateBlendMode = [](const Jwl::ConfigTable& data)
+	auto validateBlendMode = [](const gem::ConfigTable& data)
 	{
 		if (!data.HasSetting("blend_mode"))
 		{
-			Jwl::Error("Missing \"blend_mode\" value.");
+			gem::Error("Missing \"blend_mode\" value.");
 			return false;
 		}
 
 		auto str = data.GetString("blend_mode");
-		if (!Jwl::CompareLowercase(str, "none") &&
-			!Jwl::CompareLowercase(str, "linear") &&
-			!Jwl::CompareLowercase(str, "additive") &&
-			!Jwl::CompareLowercase(str, "multiplicative"))
+		if (!gem::CompareLowercase(str, "none") &&
+			!gem::CompareLowercase(str, "linear") &&
+			!gem::CompareLowercase(str, "additive") &&
+			!gem::CompareLowercase(str, "multiplicative"))
 		{
-			Jwl::Error("\"blend_mode\" is invalid. Valid options are \"none\", \"linear\", \"additive\", or \"multiplicative\".");
+			gem::Error("\"blend_mode\" is invalid. Valid options are \"none\", \"linear\", \"additive\", or \"multiplicative\".");
 			return false;
 		}
 
 		return true;
 	};
 
-	auto validateDepthMode = [](const Jwl::ConfigTable& data)
+	auto validateDepthMode = [](const gem::ConfigTable& data)
 	{
 		if (!data.HasSetting("depth_mode"))
 		{
-			Jwl::Error("Missing \"depth_mode\" value.");
+			gem::Error("Missing \"depth_mode\" value.");
 			return false;
 		}
 
 		auto str = data.GetString("depth_mode");
-		if (!Jwl::CompareLowercase(str, "none") &&
-			!Jwl::CompareLowercase(str, "writeonly") &&
-			!Jwl::CompareLowercase(str, "testonly") &&
-			!Jwl::CompareLowercase(str, "normal"))
+		if (!gem::CompareLowercase(str, "none") &&
+			!gem::CompareLowercase(str, "writeonly") &&
+			!gem::CompareLowercase(str, "testonly") &&
+			!gem::CompareLowercase(str, "normal"))
 		{
-			Jwl::Error("\"depth_mode\" is invalid. Valid options are \"none\", \"writeonly\", \"testonly\", or \"normal\".");
+			gem::Error("\"depth_mode\" is invalid. Valid options are \"none\", \"writeonly\", \"testonly\", or \"normal\".");
 			return false;
 		}
 
 		return true;
 	};
 
-	auto validateCullMode = [](const Jwl::ConfigTable& data)
+	auto validateCullMode = [](const gem::ConfigTable& data)
 	{
 		if (!data.HasSetting("cull_mode"))
 		{
-			Jwl::Error("Missing \"cull_mode\" value.");
+			gem::Error("Missing \"cull_mode\" value.");
 			return false;
 		}
 
 		auto str = data.GetString("cull_mode");
-		if (!Jwl::CompareLowercase(str, "none") &&
-			!Jwl::CompareLowercase(str, "clockwise") &&
-			!Jwl::CompareLowercase(str, "counterclockwise"))
+		if (!gem::CompareLowercase(str, "none") &&
+			!gem::CompareLowercase(str, "clockwise") &&
+			!gem::CompareLowercase(str, "counterclockwise"))
 		{
-			Jwl::Error("\"cull_mode\" is invalid. Valid options are \"none\", \"clockwise\", or \"counterclockwise\".");
+			gem::Error("\"cull_mode\" is invalid. Valid options are \"none\", \"clockwise\", or \"counterclockwise\".");
 			return false;
 		}
 
@@ -169,7 +169,7 @@ bool MaterialEncoder::Validate(const Jwl::ConfigTable& metadata, unsigned loaded
 	case 1:
 		if (metadata.GetSize() != 7)
 		{
-			Jwl::Error("Incorrect number of value entries.");
+			gem::Error("Incorrect number of value entries.");
 			return false;
 		}
 	}
@@ -177,21 +177,21 @@ bool MaterialEncoder::Validate(const Jwl::ConfigTable& metadata, unsigned loaded
 	return true;
 }
 
-bool MaterialEncoder::Convert(std::string_view source, std::string_view destination, const Jwl::ConfigTable& metadata) const
+bool MaterialEncoder::Convert(std::string_view source, std::string_view destination, const gem::ConfigTable& metadata) const
 {
-	const std::string outputFile = std::string(destination) + Jwl::ExtractFilename(source) + ".material";
+	const std::string outputFile = std::string(destination) + gem::ExtractFilename(source) + ".material";
 	const std::string shader = metadata.GetString("shader");
 	const std::vector<int> units = metadata.GetIntArray("texture_bind_points");
 	const std::vector<std::string> textures = metadata.GetStringArray("textures");
-	const Jwl::BlendFunc BlendMode = Jwl::StringToBlendFunc(metadata.GetString("blend_mode"));
-	const Jwl::DepthFunc DepthMode = Jwl::StringToDepthFunc(metadata.GetString("depth_mode"));
-	const Jwl::CullFunc cullMode = Jwl::StringToCullFunc(metadata.GetString("cull_mode"));
+	const gem::BlendFunc BlendMode = gem::StringToBlendFunc(metadata.GetString("blend_mode"));
+	const gem::DepthFunc DepthMode = gem::StringToDepthFunc(metadata.GetString("depth_mode"));
+	const gem::CullFunc cullMode = gem::StringToCullFunc(metadata.GetString("cull_mode"));
 
 	// Save file.
 	FILE* materialFile = fopen(outputFile.c_str(), "wb");
 	if (materialFile == nullptr)
 	{
-		Jwl::Error("Output file could not be created.");
+		gem::Error("Output file could not be created.");
 		return false;
 	}
 
@@ -217,14 +217,14 @@ bool MaterialEncoder::Convert(std::string_view source, std::string_view destinat
 		fwrite(textures[i].c_str(), sizeof(char), textureLen, materialFile);
 	}
 
-	fwrite(&BlendMode, sizeof(Jwl::BlendFunc), 1, materialFile);
-	fwrite(&DepthMode, sizeof(Jwl::DepthFunc), 1, materialFile);
-	fwrite(&cullMode, sizeof(Jwl::CullFunc), 1, materialFile);
+	fwrite(&BlendMode, sizeof(gem::BlendFunc), 1, materialFile);
+	fwrite(&DepthMode, sizeof(gem::DepthFunc), 1, materialFile);
+	fwrite(&cullMode, sizeof(gem::CullFunc), 1, materialFile);
 
 	auto result = fclose(materialFile);
 	if (result != 0)
 	{
-		Jwl::Error("Failed to generate Material Binary\nOutput file could not be saved.");
+		gem::Error("Failed to generate Material Binary\nOutput file could not be saved.");
 		return false;
 	}
 

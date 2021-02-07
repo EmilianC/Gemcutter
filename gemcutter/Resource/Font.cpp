@@ -10,7 +10,7 @@
 #include <cstdio>
 #include <glew/glew.h>
 
-namespace Jwl
+namespace gem
 {
 	unsigned Font::VAO = 0;
 	unsigned Font::VBO = 0;

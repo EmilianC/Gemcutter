@@ -5,7 +5,7 @@
 #include <string_view>
 #include <vector>
 
-namespace Jwl
+namespace gem
 {
 	class DirectoryData
 	{

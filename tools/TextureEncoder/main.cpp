@@ -5,7 +5,7 @@ int main()
 {
 	auto encoder = TextureEncoder();
 
-	if (!Jwl::Encoder::RunEncoder(encoder))
+	if (!gem::Encoder::RunEncoder(encoder))
 	{
 		return EXIT_FAILURE;
 	}

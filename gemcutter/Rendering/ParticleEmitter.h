@@ -7,7 +7,7 @@
 #include "gemcutter/Resource/UniformBuffer.h"
 #include "gemcutter/Utilities/Random.h"
 
-namespace Jwl
+namespace gem
 {
 	struct vec2;
 	struct vec3;

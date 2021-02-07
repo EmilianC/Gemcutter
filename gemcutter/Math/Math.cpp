@@ -1,7 +1,7 @@
 // Copyright (c) 2017 Emilian Cioca
 #include "Math.h"
 
-namespace Jwl
+namespace gem
 {
 	unsigned CombineHashes(unsigned a, unsigned b)
 	{

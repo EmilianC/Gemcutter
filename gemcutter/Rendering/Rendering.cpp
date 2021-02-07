@@ -90,7 +90,7 @@ namespace
 	};
 }
 
-namespace Jwl
+namespace gem
 {
 	TextureWraps::TextureWraps(TextureWrap xy)
 		: x(xy), y(xy)

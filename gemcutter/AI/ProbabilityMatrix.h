@@ -1,7 +1,7 @@
 ﻿// Copyright (c) 2017 Emilian Cioca
 #pragma once
 
-namespace Jwl
+namespace gem
 {
 	// Stores and manages a probability matrix of States vs Actions.
 	class ProbabilityMatrix
