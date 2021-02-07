@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2017 Emilian Cioca
+// Copyright (c) 2017 Emilian Cioca
 using System;
 using System.Drawing;
 using System.IO;
@@ -112,7 +112,7 @@ namespace AssetManager
 			}
 
 			var path = Environment.ExpandEnvironmentVariables(encoderBox.Text);
-			var encoderPath = Path.IsPathRooted(path) ? path : Directory.GetCurrentDirectory() + path;
+			var encoderPath = Path.IsPathRooted(path) ? path : Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + path;
 			if (!File.Exists(encoderPath))
 			{
 				statusLog.SetToolTip(status, "The Encoder does not exist on the disk.");

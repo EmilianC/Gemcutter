@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2017 Emilian Cioca
+// Copyright (c) 2017 Emilian Cioca
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -26,13 +26,13 @@ namespace AssetManager
 		public void Reset()
 		{
 			// Setup default encoders.
-			encoders.Add(new EncoderLink { extension="ttf", encoder="tools\\FontEncoder\\build\\Release\\FontEncoder.exe" });
-			encoders.Add(new EncoderLink { extension="obj", encoder="tools\\MeshEncoder\\build\\Release\\MeshEncoder.exe" });
-			encoders.Add(new EncoderLink { extension="png", encoder="tools\\TextureEncoder\\build\\Release\\TextureEncoder.exe" });
-			encoders.Add(new EncoderLink { extension="jpg", encoder="tools\\TextureEncoder\\build\\Release\\TextureEncoder.exe" });
-			encoders.Add(new EncoderLink { extension="tga", encoder="tools\\TextureEncoder\\build\\Release\\TextureEncoder.exe" });
-			encoders.Add(new EncoderLink { extension="bmp", encoder="tools\\TextureEncoder\\build\\Release\\TextureEncoder.exe" });
-			encoders.Add(new EncoderLink { extension="mat", encoder="tools\\MaterialEncoder\\build\\Release\\MaterialEncoder.exe" });
+			encoders.Add(new EncoderLink { extension="ttf", encoder="..\\build\\external\\gemcutter\\tools\\FontEncoder\\Release\\font_encoder.exe" });
+			encoders.Add(new EncoderLink { extension="obj", encoder="..\\build\\external\\gemcutter\\tools\\MeshEncoder\\Release\\mesh_encoder.exe" });
+			encoders.Add(new EncoderLink { extension="png", encoder="..\\build\\external\\gemcutter\\tools\\TextureEncoder\\Release\\texture_encoder.exe" });
+			encoders.Add(new EncoderLink { extension="jpg", encoder="..\\build\\external\\gemcutter\\tools\\TextureEncoder\\Release\\texture_encoder.exe" });
+			encoders.Add(new EncoderLink { extension="tga", encoder="..\\build\\external\\gemcutter\\tools\\TextureEncoder\\Release\\texture_encoder.exe" });
+			encoders.Add(new EncoderLink { extension="bmp", encoder="..\\build\\external\\gemcutter\\tools\\TextureEncoder\\Release\\texture_encoder.exe" });
+			encoders.Add(new EncoderLink { extension="mat", encoder="..\\build\\external\\gemcutter\\tools\\MaterialEncoder\\Release\\material_encoder.exe" });
 
 			outputDirectory = "../Assets";
 			excludedExtensions = "";
