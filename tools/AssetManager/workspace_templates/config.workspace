@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<WorkspaceConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <outputDirectory>../assets</outputDirectory>
+  <excludedExtensions />
+  <encoders>
+    <EncoderLink>
+      <extension>ttf</extension>
+      <encoder>${FONT_ENCODER_BINARY_DIR}\\Release\\font_encoder.exe</encoder>
+    </EncoderLink>
+    <EncoderLink>
+      <extension>obj</extension>
+      <encoder>${MESH_ENCODER_BINARY_DIR}\\Release\\mesh_encoder.exe</encoder>
+    </EncoderLink>
+    <EncoderLink>
+      <extension>png</extension>
+      <encoder>${TEXTURE_ENCODER_BINARY_DIR}\\Release\\texture_encoder.exe</encoder>
+    </EncoderLink>
+    <EncoderLink>
+      <extension>jpg</extension>
+      <encoder>${TEXTURE_ENCODER_BINARY_DIR}\\Release\\texture_encoder.exe</encoder>
+    </EncoderLink>
+    <EncoderLink>
+      <extension>tga</extension>
+      <encoder>${TEXTURE_ENCODER_BINARY_DIR}\\Release\\texture_encoder.exe</encoder>
+    </EncoderLink>
+    <EncoderLink>
+      <extension>bmp</extension>
+      <encoder>${TEXTURE_ENCODER_BINARY_DIR}\\Release\\texture_encoder.exe</encoder>
+    </EncoderLink>
+    <EncoderLink>
+      <extension>mat</extension>
+      <encoder>${MATERIAL_ENCODER_BINARY_DIR}\\Release\\material_encoder.exe</encoder>
+    </EncoderLink>
+  </encoders>
+</WorkspaceConfig>
