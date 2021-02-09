@@ -2,6 +2,7 @@
 #pragma once
 #include "gemcutter/Resource/Resource.h"
 #include "gemcutter/Resource/Shareable.h"
+#include "gemcutter/Resource/Texture.h"
 
 #include <string_view>
 
@@ -33,7 +34,7 @@ namespace gem
 		// Returns the width required to advance forward by a space.
 		int GetSpaceWidth() const;
 
-		const unsigned* GetTextures() const;
+		Texture::Ptr GetTexture() const;
 		const CharData* GetDimensions() const;
 		const CharData* GetPositions() const;
 		const CharData* GetAdvances() const;
@@ -45,7 +46,7 @@ namespace gem
 		static unsigned GetVBO();
 
 	private:
-		unsigned textures[94] = {};
+		Texture::Ptr texture;
 		// Each character's dimensions.
 		CharData dimensions[94] = {};
 		// The position of each character.
@@ -59,5 +60,8 @@ namespace gem
 
 		static unsigned VBO;
 		static unsigned VAO;
+
+	public:
+		PRIVATE_MEMBER(Font, texture);
 	};
 }
