@@ -22,7 +22,19 @@ Highlight features include:
 * Keyboard/Mouse/Xbox-Controller support
 * Local networking
 
-Code samples are available and maintained [here](https://github.com/EmilianC/Gemcutter-Samples).
+# Quick Start
+If you're looking to start a new project using Gemcutter, then you can use [this repository template](https://github.com/EmilianC/Gemcutter-Project-Template) to get started quickly.
+
+If you just want to download the framework, then simply clone the repo and configure the project with CMake from the root directory:
+```
+> mkdir build
+> cd build
+> cmake ..                       # Default configuration, or
+> cmake .. -DENABLE_SAMPLES=OFF  # Default configuration without downloading samples
+```
+And that's it! You'll find your generated projects under the `build/` folder. Code samples can be found under `samples/` if they were enabled.
+
+Any git submodules which are required by your configuration are automatically pulled, so feel free to omit them when cloning.
 
 # Upcoming Features
 Gemcutter is always being updated and improved. See the [Trello board](https://trello.com/b/Oc2GFT2A/gemcutter) to follow development.
