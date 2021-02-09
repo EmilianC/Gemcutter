@@ -7,4 +7,3 @@
 [submodule "samples"]
 	path = samples
 	url = https://github.com/EmilianC/Gemcutter-Samples.git
-	branch = CMake
