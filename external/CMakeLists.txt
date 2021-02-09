@@ -23,6 +23,14 @@ target_include_directories(freetype INTERFACE freetype/)
 target_link_directories(freetype INTERFACE freetype/)
 target_link_libraries(freetype INTERFACE freetype${CMAKE_STATIC_LIBRARY_SUFFIX})
 
+file(MAKE_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Debug/" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Release/")
+execute_process( # Copy dlls alongside project executable.
+	COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_LIST_DIR}/freetype/freetype6.dll" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Debug/"
+	COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_LIST_DIR}/freetype/freetype6.dll" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Release/"
+	COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_LIST_DIR}/freetype/zlib1.dll" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Debug/"
+	COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_LIST_DIR}/freetype/zlib1.dll" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Release/"
+)
+
 # GLEW #
 set(CMAKE_FOLDER "${PARENT_FOLDER}/external/glew")
 add_library(glew INTERFACE)

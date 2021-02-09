@@ -99,11 +99,6 @@ function(gem_set_up_workspace workspace_directory)
 
 		# Do not replace an existing config, it might have user configured encoders.
 		if (NOT EXISTS "${workspace_directory}/config.workspace")
-			get_target_property(FONT_ENCODER_BINARY_DIR     font_encoder     BINARY_DIR)
-			get_target_property(MATERIAL_ENCODER_BINARY_DIR material_encoder BINARY_DIR)
-			get_target_property(MESH_ENCODER_BINARY_DIR     mesh_encoder     BINARY_DIR)
-			get_target_property(TEXTURE_ENCODER_BINARY_DIR  texture_encoder  BINARY_DIR)
-
 			configure_file(
 				"${ASSET_MANAGER_SOURCE_DIR}/workspace_templates/config.workspace"
 				"${workspace_directory}/config.workspace"

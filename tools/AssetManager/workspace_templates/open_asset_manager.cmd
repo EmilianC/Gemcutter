@@ -1,1 +1,1 @@
-start "" "${ASSET_MANAGER_BINARY_DIR}/Release/asset_manager.exe"
+start "" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Release/asset_manager.exe"
