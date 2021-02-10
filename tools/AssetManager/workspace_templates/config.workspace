@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<WorkspaceConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <outputDirectory>../assets</outputDirectory>
+  <excludedExtensions />
+  <encoders>
+    <EncoderLink>
+      <extension>ttf</extension>
+      <encoder>${CMAKE_RUNTIME_OUTPUT_DIRECTORY}\\Release\\font_encoder.exe</encoder>
+    </EncoderLink>
+    <EncoderLink>
+      <extension>obj</extension>
+      <encoder>${CMAKE_RUNTIME_OUTPUT_DIRECTORY}\\Release\\mesh_encoder.exe</encoder>
+    </EncoderLink>
+    <EncoderLink>
+      <extension>png</extension>
+      <encoder>${CMAKE_RUNTIME_OUTPUT_DIRECTORY}\\Release\\texture_encoder.exe</encoder>
+    </EncoderLink>
+    <EncoderLink>
+      <extension>jpg</extension>
+      <encoder>${CMAKE_RUNTIME_OUTPUT_DIRECTORY}\\Release\\texture_encoder.exe</encoder>
+    </EncoderLink>
+    <EncoderLink>
+      <extension>tga</extension>
+      <encoder>${CMAKE_RUNTIME_OUTPUT_DIRECTORY}\\Release\\texture_encoder.exe</encoder>
+    </EncoderLink>
+    <EncoderLink>
+      <extension>bmp</extension>
+      <encoder>${CMAKE_RUNTIME_OUTPUT_DIRECTORY}\\Release\\texture_encoder.exe</encoder>
+    </EncoderLink>
+    <EncoderLink>
+      <extension>mat</extension>
+      <encoder>${CMAKE_RUNTIME_OUTPUT_DIRECTORY}\\Release\\material_encoder.exe</encoder>
+    </EncoderLink>
+  </encoders>
+</WorkspaceConfig>

@@ -1,0 +1,1 @@
+start "" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Release/asset_manager.exe"

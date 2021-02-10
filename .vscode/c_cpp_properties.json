@@ -3,8 +3,13 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/Engine/**",
-                "${workspaceFolder}/Build/include/**"
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/external/catch/**",
+                "${workspaceFolder}/external/dirent/**",
+                "${workspaceFolder}/external/freetype/**",
+                "${workspaceFolder}/external/glew/**",
+                "${workspaceFolder}/external/openal-soft/include/**",
+                "${workspaceFolder}/external/soil/**"
             ],
             "defines": [
                 "_DEBUG",

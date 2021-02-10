@@ -1,1 +1,0 @@
-start "" "%JEWEL3D_PATH%\Tools\AssetManager\bin\Release\AssetManager.exe"
