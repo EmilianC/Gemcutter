@@ -1,6 +1,7 @@
 [submodule "external/scaffold"]
 	path = external/scaffold
 	url = https://github.com/EmilianC/scaffold.git
+	branch = compile-options
 [submodule "external/openal-soft"]
 	path = external/openal-soft
 	url = https://github.com/kcat/openal-soft.git
