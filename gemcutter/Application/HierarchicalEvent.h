@@ -2,6 +2,7 @@
 #pragma once
 #include "gemcutter/Application/Event.h"
 #include "gemcutter/Entity/Entity.h"
+#include "gemcutter/Entity/Hierarchy.h"
 
 #include <functional>
 
@@ -9,52 +10,50 @@ namespace gem
 {
 	// Responds to events given from an EventDispatcher component higher in the hierarchy.
 	template<class EventObj>
-	class ProxyListener : public Component<ProxyListener<EventObj>>
+	class HierarchicalListener : public Component<HierarchicalListener<EventObj>>
 	{
 		static_assert(std::is_base_of_v<EventBase, EventObj>, "Template argument must inherit from Event.");
 	public:
-		ProxyListener(Entity& owner)
-			: Component(owner)
+		HierarchicalListener(Entity& _owner)
+			: Component<HierarchicalListener<EventObj>>(_owner)
 		{
 		}
 
-		// Your function should return 'true' if the event is handled,
-		// This will cause it to stop propagating down the hierarchy.
+		// Your function should return 'true' if the event is handled. This will
+		// consume it and stop it from propagating further down the hierarchy.
 		std::function<bool(const EventObj&)> callback;
 	};
 
 	// Propagates an event through a hierarchy of Entities.
 	template<class EventObj>
-	class EventDispatcher : public Component<EventDispatcher<EventObj>>
+	class HierarchicalDispatcher : public Component<HierarchicalDispatcher<EventObj>>
 	{
 		static_assert(std::is_base_of_v<EventBase, EventObj>, "Template argument must inherit from Event.");
 	public:
-		EventDispatcher(Entity& owner)
-			: Component(owner)
+		HierarchicalDispatcher(Entity& _owner)
+			: Component<HierarchicalDispatcher<EventObj>>(_owner)
 		{
-			OnEnable();
-		}
+			this->owner.Require<Hierarchy>();
 
-		void OnEnable() final override
-		{
-			listener.callback = [owner](auto& e) { Distribute(owner, e); };
-		}
-
-		void OnDisable() final override
-		{
-			listener.callback = nullptr;
+			listener = [this](auto& e) {
+				if (this->IsEnabled())
+				{
+					Distribute(this->owner, e);
+				}
+			};
 		}
 
 	private:
-		// Propagates the event through the hierarchy, breadth first, notifying ProxyListeners.
-		// Once a listener has handled the event by returning true from it's callback, propagation stops.
+		// Propagates the event through the hierarchy while notifying HierarchicalListeners.
+		// Once a listener has handled the event, propagation stops.
 		static bool Distribute(Entity& ent, const EventObj& e)
 		{
-			auto& children = ent.GetChildren();
+			auto& children = ent.Get<Hierarchy>().GetChildren();
 
+			// Manual loop to avoid iterator invalidation from callback side-effects.
 			for (unsigned i = 0; i < children.size(); ++i)
 			{
-				if (auto comp = children[i]->owner.GetComponent<ProxyListener<EventObj>>())
+				if (auto* comp = children[i]->Try<HierarchicalListener<EventObj>>())
 				{
 					if (comp->callback && comp->callback(e))
 					{
@@ -65,7 +64,7 @@ namespace gem
 
 			for (unsigned i = 0; i < children.size(); ++i)
 			{
-				if (Distribute(children[i]->owner, e))
+				if (Distribute(*children[i], e))
 				{
 					return true;
 				}
