@@ -55,6 +55,12 @@ list(APPEND dotnet_references
 )
 
 add_executable(asset_manager ${asset_manager_files})
+add_dependencies(asset_manager
+	font_encoder
+	material_encoder
+	mesh_encoder
+	texture_encoder
+)
 set(CMAKE_CSharp_FLAGS "/langversion:latest")
 set_target_properties(asset_manager PROPERTIES
 	VS_DOTNET_TARGET_FRAMEWORK_VERSION
