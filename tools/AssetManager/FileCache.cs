@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2017 Emilian Cioca
+// Copyright (c) 2017 Emilian Cioca
 using System.Collections.Generic;
 using System;
 using System.IO;
@@ -64,28 +64,31 @@ namespace AssetManager
 
 		public bool ShouldPack(string file)
 		{
+			if (!cache.ContainsKey(file))
+				return true;
+
+			TimeStamps item;
+			item.fileTime = GetLastWriteTime(file);
+			item.metaTime = GetLastWriteTime(file + ".meta");
+
+			var cached = cache[file];
+			return item.fileTime != cached.fileTime || item.metaTime != cached.metaTime;
+		}
+
+		public void Add(string file)
+		{
 			TimeStamps item;
 			item.fileTime = GetLastWriteTime(file);
 			item.metaTime = GetLastWriteTime(file + ".meta");
 
 			if (cache.ContainsKey(file))
 			{
-				var cached = cache[file];
-
-				if (item.fileTime == cached.fileTime &&
-					item.metaTime == cached.metaTime)
-				{
-					return false;
-				}
-				else
-				{
-					cache[file] = item;
-					return true;
-				}
+				cache[file] = item;
 			}
-
-			cache.Add(file, item);
-			return true;
+			else
+			{
+				cache.Add(file, item);
+			}
 		}
 
 		public static FileCache Load()

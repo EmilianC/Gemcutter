@@ -200,6 +200,13 @@ namespace gem
 				return false;
 			}
 
+			auto dataVersion = static_cast<unsigned>(metadata.GetInt("version"));
+			if (dataVersion != version)
+			{
+				Error("Metadata version (%d) does not match the Encoder (%d). Please update the workspace.", dataVersion, version);
+				return false;
+			}
+
 			if (!ValidateData(metadata))
 			{
 				return false;

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2017 Emilian Cioca
+// Copyright (c) 2017 Emilian Cioca
 using System;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -25,7 +25,14 @@ namespace AssetManager
 				if (!AttachConsole(ATTACH_PARENT_PROCESS))
 					throw new SystemException("Could not link output to the calling console window.");
 
-				builder.UpdateWorkspace();
+				if (Environment.GetCommandLineArgs().Contains("--update", StringComparer.InvariantCultureIgnoreCase))
+				{
+					if (!builder.UpdateWorkspace())
+					{
+						Environment.ExitCode = 1;
+						return;
+					}
+				}
 
 				if (Environment.GetCommandLineArgs().Contains("--pack", StringComparer.InvariantCultureIgnoreCase))
 				{

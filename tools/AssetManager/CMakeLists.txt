@@ -102,6 +102,10 @@ function(gem_set_up_workspace workspace_directory)
 			"${ASSET_MANAGER_SOURCE_DIR}/workspace_templates/open_asset_manager.cmd"
 			"${workspace_directory}/open_asset_manager.cmd"
 		)
+		configure_file(
+			"${ASSET_MANAGER_SOURCE_DIR}/workspace_templates/update_metadata.cmd"
+			"${workspace_directory}/update_metadata.cmd"
+		)
 
 		# Do not replace an existing config, it might have user configured encoders.
 		if (NOT EXISTS "${workspace_directory}/config.workspace")

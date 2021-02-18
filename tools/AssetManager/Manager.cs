@@ -159,6 +159,8 @@ namespace AssetManager
 				Log($"Copying:  {logName}");
 				File.Copy(file, outFile, true);
 			}
+
+			cache.Add(file);
 		}
 
 		private void UpdateFile(string file)
@@ -187,12 +189,13 @@ namespace AssetManager
 		// Starts the updating process.
 		// Any assets without a .meta file will have one added.
 		// Any existing .meta files will be updated to the newest versions.
-		public void UpdateWorkspace()
+		public bool UpdateWorkspace()
 		{
 			LoadEncoders();
 			Icon = Properties.Resources.Building;
 			Log(">>>>>> Validating Workspace <<<<<<");
 
+			bool result = true;
 			try
 			{
 				foreach (var file in GetWorkspaceFiles())
@@ -203,11 +206,14 @@ namespace AssetManager
 			catch (Exception e)
 			{
 				Log($"ERROR:    {e.Message}", ConsoleColor.Red);
+				result = false;
 			}
 			finally
 			{
 				Icon = Properties.Resources.JewelIcon;
 			}
+
+			return result;
 		}
 
 		// Starts the packing process. Rebuilds the target Asset directory from scratch.
@@ -236,7 +242,7 @@ namespace AssetManager
 				Directory.CreateDirectory(path.Replace(inputPath, outputPath));
 			}
 
-			bool result = false;
+			bool result = true;
 			var workspaceFiles = GetWorkspaceFiles();
 			workspaceFiles.RemoveAll(x => x.EndsWith(".meta", StringComparison.InvariantCultureIgnoreCase));
 			try
@@ -245,7 +251,6 @@ namespace AssetManager
 					PackFile(file);
 
 				Log(">>>>>> Finished Packing <<<<<<", ConsoleColor.Green);
-				result = true;
 			}
 			catch (Exception e)
 			{
