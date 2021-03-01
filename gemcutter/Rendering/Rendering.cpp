@@ -29,6 +29,20 @@ namespace
 		GL_UNSIGNED_BYTE
 	};
 
+	const int vertexArrayFormat_Resolve[] = {
+		GL_POINTS,
+		GL_LINES,
+		GL_LINES_ADJACENCY,
+		GL_LINE_LOOP,
+		GL_LINE_STRIP,
+		GL_LINE_STRIP_ADJACENCY,
+		GL_TRIANGLES,
+		GL_TRIANGLES_ADJACENCY,
+		GL_TRIANGLE_FAN,
+		GL_TRIANGLE_STRIP,
+		GL_TRIANGLE_STRIP_ADJACENCY
+	};
+
 	const int vertexFormatSize_Resolve[] = {
 		4,  // float
 		8,  // double
@@ -105,6 +119,11 @@ namespace gem
 	int ResolveVertexFormat(VertexFormat format)
 	{
 		return vertexFormat_Resolve[static_cast<unsigned>(format)];
+	}
+
+	int ResolveVertexArrayFormat(VertexArrayFormat format)
+	{
+		return vertexArrayFormat_Resolve[static_cast<unsigned>(format)];
 	}
 
 	int ResolveVertexAccess(VertexAccess access)

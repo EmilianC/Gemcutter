@@ -321,7 +321,7 @@ namespace gem
 			ASSERT(vertexArray, "Entity has a Mesh component but does not have a VertexArray to render.");
 
 			vertexArray->Bind();
-			glDrawArrays(GL_TRIANGLES, 0, vertexArray->GetVertexCount());
+			vertexArray->Draw();
 		}
 		else if (auto* text = dynamic_cast<const Text*>(renderable))
 		{

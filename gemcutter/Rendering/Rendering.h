@@ -34,6 +34,21 @@ namespace gem
 		uByte
 	};
 
+	enum class VertexArrayFormat
+	{
+		Point,
+		Line,
+		LineAdjacency,
+		LineLoop,
+		LineStrip,
+		LineStripAdjacency,
+		Triangle,
+		TriangleAdjacency,
+		TriangleFan,
+		TriangleStrip,
+		TriangleStripAdjacency
+	};
+
 	enum class VertexAccess
 	{
 		ReadOnly,
@@ -140,6 +155,7 @@ namespace gem
 
 	// Used internally to convert enum values to OpenGL values.
 	int ResolveVertexFormat(VertexFormat);
+	int ResolveVertexArrayFormat(VertexArrayFormat);
 	int ResolveVertexAccess(VertexAccess);
 	int ResolveVertexBufferUsage(VertexBufferUsage);
 	int ResolveFilterMag(TextureFilter);

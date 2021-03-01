@@ -279,6 +279,21 @@ namespace gem
 		glBindVertexArray(GL_NONE);
 	}
 
+	void VertexArray::Draw() const
+	{
+		glDrawArrays(ResolveVertexArrayFormat(format), 0, vertexCount);
+	}
+
+	void VertexArray::Draw(unsigned firstIndex) const
+	{
+		glDrawArrays(ResolveVertexArrayFormat(format), firstIndex, vertexCount);
+	}
+
+	void VertexArray::Draw(unsigned firstIndex, VertexArrayFormat formatOverride) const
+	{
+		glDrawArrays(ResolveVertexArrayFormat(formatOverride), firstIndex, vertexCount);
+	}
+
 	void VertexArray::SetVertexCount(unsigned count)
 	{
 #ifdef _DEBUG

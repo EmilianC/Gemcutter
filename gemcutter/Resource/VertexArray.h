@@ -78,9 +78,16 @@ namespace gem
 		void Bind() const;
 		void UnBind() const;
 
+		// Renders the array using any currently bound UniformBuffers and Textures.
+		void Draw() const;
+		void Draw(unsigned firstIndex) const;
+		void Draw(unsigned firstIndex, VertexArrayFormat formatOverride) const;
+
 		void SetVertexCount(unsigned count);
 		unsigned GetVertexCount() const;
 		const auto& GetStreams() const { return streams; }
+
+		VertexArrayFormat format = VertexArrayFormat::Triangle;
 
 	private:
 		unsigned VAO = 0;
