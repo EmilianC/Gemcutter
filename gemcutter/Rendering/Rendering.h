@@ -66,6 +66,14 @@ namespace gem
 		Stream
 	};
 
+	enum class VertexBufferType
+	{
+		// The buffer contains vertex data or attributes.
+		Data,
+		// The buffer contiains indices defining primitive ordering.
+		Index
+	};
+
 	enum class TextureFormat
 	{
 		RGB_8,

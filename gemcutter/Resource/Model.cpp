@@ -60,7 +60,7 @@ namespace gem
 			stride += sizeof(float) * 4;
 		}
 
-		auto buffer = VertexBuffer::MakeNew(sizeof(float) * bufferSize, usage);
+		auto buffer = VertexBuffer::MakeNew(sizeof(float) * bufferSize, usage, VertexBufferType::Data);
 
 		// Read the data buffer from the file.
 		void* data = buffer->MapBuffer(VertexAccess::WriteOnly);

@@ -6,16 +6,17 @@
 
 namespace gem
 {
-	VertexBuffer::VertexBuffer(unsigned _size, VertexBufferUsage _usage)
+	VertexBuffer::VertexBuffer(unsigned _size, VertexBufferUsage _usage, VertexBufferType type)
 		: size(_size)
 		, usage(_usage)
+		, target(type == VertexBufferType::Data ? GL_ARRAY_BUFFER : GL_ELEMENT_ARRAY_BUFFER)
 	{
 		ASSERT(size, "A VertexBuffer must have a non-zero size.");
 
 		glGenBuffers(1, &VBO);
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferData(GL_ARRAY_BUFFER, size, nullptr, ResolveVertexBufferUsage(usage));
-		glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
+		glBindBuffer(target, VBO);
+		glBufferData(target, size, nullptr, ResolveVertexBufferUsage(usage));
+		glBindBuffer(target, GL_NONE);
 	}
 
 	VertexBuffer::~VertexBuffer()
@@ -26,7 +27,7 @@ namespace gem
 	void VertexBuffer::ClearData()
 	{
 		Bind();
-		glClearBufferData(GL_ARRAY_BUFFER, GL_R8, GL_RED, GL_UNSIGNED_BYTE, nullptr);
+		glClearBufferData(target, GL_R8, GL_RED, GL_UNSIGNED_BYTE, nullptr);
 		UnBind();
 	}
 
@@ -35,20 +36,20 @@ namespace gem
 		ASSERT(start + _size <= size, "Out of bounds.");
 
 		Bind();
-		glBufferSubData(GL_ARRAY_BUFFER, start, _size, data);
+		glBufferSubData(target, start, _size, data);
 		UnBind();
 	}
 
 	void* VertexBuffer::MapBuffer(VertexAccess accessMode)
 	{
 		Bind();
-		return glMapBuffer(GL_ARRAY_BUFFER, ResolveVertexAccess(accessMode));
+		return glMapBuffer(target, ResolveVertexAccess(accessMode));
 	}
 
 	void VertexBuffer::UnmapBuffer()
 	{
-		glUnmapBuffer(GL_ARRAY_BUFFER);
-		glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
+		glUnmapBuffer(target);
+		glBindBuffer(target, GL_NONE);
 	}
 
 	unsigned VertexBuffer::GetSize() const
@@ -61,14 +62,19 @@ namespace gem
 		return usage;
 	}
 
+	VertexBufferType VertexBuffer::GetBufferType() const
+	{
+		return (target == GL_ARRAY_BUFFER) ? VertexBufferType::Data : VertexBufferType::Index;
+	}
+
 	void VertexBuffer::Bind() const
 	{
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		glBindBuffer(target, VBO);
 	}
 
 	void VertexBuffer::UnBind() const
 	{
-		glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
+		glBindBuffer(target, GL_NONE);
 	}
 
 	VertexArray::VertexArray()
@@ -79,6 +85,34 @@ namespace gem
 	VertexArray::~VertexArray()
 	{
 		glDeleteVertexArrays(1, &VAO);
+	}
+
+	void VertexArray::SetIndexBuffer(VertexBuffer::Ptr buffer)
+	{
+		glBindVertexArray(VAO);
+
+		indexBuffer = std::move(buffer);
+		if (indexBuffer)
+		{
+			ASSERT(indexBuffer->GetBufferType() == VertexBufferType::Index, "'buffer' must contain indices.");
+			indexBuffer->Bind();
+		}
+		else
+		{
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_NONE);
+		}
+
+		glBindVertexArray(GL_NONE);
+	}
+
+	const VertexBuffer* VertexArray::GetIndexBuffer() const
+	{
+		return indexBuffer.get();
+	}
+
+	VertexBuffer* VertexArray::GetIndexBuffer()
+	{
+		return indexBuffer.get();
 	}
 
 	void VertexArray::AddStream(VertexStream ptr)
@@ -281,17 +315,24 @@ namespace gem
 
 	void VertexArray::Draw() const
 	{
-		glDrawArrays(ResolveVertexArrayFormat(format), 0, vertexCount);
+		Draw(0, format);
 	}
 
 	void VertexArray::Draw(unsigned firstIndex) const
 	{
-		glDrawArrays(ResolveVertexArrayFormat(format), firstIndex, vertexCount);
+		Draw(firstIndex, format);
 	}
 
 	void VertexArray::Draw(unsigned firstIndex, VertexArrayFormat formatOverride) const
 	{
-		glDrawArrays(ResolveVertexArrayFormat(formatOverride), firstIndex, vertexCount);
+		if (indexBuffer)
+		{
+			glDrawElements(ResolveVertexArrayFormat(formatOverride), vertexCount, GL_UNSIGNED_SHORT, reinterpret_cast<void*>(firstIndex * sizeof(unsigned short)));
+		}
+		else
+		{
+			glDrawArrays(ResolveVertexArrayFormat(formatOverride), firstIndex, vertexCount);
+		}
 	}
 
 	void VertexArray::SetVertexCount(unsigned count)

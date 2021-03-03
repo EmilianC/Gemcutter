@@ -13,7 +13,7 @@ namespace gem
 	{
 		friend class VertexArray;
 	public:
-		VertexBuffer(unsigned size, VertexBufferUsage usage);
+		VertexBuffer(unsigned size, VertexBufferUsage usage, VertexBufferType type);
 		~VertexBuffer();
 
 		void ClearData();
@@ -25,6 +25,7 @@ namespace gem
 
 		unsigned GetSize() const;
 		VertexBufferUsage GetBufferUsage() const;
+		VertexBufferType GetBufferType() const;
 
 	private:
 		void Bind() const;
@@ -33,6 +34,7 @@ namespace gem
 		unsigned VBO = 0;
 		unsigned size = 0;
 		VertexBufferUsage usage;
+		int target;
 	};
 
 	// A single vertex attribute to be streamed to a vertex shader.
@@ -61,6 +63,10 @@ namespace gem
 	public:
 		VertexArray();
 		~VertexArray();
+
+		void SetIndexBuffer(VertexBuffer::Ptr buffer);
+		const VertexBuffer* GetIndexBuffer() const;
+		VertexBuffer* GetIndexBuffer();
 
 		void AddStream(VertexStream ptr);
 		void RemoveStream(unsigned bindingUnit);
@@ -93,6 +99,7 @@ namespace gem
 		unsigned VAO = 0;
 		unsigned vertexCount = 0;
 
+		VertexBuffer::Ptr indexBuffer;
 		std::vector<VertexStream> streams;
 	};
 }

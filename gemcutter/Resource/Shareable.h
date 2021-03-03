@@ -48,7 +48,7 @@ namespace gem
 		template<typename... Args>
 		static Ptr MakeNew(Args&&... params)
 		{
-			// If you have a compile error because the Derived class has an inaccessable private constructor,
+			// If you have a compile error because the Derived class has an inaccessible private constructor,
 			// declare "friend ShareableAlloc;" and MakeNew() will still be able to instantiate it.
 			return std::make_shared<ShareableAlloc>(std::forward<Args>(params)...);
 		}
