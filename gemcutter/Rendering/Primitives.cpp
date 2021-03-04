@@ -8,306 +8,314 @@
 
 namespace
 {
-	constexpr char LINE_PROGRAM[] =
-		"Uniforms\n{\n"
-		"	static Data : 0\n{\n"
-		"		vec4 uP1;\n"
-		"		vec4 uP2;\n"
-		"		vec4 uC1;\n"
-		"		vec4 uC2;\n"
-		"	}\n"
-		"}\n"
-		"Vertex\n{\n"
-		"	void main() { }\n"
-		"}\n"
-		"Geometry\n{\n"
-		"	layout(points) in;\n"
-		"	layout(line_strip, max_vertices = 2) out;\n"
-		"	out vec4 color;\n"
-		"	void main()\n"
-		"	{\n"
-		"		color = Data.uC1;\n"
-		"		gl_Position = Gem_ViewProj * Data.uP1;\n"
-		"		EmitVertex();\n"
-		"		color = Data.uC2;\n"
-		"		gl_Position = Gem_ViewProj * Data.uP2;\n"
-		"		EmitVertex();\n"
-		"		EndPrimitive();\n"
-		"	}\n"
-		"}\n"
-		"Fragment\n{\n"
-		"	in vec4 color;\n"
-		"	out vec4 outColor;\n"
-		"	void main()\n"
-		"	{\n"
-		"		outColor = color;\n"
-		"	}\n"
-		"}\n";
+	constexpr const char* LINE_PROGRAM = R"(
+		Uniforms{
+			static Data : 0{
+				vec4 uP1;
+				vec4 uP2;
+				vec4 uC1;
+				vec4 uC2;
+			}
+		}
+		Vertex{
+			void main() {}
+		}
+		Geometry{
+			layout(points) in;
+			layout(line_strip, max_vertices = 2) out;
+			out vec4 color;
+			void main()
+			{
+				color = Data.uC1;
+				gl_Position = Gem_ViewProj * Data.uP1;
+				EmitVertex();
+				color = Data.uC2;
+				gl_Position = Gem_ViewProj * Data.uP2;
+				EmitVertex();
+				EndPrimitive();
+			}
+		}
+		Fragment{
+			in vec4 color;
+			out vec4 outColor;
+			void main()
+			{
+				outColor = color;
+			}
+		}
+	)";
 
-	constexpr char TEXTURED_LINE_PROGRAM[] =
-		"Uniforms\n{\n"
-		"	static Data : 0\n{\n"
-		"		vec4 uP1;\n"
-		"		vec4 uP2;\n"
-		"	}\n"
-		"}\n"
-		"Vertex\n{\n"
-		"	void main() { }\n"
-		"}\n"
-		"Geometry\n{\n"
-		"	layout(points) in;\n"
-		"	layout(line_strip, max_vertices = 2) out;\n"
-		"	\n"
-		"	out vec2 texcoord;\n"
-		"	void main()\n"
-		"	{\n"
-		"		texcoord = vec2(0.0f, 0.5f);\n"
-		"		gl_Position = Gem_ViewProj * Data.uP1;\n"
-		"		EmitVertex();\n"
-		"		texcoord = vec2(1.0f, 0.5f);\n"
-		"		gl_Position = Gem_ViewProj * Data.uP2;\n"
-		"		EmitVertex();\n"
-		"		EndPrimitive();\n"
-		"	}\n"
-		"}\n"
-		"Samplers\n{\n"
-		"	sampler2D sTex : 0;"
-		"}\n"
-		"Fragment\n{\n"
-		"	in vec2 texcoord;\n"
-		"	out vec4 outColor;\n"
-		"	void main()\n"
-		"	{\n"
-		"		outColor = texture(sTex, texcoord).rgba;\n"
-		"	}\n"
-		"}\n";
+	constexpr const char* TEXTURED_LINE_PROGRAM = R"(
+		Uniforms{
+			static Data : 0{
+				vec4 uP1;
+				vec4 uP2;
+			}
+		}
+		Vertex{
+			void main() {}
+		}
+		Geometry{
+			layout(points) in;
+			layout(line_strip, max_vertices = 2) out;
 
-	constexpr char TRIANGLE_PROGRAM[] =
-		"Uniforms\n{\n"
-		"	static Data : 0\n{\n"
-		"		vec4 uP1;\n"
-		"		vec4 uP2;\n"
-		"		vec4 uP3;\n"
-		"		vec4 uC1;\n"
-		"		vec4 uC2;\n"
-		"		vec4 uC3;\n"
-		"	}\n"
-		"}\n"
-		"Vertex\n{\n"
-		"void main() { }\n"
-		"}\n"
-		"Geometry\n{\n"
-		"	layout(points) in;\n"
-		"	layout(triangle_strip, max_vertices = 3) out;\n"
-		"	out vec4 color;\n"
-		"	void main()\n"
-		"	{\n"
-		"		color = Data.uC1;\n"
-		"		gl_Position = Gem_ViewProj * Data.uP1;\n"
-		"		EmitVertex();\n"
-		"		color = Data.uC2;\n"
-		"		gl_Position = Gem_ViewProj * Data.uP2;\n"
-		"		EmitVertex();\n"
-		"		color = Data.uC3;\n"
-		"		gl_Position = Gem_ViewProj * Data.uP3;\n"
-		"		EmitVertex();\n"
-		"		EndPrimitive();\n"
-		"	}\n"
-		"}\n"
-		"Fragment\n{\n"
-		"	in vec4 color;\n"
-		"	out vec4 outColor;\n"
-		"	void main()\n"
-		"	{\n"
-		"		outColor = color;\n"
-		"	}\n"
-		"}\n";
+			out vec2 texcoord;
+			void main()
+			{
+				texcoord = vec2(0.0f, 0.5f);
+				gl_Position = Gem_ViewProj * Data.uP1;
+				EmitVertex();
+				texcoord = vec2(1.0f, 0.5f);
+				gl_Position = Gem_ViewProj * Data.uP2;
+				EmitVertex();
+				EndPrimitive();
+			}
+		}
+		Samplers{
+			sampler2D sTex : 0;
+		}
+		Fragment{
+			in vec2 texcoord;
+			out vec4 outColor;
+			void main()
+			{
+				outColor = texture(sTex, texcoord).rgba;
+			}
+		}
+	)";
 
-	constexpr char TEXTURED_TRIANGLE_PROGRAM[] =
-		"Uniforms\n{\n"
-		"	static Data : 0\n{\n"
-		"		vec4 uP1;\n"
-		"		vec4 uP2;\n"
-		"		vec4 uP3;\n"
-		"	}\n"
-		"}\n"
-		"Vertex\n{\n"
-		"	void main() { }\n"
-		"}\n"
-		"Geometry\n{\n"
-		"	layout(points) in;\n"
-		"	layout(triangle_strip, max_vertices = 3) out;\n"
-		"	\n"
-		"	out vec2 texcoord;\n"
-		"	void main()\n"
-		"	{\n"
-		"		texcoord = vec2(0.0f, 0.0f);\n"
-		"		gl_Position = Gem_ViewProj * Data.uP1;\n"
-		"		EmitVertex();\n"
-		"		texcoord = vec2(1.0f, 0.0f);\n"
-		"		gl_Position = Gem_ViewProj * Data.uP2;\n"
-		"		EmitVertex();\n"
-		"		texcoord = vec2(0.5f, 1.0f);\n"
-		"		gl_Position = Gem_ViewProj * Data.uP3;\n"
-		"		EmitVertex();\n"
-		"		EndPrimitive();\n"
-		"	}\n"
-		"}\n"
-		"Samplers\n{\n"
-		"	sampler2D sTex : 0;\n"
-		"}\n"
-		"Fragment\n{\n"
-		"	in vec2 texcoord;\n"
-		"	out vec4 outColor;\n"
-		"	void main()\n"
-		"	{\n"
-		"		outColor = texture(sTex, texcoord).rgba;\n"
-		"	}\n"
-		"}\n";
+	constexpr const char* TRIANGLE_PROGRAM = R"(
+		Uniforms{
+			static Data : 0{
+				vec4 uP1;
+				vec4 uP2;
+				vec4 uP3;
+				vec4 uC1;
+				vec4 uC2;
+				vec4 uC3;
+			}
+		}
+		Vertex{
+			void main() {}
+		}
+		Geometry{
+			layout(points) in;
+			layout(triangle_strip, max_vertices = 3) out;
+			out vec4 color;
+			void main()
+			{
+				color = Data.uC1;
+				gl_Position = Gem_ViewProj * Data.uP1;
+				EmitVertex();
+				color = Data.uC2;
+				gl_Position = Gem_ViewProj * Data.uP2;
+				EmitVertex();
+				color = Data.uC3;
+				gl_Position = Gem_ViewProj * Data.uP3;
+				EmitVertex();
+				EndPrimitive();
+			}
+		}
+		Fragment{
+			in vec4 color;
+			out vec4 outColor;
+			void main()
+			{
+				outColor = color;
+			}
+		}
+	)";
 
-	constexpr char RECTANGE_PROGRAM[] =
-		"Uniforms\n{\n"
-		"	static Data : 0\n{\n"
-		"		vec4 uP1;\n"
-		"		vec4 uP2;\n"
-		"		vec4 uP3;\n"
-		"		vec4 uP4;\n"
-		"		vec4 uC1;\n"
-		"		vec4 uC2;\n"
-		"		vec4 uC3;\n"
-		"		vec4 uC4;\n"
-		"	}\n"
-		"}\n"
-		"Vertex\n{\n"
-		"	void main() { }\n"
-		"}\n"
-		"Geometry\n{\n"
-		"	layout(points) in;\n"
-		"	layout(triangle_strip, max_vertices = 4) out;\n"
-		"	\n"
-		"	out vec4 color;\n"
-		"	void main()\n"
-		"	{\n"
-		"		color = Data.uC1;\n"
-		"		gl_Position = Gem_ViewProj * Data.uP1;\n"
-		"		EmitVertex();\n"
-		"		color = Data.uC2;\n"
-		"		gl_Position = Gem_ViewProj * Data.uP2;\n"
-		"		EmitVertex();\n"
-		"		color = Data.uC3;\n"
-		"		gl_Position = Gem_ViewProj * Data.uP3;\n"
-		"		EmitVertex();\n"
-		"		color = Data.uC4;\n"
-		"		gl_Position = Gem_ViewProj * Data.uP4;\n"
-		"		EmitVertex();\n"
-		"		EndPrimitive();\n"
-		"	}\n"
-		"}\n"
-		"Fragment\n{\n"
-		"	in vec4 color;\n"
-		"	out vec4 outColor;\n"
-		"	void main()\n"
-		"	{\n"
-		"		outColor = color;\n"
-		"	}\n"
-		"}\n";
+	constexpr const char* TEXTURED_TRIANGLE_PROGRAM = R"(
+		Uniforms{
+			static Data : 0{
+				vec4 uP1;
+				vec4 uP2;
+				vec4 uP3;
+			}
+		}
+		Vertex{
+			void main() {}
+		}
+		Geometry{
+			layout(points) in;
+			layout(triangle_strip, max_vertices = 3) out;
 
-	constexpr char TEXTURED_RECTANGLE_PROGRAM[] =
-		"Uniforms\n{\n"
-		"	static Data : 0\n{\n"
-		"		vec4 uP1;\n"
-		"		vec4 uP2;\n"
-		"		vec4 uP3;\n"
-		"		vec4 uP4;\n"
-		"	}\n"
-		"}\n"
-		"Vertex\n{\n"
-		"	void main() { }\n"
-		"}\n"
-		"Geometry\n{\n"
-		"	layout(points) in;\n"
-		"	layout(triangle_strip, max_vertices = 4) out;\n"
-		"	\n"
-		"	out vec2 texcoord;\n"
-		"	void main()\n"
-		"	{\n"
-		"		texcoord = vec2(0.0f, 0.0f);\n"
-		"		gl_Position = Gem_ViewProj * Data.uP1;\n"
-		"		EmitVertex();\n"
-		"		texcoord = vec2(1.0f, 0.0f);\n"
-		"		gl_Position = Gem_ViewProj * Data.uP2;\n"
-		"		EmitVertex();\n"
-		"		texcoord = vec2(0.0f, 1.0f);\n"
-		"		gl_Position = Gem_ViewProj * Data.uP3;\n"
-		"		EmitVertex();\n"
-		"		texcoord = vec2(1.0f, 0.0f);\n"
-		"		gl_Position = Gem_ViewProj * Data.uP4;\n"
-		"		EmitVertex();\n"
-		"		EndPrimitive();\n"
-		"	}\n"
-		"}\n"
-		"Samplers\n{\n"
-		"	sampler2D sTex : 0;\n"
-		"}\n"
-		"Fragment\n{\n"
-		"	in vec2 texcoord;\n"
-		"	out vec4 outColor;\n"
-		"	void main()\n"
-		"	{\n"
-		"		outColor = texture(sTex, texcoord).rgba;\n"
-		"	}\n"
-		"}\n";
+			out vec2 texcoord;
+			void main()
+			{
+				texcoord = vec2(0.0f, 0.0f);
+				gl_Position = Gem_ViewProj * Data.uP1;
+				EmitVertex();
+				texcoord = vec2(1.0f, 0.0f);
+				gl_Position = Gem_ViewProj * Data.uP2;
+				EmitVertex();
+				texcoord = vec2(0.5f, 1.0f);
+				gl_Position = Gem_ViewProj * Data.uP3;
+				EmitVertex();
+				EndPrimitive();
+			}
+		}
+		Samplers{
+			sampler2D sTex : 0;
+		}
+		Fragment{
+			in vec2 texcoord;
+			out vec4 outColor;
+			void main()
+			{
+				outColor = texture(sTex, texcoord).rgba;
+			}
+		}
+	)";
 
-	constexpr char TEXTURED_FULLSCREEN_QUAD_PROGRAM[] =
-		"Attributes\n{\n"
-		"	vec4 a_vert : 0;"
-		"	vec2 a_uv : 1;\n"
-		"}\n"
-		"Vertex\n{\n"
-		"	out vec2 texcoord;\n"
-		"	void main()\n"
-		"	{\n"
-		"		texcoord = a_uv;\n"
-		"		gl_Position = a_vert;\n"
-		"	}\n"
-		"}\n"
-		"Samplers\n{\n"
-		"	sampler2D sTex : 0;\n"
-		"}\n"
-		"Fragment\n{\n"
-		"	in vec2 texcoord;\n"
-		"	out vec4 outColor;\n"
-		"	void main()\n"
-		"	{\n"
-		"		outColor = texture(sTex, texcoord).rgba;\n"
-		"	}\n"
-		"}\n";
+	constexpr const char* RECTANGE_PROGRAM = R"(
+		Uniforms{
+			static Data : 0{
+				vec4 uP1;
+				vec4 uP2;
+				vec4 uP3;
+				vec4 uP4;
+				vec4 uC1;
+				vec4 uC2;
+				vec4 uC3;
+				vec4 uC4;
+			}
+		}
+		Vertex{
+			void main() {}
+		}
+		Geometry{
+			layout(points) in;
+			layout(triangle_strip, max_vertices = 4) out;
 
-	constexpr char SKYBOX_PROGRAM[] =
-		"Attributes\n{\n"
-		"	vec3 a_vert : 0;"
-		"}\n"
-		"Vertex\n{\n"
-		"	out vec3 texcoord;\n"
-		"	void main()\n"
-		"	{\n"
-		"		texcoord = a_vert;\n"
-		"		//After perspective divide, Z will be very close to 1.0\n"
-		"		gl_Position = (Gem_ViewProj * vec4(a_vert, 0.0)).xyww;\n"
-		"		gl_Position.w *= 1.0001;\n"
-		"	}\n"
-		"}\n"
-		"Samplers\n{\n"
-		"	samplerCube sTex : 0;\n"
-		"}\n"
-		"Fragment\n{\n"
-		"	in vec3 texcoord;\n"
-		"	out vec4 outColor;\n"
-		"	void main()\n"
-		"	{\n"
-		"		outColor = texture(sTex, texcoord);\n"
-		"	}\n"
-		"}\n";
+			out vec4 color;
+			void main()
+			{
+				color = Data.uC1;
+				gl_Position = Gem_ViewProj * Data.uP1;
+				EmitVertex();
+				color = Data.uC2;
+				gl_Position = Gem_ViewProj * Data.uP2;
+				EmitVertex();
+				color = Data.uC3;
+				gl_Position = Gem_ViewProj * Data.uP3;
+				EmitVertex();
+				color = Data.uC4;
+				gl_Position = Gem_ViewProj * Data.uP4;
+				EmitVertex();
+				EndPrimitive();
+			}
+		}
+		Fragment{
+			in vec4 color;
+			out vec4 outColor;
+			void main()
+			{
+				outColor = color;
+			}
+		}
+	)";
+
+	constexpr const char* TEXTURED_RECTANGLE_PROGRAM = R"(
+		Uniforms{
+			static Data : 0{
+				vec4 uP1;
+				vec4 uP2;
+				vec4 uP3;
+				vec4 uP4;
+			}
+		}
+		Vertex{
+			void main() {}
+		}
+		Geometry{
+			layout(points) in;
+			layout(triangle_strip, max_vertices = 4) out;
+
+			out vec2 texcoord;
+			void main()
+			{
+				texcoord = vec2(0.0f, 0.0f);
+				gl_Position = Gem_ViewProj * Data.uP1;
+				EmitVertex();
+				texcoord = vec2(1.0f, 0.0f);
+				gl_Position = Gem_ViewProj * Data.uP2;
+				EmitVertex();
+				texcoord = vec2(0.0f, 1.0f);
+				gl_Position = Gem_ViewProj * Data.uP3;
+				EmitVertex();
+				texcoord = vec2(1.0f, 0.0f);
+				gl_Position = Gem_ViewProj * Data.uP4;
+				EmitVertex();
+				EndPrimitive();
+			}
+		}
+		Samplers{
+			sampler2D sTex : 0;
+		}
+		Fragment{
+			in vec2 texcoord;
+			out vec4 outColor;
+			void main()
+			{
+				outColor = texture(sTex, texcoord).rgba;
+			}
+		}
+	)";
+
+	constexpr const char* TEXTURED_FULLSCREEN_QUAD_PROGRAM = R"(
+		Attributes{
+			vec4 a_vert : 0;
+			vec2 a_uv : 1;
+		}
+		Vertex{
+			out vec2 texcoord;
+			void main()
+			{
+				texcoord = a_uv;
+				gl_Position = a_vert;
+			}
+		}
+		Samplers{
+			sampler2D sTex : 0;
+		}
+		Fragment{
+			in vec2 texcoord;
+			out vec4 outColor;
+			void main()
+			{
+				outColor = texture(sTex, texcoord).rgba;
+			}
+		}
+	)";
+
+	constexpr const char* SKYBOX_PROGRAM = R"(
+		Attributes{
+			vec3 a_vert : 0;
+		}
+		Vertex{
+			out vec3 texcoord;
+			void main()
+			{
+				texcoord = a_vert;
+				//After perspective divide, Z will be very close to 1.0
+				gl_Position = (Gem_ViewProj * vec4(a_vert, 0.0)).xyww;
+				gl_Position.w *= 1.0001;
+			}
+		}
+		Samplers{
+			samplerCube sTex : 0;
+		}
+		Fragment{
+			in vec3 texcoord;
+			out vec4 outColor;
+			void main()
+			{
+				outColor = texture(sTex, texcoord);
+			}
+		}
+	)";
 }
 
 namespace gem

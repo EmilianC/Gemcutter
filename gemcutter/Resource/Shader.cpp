@@ -13,164 +13,162 @@
 namespace
 {
 	// Built in shaders.
-	constexpr char passThroughVertex[] =
-		"layout(location = 0) in vec4 a_vert;\n"
-		"layout(location = 1) in vec2 a_uv;\n"
-		"out vec2 texcoord;\n"
-		"void main()\n"
-		"{\n"
-		"	gl_Position = Gem_MVP * a_vert;\n"
-		"	texcoord = a_uv;\n"
-		"}\n";
+	constexpr const char* passThroughVertex = R"(
+		layout(location = 0) in vec4 a_vert;
+		layout(location = 1) in vec2 a_uv;
+		out vec2 texcoord;
+		void main()
+		{
+			gl_Position = Gem_MVP * a_vert;
+			texcoord = a_uv;
+		}
+	)";
 
-	constexpr char passThroughFragment[] =
-		"uniform sampler2D sTex;\n"
-		"in vec2 texcoord;\n"
-		"out vec4 outColor;\n"
-		"void main()\n"
-		"{\n"
-		"	outColor = texture(sTex, texcoord);\n"
-		"}\n";
+	constexpr const char* passThroughFragment = R"(
+		uniform sampler2D sTex;
+		in vec2 texcoord;
+		out vec4 outColor;
+		void main()
+		{
+			outColor = texture(sTex, texcoord);
+		}
+	)";
 
-	constexpr char passThroughProgram[] =
-		"Attributes\n{\n"
-		"	vec4 a_vert : 0;\n"
-		"	vec2 a_uv : 1;\n"
-		"}\n"
-		"Vertex\n{\n"
-		"	out vec2 texcoord;\n"
-		"	void main()\n"
-		"	{\n"
-		"		gl_Position = Gem_MVP * a_vert;\n"
-		"		texcoord = a_uv;\n"
-		"	}\n"
-		"}\n"
-		"Samplers\n{\n"
-		"	sampler2D sTex : 0;\n"
-		"}\n"
-		"Fragment\n{\n"
-		"	in vec2 texcoord;\n"
-		"	out vec4 outColor;\n"
-		"	void main()\n"
-		"	{\n"
-		"		outColor = texture(sTex, texcoord);\n"
-		"	}\n"
-		"}\n";
+	constexpr const char* passThroughProgram = R"(
+		Attributes{
+			vec4 a_vert : 0;
+			vec2 a_uv : 1;
+		}
+		Vertex{
+			out vec2 texcoord;
+			void main()
+			{
+				gl_Position = Gem_MVP * a_vert;
+				texcoord = a_uv;
+			}
+		}
+		Samplers{
+			sampler2D sTex : 0;
+		}
+		Fragment{
+			in vec2 texcoord;
+			out vec4 outColor;
+			void main()
+			{
+				outColor = texture(sTex, texcoord);
+			}
+		}
+	)";
 
-	constexpr char header[] =
-		"\n"
-		"#define M_PI 3.14159265358979323846\n"
-		"#define M_E 2.71828182845904523536\n"
-		"#define M_LOG2E 1.44269504088896340736\n"
-		"#define M_LOG10E 0.434294481903251827651\n"
-		"#define M_LN2 0.693147180559945309417\n"
-		"#define M_LN10 2.30258509299404568402\n"
-		"\n"
-		"layout(std140) uniform Gem_Camera_Uniforms\n"
-		"{\n"
-		"	mat4 Gem_View;\n"
-		"	mat4 Gem_Proj;\n"
-		"	mat4 Gem_ViewProj;\n"
-		"	mat4 Gem_InvView;\n"
-		"	mat4 Gem_InvProj;\n"
-		"	vec3 Gem_CameraPosition;\n"
-		"};"
-		"\n"
-		"layout(std140) uniform Gem_Model_Uniforms\n"
-		"{\n"
-		"	mat4 Gem_MVP;\n"
-		"	mat4 Gem_ModelView;\n"
-		"	mat4 Gem_Model;\n"
-		"	mat4 Gem_InvModel;\n"
-		"	mat3 Gem_NormalToWorld;\n"
-		"};"
-		"\n"
-		"layout(std140) uniform Gem_Engine_Uniforms\n"
-		"{\n"
-		"	vec4 ScreenParams;\n"
-		"};"
-		"\n"
-		"layout(std140) uniform Gem_Time_Uniforms\n"
-		"{\n"
-		"	vec4 Gem_Time;\n"
-		"	vec4 Gem_Sin;\n"
-		"	vec4 Gem_Cos;\n"
-		"	float Gem_DeltaTime;\n"
-		"};\n"
-		"\n" // Normal mapping helper.
-		"mat3 make_TBN(vec3 normal, vec3 tangent, float handedness)\n"
-		"{\n"
-		"	vec3 N = Gem_NormalToWorld * normal;\n"
-		"	vec3 T = Gem_NormalToWorld * tangent;\n"
-		"	vec3 B = cross(T, N) * handedness;\n"
-		"	return mat3(T, B, N);\n"
-		"}\n"
-		"\n" // sRGB <-> linear conversions.
-		"float linear_to_sRGB(float x)\n"
-		"{\n"
-		"	if (x <= 0.00031308) return 12.92 * x;\n"
-		"	else return 1.055 * pow(x, (1.0 / 2.4)) - 0.055;\n"
-		"}\n"
-		"vec3 linear_to_sRGB(vec3 v) { return vec3(linear_to_sRGB(v.x), linear_to_sRGB(v.y), linear_to_sRGB(v.z)); }\n"
-		"\n"
-		"float sRGB_to_linear(float x)\n"
-		"{\n"
-		"	if (x <= 0.040449936) return x / 12.92;\n"
-		"	else return pow((x + 0.055) / 1.055, 2.4);\n"
-		"}\n"
-		"vec3 sRGB_to_linear(vec3 v) { return vec3(sRGB_to_linear(v.x), sRGB_to_linear(v.y), sRGB_to_linear(v.z)); }\n"
-		"\n" // These are enum values from gem::Light::Type
-		"bool GEM_IS_POINT_LIGHT(uint type) { return type == 0u; }\n"
-		"bool GEM_IS_DIRECTIONAL_LIGHT(uint type) { return type == 1u; }\n"
-		"bool GEM_IS_SPOT_LIGHT(uint type) { return type == 2u; }\n"
-		"\n"
-		"vec3 GEM_COMPUTE_LIGHT(vec3 normal, vec3 surfacePos, vec3 color, vec3 lightPos, vec3 direction, float attenLinear, float attenQuadratic, float angle, uint type)\n"
-		"{\n"
-		"	if (GEM_IS_POINT_LIGHT(type))\n"
-		"	{\n"
-		"		vec3 lightDir = lightPos - surfacePos;\n"
-		"		float dist = length(lightDir);\n"
-		"		lightDir /= dist;\n"
-		"		float NdotL = dot(normal, lightDir);\n"
-		""
-		"		if (NdotL > 0.0)\n"
-		"		{\n"
-		"			float attenuation = 1.0 / (0.75 + attenLinear * dist + attenQuadratic * dist * dist);\n"
-		"			return color * NdotL * attenuation;\n"
-		"		}\n"
-		"	}\n"
-		"	else if (GEM_IS_DIRECTIONAL_LIGHT(type))\n"
-		"	{\n"
-		"		float NdotL = dot(normal, -direction);\n"
-		""
-		"		return color * max(NdotL, 0.0);\n"
-		"	}\n"
-		"	else\n" // Spot light is assumed if the other cases fail.
-		"	{\n"
-		"		vec3 lightDir = lightPos - surfacePos;\n"
-		"		float dist = length(lightDir);\n"
-		"		lightDir /= dist;\n"
-		"		float NdotL = dot(normal, lightDir);\n"
-		""
-		"		if (NdotL > 0.0)\n"
-		"		{\n"
-		"			float attenuation = 1.0 / (0.75 + attenLinear * dist + attenQuadratic * dist * dist);\n"
-		"			float coneCos = dot(lightDir, -direction);\n"
-		"			if (coneCos > angle)\n"
-		"			{\n"
-		"				float coneFactor = (coneCos - angle) / (1.0 - angle);\n"
-		"				return color * NdotL * attenuation * min(coneFactor, 1.0);\n"
-		"			}\n"
-		"		}\n"
-		"	}\n"
-		""
-		"	return vec3(0.0);\n"
-		"}"
-		"\n\n"
-		"#define is_point_light(light) GEM_IS_POINT_LIGHT(light##.Type)\n"
-		"#define is_directional_light(light) GEM_IS_DIRECTIONAL_LIGHT(light##.Type)\n"
-		"#define is_spot_light(light) GEM_IS_SPOT_LIGHT(light##.Type)\n"
-		"#define compute_light(light, normal, pos) GEM_COMPUTE_LIGHT(normal, pos, light##.Color, light##.Position, light##.Direction, light##.AttenuationLinear, light##.AttenuationQuadratic, light##.Angle, light##.Type)\n";
+	constexpr const char* header = R"(
+		#define M_PI 3.14159265358979323846
+		#define M_E 2.71828182845904523536
+		#define M_LOG2E 1.44269504088896340736
+		#define M_LOG10E 0.434294481903251827651
+		#define M_LN2 0.693147180559945309417
+		#define M_LN10 2.30258509299404568402
+
+		layout(std140) uniform Gem_Camera_Uniforms{
+			mat4 Gem_View;
+			mat4 Gem_Proj;
+			mat4 Gem_ViewProj;
+			mat4 Gem_InvView;
+			mat4 Gem_InvProj;
+			vec3 Gem_CameraPosition;
+		};
+
+		layout(std140) uniform Gem_Model_Uniforms{
+			mat4 Gem_MVP;
+			mat4 Gem_ModelView;
+			mat4 Gem_Model;
+			mat4 Gem_InvModel;
+			mat3 Gem_NormalToWorld;
+		};
+
+		layout(std140) uniform Gem_Engine_Uniforms{
+			vec4 ScreenParams;
+		};
+
+		layout(std140) uniform Gem_Time_Uniforms{
+			vec4 Gem_Time;
+			vec4 Gem_Sin;
+			vec4 Gem_Cos;
+			float Gem_DeltaTime;
+		};
+
+		// Normal mapping helper.
+		mat3 make_TBN(vec3 normal, vec3 tangent, float handedness){
+			vec3 N = Gem_NormalToWorld * normal;
+			vec3 T = Gem_NormalToWorld * tangent;
+			vec3 B = cross(T, N) * handedness;
+			return mat3(T, B, N);
+		}
+
+		float linear_to_sRGB(float x)
+		{
+			if (x <= 0.00031308) return 12.92 * x;
+			else return 1.055 * pow(x, (1.0 / 2.4)) - 0.055;
+		}
+		vec3 linear_to_sRGB(vec3 v) { return vec3(linear_to_sRGB(v.x), linear_to_sRGB(v.y), linear_to_sRGB(v.z)); }
+
+		float sRGB_to_linear(float x)
+		{
+			if (x <= 0.040449936) return x / 12.92;
+			else return pow((x + 0.055) / 1.055, 2.4);
+		}
+		vec3 sRGB_to_linear(vec3 v) { return vec3(sRGB_to_linear(v.x), sRGB_to_linear(v.y), sRGB_to_linear(v.z)); }
+
+		// These are enum values from gem::Light::Type.
+		bool GEM_IS_POINT_LIGHT(uint type) { return type == 0u; }
+		bool GEM_IS_DIRECTIONAL_LIGHT(uint type) { return type == 1u; }
+		bool GEM_IS_SPOT_LIGHT(uint type) { return type == 2u; }
+
+		vec3 GEM_COMPUTE_LIGHT(vec3 normal, vec3 surfacePos, vec3 color, vec3 lightPos, vec3 direction, float attenLinear, float attenQuadratic, float angle, uint type)
+		{
+			if (GEM_IS_POINT_LIGHT(type))
+			{
+				vec3 lightDir = lightPos - surfacePos;
+				float dist = length(lightDir);
+				lightDir /= dist;
+				float NdotL = dot(normal, lightDir);
+
+				if (NdotL > 0.0)
+				{
+					float attenuation = 1.0 / (0.75 + attenLinear * dist + attenQuadratic * dist * dist);
+					return color * NdotL * attenuation;
+				}
+			}
+			else if (GEM_IS_DIRECTIONAL_LIGHT(type))
+			{
+				float NdotL = dot(normal, -direction);
+				return color * max(NdotL, 0.0);
+			}
+			else // Spot light is assumed if the other cases fail.
+			{
+				vec3 lightDir = lightPos - surfacePos;
+				float dist = length(lightDir);
+				lightDir /= dist;
+				float NdotL = dot(normal, lightDir);
+
+				if (NdotL > 0.0)
+				{
+					float attenuation = 1.0 / (0.75 + attenLinear * dist + attenQuadratic * dist * dist);
+					float coneCos = dot(lightDir, -direction);
+					if (coneCos > angle)
+					{
+						float coneFactor = (coneCos - angle) / (1.0 - angle);
+						return color * NdotL * attenuation * min(coneFactor, 1.0);
+					}
+				}
+			}
+			return vec3(0.0);
+		}
+
+		#define is_point_light(light) GEM_IS_POINT_LIGHT(light##.Type)
+		#define is_directional_light(light) GEM_IS_DIRECTIONAL_LIGHT(light##.Type)
+		#define is_spot_light(light) GEM_IS_SPOT_LIGHT(light##.Type)
+		#define compute_light(light, normal, pos) GEM_COMPUTE_LIGHT(normal, pos, light##.Color, light##.Position, light##.Direction, light##.AttenuationLinear, light##.AttenuationQuadratic, light##.Angle, light##.Type)
+	)";
 
 	unsigned CompileShader(unsigned program, unsigned type, std::string_view _header, std::string_view body)
 	{
