@@ -94,6 +94,28 @@ namespace gem
 		};
 	}
 
+	template<typename T>
+	void BufferMapping::SetElement(unsigned offset, const T& element)
+	{
+		ASSERT(offset + sizeof(T) <= buffer.size, "Out of bounds.");
+
+		T* dest = reinterpret_cast<T*>(data + offset);
+		*dest = element;
+	}
+
+	template<typename T>
+	void BufferMapping::Fill(unsigned start, unsigned count, const T& element)
+	{
+		ASSERT(start + count * sizeof(T) <= buffer.size, "Out of bounds.");
+
+		T* dest = reinterpret_cast<T*>(data + start);
+		for (; count > 0; --count)
+		{
+			*dest = element;
+			++dest;
+		}
+	}
+
 	template<typename Type>
 	detail::VertexRange<Type> VertexArray::GetStream(unsigned bindingUnit, VertexAccess access)
 	{

@@ -11,6 +11,7 @@
 #include "gemcutter/Resource/ParticleBuffer.h"
 #include "gemcutter/Resource/Shader.h"
 #include "gemcutter/Resource/Texture.h"
+#include "gemcutter/Resource/VertexArray.h"
 #include "gemcutter/Sound/SoundSystem.h"
 
 #include <glew/glew.h>
@@ -823,6 +824,7 @@ namespace gem
 			SetCullFunc(CullFunc::Clockwise);
 			SetDepthFunc(DepthFunc::Normal);
 			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+			glPrimitiveRestartIndex(VertexBuffer::RESTART_INDEX);
 			if (GLEW_ARB_seamless_cube_map)
 			{
 				glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);

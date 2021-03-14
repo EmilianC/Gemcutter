@@ -1,5 +1,6 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
+#include "gemcutter/Application/Logging.h"
 #include "gemcutter/Rendering/Rendering.h"
 #include "gemcutter/Resource/Shareable.h"
 
@@ -7,25 +8,58 @@
 
 namespace gem
 {
+	class VertexBuffer;
+	class VertexArray;
+
+	// Enables direct manipulation of a VertexBuffer's data.
+	// The lifetime of this object should be kept as short as possible.
+	// This is more performant than VertexBuffer functions when multiple operations are needed.
+	class BufferMapping
+	{
+	public:
+		BufferMapping(VertexBuffer& buffer, VertexAccess accessMode);
+		~BufferMapping();
+
+		void ZeroData(unsigned start, unsigned size);
+		void SetData(unsigned start, unsigned size, const void* source);
+		char* GetPtr();
+
+		template<typename T>
+		void SetElement(unsigned offset, const T& element);
+		template<typename T>
+		void Fill(unsigned start, unsigned count, const T& element);
+
+		// For use only with 'unsigned short' index buffers.
+		void FillIndexSequence(unsigned start, unsigned count, unsigned short firstIndex);
+		void SetRestartIndex(unsigned offset);
+
+	private:
+		VertexBuffer& buffer;
+		char* data;
+	};
+
 	// A single OpenGL buffer object.
 	// This owns and provides access to the raw data used for rendering.
 	class VertexBuffer : public Shareable<VertexBuffer>
 	{
-		friend class VertexArray;
+		friend BufferMapping;
+		friend VertexArray;
 	public:
 		VertexBuffer(unsigned size, VertexBufferUsage usage, VertexBufferType type);
 		~VertexBuffer();
 
 		void ClearData();
-		void SetData(unsigned start, unsigned size, void* data);
+		void ClearData(unsigned start, unsigned size);
+		void SetData(unsigned start, unsigned size, const void* source);
 
-		// Must be followed by a call to UnmapBuffer() before rendering with the buffer.
-		void* MapBuffer(VertexAccess accessMode);
-		void UnmapBuffer();
+		BufferMapping MapBuffer(VertexAccess accessMode);
 
 		unsigned GetSize() const;
 		VertexBufferUsage GetBufferUsage() const;
 		VertexBufferType GetBufferType() const;
+
+		// Special index value used to restart Triangle/line fans/strips/loops.
+		static const unsigned short RESTART_INDEX;
 
 	private:
 		void Bind() const;

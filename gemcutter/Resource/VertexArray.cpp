@@ -3,9 +3,67 @@
 #include "gemcutter/Application/Logging.h"
 
 #include <glew/glew.h>
+#include <numeric>
 
 namespace gem
 {
+	const unsigned short VertexBuffer::RESTART_INDEX = std::numeric_limits<unsigned short>::max();
+
+	BufferMapping::BufferMapping(VertexBuffer& _buffer, VertexAccess accessMode)
+		: buffer(_buffer)
+	{
+		buffer.Bind();
+		data = static_cast<char*>(glMapBuffer(buffer.target, ResolveVertexAccess(accessMode)));
+		buffer.UnBind();
+
+		ASSERT(data, "Failed to map VertexBuffer.");
+	}
+
+	BufferMapping::~BufferMapping()
+	{
+		buffer.Bind();
+		glUnmapBuffer(buffer.target);
+		buffer.UnBind();
+	}
+
+	void BufferMapping::ZeroData(unsigned start, unsigned size)
+	{
+		ASSERT(start + size <= buffer.size, "Out of bounds.");
+
+		std::memset(data + start, 0, size);
+	}
+
+	void BufferMapping::SetData(unsigned start, unsigned size, const void* source)
+	{
+		ASSERT(start + size <= buffer.size, "Out of bounds.");
+
+		std::memcpy(data + start, source, size);
+	}
+
+	char* BufferMapping::GetPtr()
+	{
+		return data;
+	}
+
+	void BufferMapping::FillIndexSequence(unsigned start, unsigned count, unsigned short firstIndex)
+	{
+		ASSERT(buffer.target == GL_ELEMENT_ARRAY_BUFFER, "Index sequences can only used for index buffers.");
+		ASSERT(start + count * sizeof(unsigned short) <= buffer.size, "Out of bounds.");
+
+		auto* begin = reinterpret_cast<unsigned short*>(data + start);
+		auto* end   = begin + count;
+		std::iota(begin, end, firstIndex);
+	}
+
+	void BufferMapping::SetRestartIndex(unsigned offset)
+	{
+		ASSERT(buffer.target == GL_ELEMENT_ARRAY_BUFFER, "Restart indices can only be set inside index buffers.");
+		ASSERT(offset <= buffer.size, "Out of bounds.");
+
+		auto* dest = reinterpret_cast<unsigned short*>(data + offset);
+		*dest = VertexBuffer::RESTART_INDEX;
+	}
+
 	VertexBuffer::VertexBuffer(unsigned _size, VertexBufferUsage _usage, VertexBufferType type)
 		: size(_size)
 		, usage(_usage)
@@ -31,25 +89,27 @@ namespace gem
 		UnBind();
 	}
 
-	void VertexBuffer::SetData(unsigned start, unsigned _size, void* data)
+	void VertexBuffer::ClearData(unsigned start, unsigned _size)
 	{
 		ASSERT(start + _size <= size, "Out of bounds.");
 
 		Bind();
-		glBufferSubData(target, start, _size, data);
+		glClearBufferSubData(target, GL_R8, start, _size, GL_RED, GL_UNSIGNED_BYTE, nullptr);
 		UnBind();
 	}
 
-	void* VertexBuffer::MapBuffer(VertexAccess accessMode)
+	void VertexBuffer::SetData(unsigned start, unsigned _size, const void* source)
 	{
+		ASSERT(start + _size <= size, "Out of bounds.");
+
 		Bind();
-		return glMapBuffer(target, ResolveVertexAccess(accessMode));
+		glBufferSubData(target, start, _size, source);
+		UnBind();
 	}
 
-	void VertexBuffer::UnmapBuffer()
+	BufferMapping VertexBuffer::MapBuffer(VertexAccess accessMode)
 	{
-		glUnmapBuffer(target);
-		glBindBuffer(target, GL_NONE);
+		return {*this, accessMode};
 	}
 
 	unsigned VertexBuffer::GetSize() const

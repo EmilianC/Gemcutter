@@ -150,6 +150,7 @@ option(ENABLE_PCH "Use a precompiled header file." TRUE)
 if (ENABLE_PCH)
 	target_precompile_headers(gemcutter
 		PRIVATE
+			<algorithm>
 			<cstring>
 			<functional>
 			<map>

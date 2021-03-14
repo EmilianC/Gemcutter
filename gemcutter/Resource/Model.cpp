@@ -62,10 +62,10 @@ namespace gem
 
 		auto buffer = VertexBuffer::MakeNew(sizeof(float) * bufferSize, usage, VertexBufferType::Data);
 
-		// Read the data buffer from the file.
-		void* data = buffer->MapBuffer(VertexAccess::WriteOnly);
-		fread(data, sizeof(float), bufferSize, binaryFile);
-		buffer->UnmapBuffer();
+		{ // Read the data buffer from the file.
+			auto mapping = buffer->MapBuffer(VertexAccess::WriteOnly);
+			fread(mapping.GetPtr(), sizeof(float), bufferSize, binaryFile);
+		}
 
 		// Enable vertex attribute streams.
 		VertexStream stream = {};
