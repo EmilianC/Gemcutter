@@ -120,6 +120,54 @@ namespace gem
 		w = 1.0f;
 	}
 
+	void quat::FromEuler(const vec3& degrees)
+	{
+		float rx = ToRadian(degrees.x) * 0.5f;
+		float ry = ToRadian(degrees.y) * 0.5f;
+		float rz = ToRadian(degrees.z) * 0.5f;
+
+	    float cx = cos(rx);
+	    float sx = sin(rx);
+	    float cy = cos(ry);
+	    float sy = sin(ry);
+		float cz = cos(rz);
+	    float sz = sin(rz);
+
+	    x = sx * cy * cz - cx * sy * sz;
+	    y = cx * sy * cz + sx * cy * sz;
+	    z = cx * cy * sz - sx * sy * cz;
+	    w = cx * cy * cz + sx * sy * sz;
+	}
+
+	vec3 quat::GetEuler() const
+	{
+		vec3 angles;
+
+	    float sinr_cosp = 2.0f * (w * x + y * z);
+	    float cosr_cosp = 1.0f - 2.0f * (x * x + y * y);
+	    angles.x = std::atan2(sinr_cosp, cosr_cosp);
+
+	    float sinp = 2.0f * (w * y - z * x);
+	    if (std::abs(sinp) >= 1.0f)
+	    {
+	        // Out of range.
+	        angles.y = std::copysign(M_PI * 0.5f, sinp);
+		}
+	    else
+	    {
+	        angles.y = std::asin(sinp);
+		}
+
+	    float siny_cosp = 2.0f * (w * z + x * y);
+	    float cosy_cosp = 1.0f - 2.0f * (y * y + z * z);
+	    angles.z = std::atan2(siny_cosp, cosy_cosp);
+
+		angles.x = ToDegree(angles.x);
+		angles.y = ToDegree(angles.y);
+		angles.z = ToDegree(angles.z);
+		return angles;
+	}
+
 	void quat::Conjugate()
 	{
 		x *= -1.0f;

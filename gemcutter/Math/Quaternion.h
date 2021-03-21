@@ -24,8 +24,13 @@ namespace gem
 		float& operator[](unsigned index);
 
 		void SetIdentity();
+
+		void FromEuler(const vec3& degrees);
+		vec3 GetEuler() const;
+
 		void Conjugate();
 		quat GetConjugate() const;
+
 		void Normalize();
 		quat GetNormalized() const;
 
