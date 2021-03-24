@@ -149,20 +149,11 @@ namespace gem
 
 	void VertexArray::SetIndexBuffer(VertexBuffer::Ptr buffer)
 	{
-		glBindVertexArray(VAO);
-
 		indexBuffer = std::move(buffer);
 		if (indexBuffer)
 		{
 			ASSERT(indexBuffer->GetBufferType() == VertexBufferType::Index, "'buffer' must contain indices.");
-			indexBuffer->Bind();
 		}
-		else
-		{
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_NONE);
-		}
-
-		glBindVertexArray(GL_NONE);
 	}
 
 	const VertexBuffer* VertexArray::GetIndexBuffer() const
@@ -387,6 +378,7 @@ namespace gem
 	{
 		if (indexBuffer)
 		{
+			indexBuffer->Bind();
 			glDrawElements(ResolveVertexArrayFormat(formatOverride), vertexCount, GL_UNSIGNED_SHORT, reinterpret_cast<void*>(firstIndex * sizeof(unsigned short)));
 		}
 		else
