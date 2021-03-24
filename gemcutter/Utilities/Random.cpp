@@ -47,6 +47,14 @@ namespace gem
 			RandomRange(0.0f, 1.0f));
 	}
 
+	bool RandomBool(float probability)
+	{
+		ASSERT(probability >= 0.0f && probability <= 1.0f, "Probability must be within [0, 1].");
+
+		std::bernoulli_distribution dist(probability);
+		return dist(engine);
+	}
+
 	Range::Range(float _min, float _max)
 	{
 		Set(_min, _max);

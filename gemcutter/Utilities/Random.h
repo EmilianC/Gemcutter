@@ -18,6 +18,9 @@ namespace gem
 	// Returns a random color with [0, 1] RGB values.
 	vec3 RandomColor();
 
+	// Returns true randomly given the [0, 1] probability.
+	bool RandomBool(float probability);
+
 	struct Range
 	{
 		Range() = default;
