@@ -9,16 +9,13 @@ namespace gem
 	SoundListener::SoundListener(Entity& _owner)
 		: Component(_owner)
 	{
-		if (GetListener())
+		if (!IsEnabled())
 		{
-			// If there already is an active SoundListener, we don't disturb it.
-			_owner.Disable<SoundListener>();
+			// Do not change any existing state.
+			return;
 		}
-		else
-		{
-			listener = owner.GetWeakPtr();
-			SoundSystem.Unmute();
-		}
+
+		OnEnable();
 	}
 
 	Entity::Ptr SoundListener::GetListener()

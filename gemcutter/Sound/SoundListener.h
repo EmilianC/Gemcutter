@@ -4,9 +4,10 @@
 
 namespace gem
 {
-	// The Entity with this component is also the location where sounds are heard from.
-	// The first instance of the component is active be default, others are inactive by default.
-	// Setting a SoundListener as active will disable any other instances.
+	// The Entity with this component marks the location at which sounds are heard from.
+	// Only one SoundListener can be enabled at a given point in time.
+	// Creating or enabling a SoundListener will disable the currently active one.
+	// Disabling this component mutes all audio until a SoundListener becomes enabled again.
 	class SoundListener : public Component<SoundListener>
 	{
 	public:
@@ -16,11 +17,10 @@ namespace gem
 		static Entity::Ptr GetListener();
 
 	private:
-		// Disabling this component causes audio to stop being heard until a SoundListener becomes active again.
 		void OnDisable() final override;
 		void OnEnable() final override;
 
-		// A pointer to the active listener. Only one is allowed.
+		// A pointer to the active listener.
 		static Entity::WeakPtr listener;
 	};
 }
