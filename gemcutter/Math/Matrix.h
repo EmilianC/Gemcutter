@@ -126,7 +126,7 @@ namespace gem
 		static const mat3 Identity;
 
 		// 'forward' must be a normalized vector.
-		static mat3 LookAt(const vec3& forward, const vec3& upAnchor);
+		[[nodiscard]] static mat3 LookAt(const vec3& forward, const vec3& upAnchor);
 
 		float data[9];
 	};
@@ -208,13 +208,13 @@ namespace gem
 
 		static const mat4 Identity;
 
-		static mat4 PerspectiveProjection(float fovyDegrees, float aspect, float zNear, float zFar);
-		static mat4 InversePerspectiveProjection(float fovyDegrees, float aspect, float zNear, float zFar);
+		[[nodiscard]] static mat4 PerspectiveProjection(float fovyDegrees, float aspect, float zNear, float zFar);
+		[[nodiscard]] static mat4 InversePerspectiveProjection(float fovyDegrees, float aspect, float zNear, float zFar);
 
-		static mat4 OrthographicProjection(float left, float right, float top, float bottom, float zNear, float zFar);
-		static mat4 InverseOrthographicProjection(float left, float right, float top, float bottom, float zNear, float zFar);
+		[[nodiscard]] static mat4 OrthographicProjection(float left, float right, float top, float bottom, float zNear, float zFar);
+		[[nodiscard]] static mat4 InverseOrthographicProjection(float left, float right, float top, float bottom, float zNear, float zFar);
 
-		static mat4 LookAt(const vec3& position, const vec3& target, const vec3& upAnchor);
+		[[nodiscard]] static mat4 LookAt(const vec3& position, const vec3& target, const vec3& upAnchor);
 
 		float data[16];
 	};

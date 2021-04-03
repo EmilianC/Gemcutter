@@ -52,6 +52,6 @@ namespace gem
 		float w = 1.0f;
 	};
 
-	float Dot(const quat& p0, const quat& p1);
-	quat Slerp(const quat& p0, const quat& p1, float percent);
+	[[nodiscard]] float Dot(const quat& p0, const quat& p1);
+	[[nodiscard]] quat Slerp(const quat& p0, const quat& p1, float percent);
 }

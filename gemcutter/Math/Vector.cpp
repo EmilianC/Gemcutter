@@ -5,10 +5,12 @@
 
 namespace gem
 {
-	const vec2 vec2::Zero = vec2(0.0f, 0.0f);
-	const vec2 vec2::One = vec2(1.0f, 1.0f);
+	const vec2 vec2::Zero  = vec2(0.0f, 0.0f);
+	const vec2 vec2::One   = vec2(1.0f, 1.0f);
+	const vec2 vec2::Left  = vec2(-1.0f, 0.0f);
 	const vec2 vec2::Right = vec2(1.0f, 0.0f);
-	const vec2 vec2::Up = vec2(0.0f, 1.0f);
+	const vec2 vec2::Up    = vec2(0.0f, 1.0f);
+	const vec2 vec2::Down  = vec2(0.0f, -1.0f);
 
 	vec2::vec2(float x, float y)
 		: x(x), y(y)
@@ -125,11 +127,14 @@ namespace gem
 		return *(&x + index);
 	}
 
-	const vec3 vec3::Zero = vec3(0.0f, 0.0f, 0.0f);
-	const vec3 vec3::One = vec3(1.0f, 1.0f, 1.0f);
-	const vec3 vec3::Right = vec3(1.0f, 0.0f, 0.0f);
-	const vec3 vec3::Up = vec3(0.0f, 1.0f, 0.0f);
-	const vec3 vec3::Forward = vec3(0.0f, 0.0f, 1.0f);
+	const vec3 vec3::Zero     = vec3(0.0f, 0.0f, 0.0f);
+	const vec3 vec3::One      = vec3(1.0f, 1.0f, 1.0f);
+	const vec3 vec3::Left     = vec3(-1.0f, 0.0f, 0.0f);
+	const vec3 vec3::Right    = vec3(1.0f, 0.0f, 0.0f);
+	const vec3 vec3::Up       = vec3(0.0f, 1.0f, 0.0f);
+	const vec3 vec3::Down     = vec3(0.0f, -1.0f, 0.0f);
+	const vec3 vec3::Forward  = vec3(0.0f, 0.0f, 1.0f);
+	const vec3 vec3::Backward = vec3(0.0f, 0.0f, -1.0f);
 
 	vec3::vec3(const vec2& xy, float z)
 		: x(xy[0]), y(xy[1]), z(z)
@@ -264,11 +269,14 @@ namespace gem
 		return vec2(x, y);
 	}
 
-	const vec4 vec4::Zero = vec4(0.0f, 0.0f, 0.0f, 0.0f);
-	const vec4 vec4::One = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-	const vec4 vec4::Right = vec4(1.0f, 0.0f, 0.0f, 0.0f);
-	const vec4 vec4::Up = vec4(0.0f, 1.0f, 0.0f, 0.0f);
-	const vec4 vec4::Forward = vec4(0.0f, 0.0f, 1.0f, 0.0f);
+	const vec4 vec4::Zero     = vec4(0.0f, 0.0f, 0.0f, 0.0f);
+	const vec4 vec4::One      = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	const vec4 vec4::Left     = vec4(-1.0f, 0.0f, 0.0f, 0.0f);
+	const vec4 vec4::Right    = vec4(1.0f, 0.0f, 0.0f, 0.0f);
+	const vec4 vec4::Up       = vec4(0.0f, 1.0f, 0.0f, 0.0f);
+	const vec4 vec4::Down     = vec4(0.0f, -1.0f, 0.0f, 0.0f);
+	const vec4 vec4::Forward  = vec4(0.0f, 0.0f, 1.0f, 0.0f);
+	const vec4 vec4::Backward = vec4(0.0f, 0.0f, -1.0f, 0.0f);
 
 	vec4::vec4(const vec2& xy, float z, float w)
 		: x(xy[0]), y(xy[1]), z(z), w(w)

@@ -154,13 +154,13 @@ namespace gem
 
 	float mat2::operator[](unsigned index) const
 	{
-		ASSERT(index < 9, "'index' must be in the range of [0, 8].");
+		ASSERT(index < 4, "'index' must be in the range of [0, 3].");
 		return data[index];
 	}
 
 	float& mat2::operator[](unsigned index)
 	{
-		ASSERT(index < 9, "'index' must be in the range of [0, 8].");
+		ASSERT(index < 4, "'index' must be in the range of [0, 3].");
 		return data[index];
 	}
 
