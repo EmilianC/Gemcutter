@@ -34,17 +34,15 @@ namespace gem
 
 		// Subscribes to the event.
 		Listener();
-		Listener(const std::function<EventFunc>& callback);
-		Listener(std::function<EventFunc>&& callback);
+		Listener(std::function<EventFunc> callback);
 
 		// Unsubscribes from the event.
 		~Listener();
 
-		Listener& operator=(const std::function<EventFunc>& callback);
-		Listener& operator=(std::function<EventFunc>&& callback);
+		Listener& operator=(std::function<EventFunc> callback);
 
 	private:
-		std::function<EventFunc> callback;
+		std::function<EventFunc> func;
 	};
 
 	// You can inherit from this class to create your own custom events.

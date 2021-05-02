@@ -10,15 +10,8 @@ namespace gem
 	}
 
 	template<class EventObj>
-	Listener<EventObj>::Listener(const std::function<EventFunc>& _callback)
-		: callback(_callback)
-	{
-		EventObj::Subscribe(*this);
-	}
-
-	template<class EventObj>
-	Listener<EventObj>::Listener(std::function<EventFunc>&& _callback)
-		: callback(std::move(_callback))
+	Listener<EventObj>::Listener(std::function<EventFunc> callback)
+		: func(std::move(callback))
 	{
 		EventObj::Subscribe(*this);
 	}
@@ -30,16 +23,9 @@ namespace gem
 	}
 
 	template<class EventObj>
-	Listener<EventObj>& Listener<EventObj>::operator=(const std::function<EventFunc>& _callback)
+	Listener<EventObj>& Listener<EventObj>::operator=(std::function<EventFunc> callback)
 	{
-		callback = _callback;
-		return *this;
-	}
-
-	template<class EventObj>
-	Listener<EventObj>& Listener<EventObj>::operator=(std::function<EventFunc>&& _callback)
-	{
-		callback = std::move(_callback);
+		func = std::move(callback);
 		return *this;
 	}
 
@@ -60,9 +46,9 @@ namespace gem
 	{
 		for (unsigned i = 0; i < listeners.size(); ++i)
 		{
-			if (listeners[i]->callback)
+			if (listeners[i]->func)
 			{
-				listeners[i]->callback(*static_cast<const derived*>(this));
+				listeners[i]->func(*static_cast<const derived*>(this));
 			}
 		}
 	}
