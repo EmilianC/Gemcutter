@@ -1,4 +1,5 @@
 list(APPEND unit_test_files
+	"Delegate.cpp"
 	"EntityComponentSystem.cpp"
 	"EnumFlags.cpp"
 	"FileSystem.cpp"

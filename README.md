@@ -16,7 +16,7 @@ Highlight features include:
 * Audio powered by OpenAL
 * Mesh and Texture loading
 * [FreeType text rendering](docs/Text.md)
-* Event dispatching and response
+* Safe function delegates and event management
 * Robust fixed-timestep updates
 * A complete math library
 * Keyboard/Mouse/Xbox-Controller support

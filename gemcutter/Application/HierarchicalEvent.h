@@ -1,10 +1,9 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
+#include "gemcutter/Application/Delegate.h"
 #include "gemcutter/Application/Event.h"
 #include "gemcutter/Entity/Entity.h"
 #include "gemcutter/Entity/Hierarchy.h"
-
-#include <functional>
 
 namespace gem
 {
@@ -21,7 +20,7 @@ namespace gem
 
 		// Your function should return 'true' if the event is handled. This will
 		// consume it and stop it from propagating further down the hierarchy.
-		std::function<bool(const EventObj&)> callback;
+		Delegate<bool(const EventObj&)> callback;
 	};
 
 	// Propagates an event through a hierarchy of Entities.
@@ -55,7 +54,7 @@ namespace gem
 			{
 				if (auto* comp = children[i]->Try<HierarchicalListener<EventObj>>())
 				{
-					if (comp->callback && comp->callback(e))
+					if (comp->callback(e).value_or(false))
 					{
 						return true;
 					}
