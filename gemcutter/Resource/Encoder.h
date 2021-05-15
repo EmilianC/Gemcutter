@@ -7,8 +7,6 @@
 #include "gemcutter/Utilities/ScopeGuard.h"
 #include "gemcutter/Utilities/String.h"
 
-#include <memory>
-
 namespace gem
 {
 	// A base class for all asset packers that exposes a common interface to the AssetManager.
@@ -234,7 +232,7 @@ namespace gem
 
 		// Updates the provided data in order boost its version number by one.
 		// Upgrading is a sequential process, meaning that you only need to provide code to upgrade from 1->2 and from 2->3, not 1->3.
-		virtual bool Upgrade(ConfigTable& metadata, unsigned loadedVersion) const { return true; };
+		virtual bool Upgrade(ConfigTable& metadata, unsigned loadedVersion) const { return true; }
 
 		// The newest version of the metaData.
 		const unsigned version;

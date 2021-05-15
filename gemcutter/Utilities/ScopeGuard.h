@@ -43,6 +43,7 @@ namespace gem
 	public:
 		ScopeGuard() = delete;
 		ScopeGuard(const ScopeGuard&) = delete;
+		ScopeGuard& operator=(ScopeGuard&&) = delete;
 		ScopeGuard& operator=(const ScopeGuard&) = delete;
 
 		ScopeGuard(ScopeGuard&& rhs) noexcept
