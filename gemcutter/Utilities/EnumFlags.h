@@ -10,7 +10,7 @@ namespace gem
 	{
 	public:
 		EnumFlags()
-			: value(Primitive())
+			: value(Primitive{})
 		{
 		}
 
@@ -26,12 +26,17 @@ namespace gem
 
 		void Clear()
 		{
-			value = Primitive();
+			value = Primitive{};
 		}
 
 		bool Has(EnumFlags mask) const
 		{
-			return (value & mask.value) != Primitive();
+			return (value & mask.value) != Primitive{};
+		}
+
+		bool operator==(const EnumFlags& other) const
+		{
+			return value == other.value;
 		}
 
 		bool operator==(Enumeration val) const
@@ -44,6 +49,27 @@ namespace gem
 			return value == val;
 		}
 
+		bool operator!=(const EnumFlags& other) const
+		{
+			return value != other.value;
+		}
+
+		bool operator!=(Enumeration val) const
+		{
+			return value != static_cast<Primitive>(val);
+		}
+
+		bool operator!=(Primitive val) const
+		{
+			return value != val;
+		}
+
+		EnumFlags& operator|=(const EnumFlags& other)
+		{
+			value = value | other.value;
+			return *this;
+		}
+
 		EnumFlags& operator|=(Enumeration val)
 		{
 			value = value | static_cast<Primitive>(val);
@@ -53,6 +79,12 @@ namespace gem
 		EnumFlags& operator|=(Primitive val)
 		{
 			value = value | val;
+			return *this;
+		}
+
+		EnumFlags& operator&=(const EnumFlags& other)
+		{
+			value = value & other.value;
 			return *this;
 		}
 
@@ -68,6 +100,11 @@ namespace gem
 			return *this;
 		}
 
+		EnumFlags operator|(const EnumFlags& other) const
+		{
+			return value | other.value;
+		}
+
 		EnumFlags operator|(Enumeration val) const
 		{
 			return value | static_cast<Primitive>(val);
@@ -76,6 +113,11 @@ namespace gem
 		EnumFlags operator|(Primitive val) const
 		{
 			return value | val;
+		}
+
+		EnumFlags operator&(const EnumFlags& other) const
+		{
+			return value & other.value;
 		}
 
 		EnumFlags operator&(Enumeration val) const
