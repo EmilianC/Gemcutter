@@ -39,7 +39,8 @@ namespace gem
 	}
 
 	template<typename Return, typename... Args>
-	auto Delegate<Return(Args...)>::operator()(Args&&... params) -> std::conditional_t<HasReturnValue, std::optional<Return>, void>
+	template<typename... Params>
+	auto Delegate<Return(Args...)>::operator()(Params&&... params) -> std::conditional_t<HasReturnValue, std::optional<Return>, void>
 	{
 		// This checks if the pointer is initialized (not nullptr).
 		if (std::weak_ptr<void>{}.owner_before(lifetimePtr))
@@ -55,7 +56,7 @@ namespace gem
 			std::optional<Return> result;
 			if (func)
 			{
-				result = func(std::forward<Args>(params)...);
+				result = func(std::forward<Params>(params)...);
 			}
 			else
 			{
@@ -68,7 +69,7 @@ namespace gem
 		{
 			if (func)
 			{
-				func(std::forward<Args>(params)...);
+				func(std::forward<Params>(params)...);
 			}
 			else
 			{
@@ -125,7 +126,8 @@ namespace gem
 	}
 
 	template<typename Return, typename... Args>
-	void Dispatcher<Return(Args...)>::Dispatch(Args&&... params)
+	template<typename... Params>
+	void Dispatcher<Return(Args...)>::Dispatch(Params&&... params)
 	{
 		const unsigned size = bindings.size();
 		for (unsigned i = 0; i < size; ++i)
@@ -144,7 +146,7 @@ namespace gem
 
 			if (binding.func)
 			{
-				binding.func(std::forward<Args>(params)...);
+				binding.func(std::forward<Params>(params)...);
 			}
 		}
 

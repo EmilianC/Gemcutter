@@ -82,7 +82,8 @@ namespace gem
 
 		// Internally checks if the bound functor still has a valid lifetime.
 		// An empty optional<> is returned if a return type exists, but the functor could not be invoked.
-		auto operator()(Args&&... params) -> std::conditional_t<HasReturnValue, std::optional<Return>, void>;
+		template<typename... Params>
+		auto operator()(Params&&... params) -> std::conditional_t<HasReturnValue, std::optional<Return>, void>;
 
 	private:
 		void Unbind(const DelegateHandle& handle) override;
@@ -106,7 +107,8 @@ namespace gem
 		bool HasBindings() const;
 		void Clear();
 
-		void Dispatch(Args&&... params);
+		template<typename... Params>
+		void Dispatch(Params&&... params);
 
 	private:
 		void Unbind(const DelegateHandle& handle) override;
