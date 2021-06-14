@@ -66,7 +66,7 @@ namespace gem
 			}
 			else
 			{
-				return static_cast<float>(font->GetStringWidth(text.substr(0, loc)));
+				return static_cast<float>(font->GetStringWidth({ text.begin(), text.begin() + loc }));
 			}
 		}
 		else
@@ -101,7 +101,7 @@ namespace gem
 				return 0.0f;
 			}
 
-			return static_cast<float>(font->GetStringWidth(text.substr(start, end)));
+			return static_cast<float>(font->GetStringWidth({ text.begin() + start, text.begin() + end }));
 		}
 	}
 }
