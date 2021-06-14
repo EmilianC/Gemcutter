@@ -432,16 +432,7 @@ namespace gem
 		// Invert the Y axis for OpenGL texture addressing.
 		if (flipY)
 		{
-			const int totalWidth = width * numChannels;
-			for (int j = 0; j * 2 < height; ++j)
-			{
-				int index1 = j * totalWidth;
-				int index2 = (height - 1 - j) * totalWidth;
-				for (int i = totalWidth; i > 0; --i)
-				{
-					std::swap(data[index1++], data[index2++]);
-				}
-			}
+			FlipImage(data, width, height, numChannels);
 		}
 
 		if (numChannels == 3)
@@ -456,6 +447,20 @@ namespace gem
 		{
 			Error("Texture: ( %s )\nUnsupported format. Must have 3 or 4 color channels.", file.data());
 			return Image(0, 0, TextureFormat::RGB_8, nullptr);
+		}
+	}
+
+	void FlipImage(unsigned char* data, int width, int height, int numChannels)
+	{
+		const int totalWidth = width * numChannels;
+		for (int j = 0; j * 2 < height; ++j)
+		{
+			int index1 = j * totalWidth;
+			int index2 = (height - 1 - j) * totalWidth;
+			for (int i = totalWidth; i > 0; --i)
+			{
+				std::swap(data[index1++], data[index2++]);
+			}
 		}
 	}
 }

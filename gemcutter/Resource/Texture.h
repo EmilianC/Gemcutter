@@ -116,4 +116,7 @@ namespace gem
 	private:
 		Image(int width, int height, TextureFormat format, const unsigned char* data);
 	};
+
+	// Flips the image contained in `data` on the Y axis.
+	void FlipImage(unsigned char* data, int width, int height, int numChannels);
 }
