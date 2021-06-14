@@ -121,6 +121,10 @@ namespace gem
 			data1;
 	}
 
+	// Returns the next highest power of 2, or the same value if already a power of 2.
+	// Returns 1 if the value is 0.
+	unsigned NextPowerOfTwo(unsigned value);
+
 	// Returns the closest multiple of step.
 	float SnapToGrid(float value, float step);
 

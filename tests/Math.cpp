@@ -37,5 +37,12 @@ TEST_CASE("Math")
 		CHECK(Clamp(10, 5, 15) == 10);
 		CHECK(Clamp(0, 5, 15) == 5);
 		CHECK(Clamp(20, 5, 15) == 15);
+
+		CHECK(NextPowerOfTwo(0) == 1);
+		CHECK(NextPowerOfTwo(1) == 1);
+		CHECK(NextPowerOfTwo(2) == 2);
+		CHECK(NextPowerOfTwo(10) == 16);
+		CHECK(NextPowerOfTwo(1025) == 2048);
+		CHECK(NextPowerOfTwo(2048) == 2048);
 	}
 }
