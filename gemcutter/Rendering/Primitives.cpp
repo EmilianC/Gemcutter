@@ -316,6 +316,105 @@ namespace
 			}
 		}
 	)";
+
+	constexpr float unitQuad_Data[30] =
+	{
+		-1.0f, -1.0f, 0.0f, // vec3 Vertex
+		0.0f, 0.0f,         // vec2 Texcoord
+
+		1.0f, -1.0f, 0.0f,
+		1.0f, 0.0f,
+
+		-1.0f, 1.0f, 0.0f,
+		0.0f, 1.0f,
+
+		1.0f, 1.0f, 0.0f,
+		1.0f, 1.0f,
+
+		-1.0f, 1.0f, 0.0f,
+		0.0f, 1.0f,
+
+		1.0f, -1.0f, 0.0f,
+		1.0f, 0.0f
+	};
+
+	constexpr float quad_Data[30] =
+	{
+		0.0f, 0.0f, 0.0f, // vec3 Vertex
+		0.0f, 0.0f,       // vec2 Texcoord
+
+		1.0f, 0.0f, 0.0f,
+		1.0f, 0.0f,
+
+		0.0f, 1.0f, 0.0f,
+		0.0f, 1.0f,
+
+		1.0f, 1.0f, 0.0f,
+		1.0f, 1.0f,
+
+		0.0f, 1.0f, 0.0f,
+		0.0f, 1.0f,
+
+		1.0f, 0.0f, 0.0f,
+		1.0f, 0.0f
+	};
+
+	constexpr float unitCube_Data[108] =
+	{
+		// posX
+		1.0f, -1.0f, -1.0f,
+		1.0f, -1.0f, 1.0f,
+		1.0f, 1.0f, -1.0f,
+
+		1.0f, 1.0f, 1.0f,
+		1.0f, 1.0f, -1.0f,
+		1.0f, -1.0f, 1.0f,
+
+		// negX
+		-1.0f, -1.0f, 1.0f,
+		-1.0f, -1.0f, -1.0f,
+		-1.0f, 1.0f, 1.0f,
+
+		-1.0f, 1.0f, -1.0f,
+		-1.0f, 1.0f, 1.0f,
+		-1.0f, -1.0f, -1.0f,
+
+		// posY
+		-1.0f, 1.0f, -1.0f,
+		1.0f, 1.0f, -1.0f,
+		-1.0f, 1.0f, 1.0f,
+
+		1.0f, 1.0f, 1.0f,
+		-1.0f, 1.0f, 1.0f,
+		1.0f, 1.0f, -1.0f,
+
+		// negY
+		-1.0f, -1.0f, 1.0f,
+		1.0f, -1.0f, 1.0f,
+		-1.0f, -1.0f, -1.0f,
+
+		1.0f, -1.0f, -1.0f,
+		-1.0f, -1.0f, -1.0f,
+		1.0f, -1.0f, 1.0f,
+
+		// posZ
+		1.0f, -1.0f, 1.0f,
+		-1.0f, -1.0f, 1.0f,
+		1.0f, 1.0f, 1.0f,
+
+		-1.0f, 1.0f, 1.0f,
+		1.0f, 1.0f, 1.0f,
+		-1.0f, -1.0f, 1.0f,
+
+		// negZ
+		-1.0f, -1.0f, -1.0f,
+		1.0f, -1.0f, -1.0f,
+		-1.0f, 1.0f, -1.0f,
+
+		1.0f, 1.0f, -1.0f,
+		-1.0f, 1.0f, -1.0f,
+		1.0f, -1.0f, -1.0f
+	};
 }
 
 namespace gem
@@ -386,164 +485,72 @@ namespace gem
 			return false;
 		}
 
-		// Create dummy VAO for attribute-less rendering of primitives.
-		glGenVertexArrays(1, &primitivesVAO);
-		glBindVertexArray(primitivesVAO);
-
-		// Set up full screen quad VAO containing vertices and textureCoords.
-		unsigned vertexSize = sizeof(float) * 6 * 3;
-		unsigned texCoordSize = sizeof(float) * 6 * 2;
-		float VBO_Data[30] =
 		{
-			/*
-			vec3 Vertex
-			vec2 Texcoord
-			*/
+			quadArray = VertexArray::MakeNew();
 
-			-1.0f, -1.0f, 0.0f,
-			0.0f, 0.0f,
+			auto buffer = VertexBuffer::MakeNew(sizeof(quad_Data), VertexBufferUsage::Static, VertexBufferType::Data);
+			buffer->SetData(0, sizeof(quad_Data), quad_Data);
 
-			1.0f, -1.0f, 0.0f,
-			1.0f, 0.0f,
+			VertexStream streamPos;
+			streamPos.buffer      = buffer;
+			streamPos.bindingUnit = 0;
+			streamPos.format      = VertexFormat::Vec3;
+			streamPos.startOffset = 0;
+			streamPos.stride      = sizeof(float) * 5;
 
-			-1.0f, 1.0f, 0.0f,
-			0.0f, 1.0f,
+			VertexStream streamUv;
+			streamUv.buffer      = std::move(buffer);
+			streamUv.bindingUnit = 1;
+			streamUv.format      = VertexFormat::Vec2;
+			streamUv.startOffset = sizeof(float) * 3;
+			streamUv.stride      = sizeof(float) * 5;
 
-			1.0f, 1.0f, 0.0f,
-			1.0f, 1.0f,
+			quadArray->AddStream(std::move(streamPos));
+			quadArray->AddStream(std::move(streamUv));
+			quadArray->SetVertexCount(6);
+		}
 
-			-1.0f, 1.0f, 0.0f,
-			0.0f, 1.0f,
-
-			1.0f, -1.0f, 0.0f,
-			1.0f, 0.0f
-		};
-
-		glGenVertexArrays(1, &fullScreenVAO);
-		glBindVertexArray(fullScreenVAO);
-
-		glEnableVertexAttribArray(0); //Positions
-		glEnableVertexAttribArray(1); //UV's
-
-		glGenBuffers(1, &fullScreenVBO);
-		glBindBuffer(GL_ARRAY_BUFFER, fullScreenVBO);
-
-		glBufferData(GL_ARRAY_BUFFER, vertexSize + texCoordSize, VBO_Data, GL_STATIC_DRAW);
-
-		glVertexAttribPointer(0u, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 5, reinterpret_cast<void*>(0));
-		glVertexAttribPointer(1u, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5, reinterpret_cast<void*>(sizeof(float) * 3));
-
-		// Load unit cube for skyboxes.
-		unsigned skyboxSize = sizeof(float) * 6 * 3 * 6;
-		float skyboxData[108] =
 		{
-			//posX
-			1.0f, -1.0f, -1.0f,
-			1.0f, -1.0f, 1.0f,
-			1.0f, 1.0f, -1.0f,
+			unitQuadArray = VertexArray::MakeNew();
 
-			1.0f, 1.0f, 1.0f,
-			1.0f, 1.0f, -1.0f,
-			1.0f, -1.0f, 1.0f,
-			//negX
-			-1.0f, -1.0f, 1.0f,
-			-1.0f, -1.0f, -1.0f,
-			-1.0f, 1.0f, 1.0f,
+			auto buffer = VertexBuffer::MakeNew(sizeof(unitQuad_Data), VertexBufferUsage::Static, VertexBufferType::Data);
+			buffer->SetData(0, sizeof(unitQuad_Data), unitQuad_Data);
 
-			-1.0f, 1.0f, -1.0f,
-			-1.0f, 1.0f, 1.0f,
-			-1.0f, -1.0f, -1.0f,
-			//posY
-			-1.0f, 1.0f, -1.0f,
-			1.0f, 1.0f, -1.0f,
-			-1.0f, 1.0f, 1.0f,
+			VertexStream streamPos;
+			streamPos.buffer      = buffer;
+			streamPos.bindingUnit = 0;
+			streamPos.format      = VertexFormat::Vec3;
+			streamPos.startOffset = 0;
+			streamPos.stride      = sizeof(float) * 5;
 
-			1.0f, 1.0f, 1.0f,
-			-1.0f, 1.0f, 1.0f,
-			1.0f, 1.0f, -1.0f,
-			//negY
-			-1.0f, -1.0f, 1.0f,
-			1.0f, -1.0f, 1.0f,
-			-1.0f, -1.0f, -1.0f,
+			VertexStream streamUv;
+			streamUv.buffer      = std::move(buffer);
+			streamUv.bindingUnit = 1;
+			streamUv.format      = VertexFormat::Vec2;
+			streamUv.startOffset = sizeof(float) * 3;
+			streamUv.stride      = sizeof(float) * 5;
 
-			1.0f, -1.0f, -1.0f,
-			-1.0f, -1.0f, -1.0f,
-			1.0f, -1.0f, 1.0f,
-			//posZ
-			1.0f, -1.0f, 1.0f,
-			-1.0f, -1.0f, 1.0f,
-			1.0f, 1.0f, 1.0f,
+			unitQuadArray->AddStream(std::move(streamPos));
+			unitQuadArray->AddStream(std::move(streamUv));
+			unitQuadArray->SetVertexCount(6);
+		}
 
-			-1.0f, 1.0f, 1.0f,
-			1.0f, 1.0f, 1.0f,
-			-1.0f, -1.0f, 1.0f,
-			//negZ
-			-1.0f, -1.0f, -1.0f,
-			1.0f, -1.0f, -1.0f,
-			-1.0f, 1.0f, -1.0f,
-
-			1.0f, 1.0f, -1.0f,
-			-1.0f, 1.0f, -1.0f,
-			1.0f, -1.0f, -1.0f
-		};
-
-		glGenVertexArrays(1, &skyboxVAO);
-		glBindVertexArray(skyboxVAO);
-
-		glEnableVertexAttribArray(0); //Position
-
-		glGenBuffers(1, &skyboxVBO);
-		glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
-
-		glBufferData(GL_ARRAY_BUFFER, skyboxSize, skyboxData, GL_STATIC_DRAW);
-		glVertexAttribPointer(0u, 3, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<void*>(0));
-
-		glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
-		glBindVertexArray(GL_NONE);
-
-		// Prepare buffer for unit quad rendering.
-		vertexSize = sizeof(float) * 6 * 3;
-		texCoordSize = sizeof(float) * 6 * 2;
-		float quad_Data[30] =
 		{
-			/*
-			 vec3 Vertex
-			 vec2 Texcoord
-			 */
+			unitCubeArray = VertexArray::MakeNew();
 
-			0.0f, 0.0f, 0.0f,
-			0.0f, 0.0f,
+			auto buffer = VertexBuffer::MakeNew(sizeof(unitCube_Data), VertexBufferUsage::Static, VertexBufferType::Data);
+			buffer->SetData(0, sizeof(unitCube_Data), unitCube_Data);
 
-			1.0f, 0.0f, 0.0f,
-			1.0f, 0.0f,
+			VertexStream streamPos;
+			streamPos.buffer = std::move(buffer);
+			streamPos.format = VertexFormat::Vec3;
 
-			0.0f, 1.0f, 0.0f,
-			0.0f, 1.0f,
+			unitCubeArray->AddStream(std::move(streamPos));
+			unitCubeArray->SetVertexCount(36);
+		}
 
-			1.0f, 1.0f, 0.0f,
-			1.0f, 1.0f,
-
-			0.0f, 1.0f, 0.0f,
-			0.0f, 1.0f,
-
-			1.0f, 0.0f, 0.0f,
-			1.0f, 0.0f
-		};
-
-		glGenVertexArrays(1, &quadVAO);
-		glBindVertexArray(quadVAO);
-
-		glEnableVertexAttribArray(0); //vertices
-		glEnableVertexAttribArray(1); //texcoords
-
-		glGenBuffers(1, &quadVBO);
-		glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
-		glBufferData(GL_ARRAY_BUFFER, vertexSize + texCoordSize, quad_Data, GL_STATIC_DRAW);
-
-		glVertexAttribPointer(0u, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 5, reinterpret_cast<void*>(0));
-		glVertexAttribPointer(1u, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 5, reinterpret_cast<void*>(sizeof(float) * 3));
-
-		glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
+		glGenVertexArrays(1, &dummyVAO);
+		glBindVertexArray(dummyVAO);
 		glBindVertexArray(GL_NONE);
 
 		isLoaded = true;
@@ -566,23 +573,12 @@ namespace gem
 		texturedRectangleProgram.Unload();
 		texturedFullScreenQuadProgram.Unload();
 
-		auto unloadVBO = [](unsigned& vbo) {
-			glDeleteBuffers(1, &vbo);
-			vbo = GL_NONE;
-		};
+		quadArray.reset();
+		unitQuadArray.reset();
+		unitCubeArray.reset();
 
-		auto unloadVAO = [](unsigned& vao) {
-			glDeleteVertexArrays(1, &vao);
-			vao = GL_NONE;
-		};
-
-		unloadVAO(fullScreenVAO);
-		unloadVBO(fullScreenVBO);
-		unloadVAO(quadVAO);
-		unloadVBO(quadVBO);
-		unloadVAO(skyboxVAO);
-		unloadVBO(skyboxVBO);
-		unloadVAO(primitivesVAO);
+		glDeleteVertexArrays(1, &dummyVAO);
+		dummyVAO = GL_NONE;
 
 		isLoaded = false;
 	}
@@ -602,7 +598,7 @@ namespace gem
 		lineProgram.buffers[0]->SetUniform("uC2", color2);
 		lineProgram.Bind();
 
-		glBindVertexArray(primitivesVAO);
+		glBindVertexArray(dummyVAO);
 		glDrawArrays(GL_POINTS, 0, 1);
 		glBindVertexArray(GL_NONE);
 
@@ -619,7 +615,7 @@ namespace gem
 		lineProgram.buffers[0]->SetUniform("uP2", vec4(p2, 1.0f));
 		lineProgram.Bind();
 
-		glBindVertexArray(primitivesVAO);
+		glBindVertexArray(dummyVAO);
 		glDrawArrays(GL_POINTS, 0, 1);
 		glBindVertexArray(GL_NONE);
 
@@ -645,7 +641,7 @@ namespace gem
 		triangleProgram.buffers[0]->SetUniform("uC3", color3);
 		triangleProgram.Bind();
 
-		glBindVertexArray(primitivesVAO);
+		glBindVertexArray(dummyVAO);
 		glDrawArrays(GL_POINTS, 0, 1);
 		glBindVertexArray(GL_NONE);
 
@@ -663,7 +659,7 @@ namespace gem
 		texturedTriangleProgram.buffers[0]->SetUniform("uP3", vec4(p3, 1.0f));
 		texturedTriangleProgram.Bind();
 
-		glBindVertexArray(primitivesVAO);
+		glBindVertexArray(dummyVAO);
 		glDrawArrays(GL_POINTS, 0, 1);
 		glBindVertexArray(GL_NONE);
 
@@ -691,7 +687,7 @@ namespace gem
 		rectangleProgram.buffers[0]->SetUniform("uC4", color4);
 		rectangleProgram.Bind();
 
-		glBindVertexArray(primitivesVAO);
+		glBindVertexArray(dummyVAO);
 		glDrawArrays(GL_POINTS, 0, 1);
 		glBindVertexArray(GL_NONE);
 
@@ -710,7 +706,7 @@ namespace gem
 		rectangleProgram.buffers[0]->SetUniform("uP4", vec4(p4, 1.0f));
 		rectangleProgram.Bind();
 
-		glBindVertexArray(primitivesVAO);
+		glBindVertexArray(dummyVAO);
 		glDrawArrays(GL_POINTS, 0, 1);
 		glBindVertexArray(GL_NONE);
 
@@ -723,9 +719,9 @@ namespace gem
 	{
 		ASSERT(IsLoaded(), "Primitives must be initialized to call this function.");
 
-		glBindVertexArray(quadVAO);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-		glBindVertexArray(GL_NONE);
+		quadArray->Bind();
+		quadArray->Draw();
+		quadArray->UnBind();
 	}
 
 	void PrimitivesSingleton::DrawGrid(const vec3& p1, const vec3& p2, const vec3& p3, const vec3& p4, const vec4& color, unsigned numDivisions)
@@ -760,9 +756,9 @@ namespace gem
 
 		program.Bind();
 
-		glBindVertexArray(fullScreenVAO);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-		glBindVertexArray(GL_NONE);
+		unitQuadArray->Bind();
+		unitQuadArray->Draw();
+		unitQuadArray->UnBind();
 
 		program.UnBind();
 	}
@@ -774,9 +770,9 @@ namespace gem
 		tex.Bind(0);
 		texturedFullScreenQuadProgram.Bind();
 
-		glBindVertexArray(fullScreenVAO);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-		glBindVertexArray(GL_NONE);
+		unitQuadArray->Bind();
+		unitQuadArray->Draw();
+		unitQuadArray->UnBind();
 
 		texturedFullScreenQuadProgram.UnBind();
 		tex.UnBind(0);
@@ -796,12 +792,33 @@ namespace gem
 		program.Bind();
 
 		glDepthMask(false);
-		glBindVertexArray(skyboxVAO);
-		glDrawArrays(GL_TRIANGLES, 0, 6 * 2 * 3);
-		glBindVertexArray(GL_NONE);
+		unitCubeArray->Bind();
+		unitCubeArray->Draw();
+		unitCubeArray->UnBind();
 		glDepthMask(true);
 
 		program.UnBind();
 		tex.UnBind(0);
+	}
+
+	VertexArray::Ptr PrimitivesSingleton::GetQuadArray() const
+	{
+		ASSERT(IsLoaded(), "Primitives must be initialized to call this function.");
+
+		return quadArray;
+	}
+
+	VertexArray::Ptr PrimitivesSingleton::GetUnitQuadArray() const
+	{
+		ASSERT(IsLoaded(), "Primitives must be initialized to call this function.");
+
+		return unitQuadArray;
+	}
+
+	VertexArray::Ptr PrimitivesSingleton::GetUnitCubeArray() const
+	{
+		ASSERT(IsLoaded(), "Primitives must be initialized to call this function.");
+
+		return unitCubeArray;
 	}
 }
