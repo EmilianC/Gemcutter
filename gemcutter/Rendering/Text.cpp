@@ -86,7 +86,7 @@ namespace gem
 				}
 			}
 
-			size_t end = std::string::npos;
+			size_t end = text.size();
 			for (unsigned i = start + 1; i < text.size(); ++i)
 			{
 				if (text[i] == '\n')
