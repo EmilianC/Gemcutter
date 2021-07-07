@@ -715,15 +715,6 @@ namespace gem
 		tex.UnBind(0);
 	}
 
-	void PrimitivesSingleton::DrawUnitRectangle()
-	{
-		ASSERT(IsLoaded(), "Primitives must be initialized to call this function.");
-
-		quadArray->Bind();
-		quadArray->Draw();
-		quadArray->UnBind();
-	}
-
 	void PrimitivesSingleton::DrawGrid(const vec3& p1, const vec3& p2, const vec3& p3, const vec3& p4, const vec4& color, unsigned numDivisions)
 	{
 		ASSERT(IsLoaded(), "Primitives must be initialized to call this function.");

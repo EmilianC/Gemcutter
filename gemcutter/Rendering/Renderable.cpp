@@ -10,8 +10,21 @@ namespace gem
 		material->shader = Shader::MakeNewPassThrough();
 	}
 
+	Renderable::Renderable(Entity& _owner, VertexArray::Ptr _array)
+		: Component(_owner)
+		, array(std::move(_array))
+	{
+	}
+
 	Renderable::Renderable(Entity& _owner, Material::Ptr _material)
 		: Component(_owner)
+	{
+		SetMaterial(std::move(_material));
+	}
+
+	Renderable::Renderable(Entity& _owner, VertexArray::Ptr _array, Material::Ptr _material)
+		: Component(_owner)
+		, array(std::move(_array))
 	{
 		SetMaterial(std::move(_material));
 	}

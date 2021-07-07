@@ -31,8 +31,6 @@ namespace gem
 		void DrawRectangle(const vec3& p1, const vec3& p2, const vec3& p3, const vec3& p4, const vec4& color1, const vec4& color2, const vec4& color3, const vec4& color4);
 		void DrawRectangle(const vec3& p1, const vec3& p2, const vec3& p3, const vec3& p4, Texture& tex);
 
-		void DrawUnitRectangle();
-
 		void DrawGrid(const vec3& p1, const vec3& p2, const vec3& p3, const vec3& p4, const vec4& color, unsigned numDivisions);
 
 		void DrawFullScreenQuad(Shader& program);

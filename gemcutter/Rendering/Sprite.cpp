@@ -1,26 +1,27 @@
 // Copyright (c) 2017 Emilian Cioca
 #include "Sprite.h"
+#include "gemcutter/Rendering/Primitives.h"
 
 namespace gem
 {
 	Sprite::Sprite(Entity& owner)
-		: Renderable(owner)
+		: Renderable(owner, Primitives.GetQuadArray())
 	{
 	}
 
 	Sprite::Sprite(Entity& owner, Material::Ptr material)
-		: Renderable(owner, std::move(material))
+		: Renderable(owner, Primitives.GetQuadArray(), std::move(material))
 	{
 	}
 
 	Sprite::Sprite(Entity& owner, Alignment pivot)
-		: Renderable(owner)
+		: Renderable(owner, Primitives.GetQuadArray())
 	{
 		SetAlignment(pivot);
 	}
 
 	Sprite::Sprite(Entity& owner, Alignment pivot, bool billBoard, Material::Ptr material)
-		: Renderable(owner, std::move(material))
+		: Renderable(owner, Primitives.GetQuadArray(), std::move(material))
 	{
 		SetAlignment(pivot);
 		SetBillBoarded(billBoard);

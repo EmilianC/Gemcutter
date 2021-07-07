@@ -17,9 +17,7 @@
 #include "gemcutter/Resource/UniformBuffer.h"
 #include "gemcutter/Resource/VertexArray.h"
 // Renderables
-#include "gemcutter/Rendering/Mesh.h"
 #include "gemcutter/Rendering/ParticleEmitter.h"
-#include "gemcutter/Rendering/Sprite.h"
 #include "gemcutter/Rendering/Text.h"
 
 #include <glew/glew.h>
@@ -28,7 +26,8 @@ namespace
 {
 	void BindRenderable(const gem::Renderable& renderable, gem::Shader* overrideShader)
 	{
-		const gem::Material& material = *renderable.GetMaterial();
+		const gem::Material* material = renderable.GetMaterial().get();
+		ASSERT(material, "Renderable Entity does not have a valid Material to render with.");
 
 		if (overrideShader)
 		{
@@ -36,16 +35,21 @@ namespace
 		}
 		else
 		{
-			ASSERT(material.shader, "Renderable Entity does not have a Shader and the RenderPass does not have an override attached.");
+			ASSERT(material->shader, "Renderable Entity does not have a Shader and the RenderPass does not have an override attached.");
 
-			material.shader->Bind(renderable.variants);
+			material->shader->Bind(renderable.variants);
+		}
+
+		if (renderable.array)
+		{
+			renderable.array->Bind();
 		}
 
 		renderable.buffers.Bind();
-		material.textures.Bind();
-		gem::SetBlendFunc(material.blendMode);
-		gem::SetDepthFunc(material.depthMode);
-		gem::SetCullFunc(material.cullMode);
+		material->textures.Bind();
+		gem::SetBlendFunc(material->blendMode);
+		gem::SetDepthFunc(material->depthMode);
+		gem::SetCullFunc(material->cullMode);
 	}
 
 	void UnBindRenderable(const gem::Renderable& renderable, gem::Shader* overrideShader)
@@ -59,6 +63,11 @@ namespace
 		else
 		{
 			material.shader->UnBind();
+		}
+
+		if (renderable.array)
+		{
+			renderable.array->UnBind();
 		}
 
 		renderable.buffers.UnBind();
@@ -255,15 +264,7 @@ namespace gem
 		normalMatrix.Set(mat3::Identity);
 		transformBuffer.Bind(static_cast<unsigned>(UniformBufferSlot::Model));
 
-		auto& mesh = instance.Get<Mesh>();
-		if (mesh.IsComponentEnabled())
-		{
-			auto& vertexArray = mesh.array;
-			ASSERT(vertexArray, "Entity has a Mesh component but does not have a VertexArray to render.");
-
-			vertexArray->Bind();
-			glDrawArraysInstanced(GL_TRIANGLES, 0, vertexArray->GetVertexCount(), count);
-		}
+		glDrawArraysInstanced(GL_TRIANGLES, 0, renderable->array->GetVertexCount(), count);
 
 		UnBindRenderable(*renderable, shader.get());
 
@@ -315,15 +316,7 @@ namespace gem
 
 		transformBuffer.Bind(static_cast<unsigned>(UniformBufferSlot::Model));
 
-		if (auto* mesh = dynamic_cast<const Mesh*>(renderable))
-		{
-			auto& vertexArray = mesh->array;
-			ASSERT(vertexArray, "Entity has a Mesh component but does not have a VertexArray to render.");
-
-			vertexArray->Bind();
-			vertexArray->Draw();
-		}
-		else if (auto* text = dynamic_cast<const Text*>(renderable))
+		if (auto* text = dynamic_cast<const Text*>(renderable))
 		{
 			auto& font = text->font;
 			ASSERT(font != nullptr, "Entity has a Text component but does not have a Font to render with.");
@@ -462,15 +455,12 @@ namespace gem
 				glDrawArrays(GL_POINTS, 0, emitter->GetNumAliveParticles());
 			}
 		}
-		else if (auto* sprite = dynamic_cast<const Sprite*>(renderable))
-		{
-			ASSERT(Primitives.IsLoaded(), "Primitives system must be initialized in order to render sprites.");
-
-			Primitives.DrawUnitRectangle();
-		}
 		else
 		{
-			ASSERT(false, "Entity must have a renderable component.");
+			auto* vertexArray = renderable->array.get();
+			ASSERT(vertexArray, "Renderable Entity does not have a valid VertexArray to render.");
+
+			vertexArray->Draw();
 		}
 
 		UnBindRenderable(*renderable, shader.get());

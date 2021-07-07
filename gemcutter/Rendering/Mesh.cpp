@@ -9,8 +9,7 @@ namespace gem
 	}
 
 	Mesh::Mesh(Entity& _owner, VertexArray::Ptr _array)
-		: Renderable(_owner)
-		, array(std::move(_array))
+		: Renderable(_owner, std::move(_array))
 	{
 	}
 
@@ -20,8 +19,7 @@ namespace gem
 	}
 
 	Mesh::Mesh(Entity& _owner, VertexArray::Ptr _array, Material::Ptr material)
-		: Renderable(_owner, std::move(material))
-		, array(std::move(_array))
+		: Renderable(_owner, std::move(_array), std::move(material))
 	{
 	}
 }

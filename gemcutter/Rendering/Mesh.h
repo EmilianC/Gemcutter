@@ -1,7 +1,6 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
 #include "gemcutter/Rendering/Renderable.h"
-#include "gemcutter/Resource/VertexArray.h"
 
 namespace gem
 {
@@ -13,7 +12,5 @@ namespace gem
 		Mesh(Entity& owner, VertexArray::Ptr array);
 		Mesh(Entity& owner, Material::Ptr material);
 		Mesh(Entity& owner, VertexArray::Ptr array, Material::Ptr material);
-
-		VertexArray::Ptr array;
 	};
 }
