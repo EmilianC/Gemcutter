@@ -96,6 +96,7 @@ namespace gem
 	{
 	public:
 		VertexArray();
+		VertexArray(VertexArrayFormat format);
 		~VertexArray();
 
 		void SetIndexBuffer(VertexBuffer::Ptr buffer);
@@ -103,8 +104,10 @@ namespace gem
 		VertexBuffer* GetIndexBuffer();
 
 		void AddStream(VertexStream ptr);
-		void RemoveStream(unsigned bindingUnit);
 		bool HasStream(unsigned bindingUnit) const;
+		void RemoveStreams();
+		void RemoveStream(unsigned bindingUnit);
+
 		const VertexStream& GetStream(unsigned bindingUnit) const;
 		const VertexBuffer& GetBuffer(unsigned bindingUnit) const;
 		VertexBuffer& GetBuffer(unsigned bindingUnit);

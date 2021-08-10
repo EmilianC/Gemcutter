@@ -142,6 +142,12 @@ namespace gem
 		glGenVertexArrays(1, &VAO);
 	}
 
+	VertexArray::VertexArray(VertexArrayFormat _format)
+	{
+		glGenVertexArrays(1, &VAO);
+		format = _format;
+	}
+
 	VertexArray::~VertexArray()
 	{
 		glDeleteVertexArrays(1, &VAO);
@@ -179,7 +185,7 @@ namespace gem
 
 		if (ptr.stride == 0)
 		{
-			// Even though OpenGL will correctly interpret a zero as stream of tightly
+			// Even though OpenGL will correctly interpret a zero as a stream of tightly
 			// packed data, we might need the correct stride for our own use later.
 			ptr.stride = CountBytes(ptr.format);
 		}
@@ -266,6 +272,46 @@ namespace gem
 		streams.push_back(std::move(ptr));
 	}
 
+	bool VertexArray::HasStream(unsigned bindingUnit) const
+	{
+		for (auto& stream : streams)
+		{
+			switch (stream.format)
+			{
+			case VertexFormat::Mat4:
+				if (stream.bindingUnit + 3 == bindingUnit) return true;
+			case VertexFormat::Mat3:
+				if (stream.bindingUnit + 2 == bindingUnit) return true;
+				if (stream.bindingUnit + 1 == bindingUnit) return true;
+			default:
+				if (stream.bindingUnit == bindingUnit) return true;
+			}
+		}
+
+		return false;
+	}
+
+	void VertexArray::RemoveStreams()
+	{
+		glBindVertexArray(VAO);
+		for (const VertexStream& stream : streams)
+		{
+			switch (stream.format)
+			{
+			case VertexFormat::Mat4:
+				glDisableVertexAttribArray(stream.bindingUnit + 3);
+			case VertexFormat::Mat3:
+				glDisableVertexAttribArray(stream.bindingUnit + 2);
+				glDisableVertexAttribArray(stream.bindingUnit + 1);
+			default:
+				glDisableVertexAttribArray(stream.bindingUnit);
+			}
+		}
+
+		glBindVertexArray(GL_NONE);
+		streams.clear();
+	}
+
 	void VertexArray::RemoveStream(unsigned bindingUnit)
 	{
 		for (unsigned i = 0; i < streams.size(); ++i)
@@ -303,25 +349,6 @@ namespace gem
 				return;
 			}
 		}
-	}
-
-	bool VertexArray::HasStream(unsigned bindingUnit) const
-	{
-		for (auto& stream : streams)
-		{
-			switch (stream.format)
-			{
-			case VertexFormat::Mat4:
-				if (stream.bindingUnit + 3 == bindingUnit) return true;
-			case VertexFormat::Mat3:
-				if (stream.bindingUnit + 2 == bindingUnit) return true;
-				if (stream.bindingUnit + 1 == bindingUnit) return true;
-			default:
-				if (stream.bindingUnit == bindingUnit) return true;
-			}
-		}
-
-		return false;
 	}
 
 	const VertexStream& VertexArray::GetStream(unsigned bindingUnit) const
