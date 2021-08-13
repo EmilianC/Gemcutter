@@ -198,7 +198,7 @@ namespace gem
 		ASSERT(maxParticles != 0, "Expected max particle count to be greater than 0.");
 		ASSERT(spawnPerSecond >= 0.0f, "'spawnPerSecond' cannot be a negative value.");
 
-		if (functors.dirty)
+		if (functors.dirty) [[unlikely]]
 		{
 			EnumFlags<ParticleBuffers> requirements = ParticleBuffers::None;
 			for (auto& functor : functors.GetAll())

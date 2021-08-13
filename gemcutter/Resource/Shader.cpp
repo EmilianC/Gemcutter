@@ -1124,7 +1124,7 @@ namespace gem
 		ASSERT(IsLoaded(), "Must have a shader loaded to call this function.");
 
 		auto itr = variants.find(definitions);
-		if (itr == variants.end())
+		if (itr == variants.end()) [[unlikely]]
 		{
 			// This shader variant is new and needs to be created.
 			auto& variant = variants.emplace(definitions, ShaderVariant()).first->second;

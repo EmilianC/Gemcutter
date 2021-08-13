@@ -64,9 +64,9 @@ namespace gem
 	#define DEBUG_WARNING_BOX(format, ...) gem::WarningBox((format), ##__VA_ARGS__)
 	#define ASSERT(exp, format, ...) \
 		do {                                                \
-			if (!(exp)) {                                   \
+			if (!(exp)) [[unlikely]] {                      \
 				gem::Assert(#exp, (format), ##__VA_ARGS__); \
-				__asm { int 3 }                             \
+				__debugbreak();                             \
 			}                                               \
 			__pragma(warning(suppress:4127))                \
 		} while (false)

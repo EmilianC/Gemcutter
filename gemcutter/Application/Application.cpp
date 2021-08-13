@@ -378,7 +378,7 @@ namespace gem
 		{
 			// Updates our input and Windows OS events.
 			DrainEventQueue();
-			if (!appIsRunning)
+			if (!appIsRunning) [[unlikely]]
 				return;
 
 			// Record the FPS for the previous second of time.
@@ -400,13 +400,13 @@ namespace gem
 				update();
 
 				// The user might have requested to exit during update().
-				if (!appIsRunning)
+				if (!appIsRunning) [[unlikely]]
 					return;
 
 				lastUpdate += updateStep;
 				updateCount++;
 
-				if (skipToPresent)
+				if (skipToPresent) [[unlikely]]
 				{
 					lastUpdate = currentTime;
 					skipToPresent = false;
