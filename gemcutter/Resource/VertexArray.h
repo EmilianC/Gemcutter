@@ -105,8 +105,8 @@ namespace gem
 
 		void AddStream(VertexStream ptr);
 		bool HasStream(unsigned bindingUnit) const;
-		void RemoveStreams();
 		void RemoveStream(unsigned bindingUnit);
+		void RemoveStreams();
 
 		const VertexStream& GetStream(unsigned bindingUnit) const;
 		const VertexBuffer& GetBuffer(unsigned bindingUnit) const;

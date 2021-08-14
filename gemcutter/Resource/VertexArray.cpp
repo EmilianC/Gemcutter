@@ -291,27 +291,6 @@ namespace gem
 		return false;
 	}
 
-	void VertexArray::RemoveStreams()
-	{
-		glBindVertexArray(VAO);
-		for (const VertexStream& stream : streams)
-		{
-			switch (stream.format)
-			{
-			case VertexFormat::Mat4:
-				glDisableVertexAttribArray(stream.bindingUnit + 3);
-			case VertexFormat::Mat3:
-				glDisableVertexAttribArray(stream.bindingUnit + 2);
-				glDisableVertexAttribArray(stream.bindingUnit + 1);
-			default:
-				glDisableVertexAttribArray(stream.bindingUnit);
-			}
-		}
-
-		glBindVertexArray(GL_NONE);
-		streams.clear();
-	}
-
 	void VertexArray::RemoveStream(unsigned bindingUnit)
 	{
 		for (unsigned i = 0; i < streams.size(); ++i)
@@ -349,6 +328,27 @@ namespace gem
 				return;
 			}
 		}
+	}
+
+	void VertexArray::RemoveStreams()
+	{
+		glBindVertexArray(VAO);
+		for (const VertexStream& stream : streams)
+		{
+			switch (stream.format)
+			{
+			case VertexFormat::Mat4:
+				glDisableVertexAttribArray(stream.bindingUnit + 3);
+			case VertexFormat::Mat3:
+				glDisableVertexAttribArray(stream.bindingUnit + 2);
+				glDisableVertexAttribArray(stream.bindingUnit + 1);
+			default:
+				glDisableVertexAttribArray(stream.bindingUnit);
+			}
+		}
+
+		glBindVertexArray(GL_NONE);
+		streams.clear();
 	}
 
 	const VertexStream& VertexArray::GetStream(unsigned bindingUnit) const

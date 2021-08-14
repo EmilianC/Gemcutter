@@ -34,7 +34,6 @@ namespace gem
 
 		unsigned GetNumAliveParticles() const;
 		unsigned GetNumMaxParticles() const;
-		unsigned GetVAO() const;
 
 		// Sets the Size behaviour of particles if no functors manipulate size.
 		void SetSizeStartEnd(const vec2& start, const vec2& end);
@@ -86,6 +85,6 @@ namespace gem
 		unsigned maxParticles = 0;
 		unsigned numCurrentParticles = 0;
 
-		UniformBuffer particleParameters;
+		UniformBuffer::Ptr particleParameters;
 	};
 }

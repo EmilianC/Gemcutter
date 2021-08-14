@@ -7,22 +7,28 @@ namespace gem
 {
 	ParticleEmitter::ParticleEmitter(Entity& _owner, unsigned _maxParticles)
 		: Renderable(_owner)
+		, data(_maxParticles)
 		, maxParticles(_maxParticles)
 	{
 		ASSERT(maxParticles > 0, "'maxParticles' must be greater than 0.");
 
 		owner.Tag<ParticleUpdaterTag>();
 		InitUniformBuffer();
+
+		array = data.GetArray();
 	}
 
 	ParticleEmitter::ParticleEmitter(Entity& _owner, Material::Ptr material, unsigned _maxParticles)
 		: Renderable(_owner, std::move(material))
+		, data(_maxParticles)
 		, maxParticles(_maxParticles)
 	{
 		ASSERT(maxParticles > 0, "'maxParticles' must be greater than 0.");
 
 		owner.Tag<ParticleUpdaterTag>();
 		InitUniformBuffer();
+
+		array = data.GetArray();
 	}
 
 	ParticleEmitter::~ParticleEmitter()
@@ -88,15 +94,10 @@ namespace gem
 		return maxParticles;
 	}
 
-	unsigned ParticleEmitter::GetVAO() const
-	{
-		return data.GetVAO();
-	}
-
 	void ParticleEmitter::SetSizeStartEnd(const vec2& start, const vec2& end)
 	{
-		particleParameters.SetUniform("StartSize", start);
-		particleParameters.SetUniform("EndSize", end);
+		particleParameters->SetUniform("StartSize", start);
+		particleParameters->SetUniform("EndSize", end);
 	}
 
 	void ParticleEmitter::SetSizeStartEnd(const vec2& constant)
@@ -106,8 +107,8 @@ namespace gem
 
 	void ParticleEmitter::SetColorStartEnd(const vec3& start, const vec3& end)
 	{
-		particleParameters.SetUniform("StartColor", start);
-		particleParameters.SetUniform("EndColor", end);
+		particleParameters->SetUniform("StartColor", start);
+		particleParameters->SetUniform("EndColor", end);
 	}
 
 	void ParticleEmitter::SetColorStartEnd(const vec3& constant)
@@ -117,8 +118,8 @@ namespace gem
 
 	void ParticleEmitter::SetAlphaStartEnd(float start, float end)
 	{
-		particleParameters.SetUniform("StartAlpha", start);
-		particleParameters.SetUniform("EndAlpha", end);
+		particleParameters->SetUniform("StartAlpha", start);
+		particleParameters->SetUniform("EndAlpha", end);
 	}
 
 	void ParticleEmitter::SetAlphaStartEnd(float constant)
@@ -160,47 +161,46 @@ namespace gem
 
 	const UniformBuffer& ParticleEmitter::GetBuffer() const
 	{
-		return particleParameters;
+		return *particleParameters;
 	}
 
 	UniformBuffer& ParticleEmitter::GetBuffer()
 	{
-		return particleParameters;
+		return *particleParameters;
 	}
 
 	void ParticleEmitter::UpdateInternal(float deltaTime)
 	{
-		ASSERT(maxParticles != 0, "Expected max particle count to be greater than 0.");
 		ASSERT(spawnPerSecond >= 0.0f, "'spawnPerSecond' cannot be a negative value.");
 
 		if (functors.dirty) [[unlikely]]
 		{
-			EnumFlags<ParticleBuffers> requirements = ParticleBuffers::None;
+			EnumFlags<ParticleAttributes> requirements = ParticleAttributes::None;
 			for (auto& functor : functors.GetAll())
 			{
 				requirements |= functor->GetRequirements();
 			}
 
 			requiresAgeRatio =
-				!requirements.Has(ParticleBuffers::Size) ||
-				!requirements.Has(ParticleBuffers::Color) ||
-				!requirements.Has(ParticleBuffers::Alpha);
+				!requirements.Has(ParticleAttributes::Size) ||
+				!requirements.Has(ParticleAttributes::Color) ||
+				!requirements.Has(ParticleAttributes::Alpha);
 
 			/* Update shader variant to match the buffers and effect requirements */
-			variants.Switch("GEM_PARTICLE_SIZE", requirements.Has(ParticleBuffers::Size));
-			variants.Switch("GEM_PARTICLE_COLOR", requirements.Has(ParticleBuffers::Color));
-			variants.Switch("GEM_PARTICLE_ALPHA", requirements.Has(ParticleBuffers::Alpha));
-			variants.Switch("GEM_PARTICLE_ROTATION", requirements.Has(ParticleBuffers::Rotation));
+			variants.Switch("GEM_PARTICLE_SIZE", requirements.Has(ParticleAttributes::Size));
+			variants.Switch("GEM_PARTICLE_COLOR", requirements.Has(ParticleAttributes::Color));
+			variants.Switch("GEM_PARTICLE_ALPHA", requirements.Has(ParticleAttributes::Alpha));
+			variants.Switch("GEM_PARTICLE_ROTATION", requirements.Has(ParticleAttributes::Rotation));
 			variants.Switch("GEM_PARTICLE_AGERATIO", requiresAgeRatio);
 
 			if (requiresAgeRatio)
 			{
 				// We are using uniform [start, end] values for some properties and require the age of the particle
 				// as a percentage. This will LERP in the shader based on the global [start, end] values.
-				requirements |= ParticleBuffers::AgeRatio;
+				requirements |= ParticleAttributes::AgeRatio;
 			}
 
-			data.SetBuffers(maxParticles, requirements);
+			data.SetAttributes(requirements);
 			functors.dirty = false;
 		}
 
@@ -284,19 +284,23 @@ namespace gem
 
 	void ParticleEmitter::InitUniformBuffer()
 	{
-		particleParameters.AddUniform<vec2>("StartSize");
-		particleParameters.AddUniform<vec2>("EndSize");
-		particleParameters.AddUniform<vec3>("StartColor");
-		particleParameters.AddUniform<vec3>("EndColor");
-		particleParameters.AddUniform<float>("StartAlpha");
-		particleParameters.AddUniform<float>("EndAlpha");
-		particleParameters.InitBuffer();
+		particleParameters = UniformBuffer::MakeNew();
 
-		particleParameters.SetUniform("StartSize", vec2(1.0f));
-		particleParameters.SetUniform("EndSize", vec2(0.5f));
-		particleParameters.SetUniform("StartColor", vec3(1.0f));
-		particleParameters.SetUniform("EndColor", vec3(1.0f));
-		particleParameters.SetUniform("StartAlpha", 1.0f);
-		particleParameters.SetUniform("EndAlpha", 0.0f);
+		particleParameters->AddUniform<vec2>("StartSize");
+		particleParameters->AddUniform<vec2>("EndSize");
+		particleParameters->AddUniform<vec3>("StartColor");
+		particleParameters->AddUniform<vec3>("EndColor");
+		particleParameters->AddUniform<float>("StartAlpha");
+		particleParameters->AddUniform<float>("EndAlpha");
+		particleParameters->InitBuffer();
+
+		particleParameters->SetUniform("StartSize", vec2(1.0f));
+		particleParameters->SetUniform("EndSize", vec2(0.5f));
+		particleParameters->SetUniform("StartColor", vec3(1.0f));
+		particleParameters->SetUniform("EndColor", vec3(1.0f));
+		particleParameters->SetUniform("StartAlpha", 1.0f);
+		particleParameters->SetUniform("EndAlpha", 0.0f);
+
+		buffers.Add(particleParameters, static_cast<unsigned>(UniformBufferSlot::Particle));
 	}
 }

@@ -17,7 +17,6 @@
 #include "gemcutter/Resource/UniformBuffer.h"
 #include "gemcutter/Resource/VertexArray.h"
 // Renderables
-#include "gemcutter/Rendering/ParticleEmitter.h"
 #include "gemcutter/Rendering/Text.h"
 
 #include <glew/glew.h>
@@ -444,16 +443,6 @@ namespace gem
 			glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
 
 			text->owner.position = initialPosition;
-		}
-		else if (auto* emitter = dynamic_cast<const ParticleEmitter*>(renderable))
-		{
-			if (emitter->GetNumAliveParticles() > 0)
-			{
-				emitter->GetBuffer().Bind(static_cast<unsigned>(UniformBufferSlot::Particle));
-
-				glBindVertexArray(emitter->GetVAO());
-				glDrawArrays(GL_POINTS, 0, emitter->GetNumAliveParticles());
-			}
 		}
 		else
 		{

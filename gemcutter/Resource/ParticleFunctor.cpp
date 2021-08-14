@@ -31,7 +31,7 @@ namespace gem
 
 	void RotationFunc::Init(ParticleBuffer& particles, ParticleEmitter& emitter, unsigned startIndex, unsigned count)
 	{
-		ASSERT(startIndex + count <= particles.GetNumParticles(), "Indices out of range.");
+		ASSERT(startIndex + count <= particles.GetMaxParticles(), "Indices out of range.");
 
 		for (unsigned i = startIndex, end = startIndex + count; i < end; ++i)
 		{
@@ -48,8 +48,8 @@ namespace gem
 		}
 	}
 
-	ParticleBuffers RotationFunc::GetRequirements() const
+	ParticleAttributes RotationFunc::GetRequirements() const
 	{
-		return ParticleBuffers::Rotation;
+		return ParticleAttributes::Rotation;
 	}
 }

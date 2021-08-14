@@ -3,29 +3,21 @@
 #include "gemcutter/Application/Logging.h"
 #include "gemcutter/Math/Vector.h"
 
-#include <glew/glew.h>
-
 namespace gem
 {
-	ParticleBuffer::ParticleBuffer()
+	ParticleBuffer::ParticleBuffer(unsigned _maxParticles)
+		: maxParticles(_maxParticles)
 	{
-		glGenVertexArrays(1, &VAO);
-		glBindVertexArray(VAO);
-		glBindVertexArray(GL_NONE);
+		array = VertexArray::MakeNew(VertexArrayFormat::Point);
 
-		glGenBuffers(1, &VBO);
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
+		positions  = static_cast<vec3*>(malloc(sizeof(vec3) * maxParticles));
+		velocities = static_cast<vec3*>(malloc(sizeof(vec3) * maxParticles));
+		ages       = static_cast<float*>(malloc(sizeof(float) * maxParticles));
+		lifetimes  = static_cast<float*>(malloc(sizeof(float) * maxParticles));
 	}
 
 	ParticleBuffer::~ParticleBuffer()
 	{
-		glDeleteBuffers(1, &VBO);
-		VBO = GL_NONE;
-
-		glDeleteVertexArrays(1, &VAO);
-		VAO = GL_NONE;
-
 		Unload();
 	}
 
@@ -52,183 +44,152 @@ namespace gem
 		ageRatios  = nullptr;
 	}
 
-	void ParticleBuffer::SetBuffers(unsigned _numParticles, EnumFlags<ParticleBuffers> _buffers)
+	void ParticleBuffer::SetAttributes(EnumFlags<ParticleAttributes> _attributes)
 	{
-		if (numParticles != _numParticles)
+		if (attributes == _attributes)
+			return;
+
+		attributes = _attributes;
+
+		array->RemoveStreams();
+		buffer = VertexBuffer::MakeNew(TotalBufferSize(), VertexBufferUsage::Dynamic, VertexBufferType::Data);
+
+		// Position attribute is always used.
+		VertexStream stream;
+		stream.buffer = buffer;
+		stream.bindingUnit = 0;
+		stream.format = VertexFormat::Vec3;
+		stream.normalized = false;
+		stream.startOffset = 0;
+		stream.stride = 0;
+
+		array->AddStream(stream);
+
+		unsigned startOffset = sizeof(vec3);
+		if (attributes.Has(ParticleAttributes::Size))
 		{
-			positions  = static_cast<vec3*>(realloc(positions, sizeof(vec3) * _numParticles));
-			velocities = static_cast<vec3*>(realloc(velocities, sizeof(vec3) * _numParticles));
-			ages       = static_cast<float*>(realloc(ages, sizeof(float) * _numParticles));
-			lifetimes  = static_cast<float*>(realloc(lifetimes, sizeof(float) * _numParticles));
-		}
+			stream.bindingUnit = 1;
+			stream.format = VertexFormat::Vec2;
+			stream.startOffset = startOffset * maxParticles;
 
-		glBindVertexArray(VAO);
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+			array->AddStream(stream);
+			startOffset += sizeof(vec2);
 
-		// Position buffer is always present.
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0u, 3, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<void*>(0));
-		unsigned bufferSize = sizeof(vec3);
-
-		if (_buffers.Has(ParticleBuffers::Size))
-		{
-			glVertexAttribPointer(1u, 2, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<void*>(bufferSize * _numParticles));
-			bufferSize += sizeof(vec2);
-
-			if (sizes == nullptr)
+			if (!sizes)
 			{
-				glEnableVertexAttribArray(1);
-				sizes = static_cast<vec2*>(malloc(sizeof(vec2) * _numParticles));
-			}
-			else if (numParticles != _numParticles)
-			{
-				sizes = static_cast<vec2*>(realloc(sizes, sizeof(vec2) * _numParticles));
-			}
-		}
-		else
-		{
-			glDisableVertexAttribArray(1);
-		}
-
-		if (_buffers.Has(ParticleBuffers::Color))
-		{
-			glVertexAttribPointer(2u, 3, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<void*>(bufferSize * _numParticles));
-			bufferSize += sizeof(vec3);
-
-			if (colors == nullptr)
-			{
-				glEnableVertexAttribArray(2);
-				colors = static_cast<vec3*>(malloc(sizeof(vec3) * _numParticles));
-			}
-			else if (numParticles != _numParticles)
-			{
-				colors = static_cast<vec3*>(realloc(colors, sizeof(vec3) * _numParticles));
+				sizes = static_cast<vec2*>(malloc(sizeof(vec2) * maxParticles));
 			}
 		}
-		else
-		{
-			glDisableVertexAttribArray(2);
-		}
 
-		if (_buffers.Has(ParticleBuffers::Alpha))
+		if (attributes.Has(ParticleAttributes::Color))
 		{
-			glVertexAttribPointer(3u, 1, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<void*>(bufferSize * _numParticles));
-			bufferSize += sizeof(float);
+			stream.bindingUnit = 2;
+			stream.format = VertexFormat::Vec3;
+			stream.startOffset = startOffset * maxParticles;
 
-			if (alphas == nullptr)
+			array->AddStream(stream);
+			startOffset += sizeof(vec3);
+
+			if (!colors)
 			{
-				glEnableVertexAttribArray(3);
-				alphas = static_cast<float*>(malloc(sizeof(float) * _numParticles));
-			}
-			else if (numParticles != _numParticles)
-			{
-				alphas = static_cast<float*>(realloc(alphas, sizeof(float) * _numParticles));
+				colors = static_cast<vec3*>(malloc(sizeof(vec3) * maxParticles));
 			}
 		}
-		else
-		{
-			glDisableVertexAttribArray(3);
-		}
 
-		if (_buffers.Has(ParticleBuffers::Rotation))
+		if (attributes.Has(ParticleAttributes::Alpha))
 		{
-			glVertexAttribPointer(4u, 1, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<void*>(bufferSize * _numParticles));
-			bufferSize += sizeof(float);
+			stream.bindingUnit = 3;
+			stream.format = VertexFormat::Float;
+			stream.startOffset = startOffset * maxParticles;
 
-			if (rotations == nullptr)
+			array->AddStream(stream);
+			startOffset += sizeof(float);
+
+			if (!alphas)
 			{
-				glEnableVertexAttribArray(4);
-				rotations = static_cast<float*>(malloc(sizeof(float) * _numParticles));
-			}
-			else if (numParticles != _numParticles)
-			{
-				rotations = static_cast<float*>(realloc(rotations, sizeof(float) * _numParticles));
+				alphas = static_cast<float*>(malloc(sizeof(float) * maxParticles));
 			}
 		}
-		else
-		{
-			glDisableVertexAttribArray(4);
-		}
 
-		if (_buffers.Has(ParticleBuffers::AgeRatio))
+		if (attributes.Has(ParticleAttributes::Rotation))
 		{
-			glVertexAttribPointer(5u, 1, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<void*>(bufferSize * _numParticles));
-			bufferSize += sizeof(float);
+			stream.bindingUnit = 4;
+			stream.format = VertexFormat::Float;
+			stream.startOffset = startOffset * maxParticles;
 
-			if (ageRatios == nullptr)
+			array->AddStream(stream);
+			startOffset += sizeof(float);
+
+			if (!rotations)
 			{
-				glEnableVertexAttribArray(5);
-				ageRatios = static_cast<float*>(malloc(sizeof(float) * _numParticles));
-			}
-			else if (numParticles != _numParticles)
-			{
-				ageRatios = static_cast<float*>(realloc(ageRatios, sizeof(float) * _numParticles));
+				rotations = static_cast<float*>(malloc(sizeof(float) * maxParticles));
 			}
 		}
-		else
+
+		if (attributes.Has(ParticleAttributes::AgeRatio))
 		{
-			glDisableVertexAttribArray(5);
+			stream.bindingUnit = 5;
+			stream.format = VertexFormat::Float;
+			stream.startOffset = startOffset * maxParticles;
+
+			array->AddStream(std::move(stream));
+
+			if (!ageRatios)
+			{
+				ageRatios = static_cast<float*>(malloc(sizeof(float) * maxParticles));
+			}
 		}
-
-		glBufferData(GL_ARRAY_BUFFER, bufferSize * _numParticles, NULL, GL_DYNAMIC_DRAW);
-
-		glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
-		glBindVertexArray(GL_NONE);
-
-		numParticles = _numParticles;
-		buffers = _buffers;
 	}
 
-	void ParticleBuffer::Update(unsigned _numParticles)
+	void ParticleBuffer::Update(unsigned activeParticles)
 	{
-		if (_numParticles == 0)
+		array->SetVertexCount(activeParticles);
+
+		if (activeParticles == 0)
 		{
 			return;
 		}
 
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		void* buffer = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
+		BufferMapping mapping = buffer->MapBuffer(VertexAccess::WriteOnly);
+		char* data = mapping.GetPtr();
 
-		memcpy(buffer, &positions[0], sizeof(vec3) * _numParticles);
-		buffer = static_cast<vec3*>(buffer) + numParticles;
+		memcpy(data, positions, sizeof(vec3) * activeParticles);
+		data += sizeof(vec3) * maxParticles;
 
-		if (buffers.Has(ParticleBuffers::Size))
+		if (attributes.Has(ParticleAttributes::Size))
 		{
-			memcpy(buffer, sizes, sizeof(vec2) * _numParticles);
-			buffer = static_cast<vec2*>(buffer) + numParticles;
+			memcpy(data, sizes, sizeof(vec2) * activeParticles);
+			data += sizeof(vec2) * maxParticles;
 		}
 
-		if (buffers.Has(ParticleBuffers::Color))
+		if (attributes.Has(ParticleAttributes::Color))
 		{
-			memcpy(buffer, colors, sizeof(vec3) * _numParticles);
-			buffer = static_cast<vec3*>(buffer) + numParticles;
+			memcpy(data, colors, sizeof(vec3) * activeParticles);
+			data += sizeof(vec3) * maxParticles;
 		}
 
-		if (buffers.Has(ParticleBuffers::Alpha))
+		if (attributes.Has(ParticleAttributes::Alpha))
 		{
-			memcpy(buffer, alphas, sizeof(float) * _numParticles);
-			buffer = static_cast<float*>(buffer) + numParticles;
+			memcpy(data, alphas, sizeof(float) * activeParticles);
+			data += sizeof(float) * maxParticles;
 		}
 
-		if (buffers.Has(ParticleBuffers::Rotation))
+		if (attributes.Has(ParticleAttributes::Rotation))
 		{
-			memcpy(buffer, rotations, sizeof(float) * _numParticles);
-			buffer = static_cast<float*>(buffer) + numParticles;
+			memcpy(data, rotations, sizeof(float) * activeParticles);
+			data += sizeof(float) * maxParticles;
 		}
 
-		if (buffers.Has(ParticleBuffers::AgeRatio))
+		if (attributes.Has(ParticleAttributes::AgeRatio))
 		{
-			memcpy(buffer, ageRatios, sizeof(float) * _numParticles);
+			memcpy(data, ageRatios, sizeof(float) * activeParticles);
 		}
-
-		glUnmapBuffer(GL_ARRAY_BUFFER);
-		glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
 	}
 
 	void ParticleBuffer::Kill(unsigned index, unsigned last)
 	{
-		ASSERT(index < numParticles, "Index out of bounds.");
-		ASSERT(last  < numParticles, "Index out of bounds.");
+		ASSERT(index < maxParticles, "Index out of bounds.");
+		ASSERT(last  < maxParticles, "Index out of bounds.");
 		ASSERT(index <= last, "Dead particle cannot be further than the last particle in the list.");
 
 		positions[index] = positions[last];
@@ -236,45 +197,59 @@ namespace gem
 		ages[index] = ages[last];
 		lifetimes[index] = lifetimes[last];
 
-		if (buffers.Has(ParticleBuffers::Size))
+		if (attributes.Has(ParticleAttributes::Size))
 		{
 			sizes[index] = sizes[last];
 		}
 
-		if (buffers.Has(ParticleBuffers::Color))
+		if (attributes.Has(ParticleAttributes::Color))
 		{
 			colors[index] = colors[last];
 		}
 
-		if (buffers.Has(ParticleBuffers::Alpha))
+		if (attributes.Has(ParticleAttributes::Alpha))
 		{
 			alphas[index] = alphas[last];
 		}
 
-		if (buffers.Has(ParticleBuffers::Rotation))
+		if (attributes.Has(ParticleAttributes::Rotation))
 		{
 			rotations[index] = rotations[last];
 		}
+
+		// We don't need to copy the AgeRatio because it is recomputed every frame anyways.
 	}
 
 	bool ParticleBuffer::IsAlive(unsigned index) const
 	{
-		ASSERT(index < numParticles, "Index out of bounds.");
+		ASSERT(index < maxParticles, "Index out of bounds.");
 		return ages[index] < lifetimes[index];
 	}
 
-	EnumFlags<ParticleBuffers> ParticleBuffer::GetBuffers() const
+	EnumFlags<ParticleAttributes> ParticleBuffer::GetAttributes() const
 	{
-		return buffers;
+		return attributes;
 	}
 
-	unsigned ParticleBuffer::GetVAO() const
+	VertexArray::Ptr ParticleBuffer::GetArray() const
 	{
-		return VAO;
+		return array;
 	}
 
-	unsigned ParticleBuffer::GetNumParticles() const
+	unsigned ParticleBuffer::GetMaxParticles() const
 	{
-		return numParticles;
+		return maxParticles;
+	}
+
+	unsigned ParticleBuffer::TotalBufferSize() const
+	{
+		unsigned bufferSize = sizeof(vec3); // Position
+		if (attributes.Has(ParticleAttributes::Size))     bufferSize += sizeof(vec2);
+		if (attributes.Has(ParticleAttributes::Color))    bufferSize += sizeof(vec3);
+		if (attributes.Has(ParticleAttributes::Alpha))    bufferSize += sizeof(float);
+		if (attributes.Has(ParticleAttributes::Rotation)) bufferSize += sizeof(float);
+		if (attributes.Has(ParticleAttributes::AgeRatio)) bufferSize += sizeof(float);
+
+		return bufferSize * maxParticles;
 	}
 }

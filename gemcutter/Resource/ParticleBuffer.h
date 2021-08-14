@@ -1,5 +1,6 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
+#include "gemcutter/Resource/VertexArray.h"
 #include "gemcutter/Utilities/EnumFlags.h"
 
 namespace gem
@@ -7,33 +8,34 @@ namespace gem
 	struct vec2;
 	struct vec3;
 
-	enum class ParticleBuffers : unsigned
+	enum class ParticleAttributes : unsigned
 	{
-		None = 0,       // Empty buffer
-		Size = 1,       // vec2 size
-		Color = 2,      // vec3 color
-		Alpha = 4,      // float alpha
-		Rotation = 8,   // float rotation
-		AgeRatio = 16   // float ageRatio (age / lifetime)
+		None = 0,
+		Size = 1,      // vec2
+		Color = 2,     // vec3
+		Alpha = 4,     // float
+		Rotation = 8,  // float
+		AgeRatio = 16  // float (age / lifetime)
 	};
 
 	class ParticleBuffer
 	{
 	public:
-		ParticleBuffer();
+		ParticleBuffer(unsigned maxParticles);
 		~ParticleBuffer();
 
-		void SetBuffers(unsigned numParticles, EnumFlags<ParticleBuffers> buffers);
 		void Unload();
+
+		void SetAttributes(EnumFlags<ParticleAttributes> attributes);
 		// Uploads data to the GPU buffers.
-		void Update(unsigned numParticles);
+		void Update(unsigned activeParticles);
 
 		void Kill(unsigned index, unsigned last);
 		bool IsAlive(unsigned index) const;
 
-		EnumFlags<ParticleBuffers> GetBuffers() const;
-		unsigned GetVAO() const;
-		unsigned GetNumParticles() const;
+		EnumFlags<ParticleAttributes> GetAttributes() const;
+		VertexArray::Ptr GetArray() const;
+		unsigned GetMaxParticles() const;
 
 		vec3*  positions  = nullptr;
 		vec3*  velocities = nullptr;
@@ -46,9 +48,12 @@ namespace gem
 		float* ageRatios  = nullptr;
 
 	private:
-		EnumFlags<ParticleBuffers> buffers = ParticleBuffers::None;
-		unsigned numParticles = 0;
-		unsigned VAO = 0;
-		unsigned VBO = 0;
+		unsigned TotalBufferSize() const;
+
+		EnumFlags<ParticleAttributes> attributes = ParticleAttributes::None;
+		unsigned maxParticles = 0;
+
+		VertexArray::Ptr array;
+		VertexBuffer::Ptr buffer;
 	};
 }

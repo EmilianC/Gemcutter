@@ -20,8 +20,8 @@ namespace gem
 		virtual void Init(ParticleBuffer& particles, ParticleEmitter& emitter, unsigned startIndex, unsigned count) {}
 		// Main update call for the functor.
 		virtual void Update(ParticleBuffer& particles, ParticleEmitter& emitter, float deltaTime) = 0;
-		// Specifies the required data buffers for this functor to update.
-		virtual ParticleBuffers GetRequirements() const { return ParticleBuffers::None; }
+		// Specifies the required data attributes for this functor to update.
+		virtual ParticleAttributes GetRequirements() const { return ParticleAttributes::None; }
 		// Specifies if the functor should be executed even when the emitter is paused.
 		virtual bool UpdateWhenPaused() const { return false; }
 	};
@@ -68,7 +68,7 @@ namespace gem
 		void Init(ParticleBuffer& particles, ParticleEmitter& emitter, unsigned startIndex, unsigned count) override;
 		void Update(ParticleBuffer& particles, ParticleEmitter& emitter, float deltaTime) override;
 
-		ParticleBuffers GetRequirements() const final override;
+		ParticleAttributes GetRequirements() const final override;
 
 		float rotationSpeed = 5.0f;
 		Range initialRotation{ 0.0f, 360.0f };
