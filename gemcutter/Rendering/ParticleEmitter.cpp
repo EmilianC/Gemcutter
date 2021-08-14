@@ -30,31 +30,6 @@ namespace gem
 		owner.RemoveTag<ParticleUpdaterTag>();
 	}
 
-	ParticleEmitter& ParticleEmitter::operator=(const ParticleEmitter& other)
-	{
-		velocity = other.velocity;
-		lifetime = other.lifetime;
-		spawnType = other.spawnType;
-		spawnPerSecond = other.spawnPerSecond;
-
-		axisX = other.axisX;
-		axisY = other.axisY;
-		axisZ = other.axisZ;
-		radius = other.radius;
-
-		data = other.data;
-		functors = other.functors;
-
-		numToSpawn = 0.0f;
-		localSpace = false;
-		maxParticles = other.maxParticles;
-		numCurrentParticles = 0;
-
-		particleParameters.Copy(other.particleParameters);
-
-		return *this;
-	}
-
 	void ParticleEmitter::Warmup(float time, float step)
 	{
 		ASSERT(time > 0.0f, "Warmup time must be greater than 0.");

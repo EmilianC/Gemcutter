@@ -21,9 +21,6 @@ namespace gem
 	{
 	public:
 		ParticleBuffer();
-		ParticleBuffer(const ParticleBuffer&);
-		ParticleBuffer(ParticleBuffer&&) noexcept;
-		ParticleBuffer& operator=(const ParticleBuffer&);
 		~ParticleBuffer();
 
 		void SetBuffers(unsigned numParticles, EnumFlags<ParticleBuffers> buffers);

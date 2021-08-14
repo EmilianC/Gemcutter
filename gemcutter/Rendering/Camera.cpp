@@ -32,29 +32,6 @@ namespace gem
 		SetOrthographic(_left, _right, _top, _bottom, _zNear, _zFar);
 	}
 
-	Camera& Camera::operator=(const Camera& other)
-	{
-		buffer.Copy(other.buffer);
-
-		// Regenerate the handles.
-		CreateUniformHandles();
-
-		projection = other.projection;
-		invProjection = other.invProjection;
-
-		isPerspective = other.isPerspective;
-		fovyDegrees = other.fovyDegrees;
-		aspectRatio = other.aspectRatio;
-		zNear = other.zNear;
-		zFar = other.zFar;
-		left = other.left;
-		right = other.right;
-		top = other.top;
-		bottom = other.bottom;
-
-		return *this;
-	}
-
 	void Camera::Bind() const
 	{
 		mat4 InvView = owner.GetWorldTransform();

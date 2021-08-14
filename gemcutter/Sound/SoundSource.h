@@ -11,7 +11,6 @@ namespace gem
 	public:
 		SoundSource(Entity& owner);
 		SoundSource(Entity& owner, Sound::Ptr sound);
-		SoundSource& operator=(const SoundSource&);
 		~SoundSource();
 
 		void SetData(Sound::Ptr sound);

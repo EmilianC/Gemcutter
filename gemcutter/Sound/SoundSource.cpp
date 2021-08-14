@@ -33,16 +33,6 @@ namespace gem
 		SetData(std::move(sound));
 	}
 
-	SoundSource& SoundSource::operator=(const SoundSource& other)
-	{
-		if (other.data)
-		{
-			SetData(other.data);
-		}
-
-		return *this;
-	}
-
 	SoundSource::~SoundSource()
 	{
 		Stop();

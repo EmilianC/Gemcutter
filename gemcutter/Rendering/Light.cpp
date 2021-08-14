@@ -37,26 +37,6 @@ namespace gem
 		type.Set(_type);
 	}
 
-	Light& Light::operator=(const Light& other)
-	{
-		lightBuffer->Copy(*other.lightBuffer);
-
-		// Regenerate the handles.
-		CreateUniformHandles();
-
-		// Copy the remaining data.
-		type.Set(other.type.Get());
-		color.Set(other.color.Get());
-		attenuationLinear.Set(other.attenuationLinear.Get());
-		attenuationQuadratic.Set(other.attenuationQuadratic.Get());
-		position.Set(other.position.Get());
-		direction.Set(other.direction.Get());
-		angle = other.angle;
-		cosAngle.Set(cos(ToRadian(angle)));
-
-		return *this;
-	}
-
 	void Light::Update()
 	{
 		switch (type.Get())

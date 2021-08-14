@@ -18,61 +18,6 @@ namespace gem
 		glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
 	}
 
-	ParticleBuffer::ParticleBuffer(const ParticleBuffer& other)
-	{
-		glGenVertexArrays(1, &VAO);
-		glBindVertexArray(VAO);
-		glBindVertexArray(GL_NONE);
-
-		glGenBuffers(1, &VBO);
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
-
-		*this = other;
-	}
-
-	ParticleBuffer::ParticleBuffer(ParticleBuffer&& other) noexcept
-		: positions(other.positions)
-		, velocities(other.velocities)
-		, ages(other.ages)
-		, lifetimes(other.lifetimes)
-		, sizes(other.sizes)
-		, colors(other.colors)
-		, alphas(other.alphas)
-		, rotations(other.rotations)
-		, ageRatios(other.ageRatios)
-		, buffers(other.buffers)
-		, numParticles(other.numParticles)
-		, VAO(other.VAO)
-		, VBO(other.VBO)
-	{
-		other.positions = nullptr;
-		other.velocities = nullptr;
-		other.ages = nullptr;
-		other.lifetimes = nullptr;
-		other.sizes = nullptr;
-		other.colors = nullptr;
-		other.alphas = nullptr;
-		other.rotations = nullptr;
-		other.ageRatios = nullptr;
-
-		other.buffers = ParticleBuffers::None;
-
-		other.numParticles = 0;
-
-		other.VBO = GL_NONE;
-		other.VAO = GL_NONE;
-	}
-
-	ParticleBuffer& ParticleBuffer::operator=(const ParticleBuffer& other)
-	{
-		Unload();
-
-		SetBuffers(other.numParticles, other.buffers);
-
-		return *this;
-	}
-
 	ParticleBuffer::~ParticleBuffer()
 	{
 		glDeleteBuffers(1, &VBO);

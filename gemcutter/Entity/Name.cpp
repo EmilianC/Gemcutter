@@ -81,11 +81,4 @@ namespace gem
 		, name(std::move(_name))
 	{
 	}
-
-	Name& Name::operator=(const Name& other)
-	{
-		name = other.name + "_Copy";
-
-		return *this;
-	}
 }

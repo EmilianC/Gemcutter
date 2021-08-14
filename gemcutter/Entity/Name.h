@@ -23,7 +23,6 @@ namespace gem
 	public:
 		Name(Entity& owner);
 		Name(Entity& owner, std::string name);
-		Name& operator=(const Name&);
 
 		std::string name;
 	};

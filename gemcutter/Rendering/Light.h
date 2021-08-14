@@ -19,7 +19,6 @@ namespace gem
 		Light(Entity& owner);
 		Light(Entity& owner, const vec3& color);
 		Light(Entity& owner, const vec3& color, Type type);
-		Light& operator=(const Light&);
 
 		// Defaults to a point light.
 		UniformHandle<Type> type;

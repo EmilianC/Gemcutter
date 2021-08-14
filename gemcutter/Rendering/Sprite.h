@@ -22,7 +22,6 @@ namespace gem
 		Sprite(Entity& owner, Material::Ptr material);
 		Sprite(Entity& owner, Alignment pivot);
 		Sprite(Entity& owner, Alignment pivot, bool billBoard, Material::Ptr material);
-		Sprite& operator=(const Sprite&);
 
 		// The sprite will render with the specified point on the entity's position.
 		// Defines "GEM_SPRITE_CENTERED_X" and "GEM_SPRITE_CENTERED_Y" on the Material Component if needed.

@@ -15,7 +15,6 @@ namespace gem
 		Camera(Entity& owner);
 		Camera(Entity& owner, float fovyDegrees, float aspectRatio, float zNear, float zFar);
 		Camera(Entity& owner, float left, float right, float top, float bottom, float zNear, float zFar);
-		Camera& operator=(const Camera&);
 
 		// Uploads the camera's values to OpenGL.
 		void Bind() const;

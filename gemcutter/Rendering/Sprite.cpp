@@ -27,14 +27,6 @@ namespace gem
 		SetBillBoarded(billBoard);
 	}
 
-	Sprite& Sprite::operator=(const Sprite& other)
-	{
-		SetAlignment(other.alignment);
-		SetBillBoarded(other.billBoarded);
-
-		return *this;
-	}
-
 	void Sprite::SetAlignment(Alignment pivot)
 	{
 		if (alignment == pivot)

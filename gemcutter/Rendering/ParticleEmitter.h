@@ -23,8 +23,6 @@ namespace gem
 		ParticleEmitter(Entity& owner, Material::Ptr material, unsigned maxParticles = 100);
 		~ParticleEmitter();
 
-		ParticleEmitter& operator=(const ParticleEmitter&);
-
 		enum Type : unsigned
 		{
 			Omni,
