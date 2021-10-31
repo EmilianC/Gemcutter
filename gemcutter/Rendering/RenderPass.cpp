@@ -345,7 +345,7 @@ namespace gem
 
 			if (text->centeredX)
 			{
-				text->owner.position -= advanceDirection * (((text->GetLineWidth(currentLine) + text->kernel * text->text.size())) / 2.0f);
+				text->owner.position -= advanceDirection * (((text->GetLineWidth(currentLine) + text->kerning * text->text.size())) / 2.0f);
 			}
 
 			if (text->centeredY)
@@ -365,7 +365,7 @@ namespace gem
 				// Handle whitespace.
 				if (character == ' ')
 				{
-					text->owner.position += advanceDirection * (font->GetStringWidth("Z") + text->kernel);
+					text->owner.position += advanceDirection * (font->GetSpaceWidth() + text->kerning);
 					continue;
 				}
 				else if (character == '\n')
@@ -376,21 +376,21 @@ namespace gem
 
 					if (text->centeredX)
 					{
-						text->owner.position -= advanceDirection * (((text->GetLineWidth(currentLine) + text->kernel * text->text.size())) / 2.0f);
+						text->owner.position -= advanceDirection * (((text->GetLineWidth(currentLine) + text->kerning * text->text.size())) / 2.0f);
 					}
 
 					continue;
 				}
 				else if (character == '\t')
 				{
-					text->owner.position += advanceDirection * (font->GetStringWidth("Z") + text->kernel) * 4;
+					text->owner.position += advanceDirection * (font->GetSpaceWidth() + text->kerning) * 4;
 					continue;
 				}
 
 				if (!masks[charIndex])
 				{
 					// Character does not exist in this font. Advance to next character.
-					text->owner.position += advanceDirection * ((advances[charIndex].x + text->kernel));
+					text->owner.position += advanceDirection * ((advances[charIndex].x + text->kerning));
 					continue;
 				}
 
@@ -437,7 +437,7 @@ namespace gem
 				// Undo character translate.
 				text->owner.position -= characterPosition;
 				// Advance to next character.
-				text->owner.position += advanceDirection * ((advances[charIndex].x + text->kernel));
+				text->owner.position += advanceDirection * ((advances[charIndex].x + text->kerning));
 			}
 
 			glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);

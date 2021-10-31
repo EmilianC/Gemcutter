@@ -29,6 +29,8 @@ namespace gem
 		// If the string is multi-line, the length of the longest line is returned.
 		int GetStringWidth(std::string_view text) const;
 		int GetStringHeight() const;
+		// Returns the width required to advance forward by a space.
+		int GetSpaceWidth() const;
 
 		const unsigned* GetTextures() const;
 		const CharData* GetDimensions() const;

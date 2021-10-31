@@ -181,12 +181,14 @@ namespace gem
 	{
 		int length = 0;
 		int largest = INT_MIN;
+		const int spaceWidth = GetSpaceWidth();
 
-		for (char ch : text)
+		for (unsigned i = 0; i < text.size(); ++i)
 		{
+			const char ch = text[i];
 			if (ch == ' ')
 			{
-				length += advances['Z' - '!'].x;
+				length += spaceWidth;
 			}
 			else if (ch == '\n')
 			{
@@ -195,11 +197,19 @@ namespace gem
 			}
 			else if (ch == '\t')
 			{
-				length += advances['Z' - '!'].x * 4;
+				length += spaceWidth * 4;
 			}
 			else
 			{
-				length += advances[ch - '!'].x;
+				if (i == text.size() - 1)
+				{
+					// The last character doesn't have an advance, only it's own total width.
+					length += positions[ch - '!'].x + dimensions[ch - '!'].x;
+				}
+				else
+				{
+					length += advances[ch - '!'].x;
+				}
 			}
 		}
 
@@ -209,6 +219,11 @@ namespace gem
 	int Font::GetStringHeight() const
 	{
 		return dimensions['Z' - '!'].y;
+	}
+
+	int Font::GetSpaceWidth() const
+	{
+		return dimensions['Z' - '!'].x;
 	}
 
 	const unsigned* Font::GetTextures() const

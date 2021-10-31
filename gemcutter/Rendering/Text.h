@@ -24,7 +24,7 @@ namespace gem
 		std::string text;
 		bool centeredX = false;
 		bool centeredY = false;
-		// Scale of spacing between letters.
-		float kernel = 1.0f;
+		// Extra spacing between letters.
+		float kerning = 0.0f;
 	};
 }
