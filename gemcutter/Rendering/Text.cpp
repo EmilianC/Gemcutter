@@ -36,16 +36,27 @@ namespace gem
 
 	unsigned Text::GetNumLines() const
 	{
-		unsigned count = 1;
-		for (auto c : text)
+		if (text.empty())
 		{
-			if (c == '\n')
-			{
-				count++;
-			}
+			return 0;
 		}
 
-		return count;
+		unsigned count = 1;
+		const char* ptr = text.data();
+		while (true)
+		{
+			switch (*ptr)
+			{
+			case '\n':
+				++count;
+				break;
+
+			case '\0':
+				return count;
+			}
+
+			++ptr;
+		}
 	}
 
 	float Text::GetLineWidth(unsigned line) const
