@@ -63,7 +63,7 @@ namespace gem
 		unsigned id;
 	};
 
-	// Represents a safe binding to a single functors.
+	// Represents a safe binding to a single functor.
 	template<typename Return, typename... Args>
 	class Delegate<Return(Args...)> : public detail::DelegateBase
 	{
@@ -74,6 +74,9 @@ namespace gem
 		DelegateHandle Bind(std::function<Return(Args...)> functor);
 		// Binds the lifetime of the functor to the specified memory-managed object.
 		void Bind(std::weak_ptr<void> lifetimeObject, std::function<Return(Args...)> functor);
+		// Binds the lifetime of the functor to the delegate itself. This should only be used when the
+		// lifetime of the callback would otherwise be bound to the same object that owns the delegate.
+		void BindOwned(std::function<Return(Args...)> functor);
 
 		void Clear();
 
@@ -94,6 +97,7 @@ namespace gem
 	};
 
 	// A Delegate which supports multiple bound functors.
+	// Return values are allowed but ignored.
 	template<typename Return, typename... Args>
 	class Dispatcher<Return(Args...)> : public detail::DelegateBase
 	{
@@ -102,10 +106,14 @@ namespace gem
 		DelegateHandle Add(std::function<Return(Args...)> functor);
 		// Binds the lifetime of the functor to the specified memory-managed object.
 		void Add(std::weak_ptr<void> lifetimeObject, std::function<Return(Args...)> functor);
+		// Binds the lifetime of the functor to the dispatcher itself. This should only be used when the
+		// lifetime of the callback would otherwise be bound to the same object that owns the dispatcher.
+		void AddOwned(std::function<Return(Args...)> functor);
+
+		void Clear();
 
 		// Checks if at least one functor is bound, but does not verify that its lifetime is valid.
-		bool HasBindings() const;
-		void Clear();
+		operator bool() const;
 
 		template<typename... Params>
 		void Dispatch(Params&&... params);

@@ -90,6 +90,37 @@ TEST_CASE("Events")
 			CHECK(!delegate);
 			CHECK(lifetimeCount == 2);
 		}
+
+		SECTION("Self Owned")
+		{
+			int ownedCount = 0;
+
+			delegate.Clear();
+			CHECK(!delegate);
+
+			delegate.BindOwned([&]() { return ++ownedCount; });
+			CHECK(delegate);
+
+			result = delegate();
+			REQUIRE(result.has_value());
+			CHECK(result.value() == 1);
+			CHECK(ownedCount == 1);
+			CHECK(delegate);
+
+			result = delegate();
+			REQUIRE(result.has_value());
+			CHECK(result.value() == 2);
+			CHECK(ownedCount == 2);
+			CHECK(delegate);
+
+			delegate.Clear();
+			CHECK(!delegate);
+
+			result = delegate();
+			CHECK(!result.has_value());
+			CHECK(!delegate);
+			CHECK(ownedCount == 2);
+		}
 	}
 
 	SECTION("Dispatcher")
@@ -98,11 +129,11 @@ TEST_CASE("Events")
 		int countB = 0;
 
 		Dispatcher<void()> dispatcher;
-		CHECK(!dispatcher.HasBindings());
+		CHECK(!dispatcher);
 
 		DelegateHandle handleA = dispatcher.Add([&]() { countA++; });
 		DelegateHandle handleB = dispatcher.Add([&]() { countB++; });
-		CHECK(dispatcher.HasBindings());
+		CHECK(dispatcher);
 		CHECK(countA == 0);
 		CHECK(countB == 0);
 
@@ -117,18 +148,18 @@ TEST_CASE("Events")
 		SECTION("Handles Expired")
 		{
 			handleA.Expire();
-			CHECK(dispatcher.HasBindings());
+			CHECK(dispatcher);
 
 			dispatcher.Dispatch();
-			CHECK(dispatcher.HasBindings());
+			CHECK(dispatcher);
 			CHECK(countA == 2);
 			CHECK(countB == 3);
 
 			handleB.Expire();
-			CHECK(!dispatcher.HasBindings());
+			CHECK(!dispatcher);
 
 			dispatcher.Dispatch();
-			CHECK(!dispatcher.HasBindings());
+			CHECK(!dispatcher);
 			CHECK(countA == 2);
 			CHECK(countB == 3);
 		}
@@ -136,10 +167,10 @@ TEST_CASE("Events")
 		SECTION("Moved")
 		{
 			Dispatcher<void()> movedDispatcher = std::move(dispatcher);
-			CHECK(movedDispatcher.HasBindings());
+			CHECK(movedDispatcher);
 
 			movedDispatcher.Dispatch();
-			CHECK(movedDispatcher.HasBindings());
+			CHECK(movedDispatcher);
 			CHECK(countA == 3);
 			CHECK(countB == 3);
 		}
@@ -147,7 +178,7 @@ TEST_CASE("Events")
 		SECTION("Clear")
 		{
 			dispatcher.Clear();
-			CHECK(!dispatcher.HasBindings());
+			CHECK(!dispatcher);
 			CHECK(countA == 2);
 			CHECK(countB == 2);
 		}
@@ -158,25 +189,50 @@ TEST_CASE("Events")
 			auto lifetimeObject = std::make_shared<int>(0);
 
 			dispatcher.Clear();
-			CHECK(!dispatcher.HasBindings());
+			CHECK(!dispatcher);
 
 			dispatcher.Add(lifetimeObject, [&]() { return ++lifetimeCount; });
-			CHECK(dispatcher.HasBindings());
+			CHECK(dispatcher);
 
 			dispatcher.Dispatch();
-			CHECK(dispatcher.HasBindings());
+			CHECK(dispatcher);
 			CHECK(lifetimeCount == 1);
 
 			dispatcher.Dispatch();
-			CHECK(dispatcher.HasBindings());
+			CHECK(dispatcher);
 			CHECK(lifetimeCount == 2);
 
 			lifetimeObject.reset();
-			CHECK(dispatcher.HasBindings());
+			CHECK(dispatcher);
 
 			dispatcher.Dispatch();
-			CHECK(!dispatcher.HasBindings());
+			CHECK(!dispatcher);
 			CHECK(lifetimeCount == 2);
+		}
+
+		SECTION("Self Owned")
+		{
+			int ownedCount = 0;
+
+			dispatcher.Clear();
+			CHECK(!dispatcher);
+
+			dispatcher.AddOwned([&]() { return ++ownedCount; });
+			CHECK(dispatcher);
+
+			dispatcher.Dispatch();
+			CHECK(dispatcher);
+			CHECK(ownedCount == 1);
+
+			dispatcher.Dispatch();
+			CHECK(dispatcher);
+			CHECK(ownedCount == 2);
+
+			dispatcher.Clear();
+			CHECK(!dispatcher);
+
+			dispatcher.Dispatch();
+			CHECK(ownedCount == 2);
 		}
 	}
 }

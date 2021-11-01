@@ -25,6 +25,16 @@ namespace gem
 	}
 
 	template<typename Return, typename... Args>
+	void Delegate<Return(Args...)>::BindOwned(std::function<Return(Args...)> functor)
+	{
+		ASSERT(functor, "'functor' is null.");
+
+		lifetimePtr.reset();
+		func = std::move(functor);
+		id = ++idGenerator;
+	}
+
+	template<typename Return, typename... Args>
 	void Delegate<Return(Args...)>::Clear()
 	{
 		lifetimePtr.reset();
@@ -108,7 +118,22 @@ namespace gem
 	}
 
 	template<typename Return, typename... Args>
-	bool Dispatcher<Return(Args...)>::HasBindings() const
+	void Dispatcher<Return(Args...)>::AddOwned(std::function<Return(Args...)> functor)
+	{
+		ASSERT(functor, "'functor' is null.");
+
+		const unsigned id = ++idGenerator;
+		bindings.emplace_back(std::weak_ptr<void>{}, std::move(functor), id);
+	}
+
+	template<typename Return, typename... Args>
+	void Dispatcher<Return(Args...)>::Clear()
+	{
+		bindings.clear();
+	}
+
+	template<typename Return, typename... Args>
+	Dispatcher<Return(Args...)>::operator bool() const
 	{
 		for (const Binding& binding : bindings)
 		{
@@ -117,12 +142,6 @@ namespace gem
 		}
 
 		return false;
-	}
-
-	template<typename Return, typename... Args>
-	void Dispatcher<Return(Args...)>::Clear()
-	{
-		bindings.clear();
 	}
 
 	template<typename Return, typename... Args>
