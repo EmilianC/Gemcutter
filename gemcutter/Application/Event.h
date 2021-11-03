@@ -83,21 +83,19 @@ namespace gem
 		// The event will be distributed to all listeners of its type when Dispatch() is called.
 		void Push(std::unique_ptr<EventBase> e);
 
-		// Instantly distributes an event across listeners. It is not added to the queue.
+		// Immediately distributes an event across listeners. It is not added to the queue.
 		void Dispatch(const EventBase& e) const;
 
-		// Sequences through the queue of events and distributes them to all the listeners.
-		// There will be no events in the queue when this function returns.
-		// It is illegal, and unsafe, to post new events while this function is executing.
+		// Distributes the queue of events across listeners. Nested calls are not allowed.
 		void Dispatch();
+
+		// Returns true if the event queue is currently being processed and distributed.
+		bool IsDispatching() const;
 
 	private:
 		std::queue<std::unique_ptr<EventBase>> eventQueue;
 
-#ifdef _DEBUG
-		// Stops events from being queued during a call to Dispatch().
-		bool inDispatch = false;
-#endif
+		bool dispatching = false;
 	};
 }
 
