@@ -89,6 +89,8 @@ namespace gem
 		void Remove(unsigned unit);
 		void Clear();
 
+		unsigned Size() const;
+
 		// Returns the buffer bound at the specified unit.
 		Texture::Ptr& operator[](unsigned unit);
 

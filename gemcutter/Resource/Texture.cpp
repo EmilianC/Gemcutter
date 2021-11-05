@@ -391,6 +391,11 @@ namespace gem
 		textureSlots.clear();
 	}
 
+	unsigned TextureList::Size() const
+	{
+		return textureSlots.size();
+	}
+
 	Texture::Ptr& TextureList::operator[](unsigned unit)
 	{
 		auto textureSlot = std::find_if(textureSlots.begin(), textureSlots.end(), [unit](TextureSlot& slot) {
