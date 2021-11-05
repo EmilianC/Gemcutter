@@ -17,7 +17,6 @@ namespace gem
 	Entity* FindEntity(std::string_view name);
 
 	// Associates an entity with a name.
-	// When copied, appends "_Copy" to the name.
 	class Name : public Component<Name>
 	{
 	public:

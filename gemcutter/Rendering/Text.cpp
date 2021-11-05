@@ -16,9 +16,9 @@ namespace gem
 	{
 	}
 
-	Text::Text(Entity& _owner, std::string _text)
+	Text::Text(Entity& _owner, std::string _string)
 		: Renderable(_owner)
-		, text(std::move(_text))
+		, string(std::move(_string))
 	{
 	}
 
@@ -27,22 +27,22 @@ namespace gem
 	{
 	}
 
-	Text::Text(Entity& _owner, Font::Ptr _font, std::string _text, Material::Ptr material)
+	Text::Text(Entity& _owner, Font::Ptr _font, std::string _string, Material::Ptr material)
 		: Renderable(_owner, std::move(material))
 		, font(std::move(_font))
-		, text(std::move(_text))
+		, string(std::move(_string))
 	{
 	}
 
 	unsigned Text::GetNumLines() const
 	{
-		if (text.empty())
+		if (string.empty())
 		{
 			return 0;
 		}
 
 		unsigned count = 1;
-		const char* ptr = text.data();
+		const char* ptr = string.data();
 		while (true)
 		{
 			switch (*ptr)
@@ -70,23 +70,23 @@ namespace gem
 		}
 		else if (line == 1)
 		{
-			size_t loc = text.find('\n');
+			size_t loc = string.find('\n');
 			if (loc == std::string::npos)
 			{
-				return static_cast<float>(font->GetStringWidth(text));
+				return static_cast<float>(font->GetStringWidth(string));
 			}
 			else
 			{
-				return static_cast<float>(font->GetStringWidth({ text.begin(), text.begin() + loc }));
+				return static_cast<float>(font->GetStringWidth({ string.begin(), string.begin() + loc }));
 			}
 		}
 		else
 		{
 			size_t start = std::string::npos;
 			unsigned count = 1;
-			for (unsigned i = 0; i < text.size(); ++i)
+			for (unsigned i = 0; i < string.size(); ++i)
 			{
-				if (text[i] == '\n')
+				if (string[i] == '\n')
 				{
 					count++;
 					if (count == line)
@@ -97,10 +97,10 @@ namespace gem
 				}
 			}
 
-			size_t end = text.size();
-			for (unsigned i = start + 1; i < text.size(); ++i)
+			size_t end = string.size();
+			for (unsigned i = start + 1; i < string.size(); ++i)
 			{
-				if (text[i] == '\n')
+				if (string[i] == '\n')
 				{
 					end = i;
 					break;
@@ -112,7 +112,7 @@ namespace gem
 				return 0.0f;
 			}
 
-			return static_cast<float>(font->GetStringWidth({ text.begin() + start, text.begin() + end }));
+			return static_cast<float>(font->GetStringWidth({ string.begin() + start, string.begin() + end }));
 		}
 	}
 }
