@@ -10,9 +10,8 @@ namespace gem::Meta
 	#define TEMPLATE_TYPE(...) decltype(__VA_ARGS__())
 
 	// Used to help validate parameter packs.
-	// Evaluates to true only if all of the expressions are true.
-	template<bool... b> struct all_of;
-
+	// Evaluates to true if all of the expressions are true, or if the range is empty.
+	template<bool... b>    struct all_of;
 	template<bool... tail> struct all_of<true, tail...> : all_of<tail...> {};
 	template<bool... tail> struct all_of<false, tail...> : std::false_type {};
 	template<> struct all_of<> : std::true_type {};
@@ -21,15 +20,24 @@ namespace gem::Meta
 	constexpr bool all_of_v = all_of<b...>::value;
 
 	// Used to help validate parameter packs.
-	// Evaluates to true if at least one of the expressions are true.
-	template<bool... b> struct any_of;
-
+	// Evaluates to true if at least one of the expressions is true. False if the range is empty.
+	template<bool... b>    struct any_of;
 	template<bool... tail> struct any_of<true, tail...> : std::true_type {};
 	template<bool... tail> struct any_of<false, tail...> : any_of<tail...> {};
-	template<> struct any_of<> : std::true_type {};
+	template<> struct any_of<> : std::false_type {};
 
 	template<bool... b>
 	constexpr bool any_of_v = any_of<b...>::value;
+
+	// Used to help validate parameter packs.
+	// Evaluates to true if none of the expressions are true, or if the range is empty.
+	template<bool... b>    struct none_of;
+	template<bool... tail> struct none_of<true, tail...> : std::false_type {};
+	template<bool... tail> struct none_of<false, tail...> : none_of<tail...> {};
+	template<> struct none_of<> : std::true_type {};
+
+	template<bool... b>
+	constexpr bool none_of_v = none_of<b...>::value;
 
 	namespace detail
 	{

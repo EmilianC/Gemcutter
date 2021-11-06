@@ -6,6 +6,7 @@ list(APPEND unit_test_files
 	"Hierarchy.cpp"
 	"main.cpp"
 	"Math.cpp"
+	"Meta.cpp"
 	"String.cpp"
 )
 
