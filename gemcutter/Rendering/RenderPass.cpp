@@ -345,7 +345,7 @@ namespace gem
 
 			if (text->centeredX)
 			{
-				text->owner.position -= advanceDirection * (((text->GetLineWidth(currentLine) + text->kerning * text->text.size())) / 2.0f);
+				text->owner.position -= advanceDirection * (((text->GetLineWidth(currentLine) + text->kerning * text->string.size())) / 2.0f);
 			}
 
 			if (text->centeredY)
@@ -357,9 +357,9 @@ namespace gem
 			glBindBuffer(GL_ARRAY_BUFFER, Font::GetVBO());
 			glActiveTexture(GL_TEXTURE0);
 
-			for (unsigned i = 0; i < text->text.size(); ++i)
+			for (unsigned i = 0; i < text->string.size(); ++i)
 			{
-				char character = text->text[i];
+				char character = text->string[i];
 				unsigned charIndex = static_cast<unsigned>(character) - '!';
 
 				// Handle whitespace.
@@ -376,7 +376,7 @@ namespace gem
 
 					if (text->centeredX)
 					{
-						text->owner.position -= advanceDirection * (((text->GetLineWidth(currentLine) + text->kerning * text->text.size())) / 2.0f);
+						text->owner.position -= advanceDirection * (((text->GetLineWidth(currentLine) + text->kerning * text->string.size())) / 2.0f);
 					}
 
 					continue;

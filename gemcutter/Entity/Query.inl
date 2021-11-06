@@ -263,10 +263,10 @@ namespace gem
 		static_assert(sizeof...(Args),
 			"With<>() must receive at least one template argument.");
 
-		static_assert(Meta::all_of_v<std::is_base_of<ComponentBase, Args>::value...>,
+		static_assert(Meta::all_of_v<std::is_base_of_v<ComponentBase, Args>...>,
 			"All template arguments must be either Components or Tags.");
 
-		static_assert(Meta::all_of_v<std::is_same<Args, typename Args::StaticComponentType>::value...>,
+		static_assert(Meta::all_of_v<std::is_same_v<Args, typename Args::StaticComponentType>...>,
 			"Only a direct inheritor from Component<> can be used in a With<>() query. Use All<>() instead.");
 
 		using namespace detail;

@@ -13,15 +13,15 @@ namespace gem
 	public:
 		Text(Entity& owner);
 		Text(Entity& owner, Font::Ptr font);
-		Text(Entity& owner, std::string text);
+		Text(Entity& owner, std::string string);
 		Text(Entity& owner, Material::Ptr material);
-		Text(Entity& owner, Font::Ptr font, std::string text, Material::Ptr material);
+		Text(Entity& owner, Font::Ptr font, std::string string, Material::Ptr material);
 
 		unsigned GetNumLines() const;
 		float GetLineWidth(unsigned line) const;
 
 		Font::Ptr font;
-		std::string text;
+		std::string string;
 		bool centeredX = false;
 		bool centeredY = false;
 		// Extra spacing between letters.

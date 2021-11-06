@@ -146,7 +146,7 @@ namespace gem
 		}
 		else
 		{
-			auto image = Image::Load(filePath, true, false);
+			auto image = RawImage::Load(filePath, true, false);
 			if (image.data == nullptr)
 				return false;
 
@@ -391,6 +391,11 @@ namespace gem
 		textureSlots.clear();
 	}
 
+	unsigned TextureList::Size() const
+	{
+		return textureSlots.size();
+	}
+
 	Texture::Ptr& TextureList::operator[](unsigned unit)
 	{
 		auto textureSlot = std::find_if(textureSlots.begin(), textureSlots.end(), [unit](TextureSlot& slot) {
@@ -403,7 +408,7 @@ namespace gem
 
 	//-----------------------------------------------------------------------------------------------------
 
-	Image::Image(int _width, int _height, TextureFormat _format, const unsigned char* _data)
+	RawImage::RawImage(int _width, int _height, TextureFormat _format, const unsigned char* _data)
 		: width(_width)
 		, height(_height)
 		, format(_format)
@@ -411,12 +416,12 @@ namespace gem
 	{
 	}
 
-	Image::~Image()
+	RawImage::~RawImage()
 	{
 		free(const_cast<unsigned char*>(data));
 	}
 
-	Image Image::Load(std::string_view file, bool flipY, bool sRGB)
+	RawImage RawImage::Load(std::string_view file, bool flipY, bool sRGB)
 	{
 		int width = 0;
 		int height = 0;
@@ -426,7 +431,7 @@ namespace gem
 		if (data == nullptr)
 		{
 			Error("Texture: ( %s )\n%s", file.data(), SOIL_last_result());
-			return Image(0, 0, TextureFormat::RGB_8, nullptr);
+			return RawImage(0, 0, TextureFormat::RGB_8, nullptr);
 		}
 
 		// Invert the Y axis for OpenGL texture addressing.
@@ -437,16 +442,16 @@ namespace gem
 
 		if (numChannels == 3)
 		{
-			return Image(width, height, sRGB ? TextureFormat::sRGB_8 : TextureFormat::RGB_8, data);
+			return RawImage(width, height, sRGB ? TextureFormat::sRGB_8 : TextureFormat::RGB_8, data);
 		}
 		else if (numChannels == 4)
 		{
-			return Image(width, height, sRGB ? TextureFormat::sRGBA_8 : TextureFormat::RGBA_8, data);
+			return RawImage(width, height, sRGB ? TextureFormat::sRGBA_8 : TextureFormat::RGBA_8, data);
 		}
 		else
 		{
 			Error("Texture: ( %s )\nUnsupported format. Must have 3 or 4 color channels.", file.data());
-			return Image(0, 0, TextureFormat::RGB_8, nullptr);
+			return RawImage(0, 0, TextureFormat::RGB_8, nullptr);
 		}
 	}
 

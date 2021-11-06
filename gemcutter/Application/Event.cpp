@@ -11,12 +11,6 @@ namespace gem
 
 	void EventQueueSingleton::Push(std::unique_ptr<EventBase> e)
 	{
-#ifdef _DEBUG
-		ASSERT(!inDispatch,
-			"It is dangerous to add a new event to the queue while currently inside a global Dispatch().\n"
-			"Consider using Dispatch(const EventBase&) instead.");
-#endif
-
 		eventQueue.push(std::move(e));
 	}
 
@@ -27,20 +21,21 @@ namespace gem
 
 	void EventQueueSingleton::Dispatch()
 	{
-#ifdef _DEBUG
-		// Events should not be posted during this call.
-		inDispatch = true;
-#endif
+		ASSERT(!dispatching,
+			"Call to Dispatch() cannot be executed because the event queue is already being dispatched higher in the call stack.\n"
+			"Consider using Dispatch(const EventBase&) if an event must be processed here immediately.");
 
+		dispatching = true;
 		while (!eventQueue.empty())
 		{
 			eventQueue.front()->Raise();
 			eventQueue.pop();
 		}
+		dispatching = false;
+	}
 
-#ifdef _DEBUG
-		// Events can be posted again.
-		inDispatch = false;
-#endif
+	bool EventQueueSingleton::IsDispatching() const
+	{
+		return dispatching;
 	}
 }

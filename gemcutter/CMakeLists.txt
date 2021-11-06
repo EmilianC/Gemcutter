@@ -31,6 +31,20 @@ list(APPEND gemcutter_files
 	"Entity/Name.h"
 	"Entity/Query.inl"
 
+	"GUI/Button.cpp"
+	"GUI/Button.h"
+	"GUI/Image.cpp"
+	"GUI/Image.h"
+	"GUI/Label.cpp"
+	"GUI/Label.h"
+	"GUI/Rectangle.cpp"
+	"GUI/Rectangle.h"
+	"GUI/Screen.cpp"
+	"GUI/Screen.h"
+	"GUI/Widget.cpp"
+	"GUI/Widget.h"
+	"GUI/Widget.inl"
+
 	"Input/Input.cpp"
 	"Input/Input.h"
 	"Input/XboxGamePad.cpp"
@@ -166,6 +180,7 @@ if (ENABLE_PCH)
 			<vector>
 			Application/Logging.h
 			Entity/Entity.h
+			GUI/Widget.h
 			Math/Matrix.h
 			Math/Quaternion.h
 			Math/Transform.h

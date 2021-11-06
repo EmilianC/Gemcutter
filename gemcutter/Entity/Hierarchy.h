@@ -12,7 +12,7 @@ namespace gem
 	struct HierarchyRoot : public Tag<HierarchyRoot> {};
 
 	// Allows Entities to be organized in a tree structure.
-	// Also propagates transformations from parent to child.
+	// Can also propagate transformations from parent to child.
 	class Hierarchy : public Component<Hierarchy>
 	{
 	public:
@@ -48,6 +48,7 @@ namespace gem
 
 		// Gets the list of children held by this Entity.
 		const auto& GetChildren() const { return children; }
+		auto& GetChildren() { return children; }
 
 		// Gets the depth of this Entity in the hierarchy. The root is always depth 0.
 		// Direct children of the root are at depth 1, and so on.
@@ -67,6 +68,9 @@ namespace gem
 
 		// Returns the world-space rotation of the Entity, accumulated from the root of the hierarchy.
 		quat GetWorldRotation() const;
+
+		// Whether or not this Entity propagates its transformations downwards through the hierarchy.
+		bool propagateTransform = true;
 
 	private:
 		Hierarchy* parentHierarchy = nullptr;

@@ -87,8 +87,9 @@ namespace gem
 
 		void Add(UniformBuffer::Ptr buff, unsigned unit);
 		void Remove(unsigned unit);
-		// Removes all Buffers.
 		void Clear();
+
+		unsigned Size() const;
 
 		// Returns the buffer bound at the specified unit.
 		UniformBuffer::Ptr& operator[](unsigned unit);

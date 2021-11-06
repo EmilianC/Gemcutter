@@ -89,6 +89,8 @@ namespace gem
 		void Remove(unsigned unit);
 		void Clear();
 
+		unsigned Size() const;
+
 		// Returns the buffer bound at the specified unit.
 		Texture::Ptr& operator[](unsigned unit);
 
@@ -100,13 +102,13 @@ namespace gem
 
 	// Loads raw image data from the disk.
 	// Can be used when an image is needed for non-rendering use.
-	class Image
+	class RawImage
 	{
 	public:
-		~Image();
+		~RawImage();
 
 		// Loads *.png, *.jpg, *.tga, and *.bmp.
-		static Image Load(std::string_view file, bool flipY, bool sRGB);
+		static RawImage Load(std::string_view file, bool flipY, bool sRGB);
 
 		const int width;
 		const int height;
@@ -114,7 +116,7 @@ namespace gem
 		const unsigned char* data;
 
 	private:
-		Image(int width, int height, TextureFormat format, const unsigned char* data);
+		RawImage(int width, int height, TextureFormat format, const unsigned char* data);
 	};
 
 	// Flips the image contained in `data` on the Y axis.

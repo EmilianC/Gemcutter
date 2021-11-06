@@ -259,6 +259,11 @@ namespace gem
 		buffers.clear();
 	}
 
+	unsigned BufferList::Size() const
+	{
+		return buffers.size();
+	}
+
 	UniformBuffer::Ptr& BufferList::operator[](unsigned unit)
 	{
 		auto bufferSlot = std::find_if(buffers.begin(), buffers.end(), [unit](BufferSlot& slot) {
