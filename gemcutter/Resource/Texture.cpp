@@ -76,24 +76,24 @@ namespace gem
 				filePath += ".texture";
 			}
 
-			FILE* fontFile = fopen(filePath.c_str(), "rb");
-			if (fontFile == nullptr)
+			FILE* textureFile = fopen(filePath.c_str(), "rb");
+			if (textureFile == nullptr)
 			{
 				Error("Texture: ( %s )\nUnable to open file.", filePath.c_str());
 				return false;
 			}
-			defer { fclose(fontFile); };
+			defer { fclose(textureFile); };
 
 			// Read header.
 			bool isCubeMap = false;
-			fread(&isCubeMap, sizeof(bool), 1, fontFile);
-			fread(&width, sizeof(unsigned), 1, fontFile);
-			fread(&height, sizeof(unsigned), 1, fontFile);
-			fread(&format, sizeof(TextureFormat), 1, fontFile);
-			fread(&filter, sizeof(TextureFilter), 1, fontFile);
-			fread(&wraps.x, sizeof(TextureWrap), 1, fontFile);
-			fread(&wraps.y, sizeof(TextureWrap), 1, fontFile);
-			fread(&anisotropicLevel, sizeof(float), 1, fontFile);
+			fread(&isCubeMap, sizeof(bool), 1, textureFile);
+			fread(&width, sizeof(unsigned), 1, textureFile);
+			fread(&height, sizeof(unsigned), 1, textureFile);
+			fread(&format, sizeof(TextureFormat), 1, textureFile);
+			fread(&filter, sizeof(TextureFilter), 1, textureFile);
+			fread(&wraps.x, sizeof(TextureWrap), 1, textureFile);
+			fread(&wraps.y, sizeof(TextureWrap), 1, textureFile);
+			fread(&anisotropicLevel, sizeof(float), 1, textureFile);
 
 			numLevels = CountMipLevels(width, height, filter);
 			const unsigned textureSize = width * height * CountChannels(format);
@@ -103,7 +103,7 @@ namespace gem
 				auto* image = static_cast<unsigned char*>(malloc(sizeof(unsigned char) * textureSize * 6));
 				defer{ free(image); };
 
-				fread(image, sizeof(unsigned char), textureSize * 6, fontFile);
+				fread(image, sizeof(unsigned char), textureSize * 6, textureFile);
 
 				glGenTextures(1, &hTex);
 				glBindTexture(GL_TEXTURE_CUBE_MAP, hTex);
@@ -128,7 +128,7 @@ namespace gem
 				auto* image = static_cast<unsigned char*>(malloc(sizeof(unsigned char) * textureSize));
 				defer{ free(image); };
 
-				fread(image, sizeof(unsigned char), textureSize, fontFile);
+				fread(image, sizeof(unsigned char), textureSize, textureFile);
 
 				glGenTextures(1, &hTex);
 				glBindTexture(GL_TEXTURE_2D, hTex);
@@ -218,6 +218,28 @@ namespace gem
 		glBindTexture(target, GL_NONE);
 
 		anisotropicLevel = level;
+	}
+
+	void Texture::SetPCF(bool enabled)
+	{
+		ASSERT(hTex != 0, "A texture must be loaded to call this function.");
+		ASSERT(format == TextureFormat::DEPTH_24, "PCF can only be modified on depth textures.");
+
+		glBindTexture(target, hTex);
+		if (enabled)
+		{
+			glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(target, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+			glTexParameteri(target, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+		}
+		else
+		{
+			glTexParameteri(target, GL_TEXTURE_MAG_FILTER, ResolveFilterMag(filter));
+			glTexParameteri(target, GL_TEXTURE_MIN_FILTER, ResolveFilterMin(filter));
+			glTexParameteri(target, GL_TEXTURE_COMPARE_MODE, GL_NONE);
+		}
+		glBindTexture(target, GL_NONE);
 	}
 
 	void Texture::Unload()

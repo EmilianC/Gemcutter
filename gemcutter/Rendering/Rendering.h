@@ -70,7 +70,7 @@ namespace gem
 	{
 		// The buffer contains vertex data or attributes.
 		Data,
-		// The buffer contiains indices defining primitive ordering.
+		// The buffer contains indices defining primitive ordering.
 		Index
 	};
 

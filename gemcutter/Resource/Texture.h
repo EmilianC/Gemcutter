@@ -36,6 +36,8 @@ namespace gem
 		void SetWrap(TextureWraps wraps);
 		// Must be in the range of [1, 16].
 		void SetAnisotropicLevel(float level);
+		// Sets whether Percentage Closer Filtering is enabled for depth textures.
+		void SetPCF(bool enabled);
 
 		unsigned GetHandle() const;
 		unsigned GetNumSamples() const;
