@@ -14,9 +14,9 @@ namespace gem
 {
 	void RemoveWhitespace(std::string& str)
 	{
-		str.erase(std::remove_if(str.begin(), str.end(), [](char x) {
+		std::erase_if(str, [](char x) {
 			return std::isspace(x);
-		}), str.end());
+		});
 	}
 
 	void RemoveRedundantWhitespace(std::string& str)
@@ -128,25 +128,5 @@ namespace gem
 	{
 		std::transform(str.begin(), str.end(), str.begin(),
 			[](unsigned char c) { return static_cast<unsigned char>(std::tolower(c)); });
-	}
-
-	bool StartsWith(std::string_view base, std::string_view prefix)
-	{
-		if (base.size() < prefix.size())
-		{
-			return false;
-		}
-
-		return strncmp(base.data(), prefix.data(), prefix.size()) == 0;
-	}
-
-	bool EndsWith(std::string_view base, std::string_view postfix)
-	{
-		if (base.size() < postfix.size())
-		{
-			return false;
-		}
-
-		return strncmp((base.data() + base.size()) - postfix.size(), postfix.data(), postfix.size()) == 0;
 	}
 }

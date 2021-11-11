@@ -27,10 +27,4 @@ namespace gem
 
 	// Converts all uppercase letters in the string to lowercase.
 	void ToLowercase(std::string& str);
-
-	// Returns true if the first characters of base are equal to prefix.
-	bool StartsWith(std::string_view base, std::string_view prefix);
-
-	// Returns true if the last characters of base are equal to postfix.
-	bool EndsWith(std::string_view base, std::string_view postfix);
 }

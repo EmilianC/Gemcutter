@@ -894,17 +894,17 @@ namespace gem
 
 				uniform.name = line.substr(nameStart + 1, nameEnd - nameStart);
 
-				if (StartsWith(line, "float"))       uniform.type = GL_FLOAT;
-				else if (StartsWith(line, "vec2"))   uniform.type = GL_FLOAT_VEC2;
-				else if (StartsWith(line, "vec3"))   uniform.type = GL_FLOAT_VEC3;
-				else if (StartsWith(line, "vec4"))   uniform.type = GL_FLOAT_VEC4;
-				else if (StartsWith(line, "mat4"))   uniform.type = GL_FLOAT_MAT4;
-				else if (StartsWith(line, "mat3"))   uniform.type = GL_FLOAT_MAT3;
-				else if (StartsWith(line, "mat2"))   uniform.type = GL_FLOAT_MAT2;
-				else if (StartsWith(line, "int"))    uniform.type = GL_INT;
-				else if (StartsWith(line, "uint"))   uniform.type = GL_UNSIGNED_INT;
-				else if (StartsWith(line, "bool"))   uniform.type = GL_BOOL;
-				else if (StartsWith(line, "double")) uniform.type = GL_DOUBLE;
+				if (line.starts_with("float"))       uniform.type = GL_FLOAT;
+				else if (line.starts_with("vec2"))   uniform.type = GL_FLOAT_VEC2;
+				else if (line.starts_with("vec3"))   uniform.type = GL_FLOAT_VEC3;
+				else if (line.starts_with("vec4"))   uniform.type = GL_FLOAT_VEC4;
+				else if (line.starts_with("mat4"))   uniform.type = GL_FLOAT_MAT4;
+				else if (line.starts_with("mat3"))   uniform.type = GL_FLOAT_MAT3;
+				else if (line.starts_with("mat2"))   uniform.type = GL_FLOAT_MAT2;
+				else if (line.starts_with("int"))    uniform.type = GL_INT;
+				else if (line.starts_with("uint"))   uniform.type = GL_UNSIGNED_INT;
+				else if (line.starts_with("bool"))   uniform.type = GL_BOOL;
+				else if (line.starts_with("double")) uniform.type = GL_DOUBLE;
 				else
 				{
 					Error("Uniform member ( %s ) has an unsupported type.", uniform.name.c_str());
