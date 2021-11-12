@@ -33,11 +33,8 @@ namespace gem
 		// Marks the program to close at the start of the next game-loop.
 		void Exit();
 
-		// Shows the default windows cursor.
-		void EnableCursor();
-
-		// Hides the default windows cursor.
-		void DisableCursor();
+		// Shows or hides the default system cursor.
+		void ShowCursor(bool visibility);
 
 		bool IsFullscreen() const;
 		bool IsBordered() const;
@@ -62,7 +59,7 @@ namespace gem
 
 		// If the game's update rate has fallen behind the target updates per second,
 		// this will skip the fast-forwarding effect caused by the update loop catching up to real time.
-		// The lost time is ignored. This should be called at the start of a real-time gameplay segment 
+		// The lost time is ignored. This should be called at the start of a real-time gameplay segment
 		// or after loading a high volume of assets and stalling the game loop.
 		void SkipToPresentTime();
 

@@ -340,7 +340,7 @@ namespace gem
 			SetFullscreen(false);
 		}
 
-		EnableCursor();
+		ShowCursor(true);
 
 #ifdef _DEBUG
 		// Some drivers will emit erroneous errors on shutdown, so we disable debug info first.
@@ -467,14 +467,16 @@ namespace gem
 		appIsRunning = false;
 	}
 
-	void ApplicationSingleton::EnableCursor()
+	void ApplicationSingleton::ShowCursor(bool visibility)
 	{
-		while (ShowCursor(true) <= 0);
-	}
-
-	void ApplicationSingleton::DisableCursor()
-	{
-		while (ShowCursor(false) > 0);
+		if (visibility)
+		{
+			while (::ShowCursor(true) <= 0);
+		}
+		else
+		{
+			while (::ShowCursor(false) >= 0);
+		}
 	}
 
 	bool ApplicationSingleton::IsFullscreen() const
