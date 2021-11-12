@@ -56,10 +56,19 @@ namespace gem
 		int GetMouseX() const;
 		int GetMouseY() const;
 		vec2 GetMousePos() const;
+		// Moves the system cursor to the given window position.
+		// Can optionally emit a MouseMoved event.
+		void SetMousePos(int posX, int posY, bool emitEvent);
+
+		// Locks the cursor to the center of the window so that the player's
+		// input will not cause the mouse to leave the game's focus.
+		void SetCursorLock(bool lock);
+		bool IsCursorLocked() const;
 
 	private:
 		bool Update(const MSG& msg);
 
+		bool cursorLocked = false;
 		bool keys[static_cast<unsigned>(Key::NUM_KEYS)] = { false };
 		int x = 0;
 		int y = 0;

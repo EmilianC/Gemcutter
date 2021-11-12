@@ -61,21 +61,57 @@ namespace gem
 		return vec2(static_cast<float>(x), static_cast<float>(y));
 	}
 
+	void InputSingleton::SetMousePos(int posX, int posY, bool emitEvent)
+	{
+		vec2 lastPos(static_cast<float>(x), static_cast<float>(y));
+		x = posX;
+		y = posY;
+
+		POINT coords { x, y };
+		ClientToScreen(Application.hwnd, &coords);
+		SetCursorPos(coords.x, coords.y);
+
+		if (emitEvent)
+		{
+			vec2 pos(static_cast<float>(posX), static_cast<float>(posY));
+
+			EventQueue.Push(std::make_unique<MouseMoved>(pos, pos - lastPos));
+		}
+	}
+
+	void InputSingleton::SetCursorLock(bool lock)
+	{
+		cursorLocked = lock;
+		if (cursorLocked)
+		{
+			SetMousePos(Application.GetScreenWidth() / 2, Application.GetScreenHeight() / 2, false);
+		}
+	}
+
+	bool InputSingleton::IsCursorLocked() const
+	{
+		return cursorLocked;
+	}
+
 	bool InputSingleton::Update(const MSG& msg)
 	{
 		switch (msg.message)
 		{
 		case WM_MOUSEMOVE:
 			{
-				auto lastX = x;
-				auto lastY = y;
-				vec2 lastPos(static_cast<float>(lastX), static_cast<float>(lastY));
+				vec2 lastPos(static_cast<float>(x), static_cast<float>(y));
 
 				x = GET_X_LPARAM(msg.lParam);
 				y = -(static_cast<int>(GET_Y_LPARAM(msg.lParam)) - Application.GetScreenHeight());
 				vec2 pos(static_cast<float>(x), static_cast<float>(y));
 
 				EventQueue.Push(std::make_unique<MouseMoved>(pos, pos - lastPos));
+
+				if (cursorLocked)
+				{
+					SetMousePos(Application.GetScreenWidth() / 2, Application.GetScreenHeight() / 2, false);
+				}
+
 				break;
 			}
 

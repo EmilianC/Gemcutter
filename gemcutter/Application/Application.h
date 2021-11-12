@@ -14,6 +14,7 @@ namespace gem
 	extern class ApplicationSingleton Application;
 	class ApplicationSingleton
 	{
+		friend class InputSingleton;
 	public:
 		ApplicationSingleton();
 		~ApplicationSingleton();
