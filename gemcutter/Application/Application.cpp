@@ -550,6 +550,41 @@ namespace gem
 		return FPSCap;
 	}
 
+	unsigned ApplicationSingleton::GetSystemRefreshRate() const
+	{
+		DEVMODE devMode;
+		memset(&devMode, 0, sizeof(DEVMODE));
+		devMode.dmSize = sizeof(DEVMODE);
+		devMode.dmDriverExtra = 0;
+
+		if (EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &devMode))
+		{
+			return static_cast<unsigned>(devMode.dmDisplayFrequency);
+		}
+
+		Warning("Could not retrieve the system display's refresh rate. Assuming 60hz.");
+		return 60;
+	}
+
+	Viewport ApplicationSingleton::GetSystemResolution() const
+	{
+		Viewport result;
+		RECT desktop;
+		if (GetWindowRect(GetDesktopWindow(), &desktop))
+		{
+			result.width = desktop.right;
+			result.height = desktop.bottom;
+		}
+		else
+		{
+			Warning("Could not retrieve the system display's resolution. Assuming 1920x1080.");
+			result.width = 1920;
+			result.height = 1080;
+		}
+
+		return result;
+	}
+
 	void ApplicationSingleton::SetUpdatesPerSecond(unsigned ups)
 	{
 		ASSERT(ups > 0, "Invalid update rate.");

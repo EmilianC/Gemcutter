@@ -55,6 +55,11 @@ namespace gem
 		void SetFPSCap(unsigned fps);
 		unsigned GetFPSCap() const;
 
+		// Returns the max refresh rate of the system's display.
+		unsigned GetSystemRefreshRate() const;
+		// Returns the current desktop resolution of the system.
+		Viewport GetSystemResolution() const;
+
 		void SetUpdatesPerSecond(unsigned ups);
 		unsigned GetUpdatesPerSecond() const;
 
