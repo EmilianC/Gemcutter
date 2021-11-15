@@ -167,12 +167,16 @@ namespace gem
 		static Entity::Ptr MakeNewRoot(std::string name);
 		static Entity::Ptr MakeNewRoot(const Transform& pose);
 
-		// Returns the world-space transformation of the Entity,
-		// accumulated from the root of the hierarchy if there is one.
+		// Returns the full world-space transformation of the Entity
+		// accumulated from the root of the hierarchy, if there is one.
 		mat4 GetWorldTransform() const;
 
-		// Returns the world-space rotation of the Entity,
-		// accumulated from the root of the hierarchy if there is one.
+		// Returns the world-space position of the Entity
+		// accumulated from the root of the hierarchy, if there is one.
+		vec3 GetWorldPosition() const;
+
+		// Returns the world-space rotation of the Entity
+		// accumulated from the root of the hierarchy, if there is one.
 		quat GetWorldRotation() const;
 
 		// Positions the Entity at 'pos' looking towards the 'target' in local space.

@@ -182,7 +182,7 @@ namespace gem
 			if (!source.IsPlaying())
 				continue;
 
-			vec3 position = source.owner.GetWorldTransform().GetTranslation();
+			vec3 position = source.owner.GetWorldPosition();
 			pos[0] = position.x;
 			pos[1] = position.y;
 			pos[2] = position.z;

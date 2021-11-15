@@ -143,7 +143,7 @@ namespace gem
 		else
 		{
 			// We are currently in local space and need to switch to world.
-			transform = owner.GetWorldTransform().GetTranslation();
+			transform = owner.GetWorldPosition();
 		}
 
 		for (unsigned i = 0; i < numCurrentParticles; ++i)
@@ -258,7 +258,7 @@ namespace gem
 		// Transform new particles into the correct space.
 		if (!localSpace)
 		{
-			vec3 transform = owner.GetWorldTransform().GetTranslation();
+			vec3 transform = owner.GetWorldPosition();
 
 			for (unsigned i = initialCount; i < numCurrentParticles; ++i)
 			{

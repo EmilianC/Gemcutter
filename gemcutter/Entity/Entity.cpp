@@ -92,6 +92,21 @@ namespace gem
 		return result;
 	}
 
+	vec3 Entity::GetWorldPosition() const
+	{
+		vec3 result;
+		if (auto* hierarchy = Try<Hierarchy>())
+		{
+			result = hierarchy->GetWorldTransform().GetTranslation();
+		}
+		else
+		{
+			result = position;
+		}
+
+		return result;
+	}
+
 	quat Entity::GetWorldRotation() const
 	{
 		quat result;
@@ -117,15 +132,7 @@ namespace gem
 	{
 		ASSERT(&target != this, "Entity cannot look at itself.");
 
-		vec3 targetPos;
-		if (auto* targetHierarchy = target.Try<Hierarchy>())
-		{
-			targetPos = targetHierarchy->GetWorldTransform().GetTranslation();
-		}
-		else
-		{
-			targetPos = target.position;
-		}
+		vec3 targetPos = target.GetWorldPosition();
 
 		// If we have a parent, we are not in world-space.
 		// We must resolve for the target position in local-space.
