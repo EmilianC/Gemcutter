@@ -451,17 +451,17 @@ namespace gem
 
 	float LengthSquared(const vec2& v)
 	{
-		return v.x * v.x + v.y * v.y;
+		return (v.x * v.x) + (v.y * v.y);
 	}
 
 	float LengthSquared(const vec3& v)
 	{
-		return v.x * v.x + v.y * v.y + v.z * v.z;
+		return (v.x * v.x) + (v.y * v.y) + (v.z * v.z);
 	}
 
 	float LengthSquared(const vec4& v)
 	{
-		return v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w;
+		return (v.x * v.x) + (v.y * v.y) + (v.z * v.z) + (v.w * v.w);
 	}
 
 	float Distance(const vec2& v1, const vec2& v2)
@@ -477,6 +477,21 @@ namespace gem
 	float Distance(const vec4& v1, const vec4& v2)
 	{
 		return Length(v1 - v2);
+	}
+
+	float DistanceSquared(const vec2& v1, const vec2& v2)
+	{
+		return LengthSquared(v1 - v2);
+	}
+
+	float DistanceSquared(const vec3& v1, const vec3& v2)
+	{
+		return LengthSquared(v1 - v2);
+	}
+
+	float DistanceSquared(const vec4& v1, const vec4& v2)
+	{
+		return LengthSquared(v1 - v2);
 	}
 
 	float Dot(const vec2& v1, const vec2& v2)

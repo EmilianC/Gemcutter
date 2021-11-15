@@ -142,6 +142,9 @@ namespace gem
 	[[nodiscard]] float Distance(const vec2&, const vec2&);
 	[[nodiscard]] float Distance(const vec3&, const vec3&);
 	[[nodiscard]] float Distance(const vec4&, const vec4&);
+	[[nodiscard]] float DistanceSquared(const vec2&, const vec2&);
+	[[nodiscard]] float DistanceSquared(const vec3&, const vec3&);
+	[[nodiscard]] float DistanceSquared(const vec4&, const vec4&);
 	[[nodiscard]] float Dot(const vec2&, const vec2&);
 	[[nodiscard]] float Dot(const vec3&, const vec3&);
 	[[nodiscard]] float Dot(const vec4&, const vec4&);
