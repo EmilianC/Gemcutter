@@ -55,13 +55,18 @@ namespace gem
 		void SetFPSCap(unsigned fps);
 		unsigned GetFPSCap() const;
 
+		void SetUpdatesPerSecond(unsigned ups);
+		unsigned GetUpdatesPerSecond() const;
+
 		// Returns the max refresh rate of the system's display.
 		unsigned GetSystemRefreshRate() const;
 		// Returns the current desktop resolution of the system.
 		Viewport GetSystemResolution() const;
 
-		void SetUpdatesPerSecond(unsigned ups);
-		unsigned GetUpdatesPerSecond() const;
+		// Gathers all pending events from the OS. This is already called regularly, but you can call
+		// it again manually to ensure that the latest input events have been gathered from the system.
+		// A call to EventQueue.Dispatch() will still be required to process the queued gemcutter events.
+		void GatherSystemEvents();
 
 		// If the game's update rate has fallen behind the target updates per second,
 		// this will skip the fast-forwarding effect caused by the update loop catching up to real time.
@@ -78,9 +83,6 @@ namespace gem
 		bool SetResolution(unsigned width, unsigned height);
 
 	private:
-		// Processes events from the OS.
-		void DrainEventQueue();
-
 		static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 		bool appIsRunning = true;

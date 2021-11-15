@@ -237,7 +237,7 @@ namespace gem
 {
 	ApplicationSingleton Application;
 
-	void ApplicationSingleton::DrainEventQueue()
+	void ApplicationSingleton::GatherSystemEvents()
 	{
 		// Windows message loop.
 		MSG msg;
@@ -379,7 +379,7 @@ namespace gem
 		while (true)
 		{
 			// Updates our input and Windows OS events.
-			DrainEventQueue();
+			GatherSystemEvents();
 			if (!appIsRunning) [[unlikely]]
 				return;
 
@@ -550,6 +550,20 @@ namespace gem
 		return FPSCap;
 	}
 
+	void ApplicationSingleton::SetUpdatesPerSecond(unsigned ups)
+	{
+		ASSERT(ups > 0, "Invalid update rate.");
+
+		updateStep = Timer::GetTicksPerSecond() / ups;
+
+		updatesPerSecond = ups;
+	}
+
+	unsigned ApplicationSingleton::GetUpdatesPerSecond() const
+	{
+		return updatesPerSecond;
+	}
+
 	unsigned ApplicationSingleton::GetSystemRefreshRate() const
 	{
 		DEVMODE devMode;
@@ -583,20 +597,6 @@ namespace gem
 		}
 
 		return result;
-	}
-
-	void ApplicationSingleton::SetUpdatesPerSecond(unsigned ups)
-	{
-		ASSERT(ups > 0, "Invalid update rate.");
-
-		updateStep = Timer::GetTicksPerSecond() / ups;
-
-		updatesPerSecond = ups;
-	}
-
-	unsigned ApplicationSingleton::GetUpdatesPerSecond() const
-	{
-		return updatesPerSecond;
 	}
 
 	void ApplicationSingleton::SkipToPresentTime()
