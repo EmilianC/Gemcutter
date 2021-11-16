@@ -4,6 +4,7 @@
 #include <gemcutter/Math/Matrix.h>
 #include <gemcutter/Math/Vector.h>
 #include <gemcutter/Resource/Encoder.h>
+#include <gemcutter/Resource/VertexArray.h>
 
 #include <fstream>
 #include <vector>
@@ -116,6 +117,11 @@ bool MeshEncoder::Convert(std::string_view source, std::string_view destination,
 	std::vector<gem::vec3> normalData;
 	// Indexing data.
 	std::vector<MeshFace> faceData;
+
+	vertexData.reserve(128);
+	textureData.reserve(128);
+	normalData.reserve(128);
+	faceData.reserve(256);
 
 	gem::vec3 minBounds{ FLT_MAX };
 	gem::vec3 maxBounds{ FLT_MIN };
@@ -302,6 +308,12 @@ bool MeshEncoder::Convert(std::string_view source, std::string_view destination,
 	}
 
 	const unsigned numVertices = faceData.size() * 3;
+	if (numVertices >= gem::VertexBuffer::RESTART_INDEX)
+	{
+		gem::Error("The mesh is too large. It has %d vertices, but needs less than %d.", numVertices, gem::VertexBuffer::RESTART_INDEX);
+		return false;
+	}
+
 	unsigned bufferSize = numVertices * 3;
 	if (useUvs) bufferSize += numVertices * 2;
 	if (useNormals) bufferSize += numVertices * 3;
