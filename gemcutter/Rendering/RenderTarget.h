@@ -65,8 +65,11 @@ namespace gem
 		void CopyColorToBackBuffer(unsigned index) const;
 
 		// Retrieves a pixel from the specified color buffer.
-		// * This is not recommended for real-time use because it can be very expensive *
-		vec4 ReadPixel(unsigned index, const vec2& position) const;
+		// * This is not recommended for real-time use because it is very expensive *
+		void ReadPixel(unsigned index, int x, int y, unsigned char& outR, unsigned char& outG, unsigned char& outB, unsigned char& outA) const;
+		void ReadPixel(unsigned index, int x, int y, unsigned short& outR, unsigned short& outG, unsigned short& outB, unsigned short& outA) const;
+		void ReadPixel(unsigned index, int x, int y, unsigned& outR, unsigned& outG, unsigned& outB, unsigned& outA) const;
+		void ReadPixel(unsigned index, int x, int y, vec4& out) const;
 
 		bool HasDepth() const;
 		bool IsMultisampled() const;

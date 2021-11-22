@@ -11,6 +11,33 @@
 namespace
 {
 	GLenum* drawBuffers = nullptr;
+
+	unsigned ResolvePixelFormat(gem::TextureFormat format)
+	{
+		// Although undocumented, these seem to be the correct values expected by glReadPixels.
+		const unsigned resolve[] = {
+			GL_RED_INTEGER,       // R_8
+			GL_RED_INTEGER,       // R_16
+			GL_RED,               // R_16F
+			GL_RED_INTEGER,       // R_32
+			GL_RED,               // R_32F
+			GL_RGB_INTEGER,       // RGB_8
+			GL_RGB_INTEGER,       // RGB_16
+			GL_RGB,               // RGB_16F
+			GL_RGB_INTEGER,       // RGB_32
+			GL_RGB,               // RGB_32F
+			GL_RGBA_INTEGER,      // RGBA_8
+			GL_RGBA_INTEGER,      // RGBA_16
+			GL_RGBA,              // RGBA_16F
+			GL_RGBA_INTEGER,      // RGBA_32
+			GL_RGBA,              // RGBA_32F
+			GL_DEPTH_COMPONENT,   // DEPTH_24
+			GL_RGB_INTEGER,       // sRGB_8
+			GL_RGBA_INTEGER       // sRGBA_8
+		};
+
+		return resolve[static_cast<unsigned>(format)];
+	}
 }
 
 namespace gem
@@ -47,7 +74,7 @@ namespace gem
 		if (hasDepth)
 		{
 			depth = Texture::MakeNew();
-			depth->CreateTexture(
+			depth->Create(
 				width, height,
 				TextureFormat::DEPTH_24, TextureFilter::Point,
 				TextureWrap::Clamp, 1.0f, numSamples);
@@ -111,7 +138,7 @@ namespace gem
 		ASSERT(!colors[index], "'index' is already initialized.");
 
 		colors[index] = Texture::MakeNew();
-		colors[index]->CreateTexture(width, height, format, filter, TextureWrap::Clamp, 1.0f, numSamples);
+		colors[index]->Create(width, height, format, filter, TextureWrap::Clamp, 1.0f, numSamples);
 
 		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
 
@@ -305,7 +332,7 @@ namespace gem
 		if (depth)
 		{
 			depth->Unload();
-			depth->CreateTexture(
+			depth->Create(
 				newWidth, newHeight,
 				TextureFormat::DEPTH_24, TextureFilter::Point,
 				TextureWrap::Clamp, 1.0f, numSamples);
@@ -327,7 +354,7 @@ namespace gem
 			const float oldAnisotropicLevel = colors[i]->GetAnisotropicLevel();
 			colors[i]->Unload();
 
-			colors[i]->CreateTexture(newWidth, newHeight, oldFormat, oldFilter, oldWrap, oldAnisotropicLevel, numSamples);
+			colors[i]->Create(newWidth, newHeight, oldFormat, oldFilter, oldWrap, oldAnisotropicLevel, numSamples);
 
 			glFramebufferTexture2D(
 				GL_FRAMEBUFFER,
@@ -407,77 +434,100 @@ namespace gem
 		glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
 	}
 
-	vec4 RenderTarget::ReadPixel(unsigned index, const vec2& position) const
+	void RenderTarget::ReadPixel(unsigned index, int x, int y, unsigned char& outR, unsigned char& outG, unsigned char& outB, unsigned char& outA) const
 	{
 		ASSERT(index < numColorTextures, "'index' must specify a valid color texture.");
 		ASSERT(numSamples == 1, "RenderTarget must not be multi-sampled.");
 
+		const TextureFormat format = colors[index]->GetFormat();
+		ASSERT(
+			format == TextureFormat::R_8 ||
+			format == TextureFormat::RGB_8 ||
+			format == TextureFormat::RGBA_8 ||
+			format == TextureFormat::sRGB_8 ||
+			format == TextureFormat::sRGBA_8, "Invalid texture format for reading 'unsigned char's.");
+
 		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
 		glReadBuffer(GL_COLOR_ATTACHMENT0 + index);
 
-		unsigned format = 0;
-		switch (CountChannels(colors[index]->GetFormat()))
-		{
-		case 4: format = GL_RGBA;
-			break;
-		case 3: format = GL_RGB;
-			break;
-		case 1: format = GL_RED;
-			break;
-		default:
-			ASSERT(false, "Unsupported texture format.");
-		}
-
-		vec4 result;
-		switch (colors[index]->GetFormat())
-		{
-		case TextureFormat::RGB_8:
-		case TextureFormat::RGBA_8:
-		case TextureFormat::sRGB_8:
-		case TextureFormat::sRGBA_8:
-			{
-				unsigned char pixel[4] = { 0 };
-				glReadPixels(static_cast<int>(position.x), static_cast<int>(position.y), 1, 1, format, GL_UNSIGNED_BYTE, pixel);
-				// Normalize color range to [0, 1].
-				result = vec4(pixel[0], pixel[1], pixel[2], pixel[3]) / static_cast<float>(UCHAR_MAX);
-			} break;
-
-		case TextureFormat::RGB_16:
-		case TextureFormat::RGBA_16:
-			{
-				unsigned short pixel[4] = { 0 };
-				glReadPixels(static_cast<int>(position.x), static_cast<int>(position.y), 1, 1, format, GL_UNSIGNED_SHORT, pixel);
-				// Normalize color range to [0, 1].
-				result = vec4(pixel[0], pixel[1], pixel[2], pixel[3]) / static_cast<float>(USHRT_MAX);
-			} break;
-
-		case TextureFormat::RGB_32:
-		case TextureFormat::RGBA_32:
-			{
-				unsigned pixel[4] = { 0 };
-				glReadPixels(static_cast<int>(position.x), static_cast<int>(position.y), 1, 1, format, GL_UNSIGNED_INT, pixel);
-				// Normalize color range to [0, 1].
-				result = vec4(
-					static_cast<float>(pixel[0]),
-					static_cast<float>(pixel[1]),
-					static_cast<float>(pixel[2]),
-					static_cast<float>(pixel[3])) / static_cast<float>(UINT_MAX);
-			} break;
-
-		case TextureFormat::RGB_16F:
-		case TextureFormat::RGBA_16F:
-		case TextureFormat::RGBA_32F:
-		case TextureFormat::RGB_32F:
-			glReadPixels(static_cast<int>(position.x), static_cast<int>(position.y), 1, 1, format, GL_FLOAT, &result.x);
-			break;
-
-		default:
-			ASSERT(false, "Unsupported texture format.");
-		}
+		unsigned char pixel[4] = { 0 };
+		glReadPixels(x, y, 1, 1, ResolvePixelFormat(format), GL_UNSIGNED_BYTE, pixel);
+		outR = pixel[0];
+		outG = pixel[1];
+		outB = pixel[2];
+		outA = pixel[3];
 
 		glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
+	}
 
-		return result;
+	void RenderTarget::ReadPixel(unsigned index, int x, int y, unsigned short& outR, unsigned short& outG, unsigned short& outB, unsigned short& outA) const
+	{
+		ASSERT(index < numColorTextures, "'index' must specify a valid color texture.");
+		ASSERT(numSamples == 1, "RenderTarget must not be multi-sampled.");
+
+		const TextureFormat format = colors[index]->GetFormat();
+		ASSERT(
+			format == TextureFormat::R_16 ||
+			format == TextureFormat::RGB_16 ||
+			format == TextureFormat::RGBA_16, "Invalid texture format for reading 'unsigned short's.");
+
+		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+		glReadBuffer(GL_COLOR_ATTACHMENT0 + index);
+
+		unsigned short pixel[4] = { 0 };
+		glReadPixels(x, y, 1, 1, ResolvePixelFormat(format), GL_UNSIGNED_SHORT, pixel);
+		outR = pixel[0];
+		outG = pixel[1];
+		outB = pixel[2];
+		outA = pixel[3];
+
+		glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
+	}
+
+	void RenderTarget::ReadPixel(unsigned index, int x, int y, unsigned& outR, unsigned& outG, unsigned& outB, unsigned& outA) const
+	{
+		ASSERT(index < numColorTextures, "'index' must specify a valid color texture.");
+		ASSERT(numSamples == 1, "RenderTarget must not be multi-sampled.");
+
+		const TextureFormat format = colors[index]->GetFormat();
+		ASSERT(
+			format == TextureFormat::R_32 ||
+			format == TextureFormat::RGB_32 ||
+			format == TextureFormat::RGBA_32, "Invalid texture format for reading 'unsigned int's.");
+
+		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+		glReadBuffer(GL_COLOR_ATTACHMENT0 + index);
+
+		unsigned pixel[4] = { 0 };
+		glReadPixels(x, y, 1, 1, ResolvePixelFormat(format), GL_UNSIGNED_INT, pixel);
+		outR = pixel[0];
+		outG = pixel[1];
+		outB = pixel[2];
+		outA = pixel[3];
+
+		glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
+	}
+
+	void RenderTarget::ReadPixel(unsigned index, int x, int y, vec4& out) const
+	{
+		ASSERT(index < numColorTextures, "'index' must specify a valid color texture.");
+		ASSERT(numSamples == 1, "RenderTarget must not be multi-sampled.");
+
+		const TextureFormat format = colors[index]->GetFormat();
+		ASSERT(
+			format == TextureFormat::R_16F ||
+			format == TextureFormat::R_32F ||
+			format == TextureFormat::RGB_16F ||
+			format == TextureFormat::RGB_32F ||
+			format == TextureFormat::RGBA_16F ||
+			format == TextureFormat::RGBA_32F, "Invalid texture format for reading 'float's.");
+
+		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+		glReadBuffer(GL_COLOR_ATTACHMENT0 + index);
+
+		glReadPixels(x, y, 1, 1, ResolvePixelFormat(format), GL_FLOAT, &out.x);
+
+		glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
 	}
 
 	bool RenderTarget::HasDepth() const

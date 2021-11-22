@@ -76,6 +76,11 @@ namespace gem
 
 	enum class TextureFormat
 	{
+		R_8,
+		R_16,
+		R_16F,
+		R_32,
+		R_32F,
 		RGB_8,
 		RGB_16,
 		RGB_16F,
@@ -171,6 +176,7 @@ namespace gem
 	bool ResolveMipMapping(TextureFilter);
 	int ResolveWrap(TextureWrap);
 	unsigned ResolveFormat(TextureFormat);
+	unsigned ResolveDataFormat(TextureFormat);
 
 	TextureFilter StringToTextureFilter(std::string_view);
 	TextureWrap StringToTextureWrap(std::string_view);

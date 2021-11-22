@@ -60,6 +60,27 @@ namespace
 		1   // unsigned char
 	};
 
+	const int textureFormatChannelCount_Resolve[] = {
+		1, // R_8
+		1, // R_16
+		1, // R_16F
+		1, // R_32
+		1, // R_32F
+		3, // RGB_8
+		3, // RGB_16
+		3, // RGB_16F
+		3, // RGB_32
+		3, // RGB_32F
+		4, // RGBA_8
+		4, // RGBA_16
+		4, // RGBA_16F
+		4, // RGBA_32
+		4, // RGBA_32F
+		1, // DEPTH_24
+		3, // sRGB_8
+		4  // sRGBA_8
+	};
+
 	const int vertexAccess_Resolve[] = {
 		GL_READ_ONLY,
 		GL_WRITE_ONLY,
@@ -88,19 +109,45 @@ namespace
 	};
 
 	const unsigned format_Resolve[] = {
-		GL_RGB8,
-		GL_RGB16,
-		GL_RGB16F,
-		GL_RGB32UI,
-		GL_RGB32F,
-		GL_RGBA8,
-		GL_RGBA16,
-		GL_RGBA16F,
-		GL_RGBA32UI,
-		GL_RGBA32F,
-		GL_DEPTH_COMPONENT24,
-		GL_SRGB8,
-		GL_SRGB8_ALPHA8
+		GL_R8,                // R_8
+		GL_R16,               // R_16
+		GL_R16F,              // R_16F
+		GL_R32UI,             // R_32
+		GL_R32F,              // R_32F
+		GL_RGB8,              // RGB_8
+		GL_RGB16,             // RGB_16
+		GL_RGB16F,            // RGB_16F
+		GL_RGB32UI,           // RGB_32
+		GL_RGB32F,            // RGB_32F
+		GL_RGBA8,             // RGBA_8
+		GL_RGBA16,            // RGBA_16
+		GL_RGBA16F,           // RGBA_16F
+		GL_RGBA32UI,          // RGBA_32
+		GL_RGBA32F,           // RGBA_32F
+		GL_DEPTH_COMPONENT24, // DEPTH_24
+		GL_SRGB8,             // sRGB_8
+		GL_SRGB8_ALPHA8       // sRGBA_8
+	};
+
+	const int dataFormat_resolve[] = {
+		GL_RED,               // R_8
+		GL_RED,               // R_16
+		GL_RED,               // R_16F
+		GL_RED,               // R_32
+		GL_RED,               // R_32F
+		GL_RGB,               // RGB_8
+		GL_RGB,               // RGB_16
+		GL_RGB,               // RGB_16F
+		GL_RGB,               // RGB_32
+		GL_RGB,               // RGB_32F
+		GL_RGBA,              // RGBA_8
+		GL_RGBA,              // RGBA_16
+		GL_RGBA,              // RGBA_16F
+		GL_RGBA,              // RGBA_32
+		GL_RGBA,              // RGBA_32F
+		GL_DEPTH_COMPONENT,   // DEPTH_24
+		GL_RGB,               // sRGB_8
+		GL_RGBA               // sRGBA_8
 	};
 }
 
@@ -166,6 +213,11 @@ namespace gem
 	unsigned ResolveFormat(TextureFormat format)
 	{
 		return format_Resolve[static_cast<unsigned>(format)];
+	}
+
+	unsigned ResolveDataFormat(TextureFormat format)
+	{
+		return dataFormat_resolve[static_cast<unsigned>(format)];
 	}
 
 	TextureFilter StringToTextureFilter(std::string_view str)
@@ -247,27 +299,7 @@ namespace gem
 
 	unsigned CountChannels(TextureFormat format)
 	{
-		switch (format)
-		{
-		case TextureFormat::RGB_8:
-		case TextureFormat::RGB_16:
-		case TextureFormat::RGB_16F:
-		case TextureFormat::RGB_32:
-		case TextureFormat::RGB_32F:
-		case TextureFormat::sRGB_8:
-			return 3;
-		case TextureFormat::RGBA_8:
-		case TextureFormat::RGBA_16:
-		case TextureFormat::RGBA_16F:
-		case TextureFormat::RGBA_32:
-		case TextureFormat::RGBA_32F:
-		case TextureFormat::sRGBA_8:
-			return 4;
-		case TextureFormat::DEPTH_24:
-			return 1;
-		default:
-			return 0;
-		}
+		return textureFormatChannelCount_Resolve[static_cast<unsigned>(format)];
 	}
 
 	void ClearBackBuffer()
