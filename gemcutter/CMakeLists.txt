@@ -17,8 +17,6 @@ list(APPEND gemcutter_files
 	"Application/HierarchicalEvent.h"
 	"Application/Logging.cpp"
 	"Application/Logging.h"
-	"Application/Threading.cpp"
-	"Application/Threading.h"
 	"Application/Timer.cpp"
 	"Application/Timer.h"
 
