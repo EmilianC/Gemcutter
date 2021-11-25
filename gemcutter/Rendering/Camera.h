@@ -38,6 +38,17 @@ namespace gem
 		// Returns the center of the viewing volume, compute as average of corners.
 		vec3 GetCenterOfVolume() const;
 
+		// Returns the screen-space position of the given world-space point. Uses a fullscreen viewport by default.
+		vec2 ProjectToScreen(vec3 worldPos) const;
+		vec2 ProjectToScreen(vec3 worldPos, const Viewport& viewport) const;
+
+		// Returns the world-space position of the given on-screen point.
+		// Uses a fullscreen viewport by default and the NearPlane distance.
+		vec3 ProjectToWorld(vec2 screenPos) const;
+		vec3 ProjectToWorld(vec2 screenPos, float distance) const;
+		vec3 ProjectToWorld(vec2 screenPos, const Viewport& viewport) const;
+		vec3 ProjectToWorld(vec2 screenPos, const Viewport& viewport, float distance) const;
+
 		// Sets the camera to Perspective mode with the current settings.
 		void SetPerspective();
 		// Sets the camera to Perspective mode, overriding the settings.

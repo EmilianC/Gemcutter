@@ -1,5 +1,6 @@
 // Copyright (c) 2017 Emilian Cioca
 #include "Camera.h"
+#include "gemcutter/Application/Application.h"
 #include "gemcutter/Application/Logging.h"
 #include "gemcutter/Math/Math.h"
 #include "gemcutter/Math/Vector.h"
@@ -151,6 +152,80 @@ namespace gem
 		GetNearPlaneCorners(nearBottomLeft, nearBottomRight, nearTopRight, nearTopLeft);
 
 		return (farBottomLeft + farBottomRight + farTopRight + farTopLeft + nearBottomLeft + nearBottomRight + nearTopRight + nearTopLeft) / 8.0f;
+	}
+
+	vec2 Camera::ProjectToScreen(vec3 worldPos) const
+	{
+		return ProjectToScreen(worldPos, Application.GetScreenViewport());
+	}
+
+	vec2 Camera::ProjectToScreen(vec3 worldPos, const Viewport& viewport) const
+	{
+		mat4 VP = GetViewProjMatrix();
+		vec4 clip = VP * vec4(worldPos, 1.0f);
+		vec2 NDC = vec2(clip) / clip.w;
+
+		// [-1,1] -> [0,1]
+		NDC *= 0.5f;
+		NDC += vec2(0.5f);
+
+		// Viewport transform.
+		vec2 screen = {
+			NDC.x * viewport.width  + viewport.x,
+			NDC.y * viewport.height + viewport.y
+		};
+
+		return screen;
+	}
+
+	vec3 Camera::ProjectToWorld(vec2 screenPos) const
+	{
+		return ProjectToWorld(screenPos, Application.GetScreenViewport(), zNear);
+	}
+
+	vec3 Camera::ProjectToWorld(vec2 screenPos, float distance) const
+	{
+		return ProjectToWorld(screenPos, Application.GetScreenViewport(), distance);
+	}
+
+	vec3 Camera::ProjectToWorld(vec2 screenPos, const Viewport& viewport) const
+	{
+		return ProjectToWorld(screenPos, viewport, zNear);
+	}
+
+	vec3 Camera::ProjectToWorld(vec2 screenPos, const Viewport& viewport, float distance) const
+	{
+		// Viewport transform.
+		vec2 NDC = {
+			(screenPos.x - viewport.x) / viewport.width,
+			(screenPos.y - viewport.y) / viewport.height,
+		};
+
+		// [0,1] -> [-1,1]
+		NDC *= 2.0f;
+		NDC -= vec2(1.0f);
+
+		vec4 clip = vec4(NDC, 0.0f, 1.0f);
+		vec4 view = invProjection * clip;
+
+		// Perspective divide.
+		view = vec4 {
+			view.x / view.w,
+			view.y / view.w,
+			view.z / view.w,
+			1.0f
+		};
+
+		// Snap to target distance.
+		float factor = distance / -view.z;
+		view.x *= factor;
+		view.y *= factor;
+		view.z = -distance;
+
+		mat4 invView = owner.GetWorldTransform();
+		vec4 worldPos = invView * view;
+
+		return vec3(worldPos);
 	}
 
 	void Camera::SetPerspective()
