@@ -263,15 +263,17 @@ namespace gem
 		normalMatrix.Set(mat3::Identity);
 		transformBuffer.Bind(static_cast<unsigned>(UniformBufferSlot::Model));
 
-		glDrawArraysInstanced(GL_TRIANGLES, 0, renderable->array->GetVertexCount(), count);
+		auto* vertexArray = renderable->array.get();
+		ASSERT(vertexArray, "Renderable Entity does not have a valid VertexArray to render.");
 
-		UnBindRenderable(*renderable, shader.get());
+		vertexArray->DrawInstanced(count);
 
 		if (skybox)
 		{
 			Primitives.DrawSkyBox(*skybox);
 		}
 
+		UnBindRenderable(*renderable, shader.get());
 		UnBind();
 	}
 

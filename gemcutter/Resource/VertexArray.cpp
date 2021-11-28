@@ -414,6 +414,29 @@ namespace gem
 		}
 	}
 
+	void VertexArray::DrawInstanced(unsigned count) const
+	{
+		DrawInstanced(count, 0, format);
+	}
+
+	void VertexArray::DrawInstanced(unsigned count, unsigned firstIndex) const
+	{
+		DrawInstanced(count, firstIndex, format);
+	}
+
+	void VertexArray::DrawInstanced(unsigned count, unsigned firstIndex, VertexArrayFormat formatOverride) const
+	{
+		if (indexBuffer)
+		{
+			indexBuffer->Bind();
+			glDrawElementsInstanced(ResolveVertexArrayFormat(formatOverride), vertexCount, GL_UNSIGNED_SHORT, reinterpret_cast<void*>(firstIndex * sizeof(unsigned short)), count);
+		}
+		else
+		{
+			glDrawArraysInstanced(ResolveVertexArrayFormat(formatOverride), firstIndex, vertexCount, count);
+		}
+	}
+
 	void VertexArray::SetVertexCount(unsigned count)
 	{
 #ifdef _DEBUG

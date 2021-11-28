@@ -121,10 +121,15 @@ namespace gem
 		void Bind() const;
 		void UnBind() const;
 
-		// Renders the array using any currently bound UniformBuffers and Textures.
+		// Renders the array using any currently bound state.
 		void Draw() const;
 		void Draw(unsigned firstIndex) const;
 		void Draw(unsigned firstIndex, VertexArrayFormat formatOverride) const;
+
+		// Renders 'count' copies of the the array using any currently bound state.
+		void DrawInstanced(unsigned count) const;
+		void DrawInstanced(unsigned count, unsigned firstIndex) const;
+		void DrawInstanced(unsigned count, unsigned firstIndex, VertexArrayFormat formatOverride) const;
 
 		void SetVertexCount(unsigned count);
 		unsigned GetVertexCount() const;
