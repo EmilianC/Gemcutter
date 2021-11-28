@@ -419,20 +419,20 @@ namespace gem
 #ifdef _DEBUG
 		if (count > 0)
 		{
-			// Check to ensure that the specified count would not cause us to read past
-			// any of the active buffers.
+			// Check to ensure that the specified count would not cause us to read past any of the buffers.
 			for (unsigned i = 0; i < streams.size(); ++i)
 			{
 				const auto& stream = streams[i];
 				const auto& buffer = stream.buffer;
 				const unsigned bufferSize = buffer->GetSize();
-				const unsigned end = stream.startOffset + (count - 1) * stream.stride;
+				const unsigned last = (stream.divisor == 0)
+					? stream.startOffset + CountBytes(stream.format) + (count - 1) * stream.stride
+					: stream.startOffset + CountBytes(stream.format);
 
-				ASSERT(end < bufferSize, "'count' would cause a buffer overrun in Stream( %d ).", i);
+				ASSERT(last <= bufferSize, "'count' would cause a buffer overrun in Stream( %d ).", i);
 			}
 		}
 #endif
-
 		vertexCount = count;
 	}
 
