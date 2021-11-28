@@ -111,13 +111,25 @@ namespace AssetManager
 				return false;
 			}
 
-			var path = Environment.ExpandEnvironmentVariables(encoderBox.Text);
-			var encoderPath = Path.IsPathRooted(path) ? path : Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + path;
-			if (!File.Exists(encoderPath))
+			if (encoderBox.Text.Contains("[[Config]]"))
 			{
+				if (!EncoderExists(encoderBox.Text.Replace("[[Config]]", "Debug")))
+				{
+					statusLog.SetToolTip(status, "The Debug build of the Encoder does not exist on the disk.");
+					return false;
+				}
+
+				if (!EncoderExists(encoderBox.Text.Replace("[[Config]]", "Release")))
+				{
+					statusLog.SetToolTip(status, "The Release build of the Encoder does not exist on the disk.");
+					return false;
+				}
+			}
+			else if (!EncoderExists(encoderBox.Text))
+            {
 				statusLog.SetToolTip(status, "The Encoder does not exist on the disk.");
 				return false;
-			}
+            }
 
 			status.BackgroundImage = Properties.Resources.Correct;
 			statusLog.SetToolTip(status, "Extension / Encoder pair are valid.");
@@ -195,6 +207,14 @@ namespace AssetManager
 
 			if (dialog.ShowDialog() == DialogResult.OK)
 				encoderBox.Text = dialog.FileName;
+		}
+
+		private bool EncoderExists(string entry)
+		{
+			var path = Environment.ExpandEnvironmentVariables(entry);
+
+			var encoderPath = Path.IsPathRooted(path) ? path : Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + path;
+			return File.Exists(encoderPath);
 		}
 	}
 }

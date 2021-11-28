@@ -1,13 +1,22 @@
 @echo off
 
-title Updating Metadata
-call "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Release/asset_manager.exe" --update
+:: Prefer the Release version if it exists.
+if exist "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Release/asset_manager.exe" (
+    title Updating Metadata [Release]
+    call "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Release/asset_manager.exe" --update
+    goto :end
+)
+
+title Updating Metadata [Debug]
+call "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Debug/asset_manager.exe" --update
+
+:end
 if errorlevel 1 (
-   title Update Failure
+   title Update failed!
    pause
    goto :eof
 )
 
-title Done!
-echo Done!
+title Updating complete!
+echo Updating complete!
 goto :eof

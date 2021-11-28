@@ -35,6 +35,9 @@ namespace AssetManager
 		public Manager()
 		{
 			InitializeComponent();
+#if DEBUG
+			Text += " [Debug]";
+#endif
 
 			inputPath = Directory.GetCurrentDirectory();
 			outputPath = Path.GetFullPath(Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + config.outputDirectory);
@@ -404,7 +407,11 @@ namespace AssetManager
 				foreach (var link in config.encoders)
 				{
 					var process = new Process();
-					process.StartInfo.FileName = Environment.ExpandEnvironmentVariables(link.encoder);
+#if DEBUG
+					process.StartInfo.FileName = Environment.ExpandEnvironmentVariables(link.encoder.Replace("[[Config]]", "Debug"));
+#else
+					process.StartInfo.FileName = Environment.ExpandEnvironmentVariables(link.encoder.Replace("[[Config]]", "Release"));
+#endif
 					process.StartInfo.UseShellExecute = false;
 					process.StartInfo.RedirectStandardOutput = true;
 					process.StartInfo.CreateNoWindow = true;

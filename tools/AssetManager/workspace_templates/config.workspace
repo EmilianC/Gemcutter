@@ -5,31 +5,31 @@
   <encoders>
     <EncoderLink>
       <extension>ttf</extension>
-      <encoder>${CMAKE_RUNTIME_OUTPUT_DIRECTORY}\\Release\\font_encoder.exe</encoder>
+      <encoder>${CMAKE_RUNTIME_OUTPUT_DIRECTORY}\\[[Config]]\\font_encoder.exe</encoder>
     </EncoderLink>
     <EncoderLink>
       <extension>obj</extension>
-      <encoder>${CMAKE_RUNTIME_OUTPUT_DIRECTORY}\\Release\\mesh_encoder.exe</encoder>
+      <encoder>${CMAKE_RUNTIME_OUTPUT_DIRECTORY}\\[[Config]]\\mesh_encoder.exe</encoder>
     </EncoderLink>
     <EncoderLink>
       <extension>png</extension>
-      <encoder>${CMAKE_RUNTIME_OUTPUT_DIRECTORY}\\Release\\texture_encoder.exe</encoder>
+      <encoder>${CMAKE_RUNTIME_OUTPUT_DIRECTORY}\\[[Config]]\\texture_encoder.exe</encoder>
     </EncoderLink>
     <EncoderLink>
       <extension>jpg</extension>
-      <encoder>${CMAKE_RUNTIME_OUTPUT_DIRECTORY}\\Release\\texture_encoder.exe</encoder>
+      <encoder>${CMAKE_RUNTIME_OUTPUT_DIRECTORY}\\[[Config]]\\texture_encoder.exe</encoder>
     </EncoderLink>
     <EncoderLink>
       <extension>tga</extension>
-      <encoder>${CMAKE_RUNTIME_OUTPUT_DIRECTORY}\\Release\\texture_encoder.exe</encoder>
+      <encoder>${CMAKE_RUNTIME_OUTPUT_DIRECTORY}\\[[Config]]\\texture_encoder.exe</encoder>
     </EncoderLink>
     <EncoderLink>
       <extension>bmp</extension>
-      <encoder>${CMAKE_RUNTIME_OUTPUT_DIRECTORY}\\Release\\texture_encoder.exe</encoder>
+      <encoder>${CMAKE_RUNTIME_OUTPUT_DIRECTORY}\\[[Config]]\\texture_encoder.exe</encoder>
     </EncoderLink>
     <EncoderLink>
       <extension>mat</extension>
-      <encoder>${CMAKE_RUNTIME_OUTPUT_DIRECTORY}\\Release\\material_encoder.exe</encoder>
+      <encoder>${CMAKE_RUNTIME_OUTPUT_DIRECTORY}\\[[Config]]\\material_encoder.exe</encoder>
     </EncoderLink>
   </encoders>
 </WorkspaceConfig>

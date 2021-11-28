@@ -10,6 +10,7 @@ The workspace folder holds all the raw assets that will eventually be used by th
 An Encoder is an executable that implements the interface provided by `gemcutter\Resource\Encoder.h`.
 In the AssetManager, each Encoder is associated with a specific file extension. Assets of that type will be processed using the functions in the Encoder.
 Custom Encoders can be created for game-specific assets (levels, items, dialog-trees etc.), allowing you to easily pack game data.
+Paths to encoders can use "\[\[Config\]\]" to help select the correct binaries for the current configuration.
 
 # Metadata
 Every asset with an associated encoder has metaData created for it. MetaData is saved adjacent to the asset (`assetName.extension.meta`) as plain text.

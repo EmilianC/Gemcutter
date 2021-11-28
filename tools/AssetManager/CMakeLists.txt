@@ -132,7 +132,7 @@ function(gem_set_up_workspace workspace_directory)
 		endif()
 
 		add_custom_target(${THIS_PACK_TARGET}
-			COMMAND "${workspace_directory}/pack_assets.cmd"
+			COMMAND "${workspace_directory}/pack_assets.cmd" $<CONFIG>
 			COMMENT "Packing out of date assets in \"${workspace_directory}\"..."
 			WORKING_DIRECTORY "${workspace_directory}"
 			VERBATIM

@@ -1,13 +1,29 @@
 @echo off
 
-title Packing Assets
-call "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Release/asset_manager.exe" --pack
+if "%1" == "" goto :default
+
+title Packing Assets [%1]
+call "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/%1/asset_manager.exe" --pack
+goto :end
+
+:default
+:: Prefer the Release version if it exists.
+if exist "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Release/asset_manager.exe" (
+    title Packing Assets [Release]
+    call "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Release/asset_manager.exe" --pack
+    goto :end
+)
+
+title Packing Assets [Debug]
+call "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Debug/asset_manager.exe" --pack
+
+:end
 if errorlevel 1 (
-   title Assets Failure
+   title Packing failed!
    pause
    goto :eof
 )
 
-title Done!
-echo Done!
+title Packing completed!
+echo Packing completed!
 goto :eof
