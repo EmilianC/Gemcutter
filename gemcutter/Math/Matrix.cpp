@@ -237,6 +237,13 @@ namespace gem
 		data[UpY] = V.y;
 	}
 
+	vec2 mat2::GetScale() const
+	{
+		return vec2(
+			Length({ data[RightX], data[RightY] }),
+			Length({ data[UpX],    data[UpY]    }));
+	}
+
 	vec2 mat2::GetRight() const
 	{
 		return vec2(data[RightX], data[RightY]);
@@ -637,6 +644,14 @@ namespace gem
 		data[ForwardX] = V.x;
 		data[ForwardY] = V.y;
 		data[ForwardZ] = V.z;
+	}
+
+	vec3 mat3::GetScale() const
+	{
+		return vec3(
+			Length({ data[RightX],   data[RightY],   data[RightZ]   }),
+			Length({ data[UpX],      data[UpY],      data[UpZ]      }),
+			Length({ data[ForwardX], data[ForwardY], data[ForwardZ] }));
 	}
 
 	vec3 mat3::GetRight() const
@@ -1319,6 +1334,14 @@ namespace gem
 		data[TransX] = V.x;
 		data[TransY] = V.y;
 		data[TransZ] = V.z;
+	}
+
+	vec3 mat4::GetScale() const
+	{
+		return vec3(
+			Length({ data[RightX],   data[RightY],   data[RightZ]   }),
+			Length({ data[UpX],      data[UpY],      data[UpZ]      }),
+			Length({ data[ForwardX], data[ForwardY], data[ForwardZ] }));
 	}
 
 	vec3 mat4::GetRight() const

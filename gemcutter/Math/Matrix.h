@@ -55,6 +55,8 @@ namespace gem
 		void SetRight(const vec2& V);
 		void SetUp(const vec2& V);
 
+		// Returns the length of each axis.
+		vec2 GetScale() const;
 		vec2 GetRight() const;
 		vec2 GetUp() const;
 
@@ -119,6 +121,8 @@ namespace gem
 		void SetUp(const vec3& V);
 		void SetForward(const vec3& V);
 
+		// Returns the length of each axis.
+		vec3 GetScale() const;
 		vec3 GetRight() const;
 		vec3 GetUp() const;
 		vec3 GetForward() const;
@@ -201,6 +205,8 @@ namespace gem
 		void SetForward(const vec3& v);
 		void SetTranslation(const vec3& v);
 
+		// Returns the length of each axis.
+		vec3 GetScale() const;
 		vec3 GetRight() const;
 		vec3 GetUp() const;
 		vec3 GetForward() const;
