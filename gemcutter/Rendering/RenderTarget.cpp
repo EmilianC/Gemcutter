@@ -197,6 +197,7 @@ namespace gem
 		GLbitfield clearFlags = 0x0;
 		if (HasDepth())
 		{
+			SetDepthFunc(DepthFunc::Normal);
 			clearFlags |= GL_DEPTH_BUFFER_BIT;
 		}
 
@@ -214,6 +215,7 @@ namespace gem
 	{
 		ASSERT(HasDepth(), "RenderTarget does not have a depth texture to clear.");
 
+		SetDepthFunc(DepthFunc::Normal);
 		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
 		glClear(GL_DEPTH_BUFFER_BIT);
 		glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
@@ -224,6 +226,7 @@ namespace gem
 		ASSERT(HasDepth(), "RenderTarget does not have a depth texture to clear.");
 		ASSERT(_depth >= 0.0f && _depth <= 1.0f, "'depth' must be in the range of [0, 1].");
 
+		SetDepthFunc(DepthFunc::Normal);
 		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
 		glClearBufferfv(GL_DEPTH, 0, &_depth);
 		glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
