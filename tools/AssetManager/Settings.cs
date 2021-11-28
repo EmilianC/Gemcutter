@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2017 Emilian Cioca
+// Copyright (c) 2017 Emilian Cioca
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
@@ -22,7 +22,14 @@ namespace AssetManager
 			foreach (var link in config.encoders)
 				AddItem(link.extension, link.encoder);
 
-			FormClosing += (_, e) => { config.Save(); };
+			FormClosing += (_, e) => {
+				config.encoders.Clear();
+
+				foreach (EncoderEntry entry in entries)
+					config.encoders.Add(new EncoderLink { extension=entry.extension, encoder=entry.encoder });
+
+				config.Save();
+			};
 		}
 
 		// Reorganizes the spacing of the list.
