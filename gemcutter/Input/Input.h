@@ -10,7 +10,12 @@ namespace gem
 {
 	enum class Key
 	{
-		// Keyboard keys
+		Space = 0x20,
+		PageUp,
+		PageDown,
+		End,
+		Home,
+
 		Left = 0x25,
 		Up,
 		Right,
@@ -23,24 +28,52 @@ namespace gem
 		LeftAlt,
 		RightAlt,
 
-		Plus = 0xBB,
-		Minus = 0xBD,
+		Insert = 0x2D,
 		Delete = 0x2E,
-		Space = 0x20,
+		Backspace = 0x08,
+		CapsLock = 0x14,
 		Enter = 0x0D,
 		Escape = 0x1B,
 		Tab = 0x09,
 
-		KeyBoard0 = '0', KeyBoard1, KeyBoard2, KeyBoard3, KeyBoard4, KeyBoard5, KeyBoard6, KeyBoard7, KeyBoard8, KeyBoard9,
+		Semicolon = 0xBA,
+		Plus,
+		Comma,
+		Minus,
+		Period,
+		ForwardSlash,
+		Backtick,
+
+		BracketLeft = 0xDB,
+		BackSlash,
+		BracketRight,
+		Quote,
+
+		Mute = 0xAD,
+		VolumeDown,
+		VolumeUp,
+		NextTrack,
+		PreviousTrack,
+		MediaStop,
+		MediaPlayPause,
+
+		KeyBoard0 = 0x30, KeyBoard1, KeyBoard2, KeyBoard3, KeyBoard4, KeyBoard5, KeyBoard6, KeyBoard7, KeyBoard8, KeyBoard9,
 		Numpad0 = 0x60, Numpad1, Numpad2, Numpad3, Numpad4, Numpad5, Numpad6, Numpad7, Numpad8, Numpad9,
+		NumpadMultiply,
+		NumpadPlus,
+		NumpadSeparator,
+		NumpadMinus,
+		NumpadDecimal,
+		NumpadDivide,
+
+		A = 0x41, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
 		F1 = 0x70, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12,
-		A = 'A', B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z,
 
 		LeftWindows,
 		RightWindows,
 
 		// Mouse buttons
-		MouseLeft = 257,
+		MouseLeft = 0x101,
 		MouseRight,
 		MouseMiddle,
 
