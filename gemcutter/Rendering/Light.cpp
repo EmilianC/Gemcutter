@@ -45,23 +45,25 @@ namespace gem
 		{
 			ASSERT(angle >= 0.0f && angle <= 360.0f, "Invalid SpotLight cone angle ( %f )", angle);
 
-			mat4 transform = owner.GetWorldTransform();
-			direction.Set(-transform.GetForward());
-			position.Set(transform.GetTranslation());
+			// We don't use GetWorldTransform() here because it includes scaling.
+			quat rot = owner.GetWorldRotation();
+			vec3 pos = owner.GetWorldPosition();
+			direction.Set(rot.GetForward());
+			position.Set(pos);
 			cosAngle.Set(cos(ToRadian(angle * 0.5f)));
 			break;
 		}
 		case Type::Point:
 		{
-			mat4 transform = owner.GetWorldTransform();
+			vec3 pos = owner.GetWorldPosition();
 			direction.Set(vec3(0.0f));
-			position.Set(transform.GetTranslation());
+			position.Set(pos);
 			break;
 		}
 		case Type::Directional:
 		{
-			quat rotation = owner.GetWorldRotation();
-			direction.Set(-rotation.GetForward());
+			quat rot = owner.GetWorldRotation();
+			direction.Set(rot.GetForward());
 			position.Set(vec3(0.0f));
 			break;
 		}

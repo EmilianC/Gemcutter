@@ -133,8 +133,8 @@ namespace gem
 	const vec3 vec3::Right    = vec3(1.0f, 0.0f, 0.0f);
 	const vec3 vec3::Up       = vec3(0.0f, 1.0f, 0.0f);
 	const vec3 vec3::Down     = vec3(0.0f, -1.0f, 0.0f);
-	const vec3 vec3::Forward  = vec3(0.0f, 0.0f, 1.0f);
-	const vec3 vec3::Backward = vec3(0.0f, 0.0f, -1.0f);
+	const vec3 vec3::Forward  = vec3(0.0f, 0.0f, -1.0f);
+	const vec3 vec3::Backward = vec3(0.0f, 0.0f, 1.0f);
 
 	vec3::vec3(const vec2& xy, float z)
 		: x(xy[0]), y(xy[1]), z(z)
@@ -275,8 +275,8 @@ namespace gem
 	const vec4 vec4::Right    = vec4(1.0f, 0.0f, 0.0f, 0.0f);
 	const vec4 vec4::Up       = vec4(0.0f, 1.0f, 0.0f, 0.0f);
 	const vec4 vec4::Down     = vec4(0.0f, -1.0f, 0.0f, 0.0f);
-	const vec4 vec4::Forward  = vec4(0.0f, 0.0f, 1.0f, 0.0f);
-	const vec4 vec4::Backward = vec4(0.0f, 0.0f, -1.0f, 0.0f);
+	const vec4 vec4::Forward  = vec4(0.0f, 0.0f, -1.0f, 0.0f);
+	const vec4 vec4::Backward = vec4(0.0f, 0.0f, 1.0f, 0.0f);
 
 	vec4::vec4(const vec2& xy, float z, float w)
 		: x(xy[0]), y(xy[1]), z(z), w(w)
