@@ -2,8 +2,7 @@
 #pragma once
 #include "gemcutter/Math/Vector.h"
 
-#include <Windows.h>
-#include <Xinput.h>
+struct _XINPUT_STATE; typedef _XINPUT_STATE XINPUT_STATE;
 
 namespace gem
 {
@@ -31,6 +30,7 @@ namespace gem
 		XboxGamePad() = delete;
 		// Initialize with a game-pad ID to read input from. [0,1,2,3]
 		XboxGamePad(unsigned gamepadID = 0);
+		~XboxGamePad();
 
 		// Returns true if the controller is connected and ready to use. Implicitly updates.
 		bool IsConnected();
@@ -65,7 +65,7 @@ namespace gem
 		float leftThumbStickMagnitude = 0.0f;
 		float rightThumbStickMagnitude = 0.0f;
 
-		XINPUT_STATE controllerState;
+		XINPUT_STATE* controllerState;
 		unsigned gamepadID = 0;
 	};
 }

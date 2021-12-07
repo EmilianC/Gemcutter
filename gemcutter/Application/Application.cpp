@@ -18,6 +18,7 @@
 
 #include <glew/glew.h>
 #include <glew/wglew.h>
+#include <Windows.h>
 
 // This is the HINSTANCE of the application.
 extern "C" IMAGE_DOS_HEADER __ImageBase;
@@ -33,6 +34,14 @@ extern "C" IMAGE_DOS_HEADER __ImageBase;
 
 namespace
 {
+	HWND hwnd = NULL;
+	HINSTANCE apInstance = NULL;
+	HGLRC renderContext = NULL;
+	HDC deviceContext = NULL;
+	gem::Viewport screenViewport{ 0, 0, 800, 600 };
+	unsigned glMajorVersion = 3;
+	unsigned glMinorVersion = 3;
+
 	LONG GetStyle(bool fullScreen, bool bordered, bool resizable)
 	{
 		if (bordered && !fullScreen)
@@ -231,6 +240,145 @@ namespace
 		}
 	}
 #endif
+
+	LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+	{
+		switch (uMsg)
+		{
+		case WM_SIZE:
+		{
+			// Adjust screen data.
+			const unsigned width = LOWORD(lParam);
+			const unsigned height = HIWORD(lParam);
+
+			if (width > 0 && height > 0)
+			{
+				screenViewport.width = width;
+				screenViewport.height = height;
+				screenViewport.bind();
+
+				gem::EventQueue.Push(std::make_unique<gem::Resize>(screenViewport.width, screenViewport.height));
+			}
+			return 0;
+		}
+
+		case WM_CREATE:
+		{
+			hwnd = hWnd;
+			deviceContext = GetDC(hWnd);
+
+			if (deviceContext == 0)
+			{
+				gem::Error("Console: DeviceContext could not be created.");
+				return -1;
+			}
+
+			/* Initialize OpenGL */
+			PIXELFORMATDESCRIPTOR pfd = {};
+			pfd.nSize        = sizeof(PIXELFORMATDESCRIPTOR);
+			pfd.nVersion     = 1;
+			pfd.dwFlags      = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
+			pfd.iPixelType   = PFD_TYPE_RGBA;
+			pfd.cColorBits   = BITS_PER_PIXEL;
+			pfd.cDepthBits   = DEPTH_BUFFER_BITS;
+			pfd.cStencilBits = STENCIL_BUFFER_BITS;
+			pfd.iLayerType   = PFD_MAIN_PLANE;
+
+			int pixelFormat = ChoosePixelFormat(deviceContext, &pfd);
+			SetPixelFormat(deviceContext, pixelFormat, &pfd);
+
+			int attribs[] = {
+				WGL_CONTEXT_MAJOR_VERSION_ARB, static_cast<int>(glMajorVersion),
+				WGL_CONTEXT_MINOR_VERSION_ARB, static_cast<int>(glMinorVersion),
+				WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
+#ifdef _DEBUG
+				WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB | WGL_CONTEXT_DEBUG_BIT_ARB,
+#else
+				WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
+#endif
+			0 };
+
+			// Create a temporary context so we can get a pointer to our newer context.
+			HGLRC tmpContext = wglCreateContext(deviceContext);
+			if (!wglMakeCurrent(deviceContext, tmpContext))
+			{
+				gem::Error("Console: Device-Context could not be made current.\nTry updating your graphics drivers.");
+				return -1;
+			}
+
+			// Get the function we can use to generate a modern context.
+			auto wglCreateContextAttribsARB = reinterpret_cast<PFNWGLCREATECONTEXTATTRIBSARBPROC>(wglGetProcAddress("wglCreateContextAttribsARB"));
+			if (wglCreateContextAttribsARB)
+			{
+				// Create modern OpenGL context using the new function and delete the old one.
+				renderContext = wglCreateContextAttribsARB(deviceContext, 0, attribs);
+			}
+
+			if (renderContext == NULL)
+			{
+				gem::Error("Console: Failed to create OpenGL rendering context.\nTry updating your graphics drivers.");
+				return -1;
+			}
+
+			// Switch to new context.
+			wglMakeCurrent(deviceContext, NULL);
+			wglDeleteContext(tmpContext);
+			if (!wglMakeCurrent(deviceContext, renderContext))
+			{
+				gem::Error("Console: Render-Context could not be made current.\nTry updating your graphics drivers.");
+				return -1;
+			}
+
+			glewExperimental = GL_TRUE;
+			auto glewResult = glewInit();
+			if (glewResult != GLEW_OK)
+			{
+				gem::Error("Console: GLEW failed to initialize. ( %s )\nTry updating your graphics drivers.",
+					reinterpret_cast<const char*>(glewGetErrorString(glewResult)));
+
+				return -1;
+			}
+
+			// Initializing GLEW can sometimes emit an GL_INVALID_ENUM error, so we discard any errors here.
+			glGetError();
+
+#ifdef _DEBUG
+			glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+			glDebugMessageCallback(OpenGLDebugCallback, NULL);
+			glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
+			glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, NULL, GL_FALSE);
+			glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_LOW, 0, NULL, GL_FALSE);
+#endif
+
+			// Setup OpenGL settings.
+			gem::SetCullFunc(gem::CullFunc::Clockwise);
+			gem::SetDepthFunc(gem::DepthFunc::Normal);
+			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+			glEnable(GL_PRIMITIVE_RESTART);
+			glPrimitiveRestartIndex(gem::VertexBuffer::RESTART_INDEX);
+			if (GLEW_ARB_seamless_cube_map)
+			{
+				glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+			}
+		}
+		return 0;
+
+		case WM_CLOSE:
+		case WM_DESTROY:
+			gem::Application.Exit();
+			return 0;
+
+		case WM_SYSCOMMAND:
+			// Ignore screen savers and monitor power-saving modes.
+			if (wParam == SC_SCREENSAVE || wParam == SC_MONITORPOWER)
+			{
+				return 0;
+			}
+			break;
+		}
+
+		return DefWindowProc(hWnd, uMsg, wParam, lParam);
+	}
 }
 
 namespace gem
@@ -275,7 +423,7 @@ namespace gem
 		WNDCLASSEX windowClass;
 		windowClass.cbSize = sizeof(WNDCLASSEX);
 		windowClass.style = CS_HREDRAW | CS_VREDRAW;
-		windowClass.lpfnWndProc = ApplicationSingleton::WndProc;
+		windowClass.lpfnWndProc = WindowProc;
 		windowClass.cbClsExtra = 0;
 		windowClass.cbWndExtra = 0;
 		windowClass.hInstance = apInstance;
@@ -313,8 +461,9 @@ namespace gem
 			return false;
 		}
 
-		SetFullscreen(fullscreen);
+		GPUInfo.ScanDevice();
 
+		SetFullscreen(fullscreen);
 		ShowWindow(hwnd, SW_SHOW);
 		SetForegroundWindow(hwnd);
 
@@ -737,15 +886,9 @@ namespace gem
 		return true;
 	}
 
-	ApplicationSingleton::ApplicationSingleton()
-		: glMajorVersion(3)
-		, glMinorVersion(3)
-		, screenViewport(0, 0, 800, 600)
-		, hwnd(NULL)
-		, apInstance(NULL)
-		, renderContext(NULL)
-		, deviceContext(NULL)
+	HWND ApplicationSingleton::GetWindowHandle()
 	{
+		return hwnd;
 	}
 
 	ApplicationSingleton::~ApplicationSingleton()
@@ -754,146 +897,6 @@ namespace gem
 		{
 			DestroyGameWindow();
 		}
-	}
-
-	LRESULT CALLBACK ApplicationSingleton::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-	{
-		switch (uMsg)
-		{
-		case WM_SIZE:
-		{
-			// Adjust screen data.
-			const unsigned width = LOWORD(lParam);
-			const unsigned height = HIWORD(lParam);
-
-			if (width > 0 && height > 0)
-			{
-				Application.screenViewport.width = width;
-				Application.screenViewport.height = height;
-				Application.screenViewport.bind();
-
-				EventQueue.Push(std::make_unique<Resize>(Application.screenViewport.width, Application.screenViewport.height));
-			}
-			return 0;
-		}
-
-		case WM_CREATE:
-		{
-			Application.hwnd = hWnd;
-			Application.deviceContext = GetDC(hWnd);
-
-			if (Application.deviceContext == 0)
-			{
-				Error("Console: DeviceContext could not be created.");
-				return -1;
-			}
-
-			/* Initialize OpenGL */
-			PIXELFORMATDESCRIPTOR pfd = {};
-			pfd.nSize = sizeof(PIXELFORMATDESCRIPTOR);
-			pfd.nVersion		= 1;
-			pfd.dwFlags			= PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
-			pfd.iPixelType		= PFD_TYPE_RGBA;
-			pfd.cColorBits		= BITS_PER_PIXEL;
-			pfd.cDepthBits		= DEPTH_BUFFER_BITS;
-			pfd.cStencilBits	= STENCIL_BUFFER_BITS;
-			pfd.iLayerType		= PFD_MAIN_PLANE;
-
-			int pixelFormat = ChoosePixelFormat(Application.deviceContext, &pfd);
-			SetPixelFormat(Application.deviceContext, pixelFormat, &pfd);
-
-			int attribs[] = {
-				WGL_CONTEXT_MAJOR_VERSION_ARB, static_cast<int>(Application.glMajorVersion),
-				WGL_CONTEXT_MINOR_VERSION_ARB, static_cast<int>(Application.glMinorVersion),
-				WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
-#ifdef _DEBUG
-				WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB | WGL_CONTEXT_DEBUG_BIT_ARB,
-#else
-				WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
-#endif
-				0 };
-
-			// Create a temporary context so we can get a pointer to our newer context
-			HGLRC tmpContext = wglCreateContext(Application.deviceContext);
-			if (!wglMakeCurrent(Application.deviceContext, tmpContext))
-			{
-				Error("Console: Device-Context could not be made current.\nTry updating your graphics drivers.");
-				return -1;
-			}
-
-			// Get the function we can use to generate a modern context.
-			auto wglCreateContextAttribsARB = reinterpret_cast<PFNWGLCREATECONTEXTATTRIBSARBPROC>(wglGetProcAddress("wglCreateContextAttribsARB"));
-			if (wglCreateContextAttribsARB)
-			{
-				// Create modern OpenGL context using the new function and delete the old one.
-				Application.renderContext = wglCreateContextAttribsARB(Application.deviceContext, 0, attribs);
-			}
-
-			if (Application.renderContext == NULL)
-			{
-				Error("Console: Failed to create OpenGL rendering context.\nTry updating your graphics drivers.");
-				return -1;
-			}
-
-			// Switch to new context.
-			wglMakeCurrent(Application.deviceContext, NULL);
-			wglDeleteContext(tmpContext);
-			if (!wglMakeCurrent(Application.deviceContext, Application.renderContext))
-			{
-				Error("Console: Render-Context could not be made current.\nTry updating your graphics drivers.");
-				return -1;
-			}
-
-			glewExperimental = GL_TRUE;
-			auto glewResult = glewInit();
-			if (glewResult != GLEW_OK)
-			{
-				Error("Console: GLEW failed to initialize. ( %s )\nTry updating your graphics drivers.",
-					reinterpret_cast<const char*>(glewGetErrorString(glewResult)));
-
-				return -1;
-			}
-
-			// Initializing GLEW can sometimes emit an GL_INVALID_ENUM error, so we discard any errors here.
-			glGetError();
-
-#ifdef _DEBUG
-			glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-			glDebugMessageCallback(OpenGLDebugCallback, NULL);
-			glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
-			glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, NULL, GL_FALSE);
-			glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_LOW, 0, NULL, GL_FALSE);
-#endif
-
-			// Setup OpenGL settings.
-			GPUInfo.ScanDevice();
-			SetCullFunc(CullFunc::Clockwise);
-			SetDepthFunc(DepthFunc::Normal);
-			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-			glEnable(GL_PRIMITIVE_RESTART);
-			glPrimitiveRestartIndex(VertexBuffer::RESTART_INDEX);
-			if (GLEW_ARB_seamless_cube_map)
-			{
-				glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
-			}
-		}
-		return 0;
-
-		case WM_CLOSE:
-		case WM_DESTROY:
-			Application.Exit();
-			return 0;
-
-		case WM_SYSCOMMAND:
-			// Ignore screen savers and monitor power-saving modes.
-			if (wParam == SC_SCREENSAVE || wParam == SC_MONITORPOWER)
-			{
-				return 0;
-			}
-			break;
-		}
-
-		return DefWindowProc(hWnd, uMsg, wParam, lParam);
 	}
 
 	Resize::Resize(unsigned _width, unsigned _height)

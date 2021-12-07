@@ -5,7 +5,8 @@
 
 #include <functional>
 #include <string_view>
-#include <Windows.h>
+
+struct HWND__; typedef HWND__* HWND;
 
 namespace gem
 {
@@ -16,7 +17,7 @@ namespace gem
 	{
 		friend class InputSingleton;
 	public:
-		ApplicationSingleton();
+		ApplicationSingleton() = default;
 		~ApplicationSingleton();
 
 		bool CreateGameWindow(std::string_view title, unsigned glMajorVersion, unsigned glMinorVersion);
@@ -83,7 +84,7 @@ namespace gem
 		bool SetResolution(unsigned width, unsigned height);
 
 	private:
-		static LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+		HWND GetWindowHandle();
 
 		bool appIsRunning = true;
 
@@ -98,19 +99,11 @@ namespace gem
 		bool bordered = true;
 		bool resizable = false;
 
-		unsigned glMajorVersion;
-		unsigned glMinorVersion;
 		unsigned updatesPerSecond = 60;
 		unsigned FPSCap = 0;
-		Viewport screenViewport;
 
 		// The number of frames rendered during the last second.
 		unsigned fps = 0;
-
-		HWND hwnd;
-		HINSTANCE apInstance;
-		HGLRC renderContext;
-		HDC deviceContext;
 	};
 
 	// An event distributed by the engine when the game window is resized.

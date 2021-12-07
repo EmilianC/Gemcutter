@@ -2,6 +2,7 @@
 #include "Input.h"
 #include "gemcutter/Application/Application.h"
 
+#include <Windows.h>
 #include <windowsx.h> // GET_X_LPARAM and GET_Y_LPARAM
 
 namespace
@@ -68,7 +69,7 @@ namespace gem
 		y = posY;
 
 		POINT coords { x, y };
-		ClientToScreen(Application.hwnd, &coords);
+		ClientToScreen(Application.GetWindowHandle(), &coords);
 		SetCursorPos(coords.x, coords.y);
 
 		if (emitEvent)

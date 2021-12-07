@@ -2,36 +2,44 @@
 #include "XboxGamePad.h"
 #include "gemcutter/Application/Logging.h"
 
-#define MAX_VAL 32767
+#include <Windows.h>
+#include <Xinput.h>
 
 namespace gem
 {
+	constexpr float MAX_VAL = 32767.0f;
+
 	XboxGamePad::XboxGamePad(unsigned gamepadID)
 		: gamepadID(gamepadID)
 	{
 		ASSERT(gamepadID < 4, "XboxGamePad can only get input from up to four game-pads.");
 
-		memset(&controllerState, 0, sizeof(XINPUT_STATE));
+		controllerState = static_cast<XINPUT_STATE*>(calloc(1, sizeof(XINPUT_STATE)));
+	}
+
+	XboxGamePad::~XboxGamePad()
+	{
+		free(controllerState);
 	}
 
 	bool XboxGamePad::IsConnected()
 	{
-		memset(&controllerState, 0, sizeof(XINPUT_STATE));
+		memset(controllerState, 0, sizeof(XINPUT_STATE));
 
-		return XInputGetState(gamepadID, &controllerState) == ERROR_SUCCESS;
+		return XInputGetState(gamepadID, controllerState) == ERROR_SUCCESS;
 	}
 
 	void XboxGamePad::Update()
 	{
-		memset(&controllerState, 0, sizeof(XINPUT_STATE));
-		XInputGetState(gamepadID, &controllerState);
+		memset(controllerState, 0, sizeof(XINPUT_STATE));
+		XInputGetState(gamepadID, controllerState);
 
-		leftThumbStick.x = static_cast<float>(controllerState.Gamepad.sThumbLX);
-		leftThumbStick.y = static_cast<float>(controllerState.Gamepad.sThumbLY);
+		leftThumbStick.x = static_cast<float>(controllerState->Gamepad.sThumbLX);
+		leftThumbStick.y = static_cast<float>(controllerState->Gamepad.sThumbLY);
 		leftThumbStickMagnitude = Length(leftThumbStick);
 
-		rightThumbStick.x = static_cast<float>(controllerState.Gamepad.sThumbRX);
-		rightThumbStick.y = static_cast<float>(controllerState.Gamepad.sThumbRY);
+		rightThumbStick.x = static_cast<float>(controllerState->Gamepad.sThumbRX);
+		rightThumbStick.y = static_cast<float>(controllerState->Gamepad.sThumbRY);
 		rightThumbStickMagnitude = Length(rightThumbStick);
 	}
 
@@ -49,14 +57,14 @@ namespace gem
 
 	bool XboxGamePad::GetButton(Buttons button) const
 	{
-		return (controllerState.Gamepad.wButtons & static_cast<WORD>(button)) != 0;
+		return (controllerState->Gamepad.wButtons & static_cast<WORD>(button)) != 0;
 	}
 
 	float XboxGamePad::GetLeftTrigger() const
 	{
-		if (controllerState.Gamepad.bLeftTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD)
+		if (controllerState->Gamepad.bLeftTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD)
 		{
-			return static_cast<float>(controllerState.Gamepad.bLeftTrigger) / 255.0f;
+			return static_cast<float>(controllerState->Gamepad.bLeftTrigger) / 255.0f;
 		}
 		else
 		{
@@ -66,9 +74,9 @@ namespace gem
 
 	float XboxGamePad::GetRightTrigger() const
 	{
-		if (controllerState.Gamepad.bRightTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD)
+		if (controllerState->Gamepad.bRightTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD)
 		{
-			return static_cast<float>(controllerState.Gamepad.bRightTrigger) / 255.0f;
+			return static_cast<float>(controllerState->Gamepad.bRightTrigger) / 255.0f;
 		}
 		else
 		{
