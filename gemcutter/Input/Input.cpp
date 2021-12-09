@@ -116,6 +116,7 @@ namespace gem
 				break;
 			}
 
+		case WM_SYSKEYDOWN:
 		case WM_KEYDOWN:
 			// Here we get the basic key value, characters are in uppercase form.
 			if ((msg.lParam & 0x40000000) == 0)
@@ -128,6 +129,7 @@ namespace gem
 			}
 			break;
 
+		case WM_SYSKEYUP:
 		case WM_KEYUP:
 			{
 				auto key = MapLeftRightKeys(msg.wParam, msg.lParam);
