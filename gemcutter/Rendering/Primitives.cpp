@@ -486,10 +486,7 @@ namespace gem
 		}
 
 		{
-			quadArray = VertexArray::MakeNew();
-
-			auto buffer = VertexBuffer::MakeNew(sizeof(quad_Data), VertexBufferUsage::Static, VertexBufferType::Data);
-			buffer->SetData(0, sizeof(quad_Data), quad_Data);
+			auto buffer = VertexBuffer::MakeNew(sizeof(quad_Data), quad_Data, VertexBufferUsage::Static, VertexBufferType::Data);
 
 			VertexStream streamPos;
 			streamPos.buffer      = buffer;
@@ -505,16 +502,14 @@ namespace gem
 			streamUv.startOffset = sizeof(float) * 3;
 			streamUv.stride      = sizeof(float) * 5;
 
+			quadArray = VertexArray::MakeNew();
 			quadArray->AddStream(std::move(streamPos));
 			quadArray->AddStream(std::move(streamUv));
 			quadArray->SetVertexCount(6);
 		}
 
 		{
-			unitQuadArray = VertexArray::MakeNew();
-
-			auto buffer = VertexBuffer::MakeNew(sizeof(unitQuad_Data), VertexBufferUsage::Static, VertexBufferType::Data);
-			buffer->SetData(0, sizeof(unitQuad_Data), unitQuad_Data);
+			auto buffer = VertexBuffer::MakeNew(sizeof(unitQuad_Data), unitQuad_Data, VertexBufferUsage::Static, VertexBufferType::Data);
 
 			VertexStream streamPos;
 			streamPos.buffer      = buffer;
@@ -530,21 +525,20 @@ namespace gem
 			streamUv.startOffset = sizeof(float) * 3;
 			streamUv.stride      = sizeof(float) * 5;
 
+			unitQuadArray = VertexArray::MakeNew();
 			unitQuadArray->AddStream(std::move(streamPos));
 			unitQuadArray->AddStream(std::move(streamUv));
 			unitQuadArray->SetVertexCount(6);
 		}
 
 		{
-			unitCubeArray = VertexArray::MakeNew();
-
-			auto buffer = VertexBuffer::MakeNew(sizeof(unitCube_Data), VertexBufferUsage::Static, VertexBufferType::Data);
-			buffer->SetData(0, sizeof(unitCube_Data), unitCube_Data);
+			auto buffer = VertexBuffer::MakeNew(sizeof(unitCube_Data), unitCube_Data, VertexBufferUsage::Static, VertexBufferType::Data);
 
 			VertexStream streamPos;
 			streamPos.buffer = std::move(buffer);
 			streamPos.format = VertexFormat::Vec3;
 
+			unitCubeArray = VertexArray::MakeNew();
 			unitCubeArray->AddStream(std::move(streamPos));
 			unitCubeArray->SetVertexCount(36);
 		}

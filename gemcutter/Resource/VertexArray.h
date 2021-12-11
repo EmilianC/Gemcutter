@@ -46,6 +46,7 @@ namespace gem
 		friend VertexArray;
 	public:
 		VertexBuffer(unsigned size, VertexBufferUsage usage, VertexBufferType type);
+		VertexBuffer(unsigned size, const void* source, VertexBufferUsage usage, VertexBufferType type);
 		~VertexBuffer();
 
 		void ClearData();
@@ -126,7 +127,7 @@ namespace gem
 		void Draw(unsigned firstIndex) const;
 		void Draw(unsigned firstIndex, VertexArrayFormat formatOverride) const;
 
-		// Renders 'count' copies of the the array using any currently bound state.
+		// Renders 'count' copies of the array using any currently bound state.
 		void DrawInstanced(unsigned count) const;
 		void DrawInstanced(unsigned count, unsigned firstIndex) const;
 		void DrawInstanced(unsigned count, unsigned firstIndex, VertexArrayFormat formatOverride) const;
