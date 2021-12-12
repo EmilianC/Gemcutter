@@ -68,7 +68,7 @@ namespace gem
 		x = posX;
 		y = posY;
 
-		POINT coords { x, y };
+		POINT coords { x, -(y - Application.GetScreenHeight()) };
 		ClientToScreen(Application.GetWindowHandle(), &coords);
 		SetCursorPos(coords.x, coords.y);
 
@@ -103,7 +103,7 @@ namespace gem
 				vec2 lastPos(static_cast<float>(x), static_cast<float>(y));
 
 				x = GET_X_LPARAM(msg.lParam);
-				y = -(static_cast<int>(GET_Y_LPARAM(msg.lParam)) - Application.GetScreenHeight());
+				y = -(GET_Y_LPARAM(msg.lParam) - Application.GetScreenHeight());
 				vec2 pos(static_cast<float>(x), static_cast<float>(y));
 
 				EventQueue.Push(std::make_unique<MouseMoved>(pos, pos - lastPos));
