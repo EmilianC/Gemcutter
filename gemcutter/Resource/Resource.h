@@ -78,17 +78,14 @@ namespace gem
 		}
 
 	private:
-		static std::unordered_map<std::string, std::shared_ptr<Asset>, string_hash, std::equal_to<>> resourceCache;
+		static inline std::unordered_map<std::string, std::shared_ptr<Asset>, string_hash, std::equal_to<>> resourceCache;
 	};
-
-	template<class Asset>
-	std::unordered_map<std::string, std::shared_ptr<Asset>, string_hash, std::equal_to<>> Resource<Asset>::resourceCache;
 
 	// Helper function to load an asset.
 	template<class Asset, typename... Args>
-	std::shared_ptr<Asset> Load(const std::string& filePath, Args&&... params)
+	std::shared_ptr<Asset> Load(std::string filePath, Args&&... params)
 	{
-		return Resource<Asset>::Load(filePath, std::forward<Args>(params)...);
+		return Resource<Asset>::Load(std::move(filePath), std::forward<Args>(params)...);
 	}
 
 	// Helper function to unload all managed instances of an asset.
