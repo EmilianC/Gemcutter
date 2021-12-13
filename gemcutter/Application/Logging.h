@@ -71,10 +71,10 @@ namespace gem
 			__pragma(warning(suppress:4127))                \
 		} while (false)
 #else
-	#define DEBUG_LOG __noop
-	#define DEBUG_ERROR __noop
-	#define DEBUG_WARNING __noop
-	#define DEBUG_ERROR_BOX __noop
-	#define DEBUG_WARNING_BOX __noop
-	#define ASSERT __noop
+	#define DEBUG_LOG(format, ...)
+	#define DEBUG_ERROR(format, ...)
+	#define DEBUG_WARNING(format, ...)
+	#define DEBUG_ERROR_BOX(format, ...)
+	#define DEBUG_WARNING_BOX(format, ...)
+	#define ASSERT(exp, format, ...)
 #endif
