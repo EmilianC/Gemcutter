@@ -152,6 +152,7 @@ target_link_libraries(gemcutter
 		soil
 		Xinput
 		glew
+		imgui
 )
 
 target_compile_definitions(gemcutter

@@ -39,6 +39,20 @@ target_link_directories(glew INTERFACE glew/)
 target_link_libraries(glew INTERFACE glew32s${CMAKE_STATIC_LIBRARY_SUFFIX})
 target_compile_definitions(glew INTERFACE GLEW_STATIC)
 
+# Imgui #
+set(CMAKE_FOLDER "${PARENT_FOLDER}/external/imgui")
+add_library(imgui STATIC
+	"imgui/backends/imgui_impl_win32.cpp"
+	"imgui/backends/imgui_impl_opengl3.cpp"
+	"imgui/imgui.cpp"
+	"imgui/imgui_demo.cpp"
+	"imgui/imgui_draw.cpp"
+	"imgui/imgui_tables.cpp"
+	"imgui/imgui_widgets.cpp"
+)
+target_include_directories(imgui PUBLIC imgui/)
+sf_target_compile_disable_exceptions(imgui)
+
 # OpenAL #
 set(CMAKE_FOLDER "${PARENT_FOLDER}/external/openal-soft")
 set(ALSOFT_EXAMPLES                    OFF CACHE BOOL "")
