@@ -60,6 +60,7 @@ All Dependencies used under their respective licenses. Copyright is held by thei
 * [SOIL ext](https://github.com/fenbf/SOIL_ext)
 * [dirent 1.23.1](https://github.com/tronkko/dirent)
 * [XInput 1.4](https://msdn.microsoft.com/en-us/library/windows/desktop/ee417001(v=vs.85).aspx)
+* [Imgui 1.85](https://github.com/ocornut/imgui)
 
 # Notes
 * Gemcutter is built and tested on Windows with the latest version of Visual Studio.
