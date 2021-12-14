@@ -18,6 +18,9 @@
 
 #include <glew/glew.h>
 #include <glew/wglew.h>
+#include <imgui.h>
+#include <Backends/imgui_impl_Win32.h>
+#include <Backends/imgui_impl_opengl3.h>
 #include <Windows.h>
 
 // This is the HINSTANCE of the application.
@@ -31,6 +34,8 @@ extern "C" IMAGE_DOS_HEADER __ImageBase;
 #define STYLE_BORDERED_FIXED	(WS_CAPTION | WS_SYSMENU | WS_POPUP	| WS_MINIMIZEBOX | WS_VISIBLE)
 #define STYLE_BORDERLESS		(WS_POPUP | WS_VISIBLE)
 #define STYLE_EXTENDED			(WS_EX_APPWINDOW)
+
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 namespace
 {
@@ -257,6 +262,11 @@ namespace
 				screenViewport.height = height;
 				screenViewport.bind();
 
+				ImGui::GetIO().DisplaySize = {
+					static_cast<float>(width),
+					static_cast<float>(height),
+				};
+
 				gem::EventQueue.Push(std::make_unique<gem::Resize>(screenViewport.width, screenViewport.height));
 			}
 			return 0;
@@ -360,6 +370,19 @@ namespace
 			{
 				glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 			}
+
+			// Setup Imgui.
+			ImGui::CreateContext();
+			ImGui::StyleColorsLight();
+			ImGuiStyle& style = ImGui::GetStyle();
+			style.FrameRounding = 3;
+			style.FrameBorderSize = 1;
+			style.WindowBorderSize = 0;
+			style.Colors[ImGuiCol_WindowBg] = ImVec4(0.94f, 0.94f, 0.94f, 0.78f);
+
+			ImGui_ImplWin32_Init(hwnd);
+			ImGui_ImplOpenGL3_Init();
+			ImGui_ImplOpenGL3_CreateFontsTexture();
 		}
 		return 0;
 
@@ -391,21 +414,23 @@ namespace gem
 		MSG msg;
 		while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 		{
-			// Filter input events from other system/windows events and send them to the Input class.
-			if ((msg.message >= WM_KEYFIRST && msg.message <= WM_KEYLAST) || (msg.message >= WM_MOUSEFIRST && msg.message <= WM_MOUSELAST))
-			{
-				// Send WM_CHAR message for capturing character input.
-				TranslateMessage(&msg);
+			TranslateMessage(&msg);
+			const bool skipWndProc = ImGui_ImplWin32_WndProcHandler(msg.hwnd, msg.message, msg.wParam, msg.lParam);
 
-				if (!Input.Update(msg))
+			ImGuiIO& gui = ImGui::GetIO();
+			// Filter input events from other system/windows events and send them to the Input class.
+			if (msg.message >= WM_KEYFIRST && msg.message <= WM_KEYLAST && !gui.WantCaptureKeyboard ||
+				msg.message >= WM_MOUSEFIRST && msg.message <= WM_MOUSELAST && !gui.WantCaptureMouse)
+			{
+				if (Input.Update(msg))
 				{
-					// If the msg was not handled by the input class, we forward it to the default WndProc.
-					DefWindowProc(msg.hwnd, msg.message, msg.wParam, msg.lParam);
+					continue;
 				}
 			}
-			else
+
+			if (!skipWndProc)
 			{
-				// This message is not input based, send it to our main WndProc.
+				// This message was not handled by our input system, send it to our main WndProc.
 				DispatchMessage(&msg);
 			}
 		}
@@ -548,7 +573,11 @@ namespace gem
 			unsigned updateCount = 0;
 			while (currentTime - lastUpdate >= updateStep)
 			{
+				ImGui_ImplWin32_NewFrame();
+				ImGui_ImplOpenGL3_NewFrame();
+				ImGui::NewFrame();
 				update();
+				ImGui::EndFrame();
 
 				// The user might have requested to exit during update().
 				if (!appIsRunning) [[unlikely]]
@@ -575,6 +604,10 @@ namespace gem
 				if (FPSCap == 0 || (currentTime - lastRender) >= renderStep)
 				{
 					draw();
+
+					ImGui::Render();
+					ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
 					SwapBuffers(deviceContext);
 
 					lastRender += renderStep;
