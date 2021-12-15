@@ -151,6 +151,14 @@ namespace gem
 		return child;
 	}
 
+	Entity::Ptr Hierarchy::CreateChild(std::string name)
+	{
+		auto child = Entity::MakeNew(std::move(name));
+		AddChild(child);
+
+		return child;
+	}
+
 	mat4 Hierarchy::GetWorldTransform() const
 	{
 		mat4 transform(owner.rotation, owner.position, owner.scale);

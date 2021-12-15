@@ -4,6 +4,7 @@
 #include "gemcutter/Math/Matrix.h"
 #include "gemcutter/Math/Quaternion.h"
 
+#include <string>
 #include <vector>
 
 namespace gem
@@ -62,6 +63,7 @@ namespace gem
 
 		// Creates and returns a new child Entity.
 		Entity::Ptr CreateChild();
+		Entity::Ptr CreateChild(std::string name);
 
 		// Returns the world-space transformation of the Entity, accumulated from the root of the hierarchy.
 		mat4 GetWorldTransform() const;
