@@ -8,6 +8,7 @@
                 "${workspaceFolder}/external/dirent/**",
                 "${workspaceFolder}/external/freetype/**",
                 "${workspaceFolder}/external/glew/**",
+                "${workspaceFolder}/external/imgui/**",
                 "${workspaceFolder}/external/openal-soft/include/**",
                 "${workspaceFolder}/external/soil/**"
             ],
