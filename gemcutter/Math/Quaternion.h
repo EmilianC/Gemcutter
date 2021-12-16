@@ -11,7 +11,7 @@ namespace gem
 		quat() = default;
 		quat(float X, float Y, float Z, float W);
 		quat(const vec3& right, const vec3& up, const vec3& forward);
-		quat(const mat3& rotation);
+		explicit quat(const mat3& rotation);
 
 		bool operator==(const quat&) const;
 		bool operator!=(const quat&) const;
