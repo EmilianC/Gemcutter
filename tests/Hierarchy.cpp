@@ -10,7 +10,9 @@ TEST_CASE("Hierarchy")
 	auto e1 = root->Get<Hierarchy>().CreateChild();
 	auto e2 = root->Get<Hierarchy>().CreateChild();
 	auto e3 = Entity::MakeNew();
+	auto e4 = Entity::MakeNew();
 	root->Get<Hierarchy>().AddChild(e3);
+	e3->Get<Hierarchy>().AddChild(e4);
 
 	SECTION("HierarchyRoot Tag")
 	{
@@ -18,33 +20,39 @@ TEST_CASE("Hierarchy")
 		CHECK(!e1->HasTag<HierarchyRoot>());
 		CHECK(!e2->HasTag<HierarchyRoot>());
 		CHECK(!e3->HasTag<HierarchyRoot>());
+		CHECK(!e4->HasTag<HierarchyRoot>());
 
 		e1->Get<Hierarchy>().AddChild(e2);
 		CHECK(root->HasTag<HierarchyRoot>());
 		CHECK(!e1->HasTag<HierarchyRoot>());
 		CHECK(!e2->HasTag<HierarchyRoot>());
 		CHECK(!e3->HasTag<HierarchyRoot>());
+		CHECK(!e4->HasTag<HierarchyRoot>());
 
 		root->Get<Hierarchy>().ClearChildren();
 		CHECK(root->HasTag<HierarchyRoot>());
 		CHECK(e1->HasTag<HierarchyRoot>());
 		CHECK(!e2->HasTag<HierarchyRoot>());
 		CHECK(e3->HasTag<HierarchyRoot>());
+		CHECK(!e4->HasTag<HierarchyRoot>());
 
 		e1->Get<Hierarchy>().RemoveChild(*e2);
 		CHECK(root->HasTag<HierarchyRoot>());
 		CHECK(e1->HasTag<HierarchyRoot>());
 		CHECK(e2->HasTag<HierarchyRoot>());
 		CHECK(e3->HasTag<HierarchyRoot>());
+		CHECK(!e4->HasTag<HierarchyRoot>());
 
 		root->Remove<Hierarchy>();
 		e1->Remove<Hierarchy>();
 		e2->Remove<Hierarchy>();
 		e3->Remove<Hierarchy>();
+		e4->Remove<Hierarchy>();
 		CHECK(!root->HasTag<HierarchyRoot>());
 		CHECK(!e1->HasTag<HierarchyRoot>());
 		CHECK(!e2->HasTag<HierarchyRoot>());
 		CHECK(!e3->HasTag<HierarchyRoot>());
+		CHECK(!e4->HasTag<HierarchyRoot>());
 	}
 
 	SECTION("Parents")
@@ -53,16 +61,37 @@ TEST_CASE("Hierarchy")
 		CHECK(e1->Get<Hierarchy>().GetParent() == root);
 		CHECK(e2->Get<Hierarchy>().GetParent() == root);
 		CHECK(e3->Get<Hierarchy>().GetParent() == root);
+		CHECK(e4->Get<Hierarchy>().GetParent() == e3);
+
+		CHECK(root->Get<Hierarchy>().GetParentHierarchy() == nullptr);
+		CHECK(e1->Get<Hierarchy>().GetParentHierarchy() == &root->Get<Hierarchy>());
+		CHECK(e2->Get<Hierarchy>().GetParentHierarchy() == &root->Get<Hierarchy>());
+		CHECK(e3->Get<Hierarchy>().GetParentHierarchy() == &root->Get<Hierarchy>());
+		CHECK(e4->Get<Hierarchy>().GetParentHierarchy() == &e3->Get<Hierarchy>());
+
+		CHECK(!root->Get<Hierarchy>().IsDescendant(*root));
+		CHECK(root->Get<Hierarchy>().IsDescendant(*e1));
+		CHECK(root->Get<Hierarchy>().IsDescendant(*e2));
+		CHECK(root->Get<Hierarchy>().IsDescendant(*e3));
+		CHECK(root->Get<Hierarchy>().IsDescendant(*e4));
+
+		CHECK(!e1->Get<Hierarchy>().IsDescendantOf(*e1));
+		CHECK(e1->Get<Hierarchy>().IsDescendantOf(*root));
+		CHECK(e2->Get<Hierarchy>().IsDescendantOf(*root));
+		CHECK(e3->Get<Hierarchy>().IsDescendantOf(*root));
+		CHECK(e4->Get<Hierarchy>().IsDescendantOf(*root));
 
 		CHECK(root->Get<Hierarchy>().GetRoot() == root);
 		CHECK(e1->Get<Hierarchy>().GetRoot() == root);
 		CHECK(e2->Get<Hierarchy>().GetRoot() == root);
 		CHECK(e3->Get<Hierarchy>().GetRoot() == root);
+		CHECK(e4->Get<Hierarchy>().GetRoot() == root);
 
 		CHECK(root->Get<Hierarchy>().IsRoot());
 		CHECK(!e1->Get<Hierarchy>().IsRoot());
 		CHECK(!e2->Get<Hierarchy>().IsRoot());
 		CHECK(!e3->Get<Hierarchy>().IsRoot());
+		CHECK(!e4->Get<Hierarchy>().IsRoot());
 	}
 
 	SECTION("Children")
@@ -70,26 +99,38 @@ TEST_CASE("Hierarchy")
 		CHECK(root->Get<Hierarchy>().GetNumChildren() == 3);
 		CHECK(e1->Get<Hierarchy>().GetNumChildren() == 0);
 		CHECK(e2->Get<Hierarchy>().GetNumChildren() == 0);
-		CHECK(e3->Get<Hierarchy>().GetNumChildren() == 0);
+		CHECK(e3->Get<Hierarchy>().GetNumChildren() == 1);
+		CHECK(e4->Get<Hierarchy>().GetNumChildren() == 0);
 
+		CHECK(!root->Get<Hierarchy>().IsChild(*root));
 		CHECK(root->Get<Hierarchy>().IsChild(*e1));
 		CHECK(root->Get<Hierarchy>().IsChild(*e2));
 		CHECK(root->Get<Hierarchy>().IsChild(*e3));
-		CHECK(!root->Get<Hierarchy>().IsChild(*root));
+		CHECK(!root->Get<Hierarchy>().IsChild(*e4));
 		CHECK(!e1->Get<Hierarchy>().IsChild(*e2));
-		CHECK(!e2->Get<Hierarchy>().IsChild(*e3));
+		CHECK(!e2->Get<Hierarchy>().IsChild(*e4));
 		CHECK(!e3->Get<Hierarchy>().IsChild(*e1));
+		CHECK(!e4->Get<Hierarchy>().IsChild(*e3));
+
+		CHECK(!root->Get<Hierarchy>().IsChildOf(*root));
+		CHECK(e1->Get<Hierarchy>().IsChildOf(*root));
+		CHECK(e2->Get<Hierarchy>().IsChildOf(*root));
+		CHECK(e3->Get<Hierarchy>().IsChildOf(*root));
+		CHECK(e4->Get<Hierarchy>().IsChildOf(*e3));
+		CHECK(!e4->Get<Hierarchy>().IsChildOf(*root));
 
 		CHECK(!root->Get<Hierarchy>().IsLeaf());
 		CHECK(e1->Get<Hierarchy>().IsLeaf());
 		CHECK(e2->Get<Hierarchy>().IsLeaf());
-		CHECK(e3->Get<Hierarchy>().IsLeaf());
+		CHECK(!e3->Get<Hierarchy>().IsLeaf());
+		CHECK(e4->Get<Hierarchy>().IsLeaf());
 
 		root->Get<Hierarchy>().ClearChildren();
 		CHECK(root->Get<Hierarchy>().GetNumChildren() == 0);
 		CHECK(!root->Get<Hierarchy>().IsChild(*e1));
 		CHECK(!root->Get<Hierarchy>().IsChild(*e2));
 		CHECK(!root->Get<Hierarchy>().IsChild(*e3));
+		CHECK(!root->Get<Hierarchy>().IsDescendant(*e4));
 		CHECK(root->Get<Hierarchy>().IsLeaf());
 	}
 }

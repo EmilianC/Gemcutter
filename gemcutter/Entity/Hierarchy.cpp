@@ -59,10 +59,48 @@ namespace gem
 		}
 	}
 
-	bool Hierarchy::IsChild(const Entity& entity) const
+	bool Hierarchy::IsChild(const Entity& child) const
 	{
-		auto lock = entity.Get<Hierarchy>().parent.lock();
+		auto lock = child.Get<Hierarchy>().parent.lock();
 		return lock && lock.get() == &owner;
+	}
+
+	bool Hierarchy::IsChildOf(const Entity& _parent) const
+	{
+		auto lock = parent.lock();
+		return lock && lock.get() == &_parent;
+	}
+
+	bool Hierarchy::IsDescendant(const Entity& descendant) const
+	{
+		auto* hierarchy = descendant.Get<Hierarchy>().GetParentHierarchy();
+		while (hierarchy)
+		{
+			if (hierarchy == this)
+			{
+				return true;
+			}
+
+			hierarchy = hierarchy->GetParentHierarchy();
+		}
+
+		return false;
+	}
+
+	bool Hierarchy::IsDescendantOf(const Entity& ancestor) const
+	{
+		auto* hierarchy = GetParentHierarchy();
+		while (hierarchy)
+		{
+			if (&hierarchy->owner == &ancestor)
+			{
+				return true;
+			}
+
+			hierarchy = hierarchy->GetParentHierarchy();
+		}
+
+		return false;
 	}
 
 	void Hierarchy::ClearChildren()
@@ -114,6 +152,16 @@ namespace gem
 	Entity::Ptr Hierarchy::GetParent() const
 	{
 		return parent.lock();
+	}
+
+	Hierarchy* Hierarchy::GetParentHierarchy() const
+	{
+		if (auto lock = parent.lock())
+		{
+			return &lock->Get<Hierarchy>();
+		}
+
+		return nullptr;
 	}
 
 	unsigned Hierarchy::GetNumChildren() const

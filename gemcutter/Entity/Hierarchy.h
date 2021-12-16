@@ -26,8 +26,17 @@ namespace gem
 		// Detaches the given child.
 		void RemoveChild(Entity& entity);
 
-		// Returns true if the specified Entity is a direct child of this one.
-		bool IsChild(const Entity& entity) const;
+		// Returns true if the given Entity is a direct child of this one.
+		bool IsChild(const Entity& child) const;
+
+		// Returns true if this Entity is a direct child of the given Entity.
+		bool IsChildOf(const Entity& parent) const;
+
+		// Returns true if the given Entity is a descendant of this one (at any depth).
+		bool IsDescendant(const Entity& descendant) const;
+
+		// Returns true if this Entity is a descendant of the given Entity (at any depth).
+		bool IsDescendantOf(const Entity& ancestor) const;
 
 		// Detaches all children.
 		void ClearChildren();
@@ -43,6 +52,9 @@ namespace gem
 
 		// Returns the parent we are attached to, if we have one.
 		Entity::Ptr GetParent() const;
+
+		// Returns the parent's hierarchy component, if there is one.
+		Hierarchy* GetParentHierarchy() const;
 
 		// Returns the number of children currently held by this Entity.
 		unsigned GetNumChildren() const;
