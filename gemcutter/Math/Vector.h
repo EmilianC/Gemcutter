@@ -151,6 +151,9 @@ namespace gem
 	[[nodiscard]] vec2 Normalize(const vec2&);
 	[[nodiscard]] vec3 Normalize(const vec3&);
 	[[nodiscard]] vec4 Normalize(const vec4&);
+	[[nodiscard]] vec2 NormalizeSafe(const vec2&);
+	[[nodiscard]] vec3 NormalizeSafe(const vec3&);
+	[[nodiscard]] vec4 NormalizeSafe(const vec4&);
 	[[nodiscard]] vec3 Cross(const vec3&, const vec3&);
 	[[nodiscard]] vec2 Reflect(const vec2& incident, const vec2& normal);
 	[[nodiscard]] vec3 Reflect(const vec3& incident, const vec3& normal);

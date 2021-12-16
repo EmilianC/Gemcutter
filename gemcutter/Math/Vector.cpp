@@ -511,25 +511,64 @@ namespace gem
 
 	vec2 Normalize(const vec2& v)
 	{
-		float invLength = 1.0f / Length(v);
-		ASSERT(!std::isinf(invLength), "Zero length vector cannot be normalized.");
+		float length = Length(v);
+		ASSERT(!Equals(length, 0.0f), "Zero length vector cannot be normalized.");
 
+		float invLength = 1.0f / length;
 		return v * invLength;
 	}
 
 	vec3 Normalize(const vec3& v)
 	{
-		float invLength = 1.0f / Length(v);
-		ASSERT(!std::isinf(invLength), "Zero length vector cannot be normalized.");
+		float length = Length(v);
+		ASSERT(!Equals(length, 0.0f), "Zero length vector cannot be normalized.");
 
+		float invLength = 1.0f / length;
 		return v * invLength;
 	}
 
 	vec4 Normalize(const vec4& v)
 	{
-		float invLength = 1.0f / Length(v);
-		ASSERT(!std::isinf(invLength), "Zero length vector cannot be normalized.");
+		float length = Length(v);
+		ASSERT(!Equals(length, 0.0f), "Zero length vector cannot be normalized.");
 
+		float invLength = 1.0f / length;
+		return v * invLength;
+	}
+
+	vec2 NormalizeSafe(const vec2& v)
+	{
+		float length = Length(v);
+		if (Equals(length, 0.0f))
+		{
+			return vec2::Zero;
+		}
+
+		float invLength = 1.0f / length;
+		return v * invLength;
+	}
+
+	vec3 NormalizeSafe(const vec3& v)
+	{
+		float length = Length(v);
+		if (Equals(length, 0.0f))
+		{
+			return vec3::Zero;
+		}
+
+		float invLength = 1.0f / length;
+		return v * invLength;
+	}
+
+	vec4 NormalizeSafe(const vec4& v)
+	{
+		float length = Length(v);
+		if (Equals(length, 0.0f))
+		{
+			return vec4::Zero;
+		}
+
+		float invLength = 1.0f / length;
 		return v * invLength;
 	}
 
