@@ -28,9 +28,9 @@ namespace gem
 	}
 
 	template<typename T>
-	bool Equals(T a, T b)
+	bool Equals(T a, T b, T epsilon = std::numeric_limits<std::decay_t<T>>::epsilon())
 	{
-		return Abs(a - b) <= std::numeric_limits<std::decay_t<T>>::epsilon();
+		return Abs(a - b) <= epsilon;
 	}
 
 	// Merges two hash values non-symmetrically.
