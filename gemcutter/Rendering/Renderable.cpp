@@ -14,6 +14,8 @@ namespace gem
 		: Component(_owner)
 		, array(std::move(_array))
 	{
+		material = Material::MakeNew();
+		material->shader = Shader::MakeNewPassThrough();
 	}
 
 	Renderable::Renderable(Entity& _owner, Material::Ptr _material)
