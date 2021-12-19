@@ -93,7 +93,6 @@ namespace gem
 		camera = other.camera;
 		target = other.target;
 		shader = other.shader;
-		skybox = other.skybox;
 
 		return *this;
 	}
@@ -120,15 +119,13 @@ namespace gem
 		viewport = vp;
 	}
 
-	void RenderPass::SetSkybox(Texture::Ptr sky)
-	{
-		ASSERT(!sky || sky->IsCubeMap(), "'sky' must be a cubemap texture.");
-
-		skybox = std::move(sky);
-	}
-
 	void RenderPass::Bind()
 	{
+		if (boundPass && boundPass != this)
+		{
+			boundPass->UnBind();
+		}
+
 		if (target)
 		{
 			target->Bind();
@@ -154,10 +151,14 @@ namespace gem
 
 		textures.Bind();
 		buffers.Bind();
+
+		boundPass = this;
 	}
 
 	void RenderPass::UnBind()
 	{
+		ASSERT(boundPass == this, "RenderPass cannot be unbound if it is not bound.");
+
 		glBindVertexArray(GL_NONE);
 
 		// UnBind override shader.
@@ -178,14 +179,15 @@ namespace gem
 		{
 			Camera::UnBind();
 		}
+
+		boundPass = nullptr;
 	}
 
 	void RenderPass::PostProcess()
 	{
+		ASSERT(boundPass == this, "RenderPass must be bound to render.");
 		ASSERT(shader != nullptr, "RenderPass must have a Shader attached if it is a post-processing pass.");
 		ASSERT(Primitives.IsLoaded(), "Primitives system must be initialized in order to render a post-processing pass.");
-
-		Bind();
 
 		SetBlendFunc(BlendFunc::None);
 		SetDepthFunc(DepthFunc::None);
@@ -198,87 +200,12 @@ namespace gem
 		transformBuffer.Bind(static_cast<unsigned>(UniformBufferSlot::Model));
 
 		Primitives.DrawFullScreenQuad(*shader);
-
-		if (skybox)
-		{
-			Primitives.DrawSkyBox(*skybox);
-		}
-
-		UnBind();
 	}
 
-	void RenderPass::Render(const Entity& root)
+	void RenderPass::Render(const Entity& ent)
 	{
-		Bind();
+		ASSERT(boundPass == this, "RenderPass must be bound to render.");
 
-		RenderEntityRecursive(root);
-
-		if (skybox)
-		{
-			Primitives.DrawSkyBox(*skybox);
-		}
-
-		UnBind();
-	}
-
-	void RenderPass::Render(const std::vector<Entity::Ptr>& entities)
-	{
-		Bind();
-
-		for (auto& entity : entities)
-		{
-			ASSERT(entity, "Entity pointer cannot be null.");
-			RenderEntity(*entity);
-		}
-
-		if (skybox)
-		{
-			Primitives.DrawSkyBox(*skybox);
-		}
-
-		UnBind();
-	}
-
-	void RenderPass::RenderInstanced(const Entity& instance, unsigned count)
-	{
-		if (!instance.IsEnabled() || count == 0)
-		{
-			return;
-		}
-
-		auto* renderable = instance.Try<Renderable>();
-		if (!renderable || !renderable->IsEnabled())
-		{
-			return;
-		}
-
-		Bind();
-		BindRenderable(*renderable, shader.get());
-
-		// Update transform uniforms.
-		MVP.Set(mat4::Identity);
-		modelView.Set(mat4::Identity);
-		model.Set(mat4::Identity);
-		invModel.Set(mat4::Identity);
-		normalMatrix.Set(mat3::Identity);
-		transformBuffer.Bind(static_cast<unsigned>(UniformBufferSlot::Model));
-
-		auto* vertexArray = renderable->array.get();
-		ASSERT(vertexArray, "Renderable Entity does not have a valid VertexArray to render.");
-
-		vertexArray->DrawInstanced(count);
-
-		if (skybox)
-		{
-			Primitives.DrawSkyBox(*skybox);
-		}
-
-		UnBindRenderable(*renderable, shader.get());
-		UnBind();
-	}
-
-	void RenderPass::RenderEntity(const Entity& ent)
-	{
 		if (!ent.IsEnabled())
 		{
 			return;
@@ -457,17 +384,63 @@ namespace gem
 		UnBindRenderable(*renderable, shader.get());
 	}
 
-	void RenderPass::RenderEntityRecursive(const Entity& ent)
+	void RenderPass::Render(std::span<Entity::Ptr> entities)
 	{
-		RenderEntity(ent);
+		ASSERT(boundPass == this, "RenderPass must be bound to render.");
 
-		if (auto* hierarchy = ent.Try<Hierarchy>())
+		for (auto& entity : entities)
+		{
+			ASSERT(entity, "Entity pointer cannot be null.");
+			Render(*entity);
+		}
+	}
+
+	void RenderPass::RenderRoot(const Entity& root)
+	{
+		ASSERT(boundPass == this, "RenderPass must be bound to render.");
+
+		Render(root);
+
+		if (auto* hierarchy = root.Try<Hierarchy>())
 		{
 			for (auto& child : hierarchy->GetChildren())
 			{
-				RenderEntityRecursive(*child);
+				RenderRoot(*child);
 			}
 		}
+	}
+
+	void RenderPass::RenderInstanced(const Entity& instance, unsigned count)
+	{
+		ASSERT(boundPass == this, "RenderPass must be bound to render.");
+
+		if (!instance.IsEnabled() || count == 0)
+		{
+			return;
+		}
+
+		auto* renderable = instance.Try<Renderable>();
+		if (!renderable || !renderable->IsEnabled())
+		{
+			return;
+		}
+
+		BindRenderable(*renderable, shader.get());
+
+		// Update transform uniforms.
+		MVP.Set(mat4::Identity);
+		modelView.Set(mat4::Identity);
+		model.Set(mat4::Identity);
+		invModel.Set(mat4::Identity);
+		normalMatrix.Set(mat3::Identity);
+		transformBuffer.Bind(static_cast<unsigned>(UniformBufferSlot::Model));
+
+		auto* vertexArray = renderable->array.get();
+		ASSERT(vertexArray, "Renderable Entity does not have a valid VertexArray to render.");
+
+		vertexArray->DrawInstanced(count);
+
+		UnBindRenderable(*renderable, shader.get());
 	}
 
 	void RenderPass::CreateUniformBuffer()

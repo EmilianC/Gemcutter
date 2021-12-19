@@ -7,7 +7,6 @@ namespace gem
 {
 	struct vec3;
 	struct vec4;
-	class Texture;
 
 	// Provides simple, intimidate, geometry rendering.
 	// Line, Triangle, Rectangle, and Grid functions are intended for debugging; they are not particularly efficient.
@@ -36,20 +35,16 @@ namespace gem
 		void DrawFullScreenQuad(Shader& program);
 		void DrawFullScreenQuad(Texture& tex);
 
-		void DrawSkyBox(Texture& tex);
-		void DrawSkyBox(Texture& tex, Shader& program) const;
-
 		// Returns a rectangle mesh spanning from 0 to 1 on the x and y axes.
 		VertexArray::Ptr GetQuadArray() const;
 		// Returns a rectangle mesh spanning from -1 to 1 on the x and y axes.
 		VertexArray::Ptr GetUnitQuadArray() const;
-		// Returns a cube mesh spanning from -1 to 1 on all axes.
+		// Returns a cube mesh spanning from -1 to 1 on all axes. Can be used for skyboxes.
 		VertexArray::Ptr GetUnitCubeArray() const;
 
 	private:
 		bool isLoaded = false;
 
-		Shader skyboxProgram;
 		Shader lineProgram;
 		Shader triangleProgram;
 		Shader rectangleProgram;

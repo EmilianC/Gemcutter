@@ -290,33 +290,6 @@ namespace
 		}
 	)";
 
-	constexpr const char* SKYBOX_PROGRAM = R"(
-		Attributes{
-			vec3 a_vert : 0;
-		}
-		Vertex{
-			out vec3 texcoord;
-			void main()
-			{
-				texcoord = a_vert;
-				//After perspective divide, Z will be very close to 1.0
-				gl_Position = (Gem_ViewProj * vec4(a_vert, 0.0)).xyww;
-				gl_Position.w *= 1.0001;
-			}
-		}
-		Samplers{
-			samplerCube sTex : 0;
-		}
-		Fragment{
-			in vec3 texcoord;
-			out vec4 outColor;
-			void main()
-			{
-				outColor = texture(sTex, texcoord);
-			}
-		}
-	)";
-
 	constexpr float unitQuad_Data[30] =
 	{
 		-1.0f, -1.0f, 0.0f, // vec3 Vertex
@@ -478,13 +451,6 @@ namespace gem
 			return false;
 		}
 
-		if (!skyboxProgram.LoadFromSource(SKYBOX_PROGRAM))
-		{
-			Error("Primitives: ( Skybox )\nFailed to initialize.");
-			Unload();
-			return false;
-		}
-
 		{
 			auto buffer = VertexBuffer::MakeNew(sizeof(quad_Data), quad_Data, VertexBufferUsage::Static, VertexBufferType::Data);
 
@@ -558,7 +524,6 @@ namespace gem
 
 	void PrimitivesSingleton::Unload()
 	{
-		skyboxProgram.Unload();
 		lineProgram.Unload();
 		triangleProgram.Unload();
 		rectangleProgram.Unload();
@@ -760,29 +725,6 @@ namespace gem
 		unitQuadArray->UnBind();
 
 		texturedFullScreenQuadProgram.UnBind();
-		tex.UnBind(0);
-	}
-
-	void PrimitivesSingleton::DrawSkyBox(Texture& tex)
-	{
-		DrawSkyBox(tex, skyboxProgram);
-	}
-
-	void PrimitivesSingleton::DrawSkyBox(Texture& tex, Shader& program) const
-	{
-		ASSERT(IsLoaded(), "Primitives must be initialized to call this function.");
-		ASSERT(tex.IsCubeMap(), "'tex' must be a cubemap to be rendered as a skybox.");
-
-		tex.Bind(0);
-		program.Bind();
-
-		glDepthMask(false);
-		unitCubeArray->Bind();
-		unitCubeArray->Draw();
-		unitCubeArray->UnBind();
-		glDepthMask(true);
-
-		program.UnBind();
 		tex.UnBind(0);
 	}
 
