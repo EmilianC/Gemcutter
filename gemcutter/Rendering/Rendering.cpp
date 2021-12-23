@@ -280,6 +280,66 @@ namespace gem
 			return DepthFunc::None;
 	}
 
+	std::string_view TextureFilterToString(TextureFilter filter)
+	{
+		switch (filter)
+		{
+		default:
+		case TextureFilter::Point:     return "Point";
+		case TextureFilter::Linear:    return "Linear";
+		case TextureFilter::Bilinear:  return "Bilinear";
+		case TextureFilter::Trilinear: return "Trilinear";
+		}
+	}
+
+	std::string_view TextureWrapToString(TextureWrap wrapMode)
+	{
+		switch (wrapMode)
+		{
+		default:
+		case TextureWrap::Clamp:              return "Clamp";
+		case TextureWrap::ClampWithBorder:    return "ClampWithBorder";
+		case TextureWrap::Repeat:             return "Repeat";
+		case TextureWrap::RepeatMirrored:     return "RepeatMirrored";
+		case TextureWrap::RepeatMirroredOnce: return "RepeatMirroredOnce";
+		}
+	}
+
+	std::string_view CullFuncToString(CullFunc cullFunc)
+	{
+		switch (cullFunc)
+		{
+		default:
+		case CullFunc::None:             return "None";
+		case CullFunc::Clockwise:        return "Clockwise";
+		case CullFunc::CounterClockwise: return "CounterClockwise";
+		}
+	}
+
+	std::string_view BlendFuncToString(BlendFunc blendFunc)
+	{
+		switch (blendFunc)
+		{
+		default:
+		case BlendFunc::None:           return "None";
+		case BlendFunc::Linear:         return "Linear";
+		case BlendFunc::Additive:       return "Additive";
+		case BlendFunc::Multiplicative: return "Multiplicative";
+		}
+	}
+
+	std::string_view DepthFuncToString(DepthFunc depthFunc)
+	{
+		switch (depthFunc)
+		{
+		default:
+		case DepthFunc::None:      return "None";
+		case DepthFunc::WriteOnly: return "WriteOnly";
+		case DepthFunc::TestOnly:  return "TestOnly";
+		case DepthFunc::Normal:    return "Normal";
+		}
+	}
+
 	unsigned CountBytes(VertexFormat format)
 	{
 		return vertexFormatSize_Resolve[static_cast<unsigned>(format)];

@@ -184,6 +184,12 @@ namespace gem
 	BlendFunc StringToBlendFunc(std::string_view);
 	DepthFunc StringToDepthFunc(std::string_view);
 
+	std::string_view TextureFilterToString(TextureFilter);
+	std::string_view TextureWrapToString(TextureWrap);
+	std::string_view CullFuncToString(CullFunc);
+	std::string_view BlendFuncToString(BlendFunc);
+	std::string_view DepthFuncToString(DepthFunc);
+
 	unsigned CountBytes(VertexFormat);
 	unsigned CountMipLevels(unsigned width, unsigned height, TextureFilter);
 	unsigned CountChannels(TextureFormat);
