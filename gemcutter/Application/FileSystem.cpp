@@ -90,6 +90,24 @@ namespace gem
 		return !IsPathRelative(path);
 	}
 
+	bool HasExtension(std::string_view path)
+	{
+		if (path.empty())
+		{
+			Error("FileSystem: Cannot process an empty string.");
+			return false;
+		}
+
+		char result[_MAX_EXT] = { '\0' };
+		if (_splitpath_s(path.data(), nullptr, 0, nullptr, 0, nullptr, 0, result, _MAX_EXT) != SUCCESS)
+		{
+			Error("FileSystem: Invalid path.");
+			return false;
+		}
+
+		return result[0] != '\0';
+	}
+
 	bool FileExists(std::string_view file)
 	{
 		FILE* f = nullptr;

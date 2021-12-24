@@ -32,6 +32,9 @@ namespace gem
 	// Returns true if the specified path starts with a drive letter.
 	bool IsPathAbsolute(std::string_view path);
 
+	// Returns true if the specified path ends with a file extension.
+	bool HasExtension(std::string_view path);
+
 	// Returns true if the specified string contains a valid, existing file.
 	bool FileExists(std::string_view file);
 
