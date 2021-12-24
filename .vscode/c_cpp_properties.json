@@ -17,7 +17,8 @@
                 "WIN32_LEAN_AND_MEAN",
                 "GLEW_STATIC",
                 "NOMINMAX",
-                "_CRT_SECURE_NO_WARNINGS"
+                "_CRT_SECURE_NO_WARNINGS",
+                "IMGUI_ENABLED"
             ],
             "cStandard": "c11",
             "cppStandard": "c++20",

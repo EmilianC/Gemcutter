@@ -39,6 +39,8 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/external/scaffold")
 include(scaffold)
 sf_is_project_top_level(IS_TOP_LEVEL)
 
+option(ENABLE_IMGUI_SUPPORT "Build and use ImGui." ON)
+
 add_subdirectory(external)
 add_subdirectory(gemcutter)
 add_subdirectory(tools)

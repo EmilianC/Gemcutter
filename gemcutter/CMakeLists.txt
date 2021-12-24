@@ -152,8 +152,11 @@ target_link_libraries(gemcutter
 		soil
 		Xinput
 		glew
-		imgui
 )
+
+if (ENABLE_IMGUI_SUPPORT)
+	target_link_libraries(gemcutter PUBLIC imgui)
+endif()
 
 target_compile_definitions(gemcutter
 	PUBLIC
