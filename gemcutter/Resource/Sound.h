@@ -11,10 +11,12 @@ namespace gem
 	class Sound : public Resource<Sound>, public Shareable<Sound>
 	{
 	public:
+		static constexpr std::string_view Extension = ".wav";
+
 		~Sound();
 
 		// Loads .wav (must be 8-bit unsigned PCM).
-		bool Load(std::string filePath);
+		bool Load(std::string_view filePath);
 		void Unload();
 
 		unsigned GetBufferHandle() const;

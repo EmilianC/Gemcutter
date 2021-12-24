@@ -105,11 +105,13 @@ namespace gem
 	class Shader : public Resource<Shader>, public Shareable<Shader>
 	{
 	public:
+		static constexpr std::string_view Extension = ".shader";
+
 		Shader() = default;
 		Shader(const Shader&) = delete;
 		~Shader();
 
-		bool Load(std::string filePath);
+		bool Load(std::string_view filePath);
 		bool LoadFromSource(std::string_view source);
 		bool LoadPassThrough();
 		static Shader::Ptr MakeNewPassThrough();

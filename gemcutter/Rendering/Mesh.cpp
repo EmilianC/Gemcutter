@@ -8,9 +8,16 @@ namespace gem
 	{
 	}
 
-	Mesh::Mesh(Entity& _owner, VertexArray::Ptr _array)
-		: Renderable(_owner, std::move(_array))
+	Mesh::Mesh(Entity& _owner, Model::Ptr _model)
+		: Renderable(_owner)
 	{
+		SetModel(std::move(_model));
+	}
+
+	Mesh::Mesh(Entity& _owner, Model::Ptr _model, Material::Ptr material)
+		: Renderable(_owner, std::move(material))
+	{
+		SetModel(std::move(_model));
 	}
 
 	Mesh::Mesh(Entity& _owner, Material::Ptr material)
@@ -18,8 +25,24 @@ namespace gem
 	{
 	}
 
+	Mesh::Mesh(Entity& _owner, VertexArray::Ptr _array)
+		: Renderable(_owner, std::move(_array))
+	{
+	}
+
 	Mesh::Mesh(Entity& _owner, VertexArray::Ptr _array, Material::Ptr material)
 		: Renderable(_owner, std::move(_array), std::move(material))
 	{
+	}
+
+	void Mesh::SetModel(Model::Ptr _model)
+	{
+		model = std::move(_model);
+		array = model->GetArray();
+	}
+
+	Model::Ptr Mesh::GetModel() const
+	{
+		return model;
 	}
 }

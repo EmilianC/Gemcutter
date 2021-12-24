@@ -2,7 +2,6 @@
 #include "Sound.h"
 #include "gemcutter/Application/Logging.h"
 #include "gemcutter/Utilities/ScopeGuard.h"
-#include "gemcutter/Utilities/String.h"
 
 #include <AL/al.h>
 #include <cstdio>
@@ -47,23 +46,12 @@ namespace gem
 		Unload();
 	}
 
-	bool Sound::Load(std::string filePath)
+	bool Sound::Load(std::string_view filePath)
 	{
-		auto ext = ExtractFileExtension(filePath);
-		if (ext.empty())
-		{
-			filePath += ".wav";
-		}
-		else if (!CompareLowercase(ext, ".wav"))
-		{
-			Error("Sound: ( %s )\nAttempted to load unknown file type as a sound.", filePath.c_str());
-			return false;
-		}
-
-		FILE* file = fopen(filePath.c_str(), "rb");
+		FILE* file = fopen(filePath.data(), "rb");
 		if (file == nullptr)
 		{
-			Error("Sound: ( %s )\nUnable to open file.", filePath.c_str());
+			Error("Sound: ( %s )\nUnable to open file.", filePath.data());
 			return false;
 		}
 		defer { fclose(file); };
@@ -79,7 +67,7 @@ namespace gem
 		fread(chunkID, sizeof(char), 4, file);
 		if (strcmp(chunkID, "RIFF") != 0)
 		{
-			Error("Sound: ( %s )\nIncorrect file type.", filePath.c_str());
+			Error("Sound: ( %s )\nIncorrect file type.", filePath.data());
 			return false;
 		}
 
@@ -87,14 +75,14 @@ namespace gem
 		fread(chunkID, sizeof(char), 4, file);
 		if (strcmp(chunkID, "WAVE") != 0)
 		{
-			Error("Sound: ( %s )\nIncorrect file type.", filePath.c_str());
+			Error("Sound: ( %s )\nIncorrect file type.", filePath.data());
 			return false;
 		}
 
 		fread(chunkID, sizeof(char), 4, file);
 		if (strcmp(chunkID, "fmt ") != 0)
 		{
-			Error("Sound: ( %s )\nIncorrect file type.", filePath.c_str());
+			Error("Sound: ( %s )\nIncorrect file type.", filePath.data());
 			return false;
 		}
 
@@ -141,7 +129,7 @@ namespace gem
 		if (soundData == nullptr)
 		{
 			// We didn't find any data to load.
-			Error("Sound: ( %s )\nNo data found in file.", filePath.c_str());
+			Error("Sound: ( %s )\nNo data found in file.", filePath.data());
 			return false;
 		}
 
@@ -172,7 +160,7 @@ namespace gem
 
 		if (format == AL_NONE)
 		{
-			Error("Sound: ( %s )\nUnsupported audio format.", filePath.c_str());
+			Error("Sound: ( %s )\nUnsupported audio format.", filePath.data());
 			return false;
 		}
 
@@ -182,7 +170,7 @@ namespace gem
 		if (error != AL_NO_ERROR)
 		{
 			Unload();
-			Error("Sound: ( %s )\n%s", filePath.c_str(), alGetString(error));
+			Error("Sound: ( %s )\n%s", filePath.data(), alGetString(error));
 			return false;
 		}
 
@@ -192,7 +180,7 @@ namespace gem
 		if (error != AL_NO_ERROR)
 		{
 			Unload();
-			Error("Sound: ( %s )\n%s", filePath.c_str(), alGetString(error));
+			Error("Sound: ( %s )\n%s", filePath.data(), alGetString(error));
 			return false;
 		}
 

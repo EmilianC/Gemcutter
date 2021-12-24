@@ -2,7 +2,6 @@
 #include "Texture.h"
 #include "gemcutter/Application/Logging.h"
 #include "gemcutter/Utilities/ScopeGuard.h"
-#include "gemcutter/Utilities/String.h"
 
 #include <algorithm>
 #include <glew/glew.h>
@@ -78,24 +77,18 @@ namespace gem
 		glBindTexture(target, GL_NONE);
 	}
 
-	bool Texture::Load(std::string filePath)
+	bool Texture::Load(std::string_view filePath)
 	{
 		ASSERT(hTex == 0, "Texture already has a texture loaded.");
 
 		unsigned numLevels = 0;
 
-		auto ext = ExtractFileExtension(filePath);
-		if (ext.empty() || CompareLowercase(ext, ".texture"))
+		if (filePath.ends_with(Texture::Extension))
 		{
-			if (ext.empty())
-			{
-				filePath += ".texture";
-			}
-
-			FILE* textureFile = fopen(filePath.c_str(), "rb");
+			FILE* textureFile = fopen(filePath.data(), "rb");
 			if (textureFile == nullptr)
 			{
-				Error("Texture: ( %s )\nUnable to open file.", filePath.c_str());
+				Error("Texture: ( %s )\nUnable to open file.", filePath.data());
 				return false;
 			}
 			defer { fclose(textureFile); };

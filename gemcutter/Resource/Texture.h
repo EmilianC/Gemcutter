@@ -13,6 +13,8 @@ namespace gem
 	class Texture : public Resource<Texture>, public Shareable<Texture>
 	{
 	public:
+		static constexpr std::string_view Extension = ".texture";
+
 		Texture() = default;
 		~Texture();
 
@@ -29,7 +31,7 @@ namespace gem
 		void SetData(const unsigned char* data, TextureFormat sourceFormat);
 
 		// Loads packed *.texture resources, as well as *.png, *.jpg, *.tga, *.bmp.
-		bool Load(std::string filePath);
+		bool Load(std::string_view filePath);
 		void Unload();
 
 		void Bind(unsigned slot);

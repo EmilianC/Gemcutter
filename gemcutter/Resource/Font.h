@@ -18,11 +18,13 @@ namespace gem
 	class Font : public Resource<Font>, public Shareable<Font>
 	{
 	public:
+		static constexpr std::string_view Extension = ".font";
+
 		Font();
 		~Font();
 
 		// Loads pre-packed *.font resources.
-		bool Load(std::string filePath);
+		bool Load(std::string_view filePath);
 		void Unload();
 
 		// Returns the real world unit width of the string.

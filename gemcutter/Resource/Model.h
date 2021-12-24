@@ -13,12 +13,15 @@ namespace gem
 	//	UVs     : 1
 	//	Normal  : 2
 	//	Tangent : 3
-	class Model : public VertexArray, public Resource<Model>
+	class Model : public Resource<Model>, public Shareable<Model>
 	{
 	public:
+		static constexpr std::string_view Extension = ".model";
+
 		// Loads pre-packed *.model resources.
-		bool Load(std::string filePath);
-		bool Load(std::string filePath, VertexBufferUsage usage);
+		bool Load(std::string_view filePath);
+
+		VertexArray::Ptr GetArray() const;
 
 		// Returns the extents of each axis in local-space.
 		const vec3& GetMinBounds() const;
@@ -29,6 +32,8 @@ namespace gem
 		bool HasTangents() const;
 
 	private:
+		VertexArray::Ptr array;
+
 		vec3 minBounds;
 		vec3 maxBounds;
 

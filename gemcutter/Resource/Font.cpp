@@ -5,7 +5,6 @@
 #include "gemcutter/Rendering/Rendering.h"
 #include "gemcutter/Resource/Texture.h"
 #include "gemcutter/Utilities/ScopeGuard.h"
-#include "gemcutter/Utilities/String.h"
 
 #include <cstdio>
 #include <glew/glew.h>
@@ -29,7 +28,7 @@ namespace gem
 		Unload();
 	}
 
-	bool Font::Load(std::string filePath)
+	bool Font::Load(std::string_view filePath)
 	{
 		if (VAO == GL_NONE)
 		{
@@ -90,21 +89,10 @@ namespace gem
 		}
 
 		/* Load Font from file */
-		auto ext = ExtractFileExtension(filePath);
-		if (ext.empty())
-		{
-			filePath += ".font";
-		}
-		else if (!CompareLowercase(ExtractFileExtension(filePath), ".font"))
-		{
-			Error("Font: ( %s )\nAttempted to load unknown file type as a font.", filePath.c_str());
-			return false;
-		}
-
-		FILE* fontFile = fopen(filePath.c_str(), "rb");
+		FILE* fontFile = fopen(filePath.data(), "rb");
 		if (fontFile == nullptr)
 		{
-			Error("Font: ( %s )\nUnable to open file.", filePath.c_str());
+			Error("Font: ( %s )\nUnable to open file.", filePath.data());
 			return false;
 		}
 

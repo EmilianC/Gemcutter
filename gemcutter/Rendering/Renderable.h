@@ -11,8 +11,8 @@ namespace gem
 	{
 	public:
 		Renderable(Entity& owner);
-		Renderable(Entity& owner, VertexArray::Ptr array);
 		Renderable(Entity& owner, Material::Ptr material);
+		Renderable(Entity& owner, VertexArray::Ptr array);
 		Renderable(Entity& owner, VertexArray::Ptr array, Material::Ptr material);
 
 		void SetMaterial(Material::Ptr newMaterial);

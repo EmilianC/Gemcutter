@@ -2,33 +2,16 @@
 #include "Model.h"
 #include "gemcutter/Application/Logging.h"
 #include "gemcutter/Utilities/ScopeGuard.h"
-#include "gemcutter/Utilities/String.h"
 
 namespace gem
 {
-	bool Model::Load(std::string filePath)
+	bool Model::Load(std::string_view filePath)
 	{
-		return Load(std::move(filePath), VertexBufferUsage::Static);
-	}
-
-	bool Model::Load(std::string filePath, VertexBufferUsage usage)
-	{
-		auto ext = ExtractFileExtension(filePath);
-		if (ext.empty())
-		{
-			filePath += ".model";
-		}
-		else if (!CompareLowercase(ext, ".model"))
-		{
-			Error("Model: ( %s )\nAttempted to load unknown file type as a mesh.", filePath.c_str());
-			return false;
-		}
-
 		// Load binary file.
-		FILE* binaryFile = fopen(filePath.c_str(), "rb");
+		FILE* binaryFile = fopen(filePath.data(), "rb");
 		if (binaryFile == nullptr)
 		{
-			Error("Model: ( %s )\nUnable to open file.", filePath.c_str());
+			Error("Model: ( %s )\nUnable to open file.", filePath.data());
 			return false;
 		}
 		defer { fclose(binaryFile); };
@@ -60,7 +43,8 @@ namespace gem
 			stride += sizeof(float) * 4;
 		}
 
-		auto buffer = VertexBuffer::MakeNew(sizeof(float) * bufferSize, usage, VertexBufferType::Data);
+		array = VertexArray::MakeNew();
+		auto buffer = VertexBuffer::MakeNew(sizeof(float) * bufferSize, VertexBufferUsage::Static, VertexBufferType::Data);
 
 		{ // Read the data buffer from the file.
 			auto mapping = buffer->MapBuffer(VertexAccess::WriteOnly);
@@ -76,7 +60,7 @@ namespace gem
 		stream.startOffset  = 0;
 		stream.stride       = stride;
 
-		AddStream(stream);
+		array->AddStream(stream);
 		stream.startOffset += sizeof(float) * 3;
 
 		if (hasUvs)
@@ -84,7 +68,7 @@ namespace gem
 			stream.bindingUnit = 1;
 			stream.format = VertexFormat::Vec2;
 
-			AddStream(stream);
+			array->AddStream(stream);
 			stream.startOffset += sizeof(float) * 2;
 		}
 		if (hasNormals)
@@ -92,7 +76,7 @@ namespace gem
 			stream.bindingUnit = 2;
 			stream.format = VertexFormat::Vec3;
 
-			AddStream(stream);
+			array->AddStream(stream);
 			stream.startOffset += sizeof(float) * 3;
 		}
 		if (hasTangents)
@@ -100,12 +84,17 @@ namespace gem
 			stream.bindingUnit = 3;
 			stream.format = VertexFormat::Vec4;
 
-			AddStream(stream);
+			array->AddStream(std::move(stream));
 		}
 
-		SetVertexCount(numVertices);
+		array->SetVertexCount(numVertices);
 
 		return true;
+	}
+
+	VertexArray::Ptr Model::GetArray() const
+	{
+		return array;
 	}
 
 	const vec3& Model::GetMinBounds() const

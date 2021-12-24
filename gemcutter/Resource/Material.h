@@ -15,9 +15,11 @@ namespace gem
 	class Material : public Resource<Material>, public Shareable<Material>
 	{
 	public:
+		static constexpr std::string_view Extension = ".material";
+
 		Material() = default;
 
-		bool Load(std::string filePath);
+		bool Load(std::string_view filePath);
 
 		BlendFunc blendMode = BlendFunc::None;
 		DepthFunc depthMode = DepthFunc::Normal;

@@ -2,30 +2,18 @@
 #include "Material.h"
 #include "gemcutter/Application/Logging.h"
 #include "gemcutter/Utilities/ScopeGuard.h"
-#include "gemcutter/Utilities/String.h"
 
 #include <dirent/dirent.h>
 
 namespace gem
 {
-	bool Material::Load(std::string filePath)
+	bool Material::Load(std::string_view filePath)
 	{
-		auto ext = ExtractFileExtension(filePath);
-		if (ext.empty())
-		{
-			filePath += ".material";
-		}
-		else if (!CompareLowercase(ext, ".material"))
-		{
-			Error("Material: ( %s )\nAttempted to load unknown file type as a material.", filePath.c_str());
-			return false;
-		}
-
 		// Load binary file.
-		FILE* binaryFile = fopen(filePath.c_str(), "rb");
+		FILE* binaryFile = fopen(filePath.data(), "rb");
 		if (binaryFile == nullptr)
 		{
-			Error("Material: ( %s )\nUnable to open file.", filePath.c_str());
+			Error("Material: ( %s )\nUnable to open file.", filePath.data());
 			return false;
 		}
 		defer{ fclose(binaryFile); };
@@ -42,7 +30,7 @@ namespace gem
 		{
 			if (shaderLen > MAX_PATH)
 			{
-				Error("Material: ( %s )\nInvalid Shader file path length.", filePath.c_str());
+				Error("Material: ( %s )\nInvalid Shader file path length.", filePath.data());
 				return false;
 			}
 			fread(pathBuffer, sizeof(char), shaderLen, binaryFile);
@@ -51,7 +39,7 @@ namespace gem
 			shader = gem::Load<Shader>(pathBuffer);
 			if (!shader)
 			{
-				Error("Material: ( %s )\nFailed to load Shader ( %s ).", filePath.c_str(), pathBuffer);
+				Error("Material: ( %s )\nFailed to load Shader ( %s ).", filePath.data(), pathBuffer);
 				return false;
 			}
 		}
@@ -60,7 +48,7 @@ namespace gem
 		fread(&textureCount, sizeof(size_t), 1, binaryFile);
 		if (textureCount > GPUInfo.GetMaxTextureSlots())
 		{
-			Error("Material: ( %s )\nMaterial contains more texture units than is supported ( %d ).", filePath.c_str(), GPUInfo.GetMaxTextureSlots());
+			Error("Material: ( %s )\nMaterial contains more texture units than is supported ( %d ).", filePath.data(), GPUInfo.GetMaxTextureSlots());
 			return false;
 		}
 
@@ -73,7 +61,7 @@ namespace gem
 			fread(&textureLen, sizeof(size_t), 1, binaryFile);
 			if (textureLen == 0 || textureLen > MAX_PATH)
 			{
-				Error("Material: ( %s )\nInvalid Texture file path length.", filePath.c_str());
+				Error("Material: ( %s )\nInvalid Texture file path length.", filePath.data());
 				return false;
 			}
 
@@ -83,7 +71,7 @@ namespace gem
 			auto texture = gem::Load<Texture>(pathBuffer);
 			if (!texture)
 			{
-				Error("Material: ( %s )\nFailed to load Texture ( %s ).", filePath.c_str(), pathBuffer);
+				Error("Material: ( %s )\nFailed to load Texture ( %s ).", filePath.data(), pathBuffer);
 				return false;
 			}
 

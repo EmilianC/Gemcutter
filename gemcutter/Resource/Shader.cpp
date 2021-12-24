@@ -382,31 +382,20 @@ namespace gem
 		Unload();
 	}
 
-	bool Shader::Load(std::string filePath)
+	bool Shader::Load(std::string_view filePath)
 	{
 		ASSERT(!IsLoaded(), "ShaderData already has a Shader loaded.");
-
-		auto ext = ExtractFileExtension(filePath);
-		if (ext.empty())
-		{
-			filePath += ".shader";
-		}
-		else if (!CompareLowercase(ext, ".shader"))
-		{
-			Error("Shader: ( %s )\nAttempted to load unknown file type as a shader.", filePath.c_str());
-			return false;
-		}
 
 		std::string source;
 		if (!LoadFileAsString(filePath, source))
 		{
-			Error("Shader: ( %s )\nUnable to open file.", filePath.c_str());
+			Error("Shader: ( %s )\nUnable to open file.", filePath.data());
 			return false;
 		}
 
 		if (!LoadInternal(source))
 		{
-			Error("Shader: ( %s )", filePath.c_str());
+			Error("Shader: ( %s )", filePath.data());
 			return false;
 		}
 
@@ -671,34 +660,34 @@ namespace gem
 			ASSERT(false, "Expected a Shader block type.");
 		}
 
-		// The first keyword in the block might be an external reference or the indicating a passthrough shader.
+		// The first keyword in the block might be an external reference.
 		size_t pos = block.start;
-		char path[256] = { '\0' };
+		char includePath[256] = { '\0' };
 		while (pos < block.end)
 		{
 			if (!std::isspace(block.source[pos]))
 			{
-				if (sscanf(&block.source[pos], "#include \"%255s\"", path) == 1)
+				if (sscanf(&block.source[pos], "#include \"%255s\"", includePath) == 1)
 				{
 					// Remove invalid characters.
-					while (char* chr = strchr(path, '\"'))
+					while (char* chr = strchr(includePath, '\"'))
 					{
 						*chr = '\0';
 					}
 
-					if (IsPathRelative(path))
+					if (IsPathRelative(includePath))
 					{
-						if (!LoadFileAsString(RootAssetDirectory + path, *output))
+						if (!LoadFileAsString(RootAssetDirectory + includePath, *output))
 						{
-							Error("Shader include ( %s ) failed to load.", path);
+							Error("Shader include ( %s ) failed to load.", includePath);
 							return false;
 						}
 					}
 					else
 					{
-						if (!LoadFileAsString(path, *output))
+						if (!LoadFileAsString(includePath, *output))
 						{
-							Error("Shader include ( %s ) failed to load.", path);
+							Error("Shader include ( %s ) failed to load.", includePath);
 							return false;
 						}
 					}
