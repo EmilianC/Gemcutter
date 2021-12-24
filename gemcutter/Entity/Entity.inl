@@ -52,6 +52,8 @@ namespace gem
 	template<class T1, class T2, typename... Tx>
 	std::tuple<T1&, T2&, Tx&...> Entity::Add()
 	{
+		components.reserve(components.size() + 2 + sizeof...(Tx));
+
 		return std::tie(Add<T1>(), Add<T2>(), Add<Tx>()...);
 	}
 
