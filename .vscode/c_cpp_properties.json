@@ -8,6 +8,7 @@
                 "${workspaceFolder}/external/dirent/**",
                 "${workspaceFolder}/external/freetype/**",
                 "${workspaceFolder}/external/glew/**",
+                "${workspaceFolder}/external/imgui/**",
                 "${workspaceFolder}/external/openal-soft/include/**",
                 "${workspaceFolder}/external/soil/**"
             ],
@@ -16,7 +17,8 @@
                 "WIN32_LEAN_AND_MEAN",
                 "GLEW_STATIC",
                 "NOMINMAX",
-                "_CRT_SECURE_NO_WARNINGS"
+                "_CRT_SECURE_NO_WARNINGS",
+                "IMGUI_ENABLED"
             ],
             "cStandard": "c11",
             "cppStandard": "c++20",

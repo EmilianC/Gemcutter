@@ -154,6 +154,10 @@ target_link_libraries(gemcutter
 		glew
 )
 
+if (ENABLE_IMGUI_SUPPORT)
+	target_link_libraries(gemcutter PUBLIC imgui)
+endif()
+
 target_compile_definitions(gemcutter
 	PUBLIC
 		_CRT_SECURE_NO_WARNINGS
