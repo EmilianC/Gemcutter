@@ -117,20 +117,21 @@ namespace gem
 	template<class T, typename... Args>
 	void Entity::Tag()
 	{
-		if constexpr (sizeof...(Args))
-		{
-			Tag<T>();
-			Tag<Args...>();
-		}
-		else
-		{
-			static_assert(std::is_base_of_v<TagBase, T>, "Template argument must inherit from Tag.");
+		static_assert(Meta::all_of_v<
+			std::is_base_of_v<TagBase, T>,
+			std::is_base_of_v<TagBase, Args>...>, "Template argument must inherit from Tag.");
 
-			if (!HasTag<T>())
-			{
-				Tag(T::GetComponentId());
-			}
+		if (!HasTag<T>())
+		{
+			Tag(T::GetComponentId());
 		}
+
+		( [this]() {
+			if (!HasTag<Args>())
+			{
+				Tag(Args::GetComponentId());
+			}
+		}(), ... );
 	}
 
 	template<class T>
