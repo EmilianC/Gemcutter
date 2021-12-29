@@ -41,8 +41,8 @@ namespace gem
 		array = model->GetArray();
 	}
 
-	Model::Ptr Mesh::GetModel() const
+	Model* Mesh::GetModel() const
 	{
-		return model;
+		return model.get();
 	}
 }

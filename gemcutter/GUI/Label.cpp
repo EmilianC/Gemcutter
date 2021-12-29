@@ -73,7 +73,7 @@ namespace gem
 		text->SetMaterial(std::move(material));
 	}
 
-	Material::Ptr Label::GetMaterial() const
+	Material& Label::GetMaterial() const
 	{
 		return text->GetMaterial();
 	}

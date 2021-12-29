@@ -23,7 +23,7 @@ namespace gem
 		Texture::Ptr GetTexture() const;
 
 		void SetMaterial(Material::Ptr material);
-		Material::Ptr GetMaterial() const;
+		Material& GetMaterial() const;
 
 	private:
 		void UpdateContent() override;

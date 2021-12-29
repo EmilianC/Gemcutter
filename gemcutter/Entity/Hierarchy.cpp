@@ -125,7 +125,7 @@ namespace gem
 		}
 	}
 
-	Entity::ConstPtr Hierarchy::GetRoot() const
+	const Entity& Hierarchy::GetRoot() const
 	{
 		if (auto lock = parent.lock())
 		{
@@ -133,11 +133,11 @@ namespace gem
 		}
 		else
 		{
-			return owner.GetPtr();
+			return owner;
 		}
 	}
 
-	Entity::Ptr Hierarchy::GetRoot()
+	Entity& Hierarchy::GetRoot()
 	{
 		if (auto lock = parent.lock())
 		{
@@ -145,7 +145,7 @@ namespace gem
 		}
 		else
 		{
-			return owner.GetPtr();
+			return owner;
 		}
 	}
 

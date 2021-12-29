@@ -45,10 +45,10 @@ namespace gem
 		void DetachFromParent();
 
 		// Finds the root of the hierarchy, which could be this Entity.
-		Entity::ConstPtr GetRoot() const;
+		const Entity& GetRoot() const;
 
 		// Finds the root of the hierarchy, which could be this Entity.
-		Entity::Ptr GetRoot();
+		Entity& GetRoot();
 
 		// Returns the parent we are attached to, if we have one.
 		Entity::Ptr GetParent() const;

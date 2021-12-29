@@ -19,7 +19,7 @@ namespace gem
 	Image::Image(Entity& owner, Texture::Ptr texture)
 		: Image(owner)
 	{
-		sprite->GetMaterial()->textures.Add(std::move(texture));
+		sprite->GetMaterial().textures.Add(std::move(texture));
 	}
 
 	Image::Image(Entity& _owner, Material::Ptr material)
@@ -42,12 +42,14 @@ namespace gem
 
 	void Image::SetTexture(Texture::Ptr texture)
 	{
-		sprite->GetMaterial()->textures.Add(std::move(texture));
+		sprite->GetMaterial().textures.Add(std::move(texture));
 	}
 
 	Texture::Ptr Image::GetTexture() const
 	{
-		return sprite->GetMaterial()->textures[0];
+		const std::vector<TextureSlot>& textureSlots = sprite->GetMaterial().textures.GetAll();
+
+		return textureSlots.empty() ? nullptr : textureSlots[0].tex;
 	}
 
 	void Image::SetMaterial(Material::Ptr material)
@@ -55,7 +57,7 @@ namespace gem
 		sprite->SetMaterial(std::move(material));
 	}
 
-	Material::Ptr Image::GetMaterial() const
+	Material& Image::GetMaterial() const
 	{
 		return sprite->GetMaterial();
 	}

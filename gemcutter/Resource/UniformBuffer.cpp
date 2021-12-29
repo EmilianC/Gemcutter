@@ -264,14 +264,14 @@ namespace gem
 		return buffers.size();
 	}
 
-	UniformBuffer::Ptr& BufferList::operator[](unsigned unit)
+	UniformBuffer& BufferList::operator[](unsigned unit)
 	{
 		auto bufferSlot = std::find_if(buffers.begin(), buffers.end(), [unit](BufferSlot& slot) {
 			return slot.unit == unit;
 		});
 
 		ASSERT(bufferSlot != buffers.end(), "No matching buffer found.");
-		return bufferSlot->buffer;
+		return *bufferSlot->buffer;
 	}
 
 	template<>

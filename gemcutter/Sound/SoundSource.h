@@ -14,7 +14,7 @@ namespace gem
 		~SoundSource();
 
 		void SetData(Sound::Ptr sound);
-		Sound::Ptr GetData() const;
+		Sound* GetData() const;
 
 		void Play();
 		void Stop();

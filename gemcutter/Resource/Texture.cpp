@@ -426,14 +426,14 @@ namespace gem
 		return textureSlots.size();
 	}
 
-	Texture::Ptr& TextureList::operator[](unsigned unit)
+	Texture& TextureList::operator[](unsigned unit)
 	{
 		auto textureSlot = std::find_if(textureSlots.begin(), textureSlots.end(), [unit](TextureSlot& slot) {
 			return slot.unit == unit;
 		});
 
 		ASSERT(textureSlot != textureSlots.end(), "No matching texture found.");
-		return textureSlot->tex;
+		return *textureSlot->tex;
 	}
 
 	//-----------------------------------------------------------------------------------------------------

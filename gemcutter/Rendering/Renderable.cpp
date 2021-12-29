@@ -50,13 +50,13 @@ namespace gem
 		material = std::move(newMaterial);
 	}
 
-	const Material::Ptr& Renderable::GetMaterial() const
+	const Material& Renderable::GetMaterial() const
 	{
-		return material;
+		return *material;
 	}
 
-	Material::Ptr& Renderable::GetMaterial()
+	Material& Renderable::GetMaterial()
 	{
-		return material;
+		return *material;
 	}
 }

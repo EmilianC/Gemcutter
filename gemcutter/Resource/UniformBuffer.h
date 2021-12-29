@@ -92,7 +92,7 @@ namespace gem
 		unsigned Size() const;
 
 		// Returns the buffer bound at the specified unit.
-		UniformBuffer::Ptr& operator[](unsigned unit);
+		UniformBuffer& operator[](unsigned unit);
 
 		const auto& GetAll() const { return buffers; }
 

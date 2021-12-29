@@ -551,10 +551,10 @@ namespace gem
 	{
 		ASSERT(IsLoaded(), "Primitives must be initialized to call this function.");
 
-		lineProgram.buffers[0]->SetUniform("uP1", vec4(p1, 1.0f));
-		lineProgram.buffers[0]->SetUniform("uP2", vec4(p2, 1.0f));
-		lineProgram.buffers[0]->SetUniform("uC1", color1);
-		lineProgram.buffers[0]->SetUniform("uC2", color2);
+		lineProgram.buffers[0].SetUniform("uP1", vec4(p1, 1.0f));
+		lineProgram.buffers[0].SetUniform("uP2", vec4(p2, 1.0f));
+		lineProgram.buffers[0].SetUniform("uC1", color1);
+		lineProgram.buffers[0].SetUniform("uC2", color2);
 		lineProgram.Bind();
 
 		glBindVertexArray(dummyVAO);
@@ -570,8 +570,8 @@ namespace gem
 
 		tex.Bind(0);
 
-		lineProgram.buffers[0]->SetUniform("uP1", vec4(p1, 1.0f));
-		lineProgram.buffers[0]->SetUniform("uP2", vec4(p2, 1.0f));
+		lineProgram.buffers[0].SetUniform("uP1", vec4(p1, 1.0f));
+		lineProgram.buffers[0].SetUniform("uP2", vec4(p2, 1.0f));
 		lineProgram.Bind();
 
 		glBindVertexArray(dummyVAO);
@@ -592,12 +592,12 @@ namespace gem
 	{
 		ASSERT(IsLoaded(), "Primitives must be initialized to call this function.");
 
-		triangleProgram.buffers[0]->SetUniform("uP1", vec4(p1, 1.0f));
-		triangleProgram.buffers[0]->SetUniform("uP2", vec4(p2, 1.0f));
-		triangleProgram.buffers[0]->SetUniform("uP3", vec4(p3, 1.0f));
-		triangleProgram.buffers[0]->SetUniform("uC1", color1);
-		triangleProgram.buffers[0]->SetUniform("uC2", color2);
-		triangleProgram.buffers[0]->SetUniform("uC3", color3);
+		triangleProgram.buffers[0].SetUniform("uP1", vec4(p1, 1.0f));
+		triangleProgram.buffers[0].SetUniform("uP2", vec4(p2, 1.0f));
+		triangleProgram.buffers[0].SetUniform("uP3", vec4(p3, 1.0f));
+		triangleProgram.buffers[0].SetUniform("uC1", color1);
+		triangleProgram.buffers[0].SetUniform("uC2", color2);
+		triangleProgram.buffers[0].SetUniform("uC3", color3);
 		triangleProgram.Bind();
 
 		glBindVertexArray(dummyVAO);
@@ -613,9 +613,9 @@ namespace gem
 
 		tex.Bind(0);
 
-		texturedTriangleProgram.buffers[0]->SetUniform("uP1", vec4(p1, 1.0f));
-		texturedTriangleProgram.buffers[0]->SetUniform("uP2", vec4(p2, 1.0f));
-		texturedTriangleProgram.buffers[0]->SetUniform("uP3", vec4(p3, 1.0f));
+		texturedTriangleProgram.buffers[0].SetUniform("uP1", vec4(p1, 1.0f));
+		texturedTriangleProgram.buffers[0].SetUniform("uP2", vec4(p2, 1.0f));
+		texturedTriangleProgram.buffers[0].SetUniform("uP3", vec4(p3, 1.0f));
 		texturedTriangleProgram.Bind();
 
 		glBindVertexArray(dummyVAO);
@@ -636,14 +636,14 @@ namespace gem
 	{
 		ASSERT(IsLoaded(), "Primitives must be initialized to call this function.");
 
-		rectangleProgram.buffers[0]->SetUniform("uP1", vec4(p1, 1.0f));
-		rectangleProgram.buffers[0]->SetUniform("uP2", vec4(p2, 1.0f));
-		rectangleProgram.buffers[0]->SetUniform("uP3", vec4(p3, 1.0f));
-		rectangleProgram.buffers[0]->SetUniform("uP4", vec4(p4, 1.0f));
-		rectangleProgram.buffers[0]->SetUniform("uC1", color1);
-		rectangleProgram.buffers[0]->SetUniform("uC2", color2);
-		rectangleProgram.buffers[0]->SetUniform("uC3", color3);
-		rectangleProgram.buffers[0]->SetUniform("uC4", color4);
+		rectangleProgram.buffers[0].SetUniform("uP1", vec4(p1, 1.0f));
+		rectangleProgram.buffers[0].SetUniform("uP2", vec4(p2, 1.0f));
+		rectangleProgram.buffers[0].SetUniform("uP3", vec4(p3, 1.0f));
+		rectangleProgram.buffers[0].SetUniform("uP4", vec4(p4, 1.0f));
+		rectangleProgram.buffers[0].SetUniform("uC1", color1);
+		rectangleProgram.buffers[0].SetUniform("uC2", color2);
+		rectangleProgram.buffers[0].SetUniform("uC3", color3);
+		rectangleProgram.buffers[0].SetUniform("uC4", color4);
 		rectangleProgram.Bind();
 
 		glBindVertexArray(dummyVAO);
@@ -659,10 +659,10 @@ namespace gem
 
 		tex.Bind(0);
 
-		rectangleProgram.buffers[0]->SetUniform("uP1", vec4(p1, 1.0f));
-		rectangleProgram.buffers[0]->SetUniform("uP2", vec4(p2, 1.0f));
-		rectangleProgram.buffers[0]->SetUniform("uP3", vec4(p3, 1.0f));
-		rectangleProgram.buffers[0]->SetUniform("uP4", vec4(p4, 1.0f));
+		rectangleProgram.buffers[0].SetUniform("uP1", vec4(p1, 1.0f));
+		rectangleProgram.buffers[0].SetUniform("uP2", vec4(p2, 1.0f));
+		rectangleProgram.buffers[0].SetUniform("uP3", vec4(p3, 1.0f));
+		rectangleProgram.buffers[0].SetUniform("uP4", vec4(p4, 1.0f));
 		rectangleProgram.Bind();
 
 		glBindVertexArray(dummyVAO);

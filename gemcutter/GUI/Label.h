@@ -29,7 +29,7 @@ namespace gem
 		Font::Ptr GetFont() const;
 
 		void SetMaterial(Material::Ptr material);
-		Material::Ptr GetMaterial() const;
+		Material& GetMaterial() const;
 
 		float textScale = 1.0f;
 

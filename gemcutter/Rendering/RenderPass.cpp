@@ -25,8 +25,7 @@ namespace
 {
 	void BindRenderable(const gem::Renderable& renderable, gem::Shader* overrideShader)
 	{
-		const gem::Material* material = renderable.GetMaterial().get();
-		ASSERT(material, "Renderable Entity does not have a valid Material to render with.");
+		const gem::Material& material = renderable.GetMaterial();
 
 		if (overrideShader)
 		{
@@ -34,9 +33,9 @@ namespace
 		}
 		else
 		{
-			ASSERT(material->shader, "Renderable Entity does not have a Shader and the RenderPass does not have an override attached.");
+			ASSERT(material.shader, "Renderable Entity does not have a Shader and the RenderPass does not have an override attached.");
 
-			material->shader->Bind(renderable.variants);
+			material.shader->Bind(renderable.variants);
 		}
 
 		if (renderable.array)
@@ -45,15 +44,15 @@ namespace
 		}
 
 		renderable.buffers.Bind();
-		material->textures.Bind();
-		gem::SetBlendFunc(material->blendMode);
-		gem::SetDepthFunc(material->depthMode);
-		gem::SetCullFunc(material->cullMode);
+		material.textures.Bind();
+		gem::SetBlendFunc(material.blendMode);
+		gem::SetDepthFunc(material.depthMode);
+		gem::SetCullFunc(material.cullMode);
 	}
 
 	void UnBindRenderable(const gem::Renderable& renderable, gem::Shader* overrideShader)
 	{
-		const gem::Material& material = *renderable.GetMaterial();
+		const gem::Material& material = renderable.GetMaterial();
 
 		if (overrideShader)
 		{

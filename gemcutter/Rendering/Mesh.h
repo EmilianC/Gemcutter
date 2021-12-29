@@ -18,7 +18,7 @@ namespace gem
 		Mesh(Entity& owner, VertexArray::Ptr array, Material::Ptr material);
 
 		void SetModel(Model::Ptr model);
-		Model::Ptr GetModel() const;
+		Model* GetModel() const;
 
 	private:
 		Model::Ptr model;

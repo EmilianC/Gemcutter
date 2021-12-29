@@ -16,8 +16,8 @@ namespace gem
 		Renderable(Entity& owner, VertexArray::Ptr array, Material::Ptr material);
 
 		void SetMaterial(Material::Ptr newMaterial);
-		const Material::Ptr& GetMaterial() const;
-		Material::Ptr& GetMaterial();
+		const Material& GetMaterial() const;
+		Material& GetMaterial();
 
 		// The set of definitions used to permute the shader.
 		ShaderVariantControl variants;

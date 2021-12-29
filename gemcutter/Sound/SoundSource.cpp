@@ -55,9 +55,9 @@ namespace gem
 		AL_DEBUG_CHECK();
 	}
 
-	Sound::Ptr SoundSource::GetData() const
+	Sound* SoundSource::GetData() const
 	{
-		return data;
+		return data.get();
 	}
 
 	void SoundSource::Play()
