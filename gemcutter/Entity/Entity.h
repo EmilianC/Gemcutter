@@ -206,6 +206,13 @@ namespace gem
 
 		bool isEnabled = true;
 	};
+
+	bool operator==(const Entity&, const Entity&);
+	bool operator==(const Entity&, const Entity::Ptr&);
+	bool operator==(const Entity::Ptr&, const Entity&);
+	bool operator!=(const Entity&, const Entity&);
+	bool operator!=(const Entity&, const Entity::Ptr&);
+	bool operator!=(const Entity::Ptr&, const Entity&);
 }
 
 #include "Query.inl"

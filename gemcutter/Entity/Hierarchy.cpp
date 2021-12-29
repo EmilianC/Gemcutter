@@ -26,7 +26,7 @@ namespace gem
 	void Hierarchy::AddChild(Entity::Ptr entity)
 	{
 		ASSERT(entity, "Hierarchy cannot add null entity as child.");
-		ASSERT(entity.get() != &owner, "Hierarchy cannot add itself as a child.");
+		ASSERT(entity != owner, "Hierarchy cannot add itself as a child.");
 
 		auto& childHierarchy = entity->Require<Hierarchy>();
 
@@ -45,7 +45,7 @@ namespace gem
 	{
 		for (unsigned i = 0; i < children.size(); ++i)
 		{
-			if (children[i].get() == &entity)
+			if (children[i] == entity)
 			{
 				auto& childHierarchy = entity.Get<Hierarchy>();
 
@@ -62,13 +62,13 @@ namespace gem
 	bool Hierarchy::IsChild(const Entity& child) const
 	{
 		auto lock = child.Get<Hierarchy>().parent.lock();
-		return lock && lock.get() == &owner;
+		return lock == owner;
 	}
 
 	bool Hierarchy::IsChildOf(const Entity& _parent) const
 	{
 		auto lock = parent.lock();
-		return lock && lock.get() == &_parent;
+		return lock == _parent;
 	}
 
 	bool Hierarchy::IsDescendant(const Entity& descendant) const
@@ -92,7 +92,7 @@ namespace gem
 		auto* hierarchy = GetParentHierarchy();
 		while (hierarchy)
 		{
-			if (&hierarchy->owner == &ancestor)
+			if (hierarchy->owner == ancestor)
 			{
 				return true;
 			}

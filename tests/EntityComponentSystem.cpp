@@ -417,7 +417,7 @@ TEST_CASE("Entity-Component-System")
 				auto count = 0;
 				for (Entity& e : With<Comp2>())
 				{
-					CHECK(&e == ent1.get());
+					CHECK(e == ent1);
 					count++;
 
 					REQUIRE(e.Has<Comp2>());
@@ -442,7 +442,7 @@ TEST_CASE("Entity-Component-System")
 				auto count = 0;
 				for (Entity& e : With<TagA>())
 				{
-					CHECK(&e == ent1.get());
+					CHECK(e == ent1);
 					count++;
 
 					CHECK(e.HasTag<TagA>());
@@ -468,7 +468,7 @@ TEST_CASE("Entity-Component-System")
 				{
 					for (Entity& e : With<Comp1, Comp2>())
 					{
-						CHECK(&e == ent1.get());
+						CHECK(e == ent1);
 						count++;
 
 						REQUIRE(e.Has<Comp1>());
@@ -485,7 +485,7 @@ TEST_CASE("Entity-Component-System")
 				{
 					for (Entity& e : With<Comp2, Comp1>())
 					{
-						CHECK(&e == ent1.get());
+						CHECK(e == ent1);
 						count++;
 
 						REQUIRE(e.Has<Comp1>());
@@ -520,8 +520,8 @@ TEST_CASE("Entity-Component-System")
 				{
 					for (Entity& e : With<Comp1, Comp2>())
 					{
-						if (&e == ent1.get()) foundEnt1 = true;
-						if (&e == ent2.get()) foundEnt2 = true;
+						if (e == ent1) foundEnt1 = true;
+						if (e == ent2) foundEnt2 = true;
 						count++;
 
 						REQUIRE(e.Has<Comp1>());
@@ -538,8 +538,8 @@ TEST_CASE("Entity-Component-System")
 				{
 					for (Entity& e : With<Comp2, Comp1>())
 					{
-						if (&e == ent1.get()) foundEnt1 = true;
-						if (&e == ent2.get()) foundEnt2 = true;
+						if (e == ent1) foundEnt1 = true;
+						if (e == ent2) foundEnt2 = true;
 						count++;
 
 						REQUIRE(e.Has<Comp1>());
@@ -574,7 +574,7 @@ TEST_CASE("Entity-Component-System")
 				{
 					for (Entity& e : With<TagA, TagB>())
 					{
-						CHECK(&e == ent1.get());
+						CHECK(e == ent1);
 						count++;
 
 						CHECK(e.HasTag<TagA>());
@@ -587,7 +587,7 @@ TEST_CASE("Entity-Component-System")
 				{
 					for (Entity& e : With<TagB, TagA>())
 					{
-						CHECK(&e == ent1.get());
+						CHECK(e == ent1);
 						count++;
 
 						CHECK(e.HasTag<TagB>());
@@ -616,7 +616,7 @@ TEST_CASE("Entity-Component-System")
 				{
 					for (Entity& e : With<Comp1, Comp2, TagA>())
 					{
-						CHECK(&e == ent1.get());
+						CHECK(e == ent1);
 						count++;
 
 						REQUIRE(e.Has<Comp1>());
@@ -634,7 +634,7 @@ TEST_CASE("Entity-Component-System")
 				{
 					for (Entity& e : With<TagA, Comp2, Comp1>())
 					{
-						CHECK(&e == ent1.get());
+						CHECK(e == ent1);
 						count++;
 
 						REQUIRE(e.Has<Comp1>());
@@ -673,7 +673,7 @@ TEST_CASE("Entity-Component-System")
 				{
 					for (Entity& e : With<Comp1, Comp2, Base, TagA, TagB, TagC>())
 					{
-						CHECK(&e == ent1.get());
+						CHECK(e == ent1);
 						count++;
 
 						REQUIRE(e.Has<Comp1>());
@@ -696,7 +696,7 @@ TEST_CASE("Entity-Component-System")
 				{
 					for (Entity& e : With<TagC, TagB, TagA, Base, Comp2, Comp1>())
 					{
-						CHECK(&e == ent1.get());
+						CHECK(e == ent1);
 						count++;
 
 						REQUIRE(e.Has<Comp1>());
@@ -737,7 +737,7 @@ TEST_CASE("Entity-Component-System")
 				{
 					for (Entity& e1 : With<Comp1>())
 					{
-						CHECK(&e1 == ent1.get());
+						CHECK(e1 == ent1);
 						count++;
 
 						REQUIRE(e1.Has<Comp1>());
@@ -746,7 +746,7 @@ TEST_CASE("Entity-Component-System")
 
 						for (Entity& e2 : With<Comp2>())
 						{
-							CHECK(&e2 == ent2.get());
+							CHECK(e2 == ent2);
 							count++;
 
 							REQUIRE(e2.Has<Comp2>());
@@ -760,7 +760,7 @@ TEST_CASE("Entity-Component-System")
 				{
 					for (Entity& e2 : With<Comp2>())
 					{
-						CHECK(&e2 == ent2.get());
+						CHECK(e2 == ent2);
 						count++;
 
 						REQUIRE(e2.Has<Comp2>());
@@ -769,7 +769,7 @@ TEST_CASE("Entity-Component-System")
 
 						for (Entity& e1 : With<Comp1>())
 						{
-							CHECK(&e1 == ent1.get());
+							CHECK(e1 == ent1);
 							count++;
 
 							REQUIRE(e1.Has<Comp1>());
@@ -851,10 +851,10 @@ TEST_CASE("Entity-Component-System")
 
 				for (auto& entity : results)
 				{
-					if (entity.get() == ent1.get()) foundEnt1 = true;
-					if (entity.get() == ent2.get()) foundEnt2 = true;
-					if (entity.get() == ent3.get()) foundEnt3 = true;
-					if (entity.get() == ent4.get()) foundEnt4 = true;
+					if (entity == ent1) foundEnt1 = true;
+					if (entity == ent2) foundEnt2 = true;
+					if (entity == ent3) foundEnt3 = true;
+					if (entity == ent4) foundEnt4 = true;
 					count++;
 				}
 
@@ -878,10 +878,10 @@ TEST_CASE("Entity-Component-System")
 
 				for (auto& entity : results)
 				{
-					if (entity.get() == ent1.get()) foundEnt1 = true;
-					if (entity.get() == ent2.get()) foundEnt2 = true;
-					if (entity.get() == ent3.get()) foundEnt3 = true;
-					if (entity.get() == ent4.get()) foundEnt4 = true;
+					if (entity == ent1) foundEnt1 = true;
+					if (entity == ent2) foundEnt2 = true;
+					if (entity == ent3) foundEnt3 = true;
+					if (entity == ent4) foundEnt4 = true;
 					count++;
 				}
 

@@ -296,4 +296,34 @@ namespace gem
 		*itr = componentTable.back();
 		componentTable.pop_back();
 	}
+
+	bool operator==(const Entity& lhs, const Entity& rhs)
+	{
+		return &lhs == &rhs;
+	}
+
+	bool operator==(const Entity& lhs, const Entity::Ptr& rhs)
+	{
+		return &lhs == rhs.get();
+	}
+
+	bool operator==(const Entity::Ptr& lhs, const Entity& rhs)
+	{
+		return lhs.get() == &rhs;
+	}
+
+	bool operator!=(const Entity& lhs, const Entity& rhs)
+	{
+		return &lhs != &rhs;
+	}
+
+	bool operator!=(const Entity& lhs, const Entity::Ptr& rhs)
+	{
+		return &lhs != rhs.get();
+	}
+
+	bool operator!=(const Entity::Ptr& lhs, const Entity& rhs)
+	{
+		return lhs.get() != &rhs;
+	}
 }

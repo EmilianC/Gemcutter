@@ -28,7 +28,7 @@ namespace gem
 		auto listenerEntity = GetListener();
 
 		// If we are in fact the currently active listener, we can be disabled.
-		if (listenerEntity.get() == &owner)
+		if (listenerEntity == owner)
 		{
 			listener.reset();
 			SoundSystem.Mute();
