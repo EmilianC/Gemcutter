@@ -35,7 +35,19 @@ namespace gem
 	{
 		ASSERT(newMaterial, "'newMaterial' cannot be null.");
 
-		// Create any instance buffer copies needed per-entity.
+		// Remove any instanced buffer bindings from the previous shader.
+		if (material && material->shader)
+		{
+			for (const BufferBinding& binding : material->shader->GetBufferBindings())
+			{
+				if (binding.templateBuff)
+				{
+					buffers.Remove(binding.unit);
+				}
+			}
+		}
+
+		// Create any instanced buffer copies needed per-entity.
 		for (const BufferBinding& binding : newMaterial->shader->GetBufferBindings())
 		{
 			if (binding.templateBuff)
