@@ -100,7 +100,6 @@ list(APPEND gemcutter_files
 	"Resource/ParticleBuffer.h"
 	"Resource/ParticleFunctor.cpp"
 	"Resource/ParticleFunctor.h"
-	"Resource/Resource.cpp"
 	"Resource/Resource.h"
 	"Resource/Shader.cpp"
 	"Resource/Shader.h"

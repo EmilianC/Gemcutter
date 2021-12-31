@@ -11,8 +11,6 @@
 
 namespace gem
 {
-	extern std::string RootAssetDirectory;
-
 	// Base resource class. Provides an interface for cached loading.
 	template<class Asset>
 	class Resource
@@ -74,15 +72,6 @@ namespace gem
 			if (!HasExtension(filePath))
 			{
 				filePath += Asset::Extension;
-			}
-
-			if (IsPathRelative(filePath)) [[likely]]
-			{
-				filePath.insert(0, RootAssetDirectory);
-			}
-			else
-			{
-				Warning("Resource ( %s ) referenced with an absolute path. To ensure proper caching, it is recommended to use only relative paths.", filePath.c_str());
 			}
 		}
 

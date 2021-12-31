@@ -677,7 +677,7 @@ namespace gem
 
 					if (IsPathRelative(includePath))
 					{
-						if (!LoadFileAsString(RootAssetDirectory + includePath, *output))
+						if (!LoadFileAsString(includePath, *output))
 						{
 							Error("Shader include ( %s ) failed to load.", includePath);
 							return false;
