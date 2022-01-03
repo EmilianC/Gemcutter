@@ -122,21 +122,17 @@ namespace gem
 		// Removes all components from the entity.
 		void RemoveAllComponents();
 
-		// Returns true if the component exists on this Entity.
+		// Returns true if the specified component or tag exists on this Entity.
 		template<class T>
 		bool Has() const;
 
 		// Adds all the specified tags if any don't already exist.
-		template<class T, typename... Args>
+		template<typename... Args>
 		void Tag();
 
 		// Removes the specified tag ID from the Entity.
 		template<class T>
 		void RemoveTag();
-
-		// Returns true if the tag ID exists on the Entity.
-		template<class T>
-		bool HasTag() const;
 
 		// Removes all Tags from the entity.
 		void RemoveAllTags();

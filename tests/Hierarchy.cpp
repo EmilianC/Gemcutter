@@ -16,43 +16,43 @@ TEST_CASE("Hierarchy")
 
 	SECTION("HierarchyRoot Tag")
 	{
-		CHECK(root->HasTag<HierarchyRoot>());
-		CHECK(!e1->HasTag<HierarchyRoot>());
-		CHECK(!e2->HasTag<HierarchyRoot>());
-		CHECK(!e3->HasTag<HierarchyRoot>());
-		CHECK(!e4->HasTag<HierarchyRoot>());
+		CHECK(root->Has<HierarchyRoot>());
+		CHECK(!e1->Has<HierarchyRoot>());
+		CHECK(!e2->Has<HierarchyRoot>());
+		CHECK(!e3->Has<HierarchyRoot>());
+		CHECK(!e4->Has<HierarchyRoot>());
 
 		e1->Get<Hierarchy>().AddChild(e2);
-		CHECK(root->HasTag<HierarchyRoot>());
-		CHECK(!e1->HasTag<HierarchyRoot>());
-		CHECK(!e2->HasTag<HierarchyRoot>());
-		CHECK(!e3->HasTag<HierarchyRoot>());
-		CHECK(!e4->HasTag<HierarchyRoot>());
+		CHECK(root->Has<HierarchyRoot>());
+		CHECK(!e1->Has<HierarchyRoot>());
+		CHECK(!e2->Has<HierarchyRoot>());
+		CHECK(!e3->Has<HierarchyRoot>());
+		CHECK(!e4->Has<HierarchyRoot>());
 
 		root->Get<Hierarchy>().ClearChildren();
-		CHECK(root->HasTag<HierarchyRoot>());
-		CHECK(e1->HasTag<HierarchyRoot>());
-		CHECK(!e2->HasTag<HierarchyRoot>());
-		CHECK(e3->HasTag<HierarchyRoot>());
-		CHECK(!e4->HasTag<HierarchyRoot>());
+		CHECK(root->Has<HierarchyRoot>());
+		CHECK(e1->Has<HierarchyRoot>());
+		CHECK(!e2->Has<HierarchyRoot>());
+		CHECK(e3->Has<HierarchyRoot>());
+		CHECK(!e4->Has<HierarchyRoot>());
 
 		e1->Get<Hierarchy>().RemoveChild(*e2);
-		CHECK(root->HasTag<HierarchyRoot>());
-		CHECK(e1->HasTag<HierarchyRoot>());
-		CHECK(e2->HasTag<HierarchyRoot>());
-		CHECK(e3->HasTag<HierarchyRoot>());
-		CHECK(!e4->HasTag<HierarchyRoot>());
+		CHECK(root->Has<HierarchyRoot>());
+		CHECK(e1->Has<HierarchyRoot>());
+		CHECK(e2->Has<HierarchyRoot>());
+		CHECK(e3->Has<HierarchyRoot>());
+		CHECK(!e4->Has<HierarchyRoot>());
 
 		root->Remove<Hierarchy>();
 		e1->Remove<Hierarchy>();
 		e2->Remove<Hierarchy>();
 		e3->Remove<Hierarchy>();
 		e4->Remove<Hierarchy>();
-		CHECK(!root->HasTag<HierarchyRoot>());
-		CHECK(!e1->HasTag<HierarchyRoot>());
-		CHECK(!e2->HasTag<HierarchyRoot>());
-		CHECK(!e3->HasTag<HierarchyRoot>());
-		CHECK(!e4->HasTag<HierarchyRoot>());
+		CHECK(!root->Has<HierarchyRoot>());
+		CHECK(!e1->Has<HierarchyRoot>());
+		CHECK(!e2->Has<HierarchyRoot>());
+		CHECK(!e3->Has<HierarchyRoot>());
+		CHECK(!e4->Has<HierarchyRoot>());
 	}
 
 	SECTION("Parents")

@@ -105,29 +105,37 @@ namespace gem
 		}
 	}
 
-	template<class T>
+	template<typename T>
 	bool Entity::Has() const
 	{
-		static_assert(std::is_base_of_v<ComponentBase, T>, "Template argument must inherit from Component.");
-		static_assert(!std::is_base_of_v<TagBase, T>, "Template argument cannot be a Tag.");
+		static_assert(std::is_base_of_v<ComponentBase, T>, "Template argument must inherit from either Component or Tag.");
 
-		return Try<T>() != nullptr;
+		if constexpr (std::is_base_of_v<TagBase, T>)
+		{
+			for (unsigned tag : tags)
+			{
+				if (tag == T::GetComponentId())
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+		else
+		{
+			return Try<T>() != nullptr;
+		}
 	}
 
-	template<class T, typename... Args>
+	template<typename... Args>
 	void Entity::Tag()
 	{
-		static_assert(Meta::all_of_v<
-			std::is_base_of_v<TagBase, T>,
-			std::is_base_of_v<TagBase, Args>...>, "Template argument must inherit from Tag.");
-
-		if (!HasTag<T>())
-		{
-			Tag(T::GetComponentId());
-		}
+		static_assert(sizeof...(Args), "Must have at least one template argument.");
+		static_assert(Meta::all_of_v<std::is_base_of_v<TagBase, Args>...>, "Template arguments must inherit from Tag.");
 
 		( [this]() {
-			if (!HasTag<Args>())
+			if (!Has<Args>())
 			{
 				Tag(Args::GetComponentId());
 			}
@@ -140,22 +148,6 @@ namespace gem
 		static_assert(std::is_base_of_v<TagBase, T>, "Template argument must inherit from Tag.");
 
 		RemoveTag(T::GetComponentId());
-	}
-
-	template<class T>
-	bool Entity::HasTag() const
-	{
-		static_assert(std::is_base_of_v<TagBase, T>, "Template argument must inherit from Tag.");
-
-		for (auto tag : tags)
-		{
-			if (tag == T::GetComponentId())
-			{
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	template<class T>

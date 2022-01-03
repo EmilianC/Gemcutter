@@ -182,39 +182,39 @@ TEST_CASE("Entity-Component-System")
 	{
 		auto ent = Entity::MakeNew();
 
-		CHECK(!ent->HasTag<TagA>());
-		CHECK(!ent->HasTag<TagB>());
-		CHECK(!ent->HasTag<TagC>());
+		CHECK(!ent->Has<TagA>());
+		CHECK(!ent->Has<TagB>());
+		CHECK(!ent->Has<TagC>());
 
 		ent->Tag<TagA>();
-		CHECK(ent->HasTag<TagA>());
-		CHECK(!ent->HasTag<TagB>());
-		CHECK(!ent->HasTag<TagC>());
+		CHECK(ent->Has<TagA>());
+		CHECK(!ent->Has<TagB>());
+		CHECK(!ent->Has<TagC>());
 
 		ent->Tag<TagB>();
-		CHECK(ent->HasTag<TagA>());
-		CHECK(ent->HasTag<TagB>());
-		CHECK(!ent->HasTag<TagC>());
+		CHECK(ent->Has<TagA>());
+		CHECK(ent->Has<TagB>());
+		CHECK(!ent->Has<TagC>());
 
 		ent->Tag<TagC>();
-		CHECK(ent->HasTag<TagA>());
-		CHECK(ent->HasTag<TagB>());
-		CHECK(ent->HasTag<TagC>());
+		CHECK(ent->Has<TagA>());
+		CHECK(ent->Has<TagB>());
+		CHECK(ent->Has<TagC>());
 
 		ent->RemoveTag<TagB>();
-		CHECK(ent->HasTag<TagA>());
-		CHECK(!ent->HasTag<TagB>());
-		CHECK(ent->HasTag<TagC>());
+		CHECK(ent->Has<TagA>());
+		CHECK(!ent->Has<TagB>());
+		CHECK(ent->Has<TagC>());
 
 		ent->RemoveAllTags();
-		CHECK(!ent->HasTag<TagA>());
-		CHECK(!ent->HasTag<TagB>());
-		CHECK(!ent->HasTag<TagC>());
+		CHECK(!ent->Has<TagA>());
+		CHECK(!ent->Has<TagB>());
+		CHECK(!ent->Has<TagC>());
 
 		ent->Tag<TagA, TagB, TagC>();
-		CHECK(ent->HasTag<TagA>());
-		CHECK(ent->HasTag<TagB>());
-		CHECK(ent->HasTag<TagC>());
+		CHECK(ent->Has<TagA>());
+		CHECK(ent->Has<TagB>());
+		CHECK(ent->Has<TagC>());
 	}
 
 	SECTION("Removing Tags Globally")
@@ -228,19 +228,19 @@ TEST_CASE("Entity-Component-System")
 		ent2->Tag<TagA>();
 		ent3->Tag<TagA>();
 		ent4->Tag<TagB>();
-		CHECK(ent->HasTag<TagA>());
-		CHECK(ent2->HasTag<TagA>());
-		CHECK(ent3->HasTag<TagA>());
-		CHECK(ent4->HasTag<TagB>());
+		CHECK(ent->Has<TagA>());
+		CHECK(ent2->Has<TagA>());
+		CHECK(ent3->Has<TagA>());
+		CHECK(ent4->Has<TagB>());
 
 		Entity::GlobalRemoveTag<TagA>();
-		CHECK(!ent->HasTag<TagA>());
-		CHECK(!ent2->HasTag<TagA>());
-		CHECK(!ent3->HasTag<TagA>());
-		CHECK(ent4->HasTag<TagB>());
+		CHECK(!ent->Has<TagA>());
+		CHECK(!ent2->Has<TagA>());
+		CHECK(!ent3->Has<TagA>());
+		CHECK(ent4->Has<TagB>());
 
 		Entity::GlobalRemoveTag<TagB>();
-		CHECK(!ent4->HasTag<TagB>());
+		CHECK(!ent4->Has<TagB>());
 	}
 
 	SECTION("Enabling / Disabling")
@@ -445,7 +445,7 @@ TEST_CASE("Entity-Component-System")
 					CHECK(e == ent1);
 					count++;
 
-					CHECK(e.HasTag<TagA>());
+					CHECK(e.Has<TagA>());
 					CHECK(e.IsEnabled());
 				}
 				CHECK(count == 1);
@@ -577,8 +577,8 @@ TEST_CASE("Entity-Component-System")
 						CHECK(e == ent1);
 						count++;
 
-						CHECK(e.HasTag<TagA>());
-						CHECK(e.HasTag<TagB>());
+						CHECK(e.Has<TagA>());
+						CHECK(e.Has<TagB>());
 						CHECK(e.IsEnabled());
 					}
 				}
@@ -590,8 +590,8 @@ TEST_CASE("Entity-Component-System")
 						CHECK(e == ent1);
 						count++;
 
-						CHECK(e.HasTag<TagB>());
-						CHECK(e.HasTag<TagA>());
+						CHECK(e.Has<TagB>());
+						CHECK(e.Has<TagA>());
 						CHECK(e.IsEnabled());
 					}
 				}
@@ -621,7 +621,7 @@ TEST_CASE("Entity-Component-System")
 
 						REQUIRE(e.Has<Comp1>());
 						REQUIRE(e.Has<Comp2>());
-						CHECK(e.HasTag<TagA>());
+						CHECK(e.Has<TagA>());
 						CHECK(e.Get<Comp1>().IsEnabled());
 						CHECK(e.Get<Comp2>().IsEnabled());
 						CHECK(e.Get<Comp1>().IsComponentEnabled());
@@ -639,7 +639,7 @@ TEST_CASE("Entity-Component-System")
 
 						REQUIRE(e.Has<Comp1>());
 						REQUIRE(e.Has<Comp2>());
-						CHECK(e.HasTag<TagA>());
+						CHECK(e.Has<TagA>());
 						CHECK(e.Get<Comp1>().IsEnabled());
 						CHECK(e.Get<Comp2>().IsEnabled());
 						CHECK(e.Get<Comp1>().IsComponentEnabled());
@@ -679,9 +679,9 @@ TEST_CASE("Entity-Component-System")
 						REQUIRE(e.Has<Comp1>());
 						REQUIRE(e.Has<Comp2>());
 						REQUIRE(e.Has<Base>());
-						CHECK(e.HasTag<TagA>());
-						CHECK(e.HasTag<TagB>());
-						CHECK(e.HasTag<TagC>());
+						CHECK(e.Has<TagA>());
+						CHECK(e.Has<TagB>());
+						CHECK(e.Has<TagC>());
 						CHECK(e.Get<Comp1>().IsEnabled());
 						CHECK(e.Get<Comp2>().IsEnabled());
 						CHECK(e.Get<Base>().IsEnabled());
@@ -702,9 +702,9 @@ TEST_CASE("Entity-Component-System")
 						REQUIRE(e.Has<Comp1>());
 						REQUIRE(e.Has<Comp2>());
 						REQUIRE(e.Has<Base>());
-						CHECK(e.HasTag<TagA>());
-						CHECK(e.HasTag<TagB>());
-						CHECK(e.HasTag<TagC>());
+						CHECK(e.Has<TagA>());
+						CHECK(e.Has<TagB>());
+						CHECK(e.Has<TagC>());
 						CHECK(e.Get<Comp1>().IsEnabled());
 						CHECK(e.Get<Comp2>().IsEnabled());
 						CHECK(e.Get<Base>().IsEnabled());
