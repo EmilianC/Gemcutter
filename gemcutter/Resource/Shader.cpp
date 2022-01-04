@@ -493,8 +493,13 @@ namespace gem
 					return false;
 				}
 
-				// Save the starting position (starting after the '{').
-				pos++;
+				// Save the starting position after the '{'. It is likely there is also a
+				// newline after the brace, so we skip it for simplicity and line tracking (#line).
+				++pos;
+				if (pos < source.size() && std::isspace(source[pos]))
+				{
+					++pos;
+				}
 				block.start = pos;
 
 				// Find the end of the block.
@@ -517,7 +522,7 @@ namespace gem
 						break;
 					}
 
-					pos++;
+					++pos;
 				}
 
 				// Did we find the matching brace?
@@ -586,7 +591,7 @@ namespace gem
 			}
 
 			// Continue through the file.
-			pos++;
+			++pos;
 		}
 
 		// We must have at least one shader.
@@ -703,6 +708,8 @@ namespace gem
 
 			pos++;
 		}
+
+		output->insert(0, "#line 1\n");
 
 		return true;
 	}
