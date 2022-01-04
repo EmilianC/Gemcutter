@@ -67,6 +67,7 @@ set(ALSOFT_INSTALL_HRTF_DATA           OFF CACHE BOOL "")
 set(ALSOFT_INSTALL_UTILS               OFF CACHE BOOL "")
 set(ALSOFT_NO_CONFIG_UTIL              ON  CACHE BOOL "")
 set(ALSOFT_TESTS                       OFF CACHE BOOL "")
+set(ALSOFT_UPDATE_BUILD_VERSION        OFF CACHE BOOL "")
 set(ALSOFT_UTILS                       OFF CACHE BOOL "")
 set(CMAKE_POLICY_DEFAULT_CMP0069 NEW) # Allow LTO
 add_subdirectory(openal-soft)
