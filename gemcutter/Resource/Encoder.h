@@ -90,7 +90,7 @@ namespace gem
 		// Parses the command line arguments of the program and invokes the user-provided Encoder.
 		static bool RunEncoder(Encoder& encoder)
 		{
-			const char* usage =
+			constexpr std::string_view usage =
 				"Gemcutter asset Encoder.\nUsage:\n"
 				"  Encoder.exe -update -src <file>\n"
 				"  Encoder.exe -pack -src <file> -dest <folder>\n"
@@ -141,7 +141,7 @@ namespace gem
 		}
 
 		// Update command. Load the meta file and upgrade to the newest version.
-		bool Update(const char* file)
+		bool Update(std::string_view file)
 		{
 			defer { ResetConsoleColor(); };
 
@@ -188,7 +188,7 @@ namespace gem
 		}
 
 		// Pack command. Write the binary asset into the output folder.
-		bool Pack(const char* src, const char* dest)
+		bool Pack(std::string_view src, std::string_view dest)
 		{
 			defer { ResetConsoleColor(); };
 

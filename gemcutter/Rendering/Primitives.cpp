@@ -8,7 +8,7 @@
 
 namespace
 {
-	constexpr const char* LINE_PROGRAM = R"(
+	constexpr std::string_view LINE_PROGRAM = R"(
 		Uniforms{
 			static Data : 0{
 				vec4 uP1;
@@ -45,7 +45,7 @@ namespace
 		}
 	)";
 
-	constexpr const char* TEXTURED_LINE_PROGRAM = R"(
+	constexpr std::string_view TEXTURED_LINE_PROGRAM = R"(
 		Uniforms{
 			static Data : 0{
 				vec4 uP1;
@@ -84,7 +84,7 @@ namespace
 		}
 	)";
 
-	constexpr const char* TRIANGLE_PROGRAM = R"(
+	constexpr std::string_view TRIANGLE_PROGRAM = R"(
 		Uniforms{
 			static Data : 0{
 				vec4 uP1;
@@ -126,7 +126,7 @@ namespace
 		}
 	)";
 
-	constexpr const char* TEXTURED_TRIANGLE_PROGRAM = R"(
+	constexpr std::string_view TEXTURED_TRIANGLE_PROGRAM = R"(
 		Uniforms{
 			static Data : 0{
 				vec4 uP1;
@@ -169,7 +169,7 @@ namespace
 		}
 	)";
 
-	constexpr const char* RECTANGE_PROGRAM = R"(
+	constexpr std::string_view RECTANGE_PROGRAM = R"(
 		Uniforms{
 			static Data : 0{
 				vec4 uP1;
@@ -217,7 +217,7 @@ namespace
 		}
 	)";
 
-	constexpr const char* TEXTURED_RECTANGLE_PROGRAM = R"(
+	constexpr std::string_view TEXTURED_RECTANGLE_PROGRAM = R"(
 		Uniforms{
 			static Data : 0{
 				vec4 uP1;
@@ -264,7 +264,7 @@ namespace
 		}
 	)";
 
-	constexpr const char* TEXTURED_FULLSCREEN_QUAD_PROGRAM = R"(
+	constexpr std::string_view TEXTURED_FULLSCREEN_QUAD_PROGRAM = R"(
 		Attributes{
 			vec4 a_vert : 0;
 			vec2 a_uv : 1;

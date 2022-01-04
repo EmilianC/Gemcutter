@@ -66,11 +66,11 @@ bool TextureEncoder::Validate(const gem::ConfigTable& metadata, unsigned loadedV
 		return true;
 	};
 
-	auto validateWrap = [](const gem::ConfigTable& data, const char* mode)
+	auto validateWrap = [](const gem::ConfigTable& data, std::string_view mode)
 	{
 		if (!data.HasSetting(mode))
 		{
-			gem::Error("Missing \"%s\" value.", mode);
+			gem::Error("Missing \"%s\" value.", mode.data());
 			return false;
 		}
 
@@ -81,7 +81,7 @@ bool TextureEncoder::Validate(const gem::ConfigTable& metadata, unsigned loadedV
 			!gem::CompareLowercase(str, "repeatMirrored") &&
 			!gem::CompareLowercase(str, "repeatMirroredOnce"))
 		{
-			gem::Error("\"%s\" is invalid. Valid options are \"clamp\", \"clampWithBorder\", \"repeat\", \"repeatMirrored\", or \"repeatMirroredOnce\".", mode);
+			gem::Error("\"%s\" is invalid. Valid options are \"clamp\", \"clampWithBorder\", \"repeat\", \"repeatMirrored\", or \"repeatMirroredOnce\".", mode.data());
 			return false;
 		}
 

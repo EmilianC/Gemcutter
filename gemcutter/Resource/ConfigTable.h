@@ -33,14 +33,12 @@ namespace gem
 
 		// Creates or overwrites an existing setting.
 		void SetValue(const std::string& setting, std::string_view value);
-		void SetValue(const std::string& setting, const char* value);
 		void SetValue(const std::string& setting, float value);
 		void SetValue(const std::string& setting, int value);
 		void SetValue(const std::string& setting, bool value);
 
 		// Does not overwrite an existing setting, but creates it if it doesn't exist.
 		void SetDefaultValue(const std::string& setting, std::string_view value);
-		void SetDefaultValue(const std::string& setting, const char* value);
 		void SetDefaultValue(const std::string& setting, float value);
 		void SetDefaultValue(const std::string& setting, int value);
 		void SetDefaultValue(const std::string& setting, bool value);

@@ -174,7 +174,7 @@ namespace gem
 		bool ParseAttributes(const Block& block);
 		bool ParseShader(const Block& block);
 		bool ParseUniforms(const Block& block);
-		bool ParseUniformBlock(const Block& block, const char* name, unsigned Id, bool isInstance, bool isStatic);
+		bool ParseUniformBlock(const Block& block, std::string_view name, unsigned Id, bool isInstance, bool isStatic);
 		bool ParseSamplers(const Block& block);
 
 		bool loaded = false;

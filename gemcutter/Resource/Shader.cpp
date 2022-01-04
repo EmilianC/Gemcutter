@@ -13,7 +13,7 @@
 namespace
 {
 	// Built in shaders.
-	constexpr const char* passThroughVertex = R"(
+	constexpr std::string_view passThroughVertex = R"(
 		layout(location = 0) in vec4 a_vert;
 		layout(location = 1) in vec2 a_uv;
 		out vec2 texcoord;
@@ -24,7 +24,7 @@ namespace
 		}
 	)";
 
-	constexpr const char* passThroughFragment = R"(
+	constexpr std::string_view passThroughFragment = R"(
 		uniform sampler2D sTex;
 		in vec2 texcoord;
 		out vec4 outColor;
@@ -34,7 +34,23 @@ namespace
 		}
 	)";
 
-	constexpr const char* passThroughProgram = R"(
+	constexpr std::string_view fallbackVertex = R"(
+		layout(location = 0) in vec4 a_vert;
+		void main()
+		{
+			gl_Position = Gem_MVP * a_vert;
+		}
+	)";
+
+	constexpr std::string_view fallbackFragment = R"(
+		out vec4 outColor;
+		void main()
+		{
+			outColor = vec4(1.0f, 0.5f, 0.7f, 1.0f);
+		}
+	)";
+
+	constexpr std::string_view passThroughProgram = R"(
 		Attributes{
 			vec4 a_vert : 0;
 			vec2 a_uv : 1;
@@ -60,7 +76,7 @@ namespace
 		}
 	)";
 
-	constexpr const char* header = R"(
+	constexpr std::string_view header = R"(
 		#define M_PI 3.14159265358979323846
 		#define M_E 2.71828182845904523536
 		#define M_LOG2E 1.44269504088896340736
@@ -419,7 +435,7 @@ namespace gem
 	{
 		ASSERT(!IsLoaded(), "ShaderData already has a Shader loaded.");
 
-		if (!LoadInternal(passThroughProgram))
+		if (!LoadInternal(std::string(passThroughProgram)))
 		{
 			Error("Shader: ( PassThrough ).");
 			return false;
@@ -450,7 +466,7 @@ namespace gem
 
 			// Our minimum supported version is 3.3, where the format of the GLSL
 			// version identifier begins to be symmetrical with the GL version.
-			commonHeader = "#version " + std::to_string(major) + std::to_string(minor) + "0\n" + header;
+			commonHeader = "#version " + std::to_string(major) + std::to_string(minor) + "0\n" + std::string(header);
 		}
 
 		// Clean up the source to make parsing easier.
@@ -809,10 +825,10 @@ namespace gem
 		return true;
 	}
 
-	bool Shader::ParseUniformBlock(const Block& block, const char* name, unsigned Id, bool isInstance, bool isStatic)
+	bool Shader::ParseUniformBlock(const Block& block, std::string_view name, unsigned Id, bool isInstance, bool isStatic)
 	{
 		ASSERT(block.type == BlockType::Uniforms, "Expected a Uniform block type.");
-		ASSERT(name != nullptr, "Must provide name.");
+		ASSERT(!name.empty(), "Must provide a name.");
 
 		// The struct with all default assignments intact.
 		std::string rawStruct(block.source.substr(block.start, block.end - block.start));
@@ -837,7 +853,7 @@ namespace gem
 			assignmentPos = uniformStruct.find('=', assignmentPos);
 		}
 
-		uniformStruct = FormatString("layout(std140) uniform Gem_User_%s\n{%s} %s;\n", name, uniformStruct.c_str(), name);
+		uniformStruct = FormatString("layout(std140) uniform Gem_User_%s\n{%s} %s;\n", name.data(), uniformStruct.c_str(), name.data());
 
 		/* Create template and the shader owned buffer */
 		if (isInstance || isStatic)
@@ -1032,7 +1048,7 @@ namespace gem
 				buffers.Add(std::move(buffer), Id);
 			}
 
-			bufferBindings.emplace_back(name, Id, isStatic ? nullptr : std::move(buffer));
+			bufferBindings.emplace_back(std::string(name), Id, isStatic ? nullptr : std::move(buffer));
 		}
 		else
 		{
@@ -1042,7 +1058,7 @@ namespace gem
 				return false;
 			}
 
-			bufferBindings.emplace_back(name, Id, nullptr);
+			bufferBindings.emplace_back(std::string(name), Id, nullptr);
 		}
 
 		uniformBuffers += uniformStruct;
@@ -1139,17 +1155,7 @@ namespace gem
 				}
 
 				// Instead of doing nothing, we load a hard-coded pink shader on failure.
-				if (!variant.Load(
-					commonHeader,
-					"layout(location = 0) in vec4 a_vert;\n"
-					"void main()\n{\n"
-					"	gl_Position = Gem_MVP * a_vert;\n"
-					"}\n",
-					"",
-					"out vec4 outColor;\n"
-					"void main()\n{\n"
-					"	outColor = vec4(1.0f, 0.5f, 0.7f, 1.0f);\n"
-					"}\n"))
+				if (!variant.Load(commonHeader, fallbackVertex, "", fallbackFragment))
 				{
 					ASSERT(false, "Fallback pink-shader failed to compile.");
 				}
