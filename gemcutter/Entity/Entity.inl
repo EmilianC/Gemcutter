@@ -9,7 +9,7 @@ namespace gem
 		template<class T>
 		T* safe_cast(ComponentBase* comp)
 		{
-			if constexpr (std::is_same_v<T, typename T::StaticComponentType>)
+			if constexpr (std::is_same_v<T, T::StaticComponentType>)
 			{
 				return static_cast<T*>(comp);
 			}

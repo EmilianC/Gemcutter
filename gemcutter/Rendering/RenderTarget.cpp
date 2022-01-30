@@ -568,7 +568,7 @@ namespace gem
 
 	Viewport RenderTarget::GetViewport() const
 	{
-		return Viewport(0, 0, width, height);
+		return { 0, 0, width, height };
 	}
 
 	unsigned RenderTarget::GetWidth() const

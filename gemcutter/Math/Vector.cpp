@@ -81,38 +81,38 @@ namespace gem
 
 	vec2 vec2::operator-() const
 	{
-		return vec2(-x, -y);
+		return { -x, -y };
 	}
 
 	vec2 vec2::operator-(const vec2& RHS) const
 	{
-		return vec2(x - RHS.x, y - RHS.y);
+		return { x - RHS.x, y - RHS.y };
 	}
 
 	vec2 vec2::operator+(const vec2& RHS) const
 	{
-		return vec2(x + RHS.x, y + RHS.y);
+		return { x + RHS.x, y + RHS.y };
 	}
 
 	vec2 vec2::operator*(const vec2& RHS) const
 	{
-		return vec2(x * RHS.x, y * RHS.y);
+		return { x * RHS.x, y * RHS.y };
 	}
 
 	vec2 vec2::operator/(const vec2& RHS) const
 	{
-		return vec2(x / RHS.x, y / RHS.y);
+		return { x / RHS.x, y / RHS.y };
 	}
 
 	vec2 vec2::operator*(float scalar) const
 	{
-		return vec2(x * scalar, y * scalar);
+		return { x * scalar, y * scalar };
 	}
 
 	vec2 vec2::operator/(float divisor) const
 	{
 		float inverse = 1.0f / divisor;
-		return vec2(x * inverse, y * inverse);
+		return { x * inverse, y * inverse };
 	}
 
 	float vec2::operator[](unsigned index) const
@@ -218,38 +218,38 @@ namespace gem
 
 	vec3 vec3::operator-() const
 	{
-		return vec3(-x, -y, -z);
+		return { -x, -y, -z };
 	}
 
 	vec3 vec3::operator-(const vec3& RHS) const
 	{
-		return vec3(x - RHS.x, y - RHS.y, z - RHS.z);
+		return { x - RHS.x, y - RHS.y, z - RHS.z };
 	}
 
 	vec3 vec3::operator+(const vec3& RHS) const
 	{
-		return vec3(x + RHS.x, y + RHS.y, z + RHS.z);
+		return { x + RHS.x, y + RHS.y, z + RHS.z };
 	}
 
 	vec3 vec3::operator*(const vec3& RHS) const
 	{
-		return vec3(x * RHS.x, y * RHS.y, z * RHS.z);
+		return { x * RHS.x, y * RHS.y, z * RHS.z };
 	}
 
 	vec3 vec3::operator/(const vec3& RHS) const
 	{
-		return vec3(x / RHS.x, y / RHS.y, z / RHS.z);
+		return { x / RHS.x, y / RHS.y, z / RHS.z };
 	}
 
 	vec3 vec3::operator*(float scalar) const
 	{
-		return vec3(x * scalar, y * scalar, z * scalar);
+		return { x * scalar, y * scalar, z * scalar };
 	}
 
 	vec3 vec3::operator/(float divisor) const
 	{
 		float inverse = 1.0f / divisor;
-		return vec3(x * inverse, y * inverse, z * inverse);
+		return { x * inverse, y * inverse, z * inverse };
 	}
 
 	float vec3::operator[](unsigned index) const
@@ -266,7 +266,7 @@ namespace gem
 
 	vec3::operator vec2() const
 	{
-		return vec2(x, y);
+		return { x, y };
 	}
 
 	const vec4 vec4::Zero     = vec4(0.0f, 0.0f, 0.0f, 0.0f);
@@ -378,38 +378,38 @@ namespace gem
 
 	vec4 vec4::operator-() const
 	{
-		return vec4(-x, -y, -z, -w);
+		return { -x, -y, -z, -w };
 	}
 
 	vec4 vec4::operator-(const vec4& RHS) const
 	{
-		return vec4(x - RHS.x, y - RHS.y, z - RHS.z, w - RHS.w);
+		return { x - RHS.x, y - RHS.y, z - RHS.z, w - RHS.w };
 	}
 
 	vec4 vec4::operator+(const vec4& RHS) const
 	{
-		return vec4(x + RHS.x, y + RHS.y, z + RHS.z, w + RHS.w);
+		return { x + RHS.x, y + RHS.y, z + RHS.z, w + RHS.w };
 	}
 
 	vec4 vec4::operator*(const vec4& RHS) const
 	{
-		return vec4(x * RHS.x, y * RHS.y, z * RHS.z, w * RHS.w);
+		return { x * RHS.x, y * RHS.y, z * RHS.z, w * RHS.w };
 	}
 
 	vec4 vec4::operator/(const vec4& RHS) const
 	{
-		return vec4(x / RHS.x, y / RHS.y, z / RHS.z, w / RHS.w);
+		return { x / RHS.x, y / RHS.y, z / RHS.z, w / RHS.w };
 	}
 
 	vec4 vec4::operator*(float scalar) const
 	{
-		return vec4(x * scalar, y * scalar, z * scalar, w * scalar);
+		return { x * scalar, y * scalar, z * scalar, w * scalar };
 	}
 
 	vec4 vec4::operator/(float divisor) const
 	{
 		float inverse = 1.0f / divisor;
-		return vec4(x * inverse, y * inverse, z * inverse, w * inverse);
+		return { x * inverse, y * inverse, z * inverse, w * inverse };
 	}
 
 	float vec4::operator[](unsigned index) const
@@ -426,12 +426,12 @@ namespace gem
 
 	vec4::operator vec2() const
 	{
-		return vec2(x, y);
+		return { x, y };
 	}
 
 	vec4::operator vec3() const
 	{
-		return vec3(x, y, z);
+		return { x, y, z };
 	}
 
 	float Length(const vec2& v)
@@ -642,17 +642,17 @@ namespace gem
 
 	vec2 Abs(const vec2& v)
 	{
-		return vec2(Abs(v.x), Abs(v.y));
+		return { Abs(v.x), Abs(v.y) };
 	}
 
 	vec3 Abs(const vec3& v)
 	{
-		return vec3(Abs(v.x), Abs(v.y), Abs(v.z));
+		return { Abs(v.x), Abs(v.y), Abs(v.z) };
 	}
 
 	vec4 Abs(const vec4& v)
 	{
-		return vec4(Abs(v.x), Abs(v.y), Abs(v.z), Abs(v.w));
+		return { Abs(v.x), Abs(v.y), Abs(v.z), Abs(v.w) };
 	}
 
 	vec2 Min(const vec2& v1, const vec2& v2)
@@ -729,34 +729,34 @@ namespace gem
 
 	vec2 operator*(float scalar, const vec2& vec)
 	{
-		return vec2(vec.x * scalar, vec.y * scalar);
+		return { vec.x * scalar, vec.y * scalar };
 	}
 
 	vec2 operator/(float divisor, const vec2& vec)
 	{
 		float inverse = 1.0f / divisor;
-		return vec2(vec.x * inverse, vec.y * inverse);
+		return { vec.x * inverse, vec.y * inverse };
 	}
 
 	vec3 operator*(float scalar, const vec3& vec)
 	{
-		return vec3(vec.x * scalar, vec.y * scalar, vec.z * scalar);
+		return { vec.x * scalar, vec.y * scalar, vec.z * scalar };
 	}
 
 	vec3 operator/(float divisor, const vec3& vec)
 	{
 		float inverse = 1.0f / divisor;
-		return vec3(vec.x * inverse, vec.y * inverse, vec.z * inverse);
+		return { vec.x * inverse, vec.y * inverse, vec.z * inverse };
 	}
 
 	vec4 operator*(float scalar, const vec4& vec)
 	{
-		return vec4(vec.x * scalar, vec.y * scalar, vec.z * scalar, vec.w * scalar);
+		return { vec.x * scalar, vec.y * scalar, vec.z * scalar, vec.w * scalar };
 	}
 
 	vec4 operator/(float divisor, const vec4& vec)
 	{
 		float inverse = 1.0f / divisor;
-		return vec4(vec.x * inverse, vec.y * inverse, vec.z * inverse, vec.w * inverse);
+		return { vec.x * inverse, vec.y * inverse, vec.z * inverse, vec.w * inverse };
 	}
 }

@@ -48,9 +48,10 @@ namespace gem
 		ASSERT(left >= 0.0f && left <= 1.0f, "XboxGamePad: 'left' vibration value must be in range of [0, 1].");
 		ASSERT(right >= 0.0f && right <= 1.0f, "XboxGamePad: 'right' vibration value must be in range of [0, 1].");
 
-		XINPUT_VIBRATION vibration = {};
-		vibration.wLeftMotorSpeed = static_cast<WORD>(left * MAX_VAL);
-		vibration.wRightMotorSpeed = static_cast<WORD>(right * MAX_VAL);
+		XINPUT_VIBRATION vibration {
+			.wLeftMotorSpeed  = static_cast<WORD>(left  * MAX_VAL),
+			.wRightMotorSpeed = static_cast<WORD>(right * MAX_VAL)
+		};
 
 		XInputSetState(gamepadID, &vibration);
 	}
@@ -92,7 +93,7 @@ namespace gem
 		}
 		else
 		{
-			return vec2(0.0f, 0.0f);
+			return vec2::Zero;
 		}
 	}
 
@@ -104,7 +105,7 @@ namespace gem
 		}
 		else
 		{
-			return vec2(0.0f, 0.0f);
+			return vec2::Zero;
 		}
 	}
 

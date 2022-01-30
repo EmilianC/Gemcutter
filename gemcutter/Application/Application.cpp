@@ -63,11 +63,12 @@ namespace
 
 	RECT GetWindowSize(LONG style, unsigned clientWidth, unsigned clientHeight)
 	{
-		RECT windowRect;
-		windowRect.left = 0;
-		windowRect.right = clientWidth;
-		windowRect.top = 0;
-		windowRect.bottom = clientHeight;
+		RECT windowRect {
+			.left   = 0,
+			.top    = 0,
+			.right  = static_cast<LONG>(clientWidth),
+			.bottom = static_cast<LONG>(clientHeight)
+		};
 
 		if (!AdjustWindowRectEx(&windowRect, style, FALSE, STYLE_EXTENDED))
 		{
@@ -81,12 +82,13 @@ namespace
 	{
 		if (state)
 		{
-			DEVMODE dmScreenSettings = {};
-			dmScreenSettings.dmSize = sizeof(DEVMODE);
-			dmScreenSettings.dmPelsWidth = clientWidth;
-			dmScreenSettings.dmPelsHeight = clientHeight;
-			dmScreenSettings.dmBitsPerPel = BITS_PER_PIXEL;
-			dmScreenSettings.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
+			DEVMODE dmScreenSettings {
+				.dmSize       = sizeof(DEVMODE),
+				.dmFields     = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT,
+				.dmBitsPerPel = BITS_PER_PIXEL,
+				.dmPelsWidth  = clientWidth,
+				.dmPelsHeight = clientHeight
+			};
 
 			if (ChangeDisplaySettings(&dmScreenSettings, CDS_FULLSCREEN) != DISP_CHANGE_SUCCESSFUL)
 			{
@@ -290,15 +292,16 @@ namespace
 			}
 
 			/* Initialize OpenGL */
-			PIXELFORMATDESCRIPTOR pfd = {};
-			pfd.nSize        = sizeof(PIXELFORMATDESCRIPTOR);
-			pfd.nVersion     = 1;
-			pfd.dwFlags      = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
-			pfd.iPixelType   = PFD_TYPE_RGBA;
-			pfd.cColorBits   = BITS_PER_PIXEL;
-			pfd.cDepthBits   = DEPTH_BUFFER_BITS;
-			pfd.cStencilBits = STENCIL_BUFFER_BITS;
-			pfd.iLayerType   = PFD_MAIN_PLANE;
+			PIXELFORMATDESCRIPTOR pfd {
+				.nSize        = sizeof(PIXELFORMATDESCRIPTOR),
+				.nVersion     = 1,
+				.dwFlags      = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER,
+				.iPixelType   = PFD_TYPE_RGBA,
+				.cColorBits   = BITS_PER_PIXEL,
+				.cDepthBits   = DEPTH_BUFFER_BITS,
+				.cStencilBits = STENCIL_BUFFER_BITS,
+				.iLayerType   = PFD_MAIN_PLANE
+			};
 
 			int pixelFormat = ChoosePixelFormat(deviceContext, &pfd);
 			SetPixelFormat(deviceContext, pixelFormat, &pfd);
@@ -462,19 +465,20 @@ namespace gem
 		glMajorVersion = _glMajorVersion;
 		glMinorVersion = _glMinorVersion;
 
-		WNDCLASSEX windowClass;
-		windowClass.cbSize = sizeof(WNDCLASSEX);
-		windowClass.style = CS_HREDRAW | CS_VREDRAW;
-		windowClass.lpfnWndProc = WindowProc;
-		windowClass.cbClsExtra = 0;
-		windowClass.cbWndExtra = 0;
-		windowClass.hInstance = apInstance;
-		windowClass.hIcon = LoadIcon(NULL, IDI_APPLICATION); // Default icon.
-		windowClass.hCursor = LoadCursor(NULL, IDC_ARROW);   // Default arrow.
-		windowClass.hbrBackground = NULL;
-		windowClass.lpszMenuName = NULL;
-		windowClass.lpszClassName = "Gemcutter";
-		windowClass.hIconSm = LoadIcon(NULL, IDI_WINLOGO);   // Windows logo small icon.
+		WNDCLASSEX windowClass {
+			.cbSize        = sizeof(WNDCLASSEX),
+			.style         = CS_HREDRAW | CS_VREDRAW,
+			.lpfnWndProc   = WindowProc,
+			.cbClsExtra    = 0,
+			.cbWndExtra    = 0,
+			.hInstance     = apInstance,
+			.hIcon         = LoadIcon(NULL, IDI_APPLICATION), // Default icon.
+			.hCursor       = LoadCursor(NULL, IDC_ARROW),     // Default arrow.
+			.hbrBackground = NULL,
+			.lpszMenuName  = NULL,
+			.lpszClassName = "Gemcutter",
+			.hIconSm       = LoadIcon(NULL, IDI_WINLOGO)      // Windows logo small icon.
+		};
 
 		if (!RegisterClassEx(&windowClass))
 		{
@@ -768,10 +772,10 @@ namespace gem
 
 	unsigned ApplicationSingleton::GetSystemRefreshRate() const
 	{
-		DEVMODE devMode;
-		memset(&devMode, 0, sizeof(DEVMODE));
-		devMode.dmSize = sizeof(DEVMODE);
-		devMode.dmDriverExtra = 0;
+		DEVMODE devMode {
+			.dmSize = sizeof(DEVMODE),
+			.dmDriverExtra = 0
+		};
 
 		if (EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &devMode))
 		{

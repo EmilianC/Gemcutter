@@ -91,7 +91,7 @@ namespace gem
 
 	bool ConfigTable::HasSetting(std::string_view setting) const
 	{
-		return settings.count(setting);
+		return settings.contains(setting);
 	}
 
 	unsigned ConfigTable::GetSize() const

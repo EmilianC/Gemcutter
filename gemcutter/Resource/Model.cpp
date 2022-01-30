@@ -52,13 +52,14 @@ namespace gem
 		}
 
 		// Enable vertex attribute streams.
-		VertexStream stream = {};
-		stream.buffer       = std::move(buffer);
-		stream.bindingUnit  = 0;
-		stream.format       = VertexFormat::Vec3;
-		stream.normalized   = false;
-		stream.startOffset  = 0;
-		stream.stride       = stride;
+		VertexStream stream {
+			.buffer       = std::move(buffer),
+			.bindingUnit  = 0,
+			.format       = VertexFormat::Vec3,
+			.normalized   = false,
+			.startOffset  = 0,
+			.stride       = static_cast<unsigned>(stride)
+		};
 
 		array->AddStream(stream);
 		stream.startOffset += sizeof(float) * 3;

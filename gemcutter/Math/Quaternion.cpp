@@ -177,7 +177,7 @@ namespace gem
 
 	quat quat::GetConjugate() const
 	{
-		return quat(-x, -y, -z, w);
+		return { -x, -y, -z, w };
 	}
 
 	void quat::Normalize()
@@ -198,7 +198,7 @@ namespace gem
 
 		ASSERT(!std::isinf(invLength), "Zero length quaternion cannot be normalized.");
 
-		return quat(x * invLength, y * invLength, z * invLength, w * invLength);
+		return { x * invLength, y * invLength, z * invLength, w * invLength };
 	}
 
 	vec3 quat::GetRight() const

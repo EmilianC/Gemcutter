@@ -12,7 +12,7 @@
 
 namespace
 {
-	const int vertexFormat_Resolve[] = {
+	constexpr int vertexFormat_Resolve[] = {
 		GL_FLOAT,
 		GL_DOUBLE,
 		GL_FLOAT,
@@ -29,7 +29,7 @@ namespace
 		GL_UNSIGNED_BYTE
 	};
 
-	const int vertexArrayFormat_Resolve[] = {
+	constexpr int vertexArrayFormat_Resolve[] = {
 		GL_POINTS,
 		GL_LINES,
 		GL_LINES_ADJACENCY,
@@ -43,7 +43,7 @@ namespace
 		GL_TRIANGLE_STRIP_ADJACENCY
 	};
 
-	const int vertexFormatSize_Resolve[] = {
+	constexpr int vertexFormatSize_Resolve[] = {
 		4,  // float
 		8,  // double
 		8,  // vec2
@@ -60,7 +60,7 @@ namespace
 		1   // unsigned char
 	};
 
-	const int textureFormatChannelCount_Resolve[] = {
+	constexpr int textureFormatChannelCount_Resolve[] = {
 		1, // R_8
 		1, // R_16
 		1, // R_16F
@@ -81,26 +81,26 @@ namespace
 		4  // sRGBA_8
 	};
 
-	const int vertexAccess_Resolve[] = {
+	constexpr int vertexAccess_Resolve[] = {
 		GL_READ_ONLY,
 		GL_WRITE_ONLY,
 		GL_READ_WRITE
 	};
 
-	const int vertexBufferUsage_Resolve[] = {
+	constexpr int vertexBufferUsage_Resolve[] = {
 		GL_STATIC_DRAW,
 		GL_DYNAMIC_DRAW,
 		GL_STREAM_DRAW
 	};
 
-	const int filterMin_Resolve[] = {
+	constexpr int filterMin_Resolve[] = {
 		GL_NEAREST,
 		GL_LINEAR,
 		GL_LINEAR_MIPMAP_NEAREST,
 		GL_LINEAR_MIPMAP_LINEAR
 	};
 
-	const int wrap_Resolve[] = {
+	constexpr int wrap_Resolve[] = {
 		GL_CLAMP_TO_EDGE,
 		GL_CLAMP_TO_BORDER,
 		GL_REPEAT,
@@ -108,7 +108,7 @@ namespace
 		GL_MIRROR_CLAMP_TO_EDGE
 	};
 
-	const unsigned format_Resolve[] = {
+	constexpr unsigned format_Resolve[] = {
 		GL_R8,                // R_8
 		GL_R16,               // R_16
 		GL_R16F,              // R_16F
@@ -129,7 +129,7 @@ namespace
 		GL_SRGB8_ALPHA8       // sRGBA_8
 	};
 
-	const int dataFormat_resolve[] = {
+	constexpr int dataFormat_resolve[] = {
 		GL_RED,               // R_8
 		GL_RED,               // R_16
 		GL_RED,               // R_16F
@@ -421,7 +421,6 @@ namespace gem
 	{
 		switch (func)
 		{
-		default:
 		case BlendFunc::None:
 			glDisable(GL_BLEND);
 			break;
@@ -447,7 +446,6 @@ namespace gem
 	{
 		switch (func)
 		{
-		default:
 		case DepthFunc::Normal:
 			glEnable(GL_DEPTH_TEST);
 			glDepthMask(GL_TRUE);

@@ -698,9 +698,12 @@ namespace gem
 
 					if (IsPathRelative(includePath))
 					{
-						if (!LoadFileAsString(includePath, *output))
+						std::string fullPath = ExtractPath(GetPath());
+						fullPath += '/';
+						fullPath += includePath;
+						if (!LoadFileAsString(fullPath, *output))
 						{
-							Error("Shader include ( %s ) failed to load.", includePath);
+							Error("Shader include ( %s ) failed to load.", fullPath.c_str());
 							return false;
 						}
 					}

@@ -428,7 +428,7 @@ namespace gem
 
 	Texture& TextureList::operator[](unsigned unit)
 	{
-		auto textureSlot = std::find_if(textureSlots.begin(), textureSlots.end(), [unit](TextureSlot& slot) {
+		auto textureSlot = std::find_if(textureSlots.begin(), textureSlots.end(), [unit](const TextureSlot& slot) {
 			return slot.unit == unit;
 		});
 
@@ -461,7 +461,7 @@ namespace gem
 		if (data == nullptr)
 		{
 			Error("Texture: ( %s )\n%s", file.data(), SOIL_last_result());
-			return RawImage(0, 0, TextureFormat::RGB_8, nullptr);
+			return { 0, 0, TextureFormat::RGB_8, nullptr };
 		}
 
 		// Invert the Y axis for OpenGL texture addressing.
@@ -472,16 +472,16 @@ namespace gem
 
 		if (numChannels == 3)
 		{
-			return RawImage(width, height, sRGB ? TextureFormat::sRGB_8 : TextureFormat::RGB_8, data);
+			return { width, height, sRGB ? TextureFormat::sRGB_8 : TextureFormat::RGB_8, data };
 		}
 		else if (numChannels == 4)
 		{
-			return RawImage(width, height, sRGB ? TextureFormat::sRGBA_8 : TextureFormat::RGBA_8, data);
+			return { width, height, sRGB ? TextureFormat::sRGBA_8 : TextureFormat::RGBA_8, data };
 		}
 		else
 		{
 			Error("Texture: ( %s )\nUnsupported format. Must have 3 or 4 color channels.", file.data());
-			return RawImage(0, 0, TextureFormat::RGB_8, nullptr);
+			return { 0, 0, TextureFormat::RGB_8, nullptr };
 		}
 	}
 

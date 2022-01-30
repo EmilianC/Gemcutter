@@ -11,8 +11,8 @@ namespace gem
 		}
 
 		DelegateBase::DelegateBase(DelegateBase&& other)
+			: controlBlock(std::move(other.controlBlock))
 		{
-			controlBlock = std::move(other.controlBlock);
 			controlBlock->delegate = this;
 		}
 

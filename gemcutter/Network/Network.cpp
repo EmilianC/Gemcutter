@@ -191,9 +191,7 @@ namespace gem
 	{
 		ASSERT(!isConnected, "Network is already connected.");
 
-		auto TempSock = static_cast<SOCKET>(SOCKET_ERROR);
-
-		TempSock = accept(socketId, NULL, NULL);
+		SOCKET TempSock = accept(socketId, NULL, NULL);
 		if (TempSock == SOCKET_ERROR)
 		{
 			return false;

@@ -249,14 +249,14 @@ namespace gem
 		if (path.empty())
 		{
 			Error("FileSystem: Cannot process an empty string.");
-			return std::string();
+			return {};
 		}
 
 		char result[_MAX_FNAME] = { '\0' };
 		if (_splitpath_s(path.data(), nullptr, 0, nullptr, 0, result, _MAX_FNAME, nullptr, 0) != SUCCESS)
 		{
 			Error("FileSystem: Invalid path.");
-			return std::string();
+			return {};
 		}
 
 		return result;
@@ -267,14 +267,14 @@ namespace gem
 		if (path.empty())
 		{
 			Error("FileSystem: Cannot process an empty string.");
-			return std::string();
+			return {};
 		}
 
 		char result[_MAX_EXT] = { '\0' };
 		if (_splitpath_s(path.data(), nullptr, 0, nullptr, 0, nullptr, 0, result, _MAX_EXT) != SUCCESS)
 		{
 			Error("FileSystem: Invalid path.");
-			return std::string();
+			return {};
 		}
 
 		return result;
@@ -346,14 +346,14 @@ namespace gem
 		if (buffer.empty())
 		{
 			// Buffer mode
-			return std::string(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
+			return { std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>() };
 		}
 		else
 		{
 			// Stream mode
 			if (currentPos >= buffer.size())
 			{
-				return std::string();
+				return {};
 			}
 
 			return buffer.substr(currentPos);

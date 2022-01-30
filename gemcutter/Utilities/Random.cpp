@@ -63,7 +63,7 @@ namespace gem
 	Range Range::Deviation(float value, float deviation)
 	{
 		float halfRange = deviation * 0.5f;
-		return Range(value - halfRange, value + halfRange);
+		return { value - halfRange, value + halfRange };
 	}
 
 	float Range::Random() const

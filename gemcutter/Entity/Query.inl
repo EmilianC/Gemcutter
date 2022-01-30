@@ -21,7 +21,7 @@ namespace gem
 		template<class SourcePtr, class Target, bool UseDynamicCast = false>
 		class SafeIterator
 		{
-			using Iterator          = typename std::vector<SourcePtr>::iterator;
+			using Iterator          = std::vector<SourcePtr>::iterator;
 		public:
 			using iterator_category = std::forward_iterator_tag;
 			using value_type        = Target&;
@@ -266,7 +266,7 @@ namespace gem
 		static_assert(Meta::all_of_v<std::is_base_of_v<ComponentBase, Args>...>,
 			"All template arguments must be either Components or Tags.");
 
-		static_assert(Meta::all_of_v<std::is_same_v<Args, typename Args::StaticComponentType>...>,
+		static_assert(Meta::all_of_v<std::is_same_v<Args, Args::StaticComponentType>...>,
 			"Only a direct inheritor from Component<> can be used in a With<>() query. Use All<>() instead.");
 
 		using namespace detail;

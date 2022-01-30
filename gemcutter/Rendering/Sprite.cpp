@@ -4,24 +4,24 @@
 
 namespace gem
 {
-	Sprite::Sprite(Entity& owner)
-		: Renderable(owner, Primitives.GetQuadArray())
+	Sprite::Sprite(Entity& _owner)
+		: Renderable(_owner, Primitives.GetQuadArray())
 	{
 	}
 
-	Sprite::Sprite(Entity& owner, Material::Ptr material)
-		: Renderable(owner, Primitives.GetQuadArray(), std::move(material))
+	Sprite::Sprite(Entity& _owner, Material::Ptr material)
+		: Renderable(_owner, Primitives.GetQuadArray(), std::move(material))
 	{
 	}
 
-	Sprite::Sprite(Entity& owner, Alignment pivot)
-		: Renderable(owner, Primitives.GetQuadArray())
+	Sprite::Sprite(Entity& _owner, Alignment pivot)
+		: Renderable(_owner, Primitives.GetQuadArray())
 	{
 		SetAlignment(pivot);
 	}
 
-	Sprite::Sprite(Entity& owner, Alignment pivot, bool billBoard, Material::Ptr material)
-		: Renderable(owner, Primitives.GetQuadArray(), std::move(material))
+	Sprite::Sprite(Entity& _owner, Alignment pivot, bool billBoard, Material::Ptr material)
+		: Renderable(_owner, Primitives.GetQuadArray(), std::move(material))
 	{
 		SetAlignment(pivot);
 		SetBillBoarded(billBoard);

@@ -55,13 +55,14 @@ namespace gem
 		buffer = VertexBuffer::MakeNew(TotalBufferSize(), VertexBufferUsage::Dynamic, VertexBufferType::Data);
 
 		// Position attribute is always used.
-		VertexStream stream;
-		stream.buffer = buffer;
-		stream.bindingUnit = 0;
-		stream.format = VertexFormat::Vec3;
-		stream.normalized = false;
-		stream.startOffset = 0;
-		stream.stride = 0;
+		VertexStream stream {
+			.buffer      = buffer,
+			.bindingUnit = 0,
+			.format      = VertexFormat::Vec3,
+			.normalized  = false,
+			.startOffset = 0,
+			.stride      = 0
+		};
 
 		array->AddStream(stream);
 

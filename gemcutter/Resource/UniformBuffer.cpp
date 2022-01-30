@@ -30,6 +30,9 @@ namespace gem
 
 	UniformBuffer& UniformBuffer::operator=(const UniformBuffer& other)
 	{
+		if (this == &other)
+			return *this;
+
 		UnLoad();
 
 		table = other.table;
@@ -266,7 +269,7 @@ namespace gem
 
 	UniformBuffer& BufferList::operator[](unsigned unit)
 	{
-		auto bufferSlot = std::find_if(buffers.begin(), buffers.end(), [unit](BufferSlot& slot) {
+		auto bufferSlot = std::find_if(buffers.begin(), buffers.end(), [unit](const BufferSlot& slot) {
 			return slot.unit == unit;
 		});
 
@@ -320,7 +323,7 @@ namespace gem
 
 		const vec4* data = reinterpret_cast<vec4*>(static_cast<char*>(uniformBuffer->buffer) + offset);
 
-		return mat2(data[0].x, data[0].y, data[1].x, data[1].y);
+		return { data[0].x, data[0].y, data[1].x, data[1].y };
 	}
 
 	template<>

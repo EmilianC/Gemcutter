@@ -88,6 +88,9 @@ namespace gem
 
 	RenderPass& RenderPass::operator=(const RenderPass& other)
 	{
+		if (this == &other)
+			return *this;
+
 		viewport = other.viewport;
 		camera = other.camera;
 		target = other.target;

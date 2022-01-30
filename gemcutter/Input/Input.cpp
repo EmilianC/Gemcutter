@@ -59,7 +59,7 @@ namespace gem
 
 	vec2 InputSingleton::GetMousePos() const
 	{
-		return vec2(static_cast<float>(x), static_cast<float>(y));
+		return { static_cast<float>(x), static_cast<float>(y) };
 	}
 
 	void InputSingleton::SetMousePos(int posX, int posY, bool emitEvent)

@@ -1,7 +1,6 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
 #include "gemcutter/Application/FileSystem.h"
-#include "gemcutter/Application/Logging.h"
 #include "gemcutter/Utilities/Container.h"
 #include "gemcutter/Utilities/String.h"
 

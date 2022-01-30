@@ -246,12 +246,12 @@ namespace gem
 
 	vec2 mat2::GetRight() const
 	{
-		return vec2(data[RightX], data[RightY]);
+		return { data[RightX], data[RightY] };
 	}
 
 	vec2 mat2::GetUp() const
 	{
-		return vec2(data[UpX], data[UpY]);
+		return { data[UpX], data[UpY] };
 	}
 
 	const mat3 mat3::Identity = mat3();
@@ -656,17 +656,17 @@ namespace gem
 
 	vec3 mat3::GetRight() const
 	{
-		return vec3(data[RightX], data[RightY], data[RightZ]);
+		return { data[RightX], data[RightY], data[RightZ] };
 	}
 
 	vec3 mat3::GetUp() const
 	{
-		return vec3(data[UpX], data[UpY], data[UpZ]);
+		return { data[UpX], data[UpY], data[UpZ] };
 	}
 
 	vec3 mat3::GetForward() const
 	{
-		return vec3(data[ForwardX], data[ForwardY], data[ForwardZ]);
+		return { data[ForwardX], data[ForwardY], data[ForwardZ] };
 	}
 
 	mat3 mat3::LookAt(const vec3& forward, const vec3& upAnchor)
@@ -674,7 +674,7 @@ namespace gem
 		const vec3 right = Normalize(Cross(forward, upAnchor));
 		const vec3 up = Cross(right, forward);
 
-		return mat3(right, up, -forward);
+		return { right, up, -forward };
 	}
 
 	const mat4 mat4::Identity = mat4();
@@ -1346,22 +1346,22 @@ namespace gem
 
 	vec3 mat4::GetRight() const
 	{
-		return vec3(data[RightX], data[RightY], data[RightZ]);
+		return { data[RightX], data[RightY], data[RightZ] };
 	}
 
 	vec3 mat4::GetUp() const
 	{
-		return vec3(data[UpX], data[UpY], data[UpZ]);
+		return { data[UpX], data[UpY], data[UpZ] };
 	}
 
 	vec3 mat4::GetForward() const
 	{
-		return vec3(data[ForwardX], data[ForwardY], data[ForwardZ]);
+		return { data[ForwardX], data[ForwardY], data[ForwardZ] };
 	}
 
 	vec3 mat4::GetTranslation() const
 	{
-		return vec3(data[TransX], data[TransY], data[TransZ]);
+		return { data[TransX], data[TransY], data[TransZ] };
 	}
 
 	void mat4::Translate(const vec3& translation)
@@ -1489,6 +1489,6 @@ namespace gem
 		const vec3 right = Normalize(Cross(forward, upAnchor));
 		const vec3 up = Cross(right, forward);
 
-		return mat4(right, up, -forward, position);
+		return { right, up, -forward, position };
 	}
 }

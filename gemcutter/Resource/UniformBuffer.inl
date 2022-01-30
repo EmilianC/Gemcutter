@@ -52,7 +52,7 @@ namespace gem
 
 		void* dest = GetBufferLoc(name);
 		ASSERT(dest, "Could not find uniform parameter ( %s ).", name.data());
-		ASSERT(reinterpret_cast<char*>(dest) + sizeof(T) * numElements <= static_cast<char*>(buffer) + bufferSize,
+		ASSERT(static_cast<char*>(dest) + sizeof(T) * numElements <= static_cast<char*>(buffer) + bufferSize,
 			"Setting uniform ( %s ) out of bounds of the buffer.", name.data());
 
 		memcpy(dest, data, sizeof(T) * numElements);

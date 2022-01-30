@@ -454,19 +454,21 @@ namespace gem
 		{
 			auto buffer = VertexBuffer::MakeNew(sizeof(quad_Data), quad_Data, VertexBufferUsage::Static, VertexBufferType::Data);
 
-			VertexStream streamPos;
-			streamPos.buffer      = buffer;
-			streamPos.bindingUnit = 0;
-			streamPos.format      = VertexFormat::Vec3;
-			streamPos.startOffset = 0;
-			streamPos.stride      = sizeof(float) * 5;
+			VertexStream streamPos {
+				.buffer      = buffer,
+				.bindingUnit = 0,
+				.format      = VertexFormat::Vec3,
+				.startOffset = 0,
+				.stride      = sizeof(float) * 5
+			};
 
-			VertexStream streamUv;
-			streamUv.buffer      = std::move(buffer);
-			streamUv.bindingUnit = 1;
-			streamUv.format      = VertexFormat::Vec2;
-			streamUv.startOffset = sizeof(float) * 3;
-			streamUv.stride      = sizeof(float) * 5;
+			VertexStream streamUv {
+				.buffer      = std::move(buffer),
+				.bindingUnit = 1,
+				.format      = VertexFormat::Vec2,
+				.startOffset = sizeof(float) * 3,
+				.stride      = sizeof(float) * 5
+			};
 
 			quadArray = VertexArray::MakeNew();
 			quadArray->AddStream(std::move(streamPos));
@@ -477,19 +479,21 @@ namespace gem
 		{
 			auto buffer = VertexBuffer::MakeNew(sizeof(unitQuad_Data), unitQuad_Data, VertexBufferUsage::Static, VertexBufferType::Data);
 
-			VertexStream streamPos;
-			streamPos.buffer      = buffer;
-			streamPos.bindingUnit = 0;
-			streamPos.format      = VertexFormat::Vec3;
-			streamPos.startOffset = 0;
-			streamPos.stride      = sizeof(float) * 5;
+			VertexStream streamPos {
+				.buffer      = buffer,
+				.bindingUnit = 0,
+				.format      = VertexFormat::Vec3,
+				.startOffset = 0,
+				.stride      = sizeof(float) * 5
+			};
 
-			VertexStream streamUv;
-			streamUv.buffer      = std::move(buffer);
-			streamUv.bindingUnit = 1;
-			streamUv.format      = VertexFormat::Vec2;
-			streamUv.startOffset = sizeof(float) * 3;
-			streamUv.stride      = sizeof(float) * 5;
+			VertexStream streamUv {
+				.buffer      = std::move(buffer),
+				.bindingUnit = 1,
+				.format      = VertexFormat::Vec2,
+				.startOffset = sizeof(float) * 3,
+				.stride      = sizeof(float) * 5
+			};
 
 			unitQuadArray = VertexArray::MakeNew();
 			unitQuadArray->AddStream(std::move(streamPos));
@@ -500,9 +504,10 @@ namespace gem
 		{
 			auto buffer = VertexBuffer::MakeNew(sizeof(unitCube_Data), unitCube_Data, VertexBufferUsage::Static, VertexBufferType::Data);
 
-			VertexStream streamPos;
-			streamPos.buffer = std::move(buffer);
-			streamPos.format = VertexFormat::Vec3;
+			VertexStream streamPos {
+				.buffer = std::move(buffer),
+				.format = VertexFormat::Vec3
+			};
 
 			unitCubeArray = VertexArray::MakeNew();
 			unitCubeArray->AddStream(std::move(streamPos));

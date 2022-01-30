@@ -16,8 +16,8 @@ namespace gem
 		sprite->SetMaterial(std::move(material));
 	}
 
-	Image::Image(Entity& owner, Texture::Ptr texture)
-		: Image(owner)
+	Image::Image(Entity& _owner, Texture::Ptr texture)
+		: Image(_owner)
 	{
 		sprite->GetMaterial().textures.Add(std::move(texture));
 	}
