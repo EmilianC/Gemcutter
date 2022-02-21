@@ -8,7 +8,7 @@
 namespace
 {
 	// Resolves Left/Right virtual key codes for Shift/Control/Alt.
-	WPARAM MapLeftRightKeys(WPARAM vk, LPARAM lParam)
+	constexpr WPARAM MapLeftRightKeys(WPARAM vk, LPARAM lParam)
 	{
 		WPARAM new_vk = vk;
 		UINT scancode = (lParam & 0x00ff0000) >> 16;

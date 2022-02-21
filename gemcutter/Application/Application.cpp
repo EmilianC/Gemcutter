@@ -51,7 +51,7 @@ namespace
 	unsigned glMajorVersion = 3;
 	unsigned glMinorVersion = 3;
 
-	LONG GetStyle(bool fullScreen, bool bordered, bool resizable)
+	constexpr LONG GetStyle(bool fullScreen, bool bordered, bool resizable)
 	{
 		if (bordered && !fullScreen)
 		{

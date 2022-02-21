@@ -12,7 +12,7 @@ namespace
 {
 	GLenum* drawBuffers = nullptr;
 
-	unsigned ResolvePixelFormat(gem::TextureFormat format)
+	constexpr unsigned ResolvePixelFormat(gem::TextureFormat format)
 	{
 		// Although undocumented, these seem to be the correct values expected by glReadPixels.
 		const unsigned resolve[] = {

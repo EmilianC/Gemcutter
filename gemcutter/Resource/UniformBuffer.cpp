@@ -9,7 +9,7 @@
 namespace
 {
 	// Rounds val up to the nearest multiple.
-	unsigned round(unsigned val, unsigned multiple)
+	constexpr unsigned round(unsigned val, unsigned multiple)
 	{
 		unsigned remainder = val % multiple;
 		if (remainder != 0)

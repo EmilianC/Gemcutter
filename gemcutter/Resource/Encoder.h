@@ -90,7 +90,7 @@ namespace gem
 		// Parses the command line arguments of the program and invokes the user-provided Encoder.
 		static bool RunEncoder(Encoder& encoder)
 		{
-			constexpr std::string_view usage =
+			static constexpr std::string_view usage =
 				"Gemcutter asset Encoder.\nUsage:\n"
 				"  Encoder.exe -update -src <file>\n"
 				"  Encoder.exe -pack -src <file> -dest <folder>\n"
