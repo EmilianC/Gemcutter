@@ -1,6 +1,6 @@
 /*
  * Dirent interface for Microsoft Visual Studio
- * Version 1.23.1
+ * Version 1.23.2
  *
  * Copyright (C) 2006-2012 Toni Ronkko
  * This file is part of dirent.  Dirent may be freely distributed
@@ -621,7 +621,7 @@ dirent_first(
 /*
  * Get next directory entry (internal).
  *
- * Returns 
+ * Returns
  */
 static WIN32_FIND_DATAW*
 dirent_next(
@@ -664,7 +664,7 @@ dirent_next(
  */
 static DIR*
 opendir(
-    const char *dirname) 
+    const char *dirname)
 {
     struct DIR *dirp;
     int error;
@@ -1157,4 +1157,3 @@ dirent_set_errno(
 }
 #endif
 #endif /*DIRENT_H*/
-
