@@ -553,7 +553,7 @@ namespace gem
 				switch (block.type)
 				{
 				case BlockType::Attributes:
-					if (block.source.find("#", block.start, block.end - block.start) != std::string::npos)
+					if (memchr(block.source.data() + block.start, '#', block.end - block.start) != nullptr)
 					{
 						Error("Preprocessor use is not allowed inside of Attribute blocks.");
 						Unload();
@@ -566,8 +566,9 @@ namespace gem
 						return false;
 					}
 					break;
+
 				case BlockType::Uniforms:
-					if (block.source.find("#", block.start, block.end - block.start) != std::string::npos)
+					if (memchr(block.source.data() + block.start, '#', block.end - block.start) != nullptr)
 					{
 						Error("Preprocessor use is not allowed inside of Uniform blocks.");
 						Unload();
@@ -580,8 +581,9 @@ namespace gem
 						return false;
 					}
 					break;
+
 				case BlockType::Samplers:
-					if (block.source.find("#", block.start, block.end - block.start) != std::string::npos)
+					if (memchr(block.source.data() + block.start, '#', block.end - block.start) != nullptr)
 					{
 						Error("Preprocessor use is not allowed inside of Sampler blocks.");
 						Unload();
@@ -594,6 +596,7 @@ namespace gem
 						return false;
 					}
 					break;
+
 				case BlockType::Vertex:
 				case BlockType::Geometry:
 				case BlockType::Fragment:
