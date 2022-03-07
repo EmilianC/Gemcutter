@@ -7,55 +7,55 @@ TEST_CASE("Metaprogramming")
 {
 	SECTION("all_of")
 	{
-		CHECK(Meta::all_of_v<>);
+		CHECK(meta::all_of_v<>);
 
-		CHECK(Meta::all_of_v<true>);
-		CHECK(Meta::all_of_v<true, true>);
-		CHECK(Meta::all_of_v<true, true, true>);
+		CHECK(meta::all_of_v<true>);
+		CHECK(meta::all_of_v<true, true>);
+		CHECK(meta::all_of_v<true, true, true>);
 
-		CHECK(!Meta::all_of_v<false>);
-		CHECK(!Meta::all_of_v<false, false>);
-		CHECK(!Meta::all_of_v<false, false, false>);
+		CHECK(!meta::all_of_v<false>);
+		CHECK(!meta::all_of_v<false, false>);
+		CHECK(!meta::all_of_v<false, false, false>);
 
-		CHECK(!Meta::all_of_v<false>);
-		CHECK(!Meta::all_of_v<false, true>);
-		CHECK(!Meta::all_of_v<true, false>);
-		CHECK(!Meta::all_of_v<true, true, false>);
+		CHECK(!meta::all_of_v<false>);
+		CHECK(!meta::all_of_v<false, true>);
+		CHECK(!meta::all_of_v<true, false>);
+		CHECK(!meta::all_of_v<true, true, false>);
 	}
 
 	SECTION("any_of")
 	{
-		CHECK(!Meta::any_of_v<>);
+		CHECK(!meta::any_of_v<>);
 
-		CHECK(Meta::any_of_v<true>);
-		CHECK(Meta::any_of_v<true, true>);
-		CHECK(Meta::any_of_v<true, true, true>);
+		CHECK(meta::any_of_v<true>);
+		CHECK(meta::any_of_v<true, true>);
+		CHECK(meta::any_of_v<true, true, true>);
 
-		CHECK(!Meta::any_of_v<false>);
-		CHECK(!Meta::any_of_v<false, false>);
-		CHECK(!Meta::any_of_v<false, false, false>);
+		CHECK(!meta::any_of_v<false>);
+		CHECK(!meta::any_of_v<false, false>);
+		CHECK(!meta::any_of_v<false, false, false>);
 
-		CHECK(!Meta::any_of_v<false>);
-		CHECK(Meta::any_of_v<false, true>);
-		CHECK(Meta::any_of_v<true, false>);
-		CHECK(Meta::any_of_v<true, true, false>);
+		CHECK(!meta::any_of_v<false>);
+		CHECK(meta::any_of_v<false, true>);
+		CHECK(meta::any_of_v<true, false>);
+		CHECK(meta::any_of_v<true, true, false>);
 	}
 
 	SECTION("none_of")
 	{
-		CHECK(Meta::none_of_v<>);
+		CHECK(meta::none_of_v<>);
 
-		CHECK(!Meta::none_of_v<true>);
-		CHECK(!Meta::none_of_v<true, true>);
-		CHECK(!Meta::none_of_v<true, true, true>);
+		CHECK(!meta::none_of_v<true>);
+		CHECK(!meta::none_of_v<true, true>);
+		CHECK(!meta::none_of_v<true, true, true>);
 
-		CHECK(Meta::none_of_v<false>);
-		CHECK(Meta::none_of_v<false, false>);
-		CHECK(Meta::none_of_v<false, false, false>);
+		CHECK(meta::none_of_v<false>);
+		CHECK(meta::none_of_v<false, false>);
+		CHECK(meta::none_of_v<false, false, false>);
 
-		CHECK(Meta::none_of_v<false>);
-		CHECK(!Meta::none_of_v<false, true>);
-		CHECK(!Meta::none_of_v<true, false>);
-		CHECK(!Meta::none_of_v<true, true, false>);
+		CHECK(meta::none_of_v<false>);
+		CHECK(!meta::none_of_v<false, true>);
+		CHECK(!meta::none_of_v<true, false>);
+		CHECK(!meta::none_of_v<true, true, false>);
 	}
 }

@@ -132,7 +132,7 @@ namespace gem
 	void Entity::Tag()
 	{
 		static_assert(sizeof...(Args), "Must have at least one template argument.");
-		static_assert(Meta::all_of_v<std::is_base_of_v<TagBase, Args>...>, "Template arguments must inherit from Tag.");
+		static_assert(meta::all_of_v<std::is_base_of_v<TagBase, Args>...>, "Template arguments must inherit from Tag.");
 
 		( [this]() {
 			if (!Has<Args>())
