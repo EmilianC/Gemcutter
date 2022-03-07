@@ -102,6 +102,10 @@ namespace gem::meta
 		return detail::HashCRC(str, detail::StrLen(str));
 	}
 
+	// Forces compile-time evaluation of the given expression.
+	// Can be used to wrap calls to constexpr functions.
+	consteval auto as_consteval(auto value) { return value; }
+
 	// Used for compile-time in-place strings for use as template parameters.
 	// STRING("...") will generate a strongly typed and constexpr string up to 64 max length.
 	// Sized macros are available to select more specific lengths, up to 128.
