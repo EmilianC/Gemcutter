@@ -174,10 +174,10 @@ namespace gem
 	[[nodiscard]] vec3 Clamp(const vec3& vec, const vec3& min, const vec3& max);
 	[[nodiscard]] vec4 Clamp(const vec4& vec, const vec4& min, const vec4& max);
 
-	vec2 operator*(float, const vec2&);
-	vec2 operator/(float, const vec2&);
-	vec3 operator*(float, const vec3&);
-	vec3 operator/(float, const vec3&);
-	vec4 operator*(float, const vec4&);
-	vec4 operator/(float, const vec4&);
+	[[nodiscard]] vec2 operator*(float, const vec2&);
+	[[nodiscard]] vec2 operator/(float, const vec2&);
+	[[nodiscard]] vec3 operator*(float, const vec3&);
+	[[nodiscard]] vec3 operator/(float, const vec3&);
+	[[nodiscard]] vec4 operator*(float, const vec4&);
+	[[nodiscard]] vec4 operator/(float, const vec4&);
 }

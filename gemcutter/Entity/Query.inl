@@ -237,7 +237,7 @@ namespace gem
 	// Returns an enumerable range of all enabled Components of the specified type.
 	// By providing you the Component directly you don't have to waste time calling Entity.Get<>().
 	// This is a faster option than With<>() but it only allows you to specify a single Component type.
-	template<class Component>
+	template<class Component> [[nodiscard]]
 	auto All()
 	{
 		static_assert(std::is_base_of_v<ComponentBase, Component>,
@@ -257,7 +257,7 @@ namespace gem
 	// Disabled Components and Components belonging to disabled Entities are not considered.
 	// * Adding/Removing Components or Tags of the queried types will invalidate the returned Range *
 	// For this reason, you must not do this until after you are finished using the Range.
-	template<typename... Args>
+	template<typename... Args> [[nodiscard]]
 	auto With()
 	{
 		static_assert(sizeof...(Args),
@@ -279,7 +279,7 @@ namespace gem
 	// Disabled Components and Components belonging to disabled Entities are not considered.
 	// Unlike With<>(), adding or removing Components/Tags of the queried type will NOT invalidate the returned Range.
 	// * This should only be used if necessary, as it is much slower than using With<>() *
-	template<typename Arg1, typename... Args>
+	template<typename Arg1, typename... Args> [[nodiscard]]
 	std::vector<Entity::Ptr> CaptureWith()
 	{
 		std::vector<Entity::Ptr> result;
@@ -299,7 +299,7 @@ namespace gem
 
 	// Returns the raw vector container of the specified Component.
 	// This can be useful in special cases when you need custom iterator logic.
-	template<class Component>
+	template<class Component> [[nodiscard]]
 	std::vector<ComponentBase*>& GetComponentIndex()
 	{
 		using namespace detail;
