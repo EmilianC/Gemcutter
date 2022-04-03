@@ -33,7 +33,7 @@ namespace gem
 			{
 				const Rectangle& bounds = GetAbsoluteBounds();
 				const vec2 mousePos = Input.GetMousePos();
-				if (!bounds.IsPointInside(mousePos.x, mousePos.y))
+				if (!bounds.Contains(mousePos))
 				{
 					SetState(State::Idle);
 					return true;
@@ -91,7 +91,7 @@ namespace gem
 	{
 		const Rectangle& bounds = GetAbsoluteBounds();
 		const vec2 mousePos = Input.GetMousePos();
-		const bool isInside = bounds.IsPointInside(mousePos.x, mousePos.y);
+		const bool isInside = bounds.Contains(mousePos);
 
 		if (state == State::Pressed)
 		{
