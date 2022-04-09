@@ -26,8 +26,8 @@ namespace gem
 		Range() = default;
 		Range(float min, float max);
 
-		// Potential range is 'value' +- half the 'deviation'.
-		static Range Deviation(float value, float deviation);
+		// Potential range is the 'value' +/- half the 'deviation'.
+		[[nodiscard]] static Range Deviation(float value, float deviation);
 
 		float Random() const;
 		void Set(float min, float max);

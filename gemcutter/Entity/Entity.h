@@ -159,9 +159,9 @@ namespace gem
 		bool IsEnabled() const;
 
 		// Creates and returns a new Entity with a Hierarchy component.
-		static Entity::Ptr MakeNewRoot();
-		static Entity::Ptr MakeNewRoot(std::string name);
-		static Entity::Ptr MakeNewRoot(const Transform& pose);
+		[[nodiscard]] static Entity::Ptr MakeNewRoot();
+		[[nodiscard]] static Entity::Ptr MakeNewRoot(std::string name);
+		[[nodiscard]] static Entity::Ptr MakeNewRoot(const Transform& pose);
 
 		// Returns the full world-space transformation of the Entity
 		// accumulated from the root of the hierarchy, if there is one.
@@ -203,12 +203,12 @@ namespace gem
 		bool isEnabled = true;
 	};
 
-	bool operator==(const Entity&, const Entity&);
-	bool operator==(const Entity&, const Entity::Ptr&);
-	bool operator==(const Entity::Ptr&, const Entity&);
-	bool operator!=(const Entity&, const Entity&);
-	bool operator!=(const Entity&, const Entity::Ptr&);
-	bool operator!=(const Entity::Ptr&, const Entity&);
+	[[nodiscard]] bool operator==(const Entity&, const Entity&);
+	[[nodiscard]] bool operator==(const Entity&, const Entity::Ptr&);
+	[[nodiscard]] bool operator==(const Entity::Ptr&, const Entity&);
+	[[nodiscard]] bool operator!=(const Entity&, const Entity&);
+	[[nodiscard]] bool operator!=(const Entity&, const Entity::Ptr&);
+	[[nodiscard]] bool operator!=(const Entity::Ptr&, const Entity&);
 }
 
 #include "Query.inl"

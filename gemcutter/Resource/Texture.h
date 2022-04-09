@@ -115,7 +115,7 @@ namespace gem
 		~RawImage();
 
 		// Loads *.png, *.jpg, *.tga, and *.bmp.
-		static RawImage Load(std::string_view file, bool flipY, bool sRGB);
+		[[nodiscard]] static RawImage Load(std::string_view file, bool flipY, bool sRGB);
 
 		const int width;
 		const int height;
