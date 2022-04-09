@@ -24,6 +24,28 @@ TEST_CASE("String")
 		CHECK(input == "//Comment1"
 			"inttemp=10;"
 			"/*Comment2*/");
+
+		std::string str = " \t\n\n  TEMP string value... \t\n ";
+
+		TrimStart(str);
+		CHECK(str == "TEMP string value... \t\n ");
+
+		TrimEnd(str);
+		CHECK(str == "TEMP string value...");
+
+		TrimStart(str);
+		CHECK(str == "TEMP string value...");
+
+		TrimEnd(str);
+		CHECK(str == "TEMP string value...");
+
+		str = {};
+		TrimStart(str);
+		CHECK(str == "");
+
+		str = {};
+		TrimEnd(str);
+		CHECK(str == "");
 	}
 
 	SECTION("Remove Redundant Whitespace")
@@ -47,8 +69,8 @@ TEST_CASE("String")
 	SECTION("ToLowercase")
 	{
 		std::string str = "TEMP !@#$%^&*()-= temp";
-		ToLowercase(str);
 
+		ToLowercase(str);
 		CHECK(str == "temp !@#$%^&*()-= temp");
 	}
 }

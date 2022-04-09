@@ -12,6 +12,24 @@ namespace
 
 namespace gem
 {
+	void TrimStart(std::string& str)
+	{
+		auto firstChar = std::find_if(str.begin(), str.end(), [](unsigned char ch) {
+			return !std::isspace(ch);
+		});
+
+		str.erase(str.begin(), firstChar);
+	}
+
+	void TrimEnd(std::string& str)
+	{
+		auto lastChar = std::find_if(str.rbegin(), str.rend(), [](unsigned char ch) {
+			return !std::isspace(ch);
+		}).base();
+
+		str.erase(lastChar, str.end());
+	}
+
 	void RemoveWhitespace(std::string& str)
 	{
 		std::erase_if(str, [](char x) {

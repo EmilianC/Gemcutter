@@ -6,6 +6,12 @@
 
 namespace gem
 {
+	// Removes all whitespace characters from the start of the string.
+	void TrimStart(std::string& str);
+
+	// Removes all whitespace characters from the end of the string.
+	void TrimEnd(std::string& str);
+
 	// Remove all instances of whitespace from the string.
 	void RemoveWhitespace(std::string& str);
 
