@@ -1,10 +1,10 @@
 // Copyright (c) 2021 Emilian Cioca
 #pragma once
 
-struct vec2;
-
 namespace gem
 {
+	struct vec2;
+
 	struct Rectangle
 	{
 		Rectangle() = default;
