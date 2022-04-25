@@ -30,6 +30,45 @@ namespace gem
 		str.erase(lastChar, str.end());
 	}
 
+	void ReplaceFirst(std::string& str, std::string_view from, std::string_view to)
+	{
+		if (from.empty())
+			return;
+
+		size_t pos = str.find(from);
+		if (pos == std::string::npos)
+			return;
+
+		str.replace(pos, from.size(), to);
+	}
+
+	void ReplaceLast(std::string& str, std::string_view from, std::string_view to)
+	{
+		if (from.empty())
+			return;
+
+		size_t pos = str.rfind(from);
+		if (pos == std::string::npos)
+			return;
+
+		str.replace(pos, from.size(), to);
+	}
+
+	void ReplaceAll(std::string& str, std::string_view from, std::string_view to)
+	{
+		if (from.empty())
+			return;
+
+		size_t pos = str.find(from);
+		while (pos != std::string::npos)
+		{
+			str.replace(pos, from.size(), to);
+			pos += to.size();
+
+			pos = str.find(from, pos);
+		}
+	}
+
 	void RemoveWhitespace(std::string& str)
 	{
 		std::erase_if(str, [](char x) {

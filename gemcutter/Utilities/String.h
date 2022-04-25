@@ -12,6 +12,15 @@ namespace gem
 	// Removes all whitespace characters from the end of the string.
 	void TrimEnd(std::string& str);
 
+	// Replaces the first occurrence of "from" in the source string with "to". Case sensitive.
+	void ReplaceFirst(std::string& str, std::string_view from, std::string_view to);
+
+	// Replaces the last occurrence of "from" in the source string with "to". Case sensitive.
+	void ReplaceLast(std::string& str, std::string_view from, std::string_view to);
+
+	// Replaces all occurrences of "from" in the source string with "to". Case sensitive.
+	void ReplaceAll(std::string& str, std::string_view from, std::string_view to);
+
 	// Remove all instances of whitespace from the string.
 	void RemoveWhitespace(std::string& str);
 
