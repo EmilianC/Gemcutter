@@ -41,6 +41,9 @@ namespace gem
 	// Deletes the specified file.
 	bool RemoveFile(std::string_view file);
 
+	// Copies the specified source file to the destination. The destination should include the filename and extension.
+	bool CopyFile(std::string_view source, std::string_view destination, bool overwrite);
+
 	// Attempts to create the specified directory. Returns true on success.
 	bool MakeDirectory(std::string_view directory);
 

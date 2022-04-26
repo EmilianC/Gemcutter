@@ -9,9 +9,10 @@
 
 #define SUCCESS 0
 
-// Resolve name conflict with our functions.
+// Resolve name conflicts with our functions.
 #undef GetCurrentDirectory
 #undef SetCurrentDirectory
+#undef CopyFile
 
 namespace
 {
@@ -125,6 +126,16 @@ namespace gem
 	bool RemoveFile(std::string_view file)
 	{
 		return DeleteFile(file.data()) == TRUE;
+	}
+
+	bool CopyFile(std::string_view source, std::string_view destination, bool overwrite)
+	{
+		if (!MakeDirectory(ExtractPath(destination)))
+		{
+			return false;
+		}
+
+		return CopyFileA(source.data(), destination.data(), !overwrite);
 	}
 
 	bool MakeDirectory(std::string_view directory)
