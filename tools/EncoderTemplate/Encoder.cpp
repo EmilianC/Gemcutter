@@ -11,7 +11,7 @@ gem::ConfigTable Encoder::GetDefault() const
 {
 	gem::ConfigTable defaultConfig;
 
-	defaultConfig.SetValue("version", CURRENT_VERSION);
+	defaultConfig.SetInt("version", CURRENT_VERSION);
 	// Any default values for a new asset can be added to metadata here.
 
 	return defaultConfig;

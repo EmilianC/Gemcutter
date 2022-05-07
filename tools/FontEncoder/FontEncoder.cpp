@@ -24,10 +24,10 @@ gem::ConfigTable FontEncoder::GetDefault() const
 {
 	gem::ConfigTable defaultConfig;
 
-	defaultConfig.SetValue("version", CURRENT_VERSION);
-	defaultConfig.SetValue("width", 64);
-	defaultConfig.SetValue("height", 64);
-	defaultConfig.SetValue("texture_filter", "bilinear");
+	defaultConfig.SetInt("version", CURRENT_VERSION);
+	defaultConfig.SetInt("width", 64);
+	defaultConfig.SetInt("height", 64);
+	defaultConfig.SetString("texture_filter", "bilinear");
 
 	return defaultConfig;
 }
@@ -276,7 +276,7 @@ bool FontEncoder::Upgrade(gem::ConfigTable& metadata, unsigned loadedVersion) co
 	{
 	case 1:
 		// Added texture_filter field.
-		metadata.SetValue("texture_filter", "bilinear");
+		metadata.SetString("texture_filter", "bilinear");
 		break;
 	}
 

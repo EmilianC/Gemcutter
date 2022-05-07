@@ -74,7 +74,7 @@ namespace gem
 					}
 
 					currentVersion++;
-					metadata.SetValue("version", static_cast<int>(currentVersion));
+					metadata.SetInt("version", static_cast<int>(currentVersion));
 				}
 			}
 

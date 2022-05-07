@@ -14,13 +14,13 @@ gem::ConfigTable TextureEncoder::GetDefault() const
 {
 	gem::ConfigTable defaultConfig;
 
-	defaultConfig.SetValue("version", CURRENT_VERSION);
-	defaultConfig.SetValue("anisotropic_level", 1.0f);
-	defaultConfig.SetValue("cubemap", "false");
-	defaultConfig.SetValue("filter", "linear");
-	defaultConfig.SetValue("wrap_x", "clamp");
-	defaultConfig.SetValue("wrap_y", "clamp");
-	defaultConfig.SetValue("s_rgb", "true");
+	defaultConfig.SetInt("version", CURRENT_VERSION);
+	defaultConfig.SetFloat("anisotropic_level", 1.0f);
+	defaultConfig.SetBool("cubemap", false);
+	defaultConfig.SetBool("s_rgb", true);
+	defaultConfig.SetString("filter", "linear");
+	defaultConfig.SetString("wrap_x", "clamp");
+	defaultConfig.SetString("wrap_y", "clamp");
 
 	return defaultConfig;
 }
@@ -242,7 +242,7 @@ bool TextureEncoder::Upgrade(gem::ConfigTable& metadata, unsigned loadedVersion)
 	{
 	case 1:
 		// Added s_rgb field.
-		metadata.SetValue("s_rgb", "true");
+		metadata.SetBool("s_rgb", true);
 		break;
 	}
 

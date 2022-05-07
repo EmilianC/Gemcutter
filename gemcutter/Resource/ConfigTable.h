@@ -32,16 +32,16 @@ namespace gem
 		std::vector<bool> GetBoolArray(std::string_view setting) const;
 
 		// Creates or overwrites an existing setting.
-		void SetValue(const std::string& setting, std::string_view value);
-		void SetValue(const std::string& setting, float value);
-		void SetValue(const std::string& setting, int value);
-		void SetValue(const std::string& setting, bool value);
+		void SetString(const std::string& setting, std::string_view value);
+		void SetFloat(const std::string& setting, float value);
+		void SetInt(const std::string& setting, int value);
+		void SetBool(const std::string& setting, bool value);
 
 		// Does not overwrite an existing setting, but creates it if it doesn't exist.
-		void SetDefaultValue(const std::string& setting, std::string_view value);
-		void SetDefaultValue(const std::string& setting, float value);
-		void SetDefaultValue(const std::string& setting, int value);
-		void SetDefaultValue(const std::string& setting, bool value);
+		void SetDefaultString(const std::string& setting, std::string_view value);
+		void SetDefaultFloat(const std::string& setting, float value);
+		void SetDefaultInt(const std::string& setting, int value);
+		void SetDefaultBool(const std::string& setting, bool value);
 
 	private:
 		std::map<std::string, std::string, std::less<>> settings;

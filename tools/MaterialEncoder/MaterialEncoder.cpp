@@ -12,13 +12,13 @@ gem::ConfigTable MaterialEncoder::GetDefault() const
 {
 	gem::ConfigTable defaultConfig;
 
-	defaultConfig.SetValue("version", CURRENT_VERSION);
-	defaultConfig.SetValue("shader", "");
-	defaultConfig.SetValue("texture_bind_points", "");
-	defaultConfig.SetValue("textures", "");
-	defaultConfig.SetValue("blend_mode", "none");
-	defaultConfig.SetValue("depth_mode", "normal");
-	defaultConfig.SetValue("cull_mode", "clockwise");
+	defaultConfig.SetInt("version", CURRENT_VERSION);
+	defaultConfig.SetString("shader", "");
+	defaultConfig.SetString("texture_bind_points", "");
+	defaultConfig.SetString("textures", "");
+	defaultConfig.SetString("blend_mode", "none");
+	defaultConfig.SetString("depth_mode", "normal");
+	defaultConfig.SetString("cull_mode", "clockwise");
 
 	return defaultConfig;
 }

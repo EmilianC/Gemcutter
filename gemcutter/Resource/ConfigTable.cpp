@@ -219,27 +219,27 @@ namespace gem
 		return results;
 	}
 
-	void ConfigTable::SetValue(const std::string& setting, std::string_view value)
+	void ConfigTable::SetString(const std::string& setting, std::string_view value)
 	{
 		settings[setting] = value;
 	}
 
-	void ConfigTable::SetValue(const std::string& setting, float value)
+	void ConfigTable::SetFloat(const std::string& setting, float value)
 	{
 		settings[setting] = std::to_string(value);
 	}
 
-	void ConfigTable::SetValue(const std::string& setting, int value)
+	void ConfigTable::SetInt(const std::string& setting, int value)
 	{
 		settings[setting] = std::to_string(value);
 	}
 
-	void ConfigTable::SetValue(const std::string& setting, bool value)
+	void ConfigTable::SetBool(const std::string& setting, bool value)
 	{
 		settings[setting] = value ? "on" : "off";
 	}
 
-	void ConfigTable::SetDefaultValue(const std::string& setting, std::string_view value)
+	void ConfigTable::SetDefaultString(const std::string& setting, std::string_view value)
 	{
 		if (!HasSetting(setting))
 		{
@@ -247,7 +247,7 @@ namespace gem
 		}
 	}
 
-	void ConfigTable::SetDefaultValue(const std::string& setting, float value)
+	void ConfigTable::SetDefaultFloat(const std::string& setting, float value)
 	{
 		if (!HasSetting(setting))
 		{
@@ -255,7 +255,7 @@ namespace gem
 		}
 	}
 
-	void ConfigTable::SetDefaultValue(const std::string& setting, int value)
+	void ConfigTable::SetDefaultInt(const std::string& setting, int value)
 	{
 		if (!HasSetting(setting))
 		{
@@ -263,7 +263,7 @@ namespace gem
 		}
 	}
 
-	void ConfigTable::SetDefaultValue(const std::string& setting, bool value)
+	void ConfigTable::SetDefaultBool(const std::string& setting, bool value)
 	{
 		if (!HasSetting(setting))
 		{

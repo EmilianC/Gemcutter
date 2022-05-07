@@ -33,11 +33,11 @@ gem::ConfigTable MeshEncoder::GetDefault() const
 {
 	gem::ConfigTable defaultConfig;
 
-	defaultConfig.SetValue("version", CURRENT_VERSION);
-	defaultConfig.SetValue("scale", 1);
-	defaultConfig.SetValue("uvs", true);
-	defaultConfig.SetValue("normals", true);
-	defaultConfig.SetValue("tangents", true);
+	defaultConfig.SetInt("version", CURRENT_VERSION);
+	defaultConfig.SetFloat("scale", 1.0f);
+	defaultConfig.SetBool("uvs", true);
+	defaultConfig.SetBool("normals", true);
+	defaultConfig.SetBool("tangents", true);
 
 	return defaultConfig;
 }
@@ -413,7 +413,7 @@ bool MeshEncoder::Upgrade(gem::ConfigTable& metadata, unsigned loadedVersion) co
 	{
 	case 1:
 		// Added tangents field.
-		metadata.SetValue("tangents", true);
+		metadata.SetBool("tangents", true);
 		break;
 	}
 
