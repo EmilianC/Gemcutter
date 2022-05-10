@@ -260,13 +260,13 @@ namespace gem
 	template<typename... Args> [[nodiscard]]
 	auto With()
 	{
-		static_assert(sizeof...(Args),
+		static_assert(sizeof...(Args) >= 1,
 			"With<>() must receive at least one template argument.");
 
 		static_assert(meta::all_of_v<std::is_base_of_v<ComponentBase, Args>...>,
 			"All template arguments must be either Components or Tags.");
 
-		static_assert(meta::all_of_v<std::is_same_v<Args, Args::StaticComponentType>...>,
+		static_assert(meta::all_of_v<(std::is_same_v<Args, typename Args::StaticComponentType>)...>,
 			"Only a direct inheritor from Component<> can be used in a With<>() query. Use All<>() instead.");
 
 		using namespace detail;

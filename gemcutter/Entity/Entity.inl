@@ -9,7 +9,7 @@ namespace gem
 		template<class T>
 		T* safe_cast(ComponentBase* comp)
 		{
-			if constexpr (std::is_same_v<T, T::StaticComponentType>)
+			if constexpr (std::is_same_v<T, typename T::StaticComponentType>)
 			{
 				return static_cast<T*>(comp);
 			}
@@ -131,7 +131,7 @@ namespace gem
 	template<typename... Args>
 	void Entity::Tag()
 	{
-		static_assert(sizeof...(Args), "Must have at least one template argument.");
+		static_assert(sizeof...(Args) >= 1, "Must have at least one template argument.");
 		static_assert(meta::all_of_v<std::is_base_of_v<TagBase, Args>...>, "Template arguments must inherit from Tag.");
 
 		( [this]() {
