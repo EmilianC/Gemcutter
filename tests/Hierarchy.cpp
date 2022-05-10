@@ -133,4 +133,24 @@ TEST_CASE("Hierarchy")
 		CHECK(!root->Get<Hierarchy>().IsDescendant(*e4));
 		CHECK(root->Get<Hierarchy>().IsLeaf());
 	}
+
+	SECTION("ForEachChild")
+	{
+		unsigned count = 0;
+
+		root->Get<Hierarchy>().ForEachChild(false, [&](Entity&) { ++count; });
+		CHECK(count == 3);
+
+		count = 0;
+		root->Get<Hierarchy>().ForEachChild(true, [&](Entity&) { ++count; });
+		CHECK(count == 4);
+
+		count = 0;
+		e1->Get<Hierarchy>().ForEachChild(false, [&](Entity&) { ++count; });
+		CHECK(count == 0);
+
+		count = 0;
+		e2->Get<Hierarchy>().ForEachChild(true, [&](Entity&) { ++count; });
+		CHECK(count == 0);
+	}
 }

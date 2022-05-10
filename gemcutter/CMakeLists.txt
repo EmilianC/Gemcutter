@@ -25,6 +25,7 @@ list(APPEND gemcutter_files
 	"Entity/Entity.inl"
 	"Entity/Hierarchy.cpp"
 	"Entity/Hierarchy.h"
+	"Entity/Hierarchy.inl"
 	"Entity/Name.cpp"
 	"Entity/Name.h"
 	"Entity/Query.inl"
