@@ -45,6 +45,7 @@ if (ENABLE_IMGUI_SUPPORT)
 	add_library(imgui STATIC
 		"imgui/backends/imgui_impl_win32.cpp"
 		"imgui/backends/imgui_impl_opengl3.cpp"
+		"imgui/misc/cpp/imgui_stdlib.cpp"
 		"imgui/imgui.cpp"
 		"imgui/imgui_demo.cpp"
 		"imgui/imgui_draw.cpp"
