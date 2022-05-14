@@ -47,8 +47,8 @@ namespace gem
 		ScopeGuard& operator=(const ScopeGuard&) = delete;
 
 		ScopeGuard(ScopeGuard&& rhs) noexcept
-			: functor(std::move(rhs.functor))
-			, active(rhs.active)
+			: active(rhs.active)
+			, functor(std::move(rhs.functor))
 		{
 			rhs.Dismiss();
 		}
@@ -78,8 +78,8 @@ namespace gem
 		}
 
 	private:
-		Functor functor;
 		bool active = true;
+		[[no_unique_address]] Functor functor;
 	};
 }
 
