@@ -35,15 +35,7 @@ namespace gem
 		FunctorList(const FunctorList&);
 		FunctorList& operator=(const FunctorList&);
 
-		template<class T>
-		void Add(std::shared_ptr<T> ptr)
-		{
-			static_assert(std::is_base_of_v<ParticleFunctor, T>, "Template argument must inherit from ParticleFunctor.");
-			static_assert(std::is_base_of_v<Shareable<T>, T>, "A ParticleFunctor must inherit from Shareable<>.");
-
-			functors.push_back(std::move(ptr));
-			dirty = true;
-		}
+		void Add(std::shared_ptr<ParticleFunctor> functor);
 
 		// Removes all functors.
 		void Clear();

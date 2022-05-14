@@ -18,6 +18,12 @@ namespace gem
 		return *this;
 	}
 
+	void FunctorList::Add(std::shared_ptr<ParticleFunctor> functor)
+	{
+		functors.push_back(std::move(functor));
+		dirty = true;
+	}
+
 	void FunctorList::Clear()
 	{
 		functors.clear();
