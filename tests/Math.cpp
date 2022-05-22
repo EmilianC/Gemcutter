@@ -5,7 +5,7 @@ using namespace gem;
 
 TEST_CASE("Math")
 {
-	SECTION("Abs / Equals / Min / Max / Clamp")
+	SECTION("Utility Functions")
 	{
 		CHECK(Abs(0) == 0);
 		CHECK(Abs(1) == 1);
@@ -37,6 +37,11 @@ TEST_CASE("Math")
 		CHECK(Clamp(10, 5, 15) == 10);
 		CHECK(Clamp(0, 5, 15) == 5);
 		CHECK(Clamp(20, 5, 15) == 15);
+
+		CHECK(Equals(PercentInRange(5.0f, 0.0f, 10.0f), 0.5f));
+		CHECK(Equals(PercentInRange(-1.0f, -2.0f, 2.0f), 0.25f));
+		CHECK(Equals(PercentInRange(3.0f, 0.0f, 1.0f), 3.0f));
+		CHECK(Equals(PercentInRange(0.0f, 1.0f, 1.0f), 0.0f));
 
 		CHECK(NextPowerOfTwo(0) == 1);
 		CHECK(NextPowerOfTwo(1) == 1);

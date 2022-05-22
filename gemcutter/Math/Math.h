@@ -82,11 +82,25 @@ namespace gem
 		}
 	}
 
-	// Clamps data to the range [low, high]
+	// Clamps the value to the range [low, high]
 	template<typename T> [[nodiscard]]
-	constexpr T Clamp(const T& data, const T& low, const T& high)
+	constexpr T Clamp(const T& value, const T& low, const T& high)
 	{
-		return (data < low) ? low : (data < high) ? data : high;
+		return (value < low) ? low : (value < high) ? value : high;
+	}
+
+	// Returns a percentage given the value's position between [low, high].
+	// The value can be outside the range as well.
+	[[nodiscard]]
+	constexpr float PercentInRange(float value, float low, float high)
+	{
+		const float range = high - low;
+		if (Equals(range, 0.0f))
+		{
+			return value >= high ? 1.0f : 0.0f;
+		}
+
+		return (value - low) / range;
 	}
 
 	template<typename T> [[nodiscard]]
