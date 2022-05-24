@@ -14,7 +14,7 @@ namespace gem
 	// Enables direct manipulation of a VertexBuffer's data.
 	// The lifetime of this object should be kept as short as possible.
 	// This is more performant than VertexBuffer functions when multiple operations are needed.
-	class BufferMapping
+	class [[nodiscard]] BufferMapping
 	{
 	public:
 		BufferMapping(VertexBuffer& buffer, VertexAccess accessMode);
@@ -22,7 +22,9 @@ namespace gem
 
 		void ZeroData(unsigned start, unsigned size);
 		void SetData(unsigned start, unsigned size, const void* source);
-		char* GetPtr();
+
+		unsigned char* GetPtr();
+		const VertexBuffer& GetBuffer() const;
 
 		template<typename T>
 		void SetElement(unsigned offset, const T& element);
@@ -35,7 +37,7 @@ namespace gem
 
 	private:
 		VertexBuffer& buffer;
-		char* data;
+		unsigned char* data;
 	};
 
 	// A single OpenGL buffer object.

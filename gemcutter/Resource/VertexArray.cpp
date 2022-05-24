@@ -13,7 +13,7 @@ namespace gem
 		: buffer(_buffer)
 	{
 		buffer.Bind();
-		data = static_cast<char*>(glMapBuffer(buffer.target, ResolveVertexAccess(accessMode)));
+		data = static_cast<unsigned char*>(glMapBuffer(buffer.target, ResolveVertexAccess(accessMode)));
 		buffer.UnBind();
 
 		ASSERT(data, "Failed to map VertexBuffer.");
@@ -40,9 +40,14 @@ namespace gem
 		std::memcpy(data + start, source, size);
 	}
 
-	char* BufferMapping::GetPtr()
+	unsigned char* BufferMapping::GetPtr()
 	{
 		return data;
+	}
+
+	const VertexBuffer& BufferMapping::GetBuffer() const
+	{
+		return buffer;
 	}
 
 	void BufferMapping::FillIndexSequence(unsigned start, unsigned count, unsigned short firstIndex)
@@ -114,7 +119,7 @@ namespace gem
 
 	BufferMapping VertexBuffer::MapBuffer(VertexAccess accessMode)
 	{
-		return {*this, accessMode};
+		return { *this, accessMode };
 	}
 
 	unsigned VertexBuffer::GetSize() const

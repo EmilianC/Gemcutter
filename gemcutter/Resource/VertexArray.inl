@@ -20,12 +20,12 @@ namespace gem
 
 			VertexIterator& operator=(const VertexIterator&) = default;
 
-			bool operator==(const VertexIterator& other) const { return itr == other.itr; }
-			bool operator!=(const VertexIterator& other) const { return itr != other.itr; }
-			bool operator<(const VertexIterator& other)  const { return itr < other.itr; }
-			bool operator>(const VertexIterator& other)  const { return itr > other.itr; }
-			bool operator<=(const VertexIterator& other) const { return itr <= other.itr; }
-			bool operator>=(const VertexIterator& other) const { return itr >= other.itr; }
+			[[nodiscard]] bool operator==(const VertexIterator& other) const { return itr == other.itr; }
+			[[nodiscard]] bool operator!=(const VertexIterator& other) const { return itr != other.itr; }
+			[[nodiscard]] bool operator<(const VertexIterator& other)  const { return itr < other.itr; }
+			[[nodiscard]] bool operator>(const VertexIterator& other)  const { return itr > other.itr; }
+			[[nodiscard]] bool operator<=(const VertexIterator& other) const { return itr <= other.itr; }
+			[[nodiscard]] bool operator>=(const VertexIterator& other) const { return itr >= other.itr; }
 
 			std::ptrdiff_t operator-(const VertexIterator& other) const { return (itr - other.itr) / stride; }
 
@@ -63,33 +63,27 @@ namespace gem
 
 		// Enumerable range of a specific VertexBuffer stream/element.
 		template<typename Type>
-		class VertexRange
+		class [[nodiscard]] VertexRange
 		{
 		public:
-			VertexRange(VertexBuffer& _buffer, const VertexStream& _stream, VertexAccess access)
-				: buffer(_buffer), stream(_stream)
+			VertexRange(VertexBuffer& buffer, const VertexStream& _stream, VertexAccess access)
+				: mapping(buffer.MapBuffer(access))
+				, stream(_stream)
 			{
-				data = static_cast<unsigned char*>(buffer.MapBuffer(access));
 			}
 
-			~VertexRange()
+			VertexIterator<Type> begin()
 			{
-				buffer.UnmapBuffer();
+				return { mapping.GetPtr() + stream.startOffset, stream.stride };
 			}
 
-			VertexIterator<Type> begin() const
+			VertexIterator<Type> end()
 			{
-				return {data + stream.startOffset, stream.stride};
-			}
-
-			VertexIterator<Type> end() const
-			{
-				return {data + stream.startOffset + buffer.GetSize(), stream.stride};
+				return { mapping.GetPtr() + stream.startOffset + mapping.GetBuffer().GetSize(), stream.stride };
 			}
 
 		private:
-			unsigned char* data;
-			VertexBuffer& buffer;
+			BufferMapping mapping;
 			const VertexStream& stream;
 		};
 	}
@@ -121,6 +115,6 @@ namespace gem
 	{
 		auto& stream = GetStream(bindingUnit);
 
-		return detail::VertexRange<Type>(*stream.buffer, stream, access);
+		return { *stream.buffer, stream, access };
 	}
 }
