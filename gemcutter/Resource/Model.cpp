@@ -44,7 +44,7 @@ namespace gem
 		}
 
 		array = VertexArray::MakeNew();
-		auto buffer = VertexBuffer::MakeNew(sizeof(float) * bufferSize, VertexBufferUsage::Static, VertexBufferType::Data);
+		auto buffer = VertexBuffer::MakeNew(sizeof(float) * bufferSize, BufferUsage::Static, VertexBufferType::Data);
 
 		{ // Read the data buffer from the file.
 			auto mapping = buffer->MapBuffer(VertexAccess::WriteOnly);

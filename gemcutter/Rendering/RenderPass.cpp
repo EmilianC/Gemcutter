@@ -453,6 +453,6 @@ namespace gem
 		invModel = transformBuffer.AddUniform<mat4>("InvModel");
 		normalMatrix = transformBuffer.AddUniform<mat3>("Normal");
 
-		transformBuffer.InitBuffer(VertexBufferUsage::Dynamic);
+		transformBuffer.InitBuffer(BufferUsage::Dynamic);
 	}
 }

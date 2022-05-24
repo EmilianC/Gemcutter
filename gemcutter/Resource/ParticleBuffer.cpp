@@ -52,7 +52,7 @@ namespace gem
 		attributes = _attributes;
 
 		array->RemoveStreams();
-		buffer = VertexBuffer::MakeNew(TotalBufferSize(), VertexBufferUsage::Dynamic, VertexBufferType::Data);
+		buffer = VertexBuffer::MakeNew(TotalBufferSize(), BufferUsage::Dynamic, VertexBufferType::Data);
 
 		// Position attribute is always used.
 		VertexStream stream {

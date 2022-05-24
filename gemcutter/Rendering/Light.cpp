@@ -85,7 +85,7 @@ namespace gem
 		lightBuffer->AddUniform<float>("AttenuationQuadratic");
 		lightBuffer->AddUniform<float>("Angle");
 		lightBuffer->AddUniform<Type>("Type");
-		lightBuffer->InitBuffer(VertexBufferUsage::Dynamic);
+		lightBuffer->InitBuffer(BufferUsage::Dynamic);
 	}
 
 	void Light::CreateUniformHandles()

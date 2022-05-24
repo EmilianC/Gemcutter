@@ -87,7 +87,7 @@ namespace
 		GL_READ_WRITE
 	};
 
-	constexpr int vertexBufferUsage_Resolve[] = {
+	constexpr int bufferUsage_Resolve[] = {
 		GL_STATIC_DRAW,
 		GL_DYNAMIC_DRAW,
 		GL_STREAM_DRAW
@@ -178,9 +178,9 @@ namespace gem
 		return vertexAccess_Resolve[static_cast<unsigned>(access)];
 	}
 
-	int ResolveVertexBufferUsage(VertexBufferUsage usage)
+	int ResolveBufferUsage(BufferUsage usage)
 	{
-		return vertexBufferUsage_Resolve[static_cast<unsigned>(usage)];
+		return bufferUsage_Resolve[static_cast<unsigned>(usage)];
 	}
 
 	int ResolveFilterMag(TextureFilter filter)

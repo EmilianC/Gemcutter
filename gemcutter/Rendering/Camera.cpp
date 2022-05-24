@@ -503,7 +503,7 @@ namespace gem
 		buffer.AddUniform<mat4>("InvView");
 		buffer.AddUniform<mat4>("InvProj");
 		buffer.AddUniform<vec3>("CameraPosition");
-		buffer.InitBuffer(VertexBufferUsage::Dynamic);
+		buffer.InitBuffer(BufferUsage::Dynamic);
 	}
 
 	void Camera::CreateUniformHandles()

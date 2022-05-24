@@ -47,8 +47,8 @@ namespace gem
 		friend BufferMapping;
 		friend VertexArray;
 	public:
-		VertexBuffer(unsigned size, VertexBufferUsage usage, VertexBufferType type);
-		VertexBuffer(unsigned size, const void* source, VertexBufferUsage usage, VertexBufferType type);
+		VertexBuffer(unsigned size, BufferUsage usage, VertexBufferType type);
+		VertexBuffer(unsigned size, const void* source, BufferUsage usage, VertexBufferType type);
 		~VertexBuffer();
 
 		void ClearData();
@@ -58,7 +58,7 @@ namespace gem
 		BufferMapping MapBuffer(VertexAccess accessMode);
 
 		unsigned GetSize() const;
-		VertexBufferUsage GetBufferUsage() const;
+		BufferUsage GetBufferUsage() const;
 		VertexBufferType GetBufferType() const;
 
 		// Special index value used to restart Triangle/line fans/strips/loops.
@@ -70,7 +70,7 @@ namespace gem
 
 		unsigned VBO = 0;
 		unsigned size = 0;
-		VertexBufferUsage usage;
+		BufferUsage usage;
 		int target;
 	};
 

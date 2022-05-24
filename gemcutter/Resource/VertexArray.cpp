@@ -69,12 +69,12 @@ namespace gem
 		*dest = VertexBuffer::RESTART_INDEX;
 	}
 
-	VertexBuffer::VertexBuffer(unsigned _size, VertexBufferUsage _usage, VertexBufferType type)
+	VertexBuffer::VertexBuffer(unsigned _size, BufferUsage _usage, VertexBufferType type)
 		: VertexBuffer(_size, nullptr, _usage, type)
 	{
 	}
 
-	VertexBuffer::VertexBuffer(unsigned _size, const void* source, VertexBufferUsage _usage, VertexBufferType type)
+	VertexBuffer::VertexBuffer(unsigned _size, const void* source, BufferUsage _usage, VertexBufferType type)
 		: size(_size)
 		, usage(_usage)
 		, target(type == VertexBufferType::Data ? GL_ARRAY_BUFFER : GL_ELEMENT_ARRAY_BUFFER)
@@ -83,7 +83,7 @@ namespace gem
 
 		glGenBuffers(1, &VBO);
 		glBindBuffer(target, VBO);
-		glBufferData(target, size, source, ResolveVertexBufferUsage(usage));
+		glBufferData(target, size, source, ResolveBufferUsage(usage));
 		glBindBuffer(target, GL_NONE);
 	}
 
@@ -127,7 +127,7 @@ namespace gem
 		return size;
 	}
 
-	VertexBufferUsage VertexBuffer::GetBufferUsage() const
+	BufferUsage VertexBuffer::GetBufferUsage() const
 	{
 		return usage;
 	}

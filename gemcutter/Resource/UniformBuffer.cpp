@@ -54,7 +54,7 @@ namespace gem
 		*this = other;
 	}
 
-	void UniformBuffer::InitBuffer(VertexBufferUsage usage)
+	void UniformBuffer::InitBuffer(BufferUsage usage)
 	{
 		ASSERT(bufferSize != 0, "At least one uniform must be added to the buffer before it can be initialized.");
 		ASSERT(UBO == GL_NONE, "UniformBuffer has already been initialized and locked.");
@@ -65,7 +65,7 @@ namespace gem
 		// GPU buffer.
 		glGenBuffers(1, &UBO);
 		glBindBuffer(GL_UNIFORM_BUFFER, UBO);
-		glBufferData(GL_UNIFORM_BUFFER, bufferSize, nullptr, ResolveVertexBufferUsage(usage));
+		glBufferData(GL_UNIFORM_BUFFER, bufferSize, nullptr, ResolveBufferUsage(usage));
 		glBindBuffer(GL_UNIFORM_BUFFER, GL_NONE);
 
 		// RAM buffer.

@@ -32,7 +32,7 @@ namespace gem
 		UniformHandle<T> AddUniform(std::string_view name, unsigned count = 1);
 
 		// Once this is called, no more uniforms can be added and the buffer is ready for use.
-		void InitBuffer(VertexBufferUsage usage = VertexBufferUsage::Static);
+		void InitBuffer(BufferUsage usage = BufferUsage::Static);
 		void UnLoad();
 
 		void Bind(unsigned slot) const;

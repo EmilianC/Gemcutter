@@ -56,7 +56,15 @@ namespace gem
 		ReadWrite
 	};
 
-	enum class VertexBufferUsage
+	enum class VertexBufferType
+	{
+		// The buffer contains vertex data or attributes.
+		Data,
+		// The buffer contains indices defining primitive ordering.
+		Index
+	};
+
+	enum class BufferUsage
 	{
 		// The buffer is not expected to change and will be kept on the GPU only.
 		Static,
@@ -64,14 +72,6 @@ namespace gem
 		Dynamic,
 		// The buffer is expected to be updated before each render. It will be optimized for streaming to the GPU.
 		Stream
-	};
-
-	enum class VertexBufferType
-	{
-		// The buffer contains vertex data or attributes.
-		Data,
-		// The buffer contains indices defining primitive ordering.
-		Index
 	};
 
 	enum class TextureFormat
@@ -170,7 +170,7 @@ namespace gem
 	int ResolveVertexFormat(VertexFormat);
 	int ResolveVertexArrayFormat(VertexArrayFormat);
 	int ResolveVertexAccess(VertexAccess);
-	int ResolveVertexBufferUsage(VertexBufferUsage);
+	int ResolveBufferUsage(BufferUsage);
 	int ResolveFilterMag(TextureFilter);
 	int ResolveFilterMin(TextureFilter);
 	bool ResolveMipMapping(TextureFilter);
