@@ -412,39 +412,6 @@ namespace gem
 		}
 	}
 
-	void RenderPass::RenderInstanced(const Entity& instance, unsigned count)
-	{
-		ASSERT(boundPass == this, "RenderPass must be bound to render.");
-
-		if (!instance.IsEnabled() || count == 0)
-		{
-			return;
-		}
-
-		auto* renderable = instance.Try<Renderable>();
-		if (!renderable || !renderable->IsEnabled())
-		{
-			return;
-		}
-
-		BindRenderable(*renderable, shader.get());
-
-		// Update transform uniforms.
-		MVP.Set(mat4::Identity);
-		modelView.Set(mat4::Identity);
-		model.Set(mat4::Identity);
-		invModel.Set(mat4::Identity);
-		normalMatrix.Set(mat3::Identity);
-		transformBuffer.Bind(static_cast<unsigned>(UniformBufferSlot::Model));
-
-		auto* vertexArray = renderable->array.get();
-		ASSERT(vertexArray, "Renderable Entity does not have a valid VertexArray to render.");
-
-		vertexArray->DrawInstanced(count);
-
-		UnBindRenderable(*renderable, shader.get());
-	}
-
 	void RenderPass::CreateUniformBuffer()
 	{
 		MVP = transformBuffer.AddUniform<mat4>("MVP");

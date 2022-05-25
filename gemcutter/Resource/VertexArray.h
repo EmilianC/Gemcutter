@@ -130,13 +130,12 @@ namespace gem
 		void Draw(unsigned firstIndex) const;
 		void Draw(unsigned firstIndex, VertexArrayFormat formatOverride) const;
 
-		// Renders 'count' copies of the array using any currently bound state.
-		void DrawInstanced(unsigned count) const;
-		void DrawInstanced(unsigned count, unsigned firstIndex) const;
-		void DrawInstanced(unsigned count, unsigned firstIndex, VertexArrayFormat formatOverride) const;
-
 		void SetVertexCount(unsigned count);
 		unsigned GetVertexCount() const;
+
+		void SetInstanceCount(unsigned count);
+		unsigned GetInstanceCount() const;
+
 		const auto& GetStreams() const { return streams; }
 
 		VertexArrayFormat format = VertexArrayFormat::Triangle;
@@ -144,6 +143,7 @@ namespace gem
 	private:
 		unsigned VAO = 0;
 		unsigned vertexCount = 0;
+		unsigned instanceCount = 1;
 
 		VertexBuffer::Ptr indexBuffer;
 		std::vector<VertexStream> streams;

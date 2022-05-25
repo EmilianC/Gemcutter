@@ -45,9 +45,6 @@ namespace gem
 		void Render(std::span<Entity::Ptr> entities);
 		// Renders the root Entity along with all renderable descendants (depth first traversal).
 		void RenderRoot(const Entity& root);
-		// Renders 'count' copies of the instance.
-		// Gem_MVP, Gem_ModelView, Gem_Model, Gem_InvModel, and Gem_NormalToWorld shader uniforms will not be set.
-		void RenderInstanced(const Entity& instance, unsigned count);
 
 		// These textures will be bound along with the RenderPass.
 		TextureList textures;

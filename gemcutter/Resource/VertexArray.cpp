@@ -447,34 +447,11 @@ namespace gem
 		if (indexBuffer)
 		{
 			indexBuffer->Bind();
-			glDrawElements(ResolveVertexArrayFormat(formatOverride), vertexCount, GL_UNSIGNED_SHORT, reinterpret_cast<void*>(firstIndex * sizeof(unsigned short)));
+			glDrawElementsInstanced(ResolveVertexArrayFormat(formatOverride), vertexCount, GL_UNSIGNED_SHORT, reinterpret_cast<void*>(firstIndex * sizeof(unsigned short)), instanceCount);
 		}
 		else
 		{
-			glDrawArrays(ResolveVertexArrayFormat(formatOverride), firstIndex, vertexCount);
-		}
-	}
-
-	void VertexArray::DrawInstanced(unsigned count) const
-	{
-		DrawInstanced(count, 0, format);
-	}
-
-	void VertexArray::DrawInstanced(unsigned count, unsigned firstIndex) const
-	{
-		DrawInstanced(count, firstIndex, format);
-	}
-
-	void VertexArray::DrawInstanced(unsigned count, unsigned firstIndex, VertexArrayFormat formatOverride) const
-	{
-		if (indexBuffer)
-		{
-			indexBuffer->Bind();
-			glDrawElementsInstanced(ResolveVertexArrayFormat(formatOverride), vertexCount, GL_UNSIGNED_SHORT, reinterpret_cast<void*>(firstIndex * sizeof(unsigned short)), count);
-		}
-		else
-		{
-			glDrawArraysInstanced(ResolveVertexArrayFormat(formatOverride), firstIndex, vertexCount, count);
+			glDrawArraysInstanced(ResolveVertexArrayFormat(formatOverride), firstIndex, vertexCount, instanceCount);
 		}
 	}
 
@@ -487,13 +464,12 @@ namespace gem
 			for (unsigned i = 0; i < streams.size(); ++i)
 			{
 				const auto& stream = streams[i];
-				const auto& buffer = stream.buffer;
-				const unsigned bufferSize = buffer->GetSize();
+				const unsigned bufferSize = stream.buffer->GetSize();
 				const unsigned last = (stream.divisor == 0)
 					? stream.startOffset + CountBytes(stream.format) + (count - 1) * stream.stride
 					: stream.startOffset + CountBytes(stream.format);
 
-				ASSERT(last <= bufferSize, "'count' would cause a buffer overrun in Stream( %d ).", i);
+				ASSERT(last <= bufferSize, "Rendering %d vertices would cause a buffer overrun in Stream( %d ).", count, i);
 			}
 		}
 #endif
@@ -503,5 +479,33 @@ namespace gem
 	unsigned VertexArray::GetVertexCount() const
 	{
 		return vertexCount;
+	}
+
+	void VertexArray::SetInstanceCount(unsigned count)
+	{
+#ifdef _DEBUG
+		if (count > 0)
+		{
+			// Check to ensure that the specified number of instances would not cause us to read past any of the instanced streams.
+			for (unsigned i = 0; i < streams.size(); ++i)
+			{
+				const auto& stream = streams[i];
+				if (stream.divisor == 0)
+					continue;
+
+				const unsigned bufferSize = stream.buffer->GetSize();
+				const unsigned numSteps = (count - 1) / stream.divisor;
+				const unsigned last = stream.startOffset + CountBytes(stream.format) + numSteps * stream.stride;
+
+				ASSERT(last <= bufferSize, "Rendering %d instances would cause a buffer overrun in Stream( %d ).", count, i);
+			}
+		}
+#endif
+		instanceCount = count;
+	}
+
+	unsigned VertexArray::GetInstanceCount() const
+	{
+		return instanceCount;
 	}
 }
