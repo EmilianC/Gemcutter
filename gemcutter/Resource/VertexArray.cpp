@@ -1,6 +1,8 @@
 // Copyright (c) 2017 Emilian Cioca
 #include "VertexArray.h"
 #include "gemcutter/Application/Logging.h"
+#include "gemcutter/Math/Math.h"
+#include "gemcutter/Utilities/ScopeGuard.h"
 
 #include <glew/glew.h>
 #include <numeric>
@@ -115,6 +117,35 @@ namespace gem
 		Bind();
 		glBufferSubData(target, start, _size, source);
 		UnBind();
+	}
+
+	void VertexBuffer::Resize(unsigned newSize, bool transferData)
+	{
+		if (newSize == size)
+			return;
+
+		Bind();
+		if (transferData && size != 0)
+		{
+			const unsigned copySize = Min(size, newSize);
+			auto* copy = malloc(copySize);
+			defer { free(copy); };
+
+			const void* data = glMapBuffer(target, GL_READ_ONLY);
+			memcpy(copy, data, copySize);
+			glUnmapBuffer(target);
+
+			glBufferData(target, newSize, nullptr, ResolveBufferUsage(usage));
+			glBufferSubData(target, 0, copySize, copy);
+		}
+		else
+		{
+			glBufferData(target, newSize, nullptr, ResolveBufferUsage(usage));
+		}
+
+		UnBind();
+
+		size = newSize;
 	}
 
 	BufferMapping VertexBuffer::MapBuffer(VertexAccess accessMode)

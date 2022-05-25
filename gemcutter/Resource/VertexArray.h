@@ -54,6 +54,7 @@ namespace gem
 		void ClearData();
 		void ClearData(unsigned start, unsigned size);
 		void SetData(unsigned start, unsigned size, const void* source);
+		void Resize(unsigned newSize, bool transferData);
 
 		BufferMapping MapBuffer(VertexAccess accessMode);
 
