@@ -10,13 +10,13 @@ namespace gem
 		{
 		}
 
-		DelegateBase::DelegateBase(DelegateBase&& other)
+		DelegateBase::DelegateBase(DelegateBase&& other) noexcept
 			: controlBlock(std::move(other.controlBlock))
 		{
 			controlBlock->delegate = this;
 		}
 
-		DelegateBase& DelegateBase::operator=(DelegateBase&& other)
+		DelegateBase& DelegateBase::operator=(DelegateBase&& other) noexcept
 		{
 			controlBlock = std::move(other.controlBlock);
 			controlBlock->delegate = this;

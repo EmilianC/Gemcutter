@@ -23,8 +23,8 @@ namespace gem
 			DelegateBase& operator=(const DelegateBase&) = delete;
 		public:
 			DelegateBase();
-			DelegateBase(DelegateBase&&);
-			DelegateBase& operator=(DelegateBase&&);
+			DelegateBase(DelegateBase&&) noexcept;
+			DelegateBase& operator=(DelegateBase&&) noexcept;
 
 			virtual ~DelegateBase() = default;
 			virtual void Unbind(const DelegateHandle&) = 0;
