@@ -297,11 +297,11 @@ namespace gem
 			break;
 		}
 
-		case VertexFormat::Int:
-		case VertexFormat::uInt:
-		case VertexFormat::Short:
-		case VertexFormat::uShort:
-		case VertexFormat::Byte:
+		case VertexFormat::Int:    [[fallthrough]];
+		case VertexFormat::uInt:   [[fallthrough]];
+		case VertexFormat::Short:  [[fallthrough]];
+		case VertexFormat::uShort: [[fallthrough]];
+		case VertexFormat::Byte:   [[fallthrough]];
 		case VertexFormat::uByte:
 			glVertexAttribIPointer(ptr.bindingUnit, 1, ResolveVertexFormat(ptr.format), ptr.stride, reinterpret_cast<void*>(ptr.startOffset));
 			break;
@@ -321,9 +321,11 @@ namespace gem
 			{
 			case VertexFormat::Mat4:
 				if (stream.bindingUnit + 3 == bindingUnit) return true;
+				[[fallthrough]];
 			case VertexFormat::Mat3:
 				if (stream.bindingUnit + 2 == bindingUnit) return true;
 				if (stream.bindingUnit + 1 == bindingUnit) return true;
+				[[fallthrough]];
 			default:
 				if (stream.bindingUnit == bindingUnit) return true;
 			}
@@ -343,9 +345,11 @@ namespace gem
 			{
 			case VertexFormat::Mat4:
 				found = stream.bindingUnit + 3 == bindingUnit;
+				[[fallthrough]];
 			case VertexFormat::Mat3:
 				found = found || stream.bindingUnit + 2 == bindingUnit;
 				found = found || stream.bindingUnit + 1 == bindingUnit;
+				[[fallthrough]];
 			default:
 				found = found || stream.bindingUnit == bindingUnit;
 			}
@@ -357,9 +361,11 @@ namespace gem
 				{
 				case VertexFormat::Mat4:
 					glDisableVertexAttribArray(stream.bindingUnit + 3);
+					[[fallthrough]];
 				case VertexFormat::Mat3:
 					glDisableVertexAttribArray(stream.bindingUnit + 2);
 					glDisableVertexAttribArray(stream.bindingUnit + 1);
+					[[fallthrough]];
 				default:
 					glDisableVertexAttribArray(stream.bindingUnit);
 				}
@@ -380,9 +386,11 @@ namespace gem
 			{
 			case VertexFormat::Mat4:
 				glDisableVertexAttribArray(stream.bindingUnit + 3);
+				[[fallthrough]];
 			case VertexFormat::Mat3:
 				glDisableVertexAttribArray(stream.bindingUnit + 2);
 				glDisableVertexAttribArray(stream.bindingUnit + 1);
+				[[fallthrough]];
 			default:
 				glDisableVertexAttribArray(stream.bindingUnit);
 			}
@@ -400,9 +408,11 @@ namespace gem
 			{
 			case VertexFormat::Mat4:
 				if (stream.bindingUnit + 3 == bindingUnit) return stream;
+				[[fallthrough]];
 			case VertexFormat::Mat3:
 				if (stream.bindingUnit + 2 == bindingUnit) return stream;
 				if (stream.bindingUnit + 1 == bindingUnit) return stream;
+				[[fallthrough]];
 			default:
 				if (stream.bindingUnit == bindingUnit) return stream;
 			}
