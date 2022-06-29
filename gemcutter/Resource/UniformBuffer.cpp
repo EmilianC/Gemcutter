@@ -196,11 +196,6 @@ namespace gem
 
 	//-----------------------------------------------------------------------------------------------------
 
-	BufferSlot::BufferSlot(UniformBuffer::Ptr buffer, unsigned unit)
-		: buffer(std::move(buffer)), unit(unit)
-	{
-	}
-
 	void BufferSlot::Bind() const
 	{
 		buffer->Bind(unit);

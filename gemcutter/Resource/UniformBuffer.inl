@@ -68,8 +68,8 @@ namespace gem
 		return UniformHandle<T>(*this, itr->second);
 	}
 
-	template<> void UniformBuffer::SetUniform<mat2>(std::string_view name, const mat2& data);
-	template<> void UniformBuffer::SetUniform<mat3>(std::string_view name, const mat3& data);
+	extern template void UniformBuffer::SetUniform<mat2>(std::string_view name, const mat2& data);
+	extern template void UniformBuffer::SetUniform<mat3>(std::string_view name, const mat3& data);
 
 	template<class T>
 	UniformHandle<T>::UniformHandle(UniformBuffer& buff, unsigned _offset)
@@ -105,8 +105,8 @@ namespace gem
 		return *reinterpret_cast<T*>(static_cast<char*>(uniformBuffer->buffer) + offset);
 	}
 
-	template<> void UniformHandle<mat2>::Set(const mat2& value);
-	template<> void UniformHandle<mat3>::Set(const mat3& value);
-	template<> mat2 UniformHandle<mat2>::Get() const;
-	template<> mat3 UniformHandle<mat3>::Get() const;
+	extern template void UniformHandle<mat2>::Set(const mat2& value);
+	extern template void UniformHandle<mat3>::Set(const mat3& value);
+	extern template mat2 UniformHandle<mat2>::Get() const;
+	extern template mat3 UniformHandle<mat3>::Get() const;
 }

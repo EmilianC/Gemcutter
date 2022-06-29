@@ -4,14 +4,6 @@
 
 namespace gem
 {
-	Viewport::Viewport(unsigned _x, unsigned _y, unsigned _width, unsigned _height)
-		: x(_x)
-		, y(_y)
-		, width(_width)
-		, height(_height)
-	{
-	}
-
 	void Viewport::bind() const
 	{
 		SetViewport(x, y, width, height);

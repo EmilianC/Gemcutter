@@ -355,11 +355,6 @@ namespace gem
 
 	//-----------------------------------------------------------------------------------------------------
 
-	TextureSlot::TextureSlot(Texture::Ptr tex, unsigned unit)
-		: tex(std::move(tex)), unit(unit)
-	{
-	}
-
 	void TextureSlot::Bind() const
 	{
 		tex->Bind(unit);

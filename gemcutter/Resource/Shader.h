@@ -77,9 +77,6 @@ namespace gem
 	// Used internally to expose Uniform buffers from the shader to BufferSlots.
 	struct BufferBinding
 	{
-		BufferBinding(std::string name, unsigned unit, UniformBuffer::Ptr buff)
-			: name(std::move(name)), unit(unit), templateBuff(std::move(buff)) {}
-
 		// The name of the uniform buffer in the shader.
 		const std::string name;
 		// The unit connecting this buffer to a BufferSlot of the same unit.
@@ -91,9 +88,6 @@ namespace gem
 	// Used internally to expose Samplers from the shader to TextureSlots.
 	struct TextureBinding
 	{
-		TextureBinding(std::string name, unsigned unit)
-			: name(std::move(name)), unit(unit) {}
-
 		// The name of the sampler in the shader.
 		const std::string name;
 		// The unit connecting this texture sampler to a TextureSlot of the same unit.

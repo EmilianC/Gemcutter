@@ -74,9 +74,6 @@ namespace gem
 	// Used to associate a Texture with a particular binding point.
 	struct TextureSlot
 	{
-		TextureSlot() = default;
-		TextureSlot(Texture::Ptr tex, unsigned unit = 0);
-
 		void Bind() const;
 		void UnBind() const;
 

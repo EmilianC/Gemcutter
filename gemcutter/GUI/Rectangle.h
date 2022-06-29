@@ -7,10 +7,6 @@ namespace gem
 
 	struct Rectangle
 	{
-		Rectangle() = default;
-		Rectangle(float x, float y, float width, float height);
-		Rectangle(const vec2& bottomLeft, float width, float height);
-
 		float GetAspectRatio() const;
 		bool Contains(float x, float y) const;
 		bool Contains(const vec2& pos) const;

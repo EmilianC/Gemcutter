@@ -68,9 +68,6 @@ namespace gem
 	// Used to associate a UniformBuffer with a particular binding point.
 	struct BufferSlot
 	{
-		BufferSlot() = default;
-		BufferSlot(UniformBuffer::Ptr buffer, unsigned unit);
-
 		void Bind() const;
 		void UnBind() const;
 
