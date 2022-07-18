@@ -152,6 +152,7 @@ target_link_libraries(gemcutter
 		soil
 		Xinput
 		glew
+		soloud
 )
 
 if (ENABLE_IMGUI_SUPPORT)

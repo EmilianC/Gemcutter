@@ -83,3 +83,23 @@ target_link_libraries(soil
 		optimized SOIL_ext
 		debug SOIL_ext-d
 )
+
+# SoLoud #
+set(CMAKE_FOLDER "${PARENT_FOLDER}/external/soloud")
+set(SOLOUD_BACKEND_ALSA          OFF CACHE BOOL "")
+set(SOLOUD_BACKEND_COREAUDIO     OFF CACHE BOOL "")
+set(SOLOUD_BACKEND_NULL          OFF CACHE BOOL "")
+set(SOLOUD_BACKEND_OPENSLES      OFF CACHE BOOL "")
+set(SOLOUD_BACKEND_SDL2          OFF CACHE BOOL "")
+set(SOLOUD_BACKEND_WASAPI        OFF CACHE BOOL "")
+set(SOLOUD_BACKEND_WINMM         OFF CACHE BOOL "")
+set(SOLOUD_BACKEND_XAUDIO2       ON  CACHE BOOL "")
+set(SOLOUD_BUILD_DEMOS           OFF CACHE BOOL "")
+set(SOLOUD_C_API                 OFF CACHE BOOL "")
+set(SOLOUD_DYNAMIC               OFF CACHE BOOL "")
+set(SOLOUD_GENERATE_GLUE         OFF CACHE BOOL "")
+set(SOLOUD_INSTALL               OFF CACHE BOOL "")
+set(SOLOUD_STATIC                ON  CACHE BOOL "")
+set(CMAKE_POLICY_DEFAULT_CMP0069 NEW) # Allow LTO
+add_subdirectory(soloud/contrib)
+target_include_directories(soloud INTERFACE soloud/include/)
