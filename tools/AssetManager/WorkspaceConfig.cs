@@ -15,29 +15,13 @@ namespace AssetManager
 	// Manages the input and output of the workspace settings.
 	public class WorkspaceConfig
 	{
-		public string outputDirectory;
-		public string excludedExtensions;
+		public string outputDirectory = "../Assets";
+		public string excludedExtensions = "";
 
 		[System.NonSerialized()]
-		private string[] _excludedExtensions;
+		private string[] _excludedExtensions = new string[0];
 
 		public List<EncoderLink> encoders = new List<EncoderLink>();
-
-		public void Reset()
-		{
-			// Setup default encoders.
-			encoders.Add(new EncoderLink { extension="ttf", encoder="..\\build\\external\\gemcutter\\tools\\FontEncoder\\[[Config]]\\font_encoder.exe" });
-			encoders.Add(new EncoderLink { extension="obj", encoder="..\\build\\external\\gemcutter\\tools\\MeshEncoder\\[[Config]]\\mesh_encoder.exe" });
-			encoders.Add(new EncoderLink { extension="png", encoder="..\\build\\external\\gemcutter\\tools\\TextureEncoder\\[[Config]]\\texture_encoder.exe" });
-			encoders.Add(new EncoderLink { extension="jpg", encoder="..\\build\\external\\gemcutter\\tools\\TextureEncoder\\[[Config]]\\texture_encoder.exe" });
-			encoders.Add(new EncoderLink { extension="tga", encoder="..\\build\\external\\gemcutter\\tools\\TextureEncoder\\[[Config]]\\texture_encoder.exe" });
-			encoders.Add(new EncoderLink { extension="bmp", encoder="..\\build\\external\\gemcutter\\tools\\TextureEncoder\\[[Config]]\\texture_encoder.exe" });
-			encoders.Add(new EncoderLink { extension="mat", encoder="..\\build\\external\\gemcutter\\tools\\MaterialEncoder\\[[Config]]\\material_encoder.exe" });
-
-			outputDirectory = "../Assets";
-			excludedExtensions = "";
-			_excludedExtensions = new string[0];
-		}
 
 		public bool IsExtensionExcluded(string extension)
 		{
@@ -47,6 +31,7 @@ namespace AssetManager
 		public static WorkspaceConfig Load()
 		{
 			WorkspaceConfig config;
+
 			try
 			{
 				using (var myFileStream = File.OpenRead("config.workspace"))
@@ -60,7 +45,6 @@ namespace AssetManager
 			catch (System.Exception)
 			{
 				config = new WorkspaceConfig();
-				config.Reset();
 			}
 
 			return config;

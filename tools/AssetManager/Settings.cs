@@ -11,12 +11,12 @@ namespace AssetManager
 
 		readonly WorkspaceConfig config;
 
-		public Settings()
+		public Settings(WorkspaceConfig config)
 		{
 			InitializeComponent();
 			panel.AutoScroll = true;
 
-			config = WorkspaceConfig.Load();
+			this.config = config;
 			TextBoxOutputDirectory.Text = config.outputDirectory;
 			TextBoxExcludedExtensions.Text = config.excludedExtensions;
 			foreach (var link in config.encoders)

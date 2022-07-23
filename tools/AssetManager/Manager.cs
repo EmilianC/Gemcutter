@@ -454,6 +454,11 @@ namespace AssetManager
 				Log(e.Message, ConsoleColor.Red);
 				encoders.Clear();
 			}
+
+			if (encoders.Count == 0)
+			{
+				Log($"ERROR:    Failed to setup encoders. Make sure 'config.workspace' is valid or reconfigure with CMake to recreate the file.", ConsoleColor.Red);
+			}
 		}
 
 		private void LogEncoder(string text)
@@ -545,7 +550,7 @@ namespace AssetManager
 			ButtonUpdate.Enabled = false;
 			ButtonSettings.Enabled = false;
 
-			var settingsForm = new Settings();
+			var settingsForm = new Settings(config);
 			settingsForm.Show();
 			settingsForm.BringToFront();
 			settingsForm.FormClosed += delegate {
@@ -554,7 +559,6 @@ namespace AssetManager
 				ButtonSettings.Enabled = true;
 
 				// Refresh settings.
-				config = WorkspaceConfig.Load();
 				outputPath = Path.GetFullPath(Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar + config.outputDirectory);
 
 				RefreshWorkspace();
