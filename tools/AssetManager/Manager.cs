@@ -147,6 +147,8 @@ namespace AssetManager
 				process.WaitForExit();
 				process.CancelOutputRead();
 
+				Application.DoEvents(); // Flush pending logs.
+
 				if (process.ExitCode != 0)
 				{
 					throw new Exception($"Failed to encode: {logName}");
@@ -181,6 +183,8 @@ namespace AssetManager
 				process.BeginOutputReadLine();
 				process.WaitForExit();
 				process.CancelOutputRead();
+
+				Application.DoEvents(); // Flush pending logs.
 
 				if (process.ExitCode != 0)
 				{
@@ -299,31 +303,56 @@ namespace AssetManager
 			treeViewAssets.ExpandAll();
 		}
 
-		delegate void RefreshWorkspaceDelegate();
 		void RefreshWorkspaceDispatch()
 		{
 			if (treeViewAssets.InvokeRequired)
-				Invoke(new RefreshWorkspaceDelegate(RefreshWorkspace));
+			{
+				Action action = delegate { RefreshWorkspace(); };
+				treeViewAssets.Invoke(action);
+			}
 			else
+			{
 				RefreshWorkspace();
+			}
 		}
 
-		delegate void PackFileDelegate(string file);
 		void PackFileDispatch(string file)
 		{
 			if (treeViewAssets.InvokeRequired)
-				Invoke(new PackFileDelegate(PackFile), file);
+			{
+				Action action = delegate { PackFile(file); };
+				treeViewAssets.Invoke(action);
+			}
 			else
+			{
 				PackFile(file);
+			}
 		}
 
-		delegate void UpdateFileDelegate(string file);
 		void UpdateFileDispatch(string file)
 		{
 			if (treeViewAssets.InvokeRequired)
-				Invoke(new UpdateFileDelegate(UpdateFile), file);
+			{
+				Action action = delegate { UpdateFile(file); };
+				treeViewAssets.Invoke(action);
+			}
 			else
+			{
 				UpdateFile(file);
+			}
+		}
+
+		void LogEncoderDispatch(string text)
+		{
+			if (Output.InvokeRequired)
+			{
+				Action action = delegate { LogEncoder(text); };
+				Output.BeginInvoke(action);
+			}
+			else
+			{
+				LogEncoder(text);
+			}
 		}
 
 		// Populates a tree with the contents of a directory on the disk.
@@ -415,7 +444,7 @@ namespace AssetManager
 					process.StartInfo.UseShellExecute = false;
 					process.StartInfo.RedirectStandardOutput = true;
 					process.StartInfo.CreateNoWindow = true;
-					process.OutputDataReceived += (sender, args) => LogEncoder(args.Data);
+					process.OutputDataReceived += (s, e) => LogEncoderDispatch(e.Data);
 
 					encoders.Add(link.extension, process);
 				}
