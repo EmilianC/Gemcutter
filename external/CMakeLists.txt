@@ -57,22 +57,6 @@ if (ENABLE_IMGUI_SUPPORT)
 	sf_target_compile_disable_exceptions(imgui)
 endif()
 
-# OpenAL #
-set(CMAKE_FOLDER "${PARENT_FOLDER}/external/openal-soft")
-set(ALSOFT_EXAMPLES                    OFF CACHE BOOL "")
-set(ALSOFT_INSTALL                     OFF CACHE BOOL "")
-set(ALSOFT_INSTALL_AMBDEC_PRESETS      OFF CACHE BOOL "")
-set(ALSOFT_INSTALL_CONFIG              OFF CACHE BOOL "")
-set(ALSOFT_INSTALL_EXAMPLES            OFF CACHE BOOL "")
-set(ALSOFT_INSTALL_HRTF_DATA           OFF CACHE BOOL "")
-set(ALSOFT_INSTALL_UTILS               OFF CACHE BOOL "")
-set(ALSOFT_NO_CONFIG_UTIL              ON  CACHE BOOL "")
-set(ALSOFT_TESTS                       OFF CACHE BOOL "")
-set(ALSOFT_UPDATE_BUILD_VERSION        OFF CACHE BOOL "")
-set(ALSOFT_UTILS                       OFF CACHE BOOL "")
-set(CMAKE_POLICY_DEFAULT_CMP0069 NEW) # Allow LTO
-add_subdirectory(openal-soft)
-
 # SOIL ext #
 set(CMAKE_FOLDER "${PARENT_FOLDER}/external/soil")
 add_library(soil INTERFACE)

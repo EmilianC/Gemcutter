@@ -9,7 +9,6 @@
                 "${workspaceFolder}/external/freetype/**",
                 "${workspaceFolder}/external/glew/**",
                 "${workspaceFolder}/external/imgui/**",
-                "${workspaceFolder}/external/openal-soft/include/**",
                 "${workspaceFolder}/external/soloud/include/**",
                 "${workspaceFolder}/external/soil/**"
             ],

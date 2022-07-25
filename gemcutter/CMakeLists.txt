@@ -147,7 +147,6 @@ target_link_libraries(gemcutter
 	PRIVATE
 		dirent
 	PUBLIC
-		OpenAL
 		OpenGL::GL
 		soil
 		Xinput

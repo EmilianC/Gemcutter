@@ -36,7 +36,6 @@ if (ENABLE_IMGUI_SUPPORT)
 	update_submodule("${CMAKE_CURRENT_LIST_DIR}/external/imgui")
 endif()
 
-update_submodule("${CMAKE_CURRENT_LIST_DIR}/external/openal-soft")
 update_submodule("${CMAKE_CURRENT_LIST_DIR}/external/scaffold")
 update_submodule("${CMAKE_CURRENT_LIST_DIR}/external/soloud")
 
