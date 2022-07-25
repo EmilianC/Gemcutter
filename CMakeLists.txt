@@ -36,8 +36,8 @@ if (ENABLE_IMGUI_SUPPORT)
 	update_submodule("${CMAKE_CURRENT_LIST_DIR}/external/imgui")
 endif()
 
-update_submodule("${CMAKE_CURRENT_LIST_DIR}/external/openal-soft")
 update_submodule("${CMAKE_CURRENT_LIST_DIR}/external/scaffold")
+update_submodule("${CMAKE_CURRENT_LIST_DIR}/external/soloud")
 
 # Load Scaffold CMake utilities.
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/external/scaffold")

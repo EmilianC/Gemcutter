@@ -13,7 +13,7 @@ Highlight features include:
 * [Efficient entity queries](docs/Entity.md)
 * [Extendable asset management](docs/AssetManager.md)
 * A modular and extendable particle system
-* Audio powered by OpenAL
+* Audio powered by [SoLoud](https://github.com/EmilianC/soloud)
 * Mesh and Texture loading
 * GUI support
 * [FreeType text rendering](docs/Text.md)
@@ -55,7 +55,7 @@ All Dependencies used under their respective licenses. Copyright is held by thei
 * [GLEW 2.0.0](http://glew.sourceforge.net/)
 * [FreeType 2](https://www.freetype.org/)
 * [Catch 2.13.8](https://github.com/catchorg/Catch2/tree/v2.x)
-* [OpenAL Soft 1.21.1](https://github.com/kcat/openal-soft)
+* [SoLoud](https://github.com/EmilianC/soloud)
 * [Scaffold](https://github.com/EmilianC/scaffold)
 * [SOIL ext](https://github.com/fenbf/SOIL_ext)
 * [dirent 1.23.2](https://github.com/tronkko/dirent)

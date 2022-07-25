@@ -1,3 +1,4 @@
+// Copyright (c) 2022 Emilian Cioca
 #include "TextureEncoder.h"
 #include <gemcutter/Rendering/Rendering.h>
 #include <gemcutter/Resource/Texture.h>

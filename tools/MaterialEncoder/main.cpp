@@ -1,3 +1,4 @@
+// Copyright (c) 2022 Emilian Cioca
 #include "MaterialEncoder.h"
 
 int main()

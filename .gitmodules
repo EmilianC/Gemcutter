@@ -2,12 +2,12 @@
 	path = external/scaffold
 	url = https://github.com/EmilianC/scaffold.git
 	branch = compile-options
-[submodule "external/openal-soft"]
-	path = external/openal-soft
-	url = https://github.com/kcat/openal-soft.git
 [submodule "samples"]
 	path = samples
 	url = https://github.com/EmilianC/Gemcutter-Samples.git
 [submodule "external/imgui"]
 	path = external/imgui
 	url = https://github.com/ocornut/imgui.git
+[submodule "external/soloud"]
+	path = external/soloud
+	url = https://github.com/EmilianC/soloud.git

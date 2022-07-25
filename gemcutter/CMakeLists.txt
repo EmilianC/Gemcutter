@@ -147,11 +147,11 @@ target_link_libraries(gemcutter
 	PRIVATE
 		dirent
 	PUBLIC
-		OpenAL
 		OpenGL::GL
 		soil
 		Xinput
 		glew
+		soloud
 )
 
 if (ENABLE_IMGUI_SUPPORT)
