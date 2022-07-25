@@ -7,9 +7,8 @@
 
 namespace gem
 {
-	class DirectoryData
+	struct DirectoryData
 	{
-	public:
 		std::vector<std::string> files;
 		std::vector<std::string> folders;
 	};
@@ -76,6 +75,9 @@ namespace gem
 
 	// Loads all the contents of a file into the provided string.
 	bool LoadFileAsString(std::string_view file, std::string& output);
+
+	// Loads all the raw contents of a file into the provided array.
+	bool LoadFileAsBinary(std::string_view file, std::vector<std::byte>& output);
 
 	// Streams input from a file or loads a file as a buffer.
 	class FileReader

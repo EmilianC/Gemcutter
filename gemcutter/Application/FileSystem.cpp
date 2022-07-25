@@ -1,6 +1,7 @@
 // Copyright (c) 2017 Emilian Cioca
 #include "FileSystem.h"
 #include "gemcutter/Application/Logging.h"
+#include "gemcutter/Utilities/ScopeGuard.h"
 
 #include <dirent/dirent.h>
 #include <direct.h>
@@ -302,6 +303,38 @@ namespace gem
 		std::ostringstream contents;
 		contents << inStream.rdbuf();
 		output = contents.str();
+
+		return true;
+	}
+
+	bool LoadFileAsBinary(std::string_view file, std::vector<std::byte>& output)
+	{
+		output.clear();
+
+		FILE* handle = fopen(file.data(), "rb");
+		if (handle == nullptr)
+		{
+			return false;
+		}
+		defer { fclose(handle); };
+
+		// Find the length to the end of the file.
+		const size_t startPos = ftell(handle);
+		fseek(handle, 0, SEEK_END);
+		const size_t size = ftell(handle);
+		fseek(handle, startPos, SEEK_SET);
+
+		if (size == -1)
+		{
+			return false;
+		}
+
+		output.resize(size);
+		if (fread(output.data(), 1, size, handle) != size)
+		{
+			output.clear();
+			return false;
+		}
 
 		return true;
 	}
