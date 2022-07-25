@@ -1,9 +1,9 @@
 // Copyright (c) 2022 Emilian Cioca
-#include "TextureEncoder.h"
+#include "SoundEncoder.h"
 
 int main()
 {
-	auto encoder = TextureEncoder();
+	auto encoder = SoundEncoder();
 
 	if (!gem::Encoder::RunEncoder(encoder))
 	{

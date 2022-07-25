@@ -1,3 +1,4 @@
+// Copyright (c) 2022 Emilian Cioca
 #pragma once
 #include <gemcutter/Resource/Encoder.h>
 

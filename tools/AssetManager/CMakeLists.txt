@@ -59,6 +59,7 @@ add_dependencies(asset_manager
 	font_encoder
 	material_encoder
 	mesh_encoder
+	sound_encoder
 	texture_encoder
 )
 set(CMAKE_CSharp_FLAGS "/langversion:latest")
