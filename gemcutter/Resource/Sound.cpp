@@ -3,44 +3,13 @@
 #include "gemcutter/Application/Logging.h"
 #include "gemcutter/Utilities/ScopeGuard.h"
 
-#include <AL/al.h>
-#include <cstdio>
-
-#ifdef _DEBUG
-	#define AL_DEBUG_CHECK() \
-		{ \
-			ALenum error = alGetError(); \
-			if (error != AL_NO_ERROR) \
-				gem::Error("Sound: %s", alGetString(error)); \
-		}
-#else
-	#define AL_DEBUG_CHECK()
-#endif
-
-enum class WaveFormat : unsigned short
-{
-	WAVE_FORMAT_PCM        = 0x0001, // PCM
-	WAVE_FORMAT_IEEE_FLOAT = 0x0003, // IEEE float
-	WAVE_FORMAT_ALAW       = 0x0006, // 8 - bit ITU - T G.711 A - law
-	WAVE_FORMAT_MULAW      = 0x0007, // 8 - bit ITU - T G.711 µ - law
-	WAVE_FORMAT_EXTENSIBLE = 0xFFFE, // Determined by SubFormat
-};
-
-struct WaveHeader
-{
-	WaveFormat FormatTag              = WaveFormat::WAVE_FORMAT_PCM;
-	unsigned short Channels           = 0;
-	unsigned SamplesPerSec            = 0;
-	unsigned AvgBytesPerSec           = 0;
-	unsigned short BlockAlign         = 0;
-	unsigned short BitsPerSample      = 0;
-	unsigned short ExtensionSize      = 0;
-	unsigned short ValidBitsPerSample = 0;
-	unsigned ChannelMask              = 0;
-};
+#include <soloud.h>
+#include <soloud_wav.h>
 
 namespace gem
 {
+	extern SoLoud::Soloud audioEngine;
+
 	Sound::~Sound()
 	{
 		Unload();
@@ -48,157 +17,180 @@ namespace gem
 
 	bool Sound::Load(std::string_view filePath)
 	{
-		FILE* file = fopen(filePath.data(), "rb");
-		if (file == nullptr)
+		FILE* soundFile = fopen(filePath.data(), "rb");
+		if (soundFile == nullptr)
 		{
 			Error("Sound: ( %s )\nUnable to open file.", filePath.data());
 			return false;
 		}
-		defer { fclose(file); };
+		defer { fclose(soundFile); };
 
-		// Variables to store info about the WAVE file.
-		char chunkID[5] = { '\0' };
-		unsigned chunkSize;
-		WaveHeader header;
-		unsigned char* soundData = nullptr;
-		defer{ free(soundData); };
+		fread(&is3D, sizeof(bool), 1, soundFile);
+		fread(&loop, sizeof(bool), 1, soundFile);
+		fread(&unique, sizeof(bool), 1, soundFile);
+		fread(&attenuation, sizeof(AttenuationFunc), 1, soundFile);
+		fread(&rolloff, sizeof(float), 1, soundFile);
+		fread(&volume, sizeof(float), 1, soundFile);
+		fread(&minDistance, sizeof(float), 1, soundFile);
+		fread(&maxDistance, sizeof(float), 1, soundFile);
 
-		// Check that the WAVE file is OK.
-		fread(chunkID, sizeof(char), 4, file);
-		if (strcmp(chunkID, "RIFF") != 0)
+		size_t size = 0;
+		fread(&size, sizeof(size_t), 1, soundFile);
+		buffer.resize(size);
+		fread(buffer.data(), size, 1, soundFile);
+
+		auto sound = std::make_unique<SoLoud::Wav>();
+
+		SoLoud::result result = sound->loadMem(buffer.data(), size, false, false);
+		if (result != SoLoud::SOLOUD_ERRORS::SO_NO_ERROR)
 		{
-			Error("Sound: ( %s )\nIncorrect file type.", filePath.data());
+			Error("Sound: %s", audioEngine.getErrorString(result));
 			return false;
 		}
 
-		fread(&chunkSize, sizeof(unsigned), 1, file);
-		fread(chunkID, sizeof(char), 4, file);
-		if (strcmp(chunkID, "WAVE") != 0)
-		{
-			Error("Sound: ( %s )\nIncorrect file type.", filePath.data());
-			return false;
-		}
+		source = sound.release();
 
-		fread(chunkID, sizeof(char), 4, file);
-		if (strcmp(chunkID, "fmt ") != 0)
+		if (is3D)
 		{
-			Error("Sound: ( %s )\nIncorrect file type.", filePath.data());
-			return false;
+			source->mFlags |= SoLoud::AudioSource::PROCESS_3D;
 		}
-
-		// Read sound format.
-		fread(&chunkSize, sizeof(unsigned), 1, file);
-		fread(&header.FormatTag, sizeof(short), 1, file);
-		fread(&header.Channels, sizeof(short), 1, file);
-		fread(&header.SamplesPerSec, sizeof(unsigned), 1, file);
-		fread(&header.AvgBytesPerSec, sizeof(unsigned), 1, file);
-		fread(&header.BlockAlign, sizeof(short), 1, file);
-		fread(&header.BitsPerSample, sizeof(short), 1, file);
-
-		// Skip any extra header information.
-		if (header.FormatTag == WaveFormat::WAVE_FORMAT_EXTENSIBLE)
-		{
-			fseek(file, 24, SEEK_CUR);
-		}
-		else if (header.FormatTag != WaveFormat::WAVE_FORMAT_PCM)
-		{
-			fseek(file, 2, SEEK_CUR);
-		}
-
-		// Search for data chunk.
-		while (fread(&chunkID, sizeof(char), 4, file) != 0)
-		{
-			if (strcmp(chunkID, "data") == 0)
-			{
-				// Read data.
-				fread(&chunkSize, sizeof(unsigned), 1, file);
-				soundData = static_cast<unsigned char*>(malloc(chunkSize * sizeof(unsigned char)));
-				fread(soundData, sizeof(unsigned char), chunkSize, file);
-
-				break;
-			}
-			else
-			{
-				// Skip chunk.
-				int size;
-				fread(&size, sizeof(int), 1, file);
-				fseek(file, size, SEEK_CUR);
-			}
-		}
-
-		if (soundData == nullptr)
-		{
-			// We didn't find any data to load.
-			Error("Sound: ( %s )\nNo data found in file.", filePath.data());
-			return false;
-		}
-
-		// Resolve the format of the WAVE file.
-		ALenum format = AL_NONE;
-		if (header.BitsPerSample == 8)
-		{
-			if (header.Channels == 1)
-			{
-				format = AL_FORMAT_MONO8;
-			}
-			else if (header.Channels == 2)
-			{
-				format = AL_FORMAT_STEREO8;
-			}
-		}
-		else if (header.BitsPerSample == 16)
-		{
-			if (header.Channels == 1)
-			{
-				format = AL_FORMAT_MONO16;
-			}
-			else if (header.Channels == 2)
-			{
-				format = AL_FORMAT_STEREO16;
-			}
-		}
-
-		if (format == AL_NONE)
-		{
-			Error("Sound: ( %s )\nUnsupported audio format.", filePath.data());
-			return false;
-		}
-
-		// Create OpenAL buffer.
-		alGenBuffers(1, &hBuffer);
-		ALenum error = alGetError();
-		if (error != AL_NO_ERROR)
-		{
-			Unload();
-			Error("Sound: ( %s )\n%s", filePath.data(), alGetString(error));
-			return false;
-		}
-
-		// Send data to OpenAL.
-		alBufferData(hBuffer, format, soundData, chunkSize, header.SamplesPerSec);
-		error = alGetError();
-		if (error != AL_NO_ERROR)
-		{
-			Unload();
-			Error("Sound: ( %s )\n%s", filePath.data(), alGetString(error));
-			return false;
-		}
+		source->setLooping(loop);
+		source->setSingleInstance(unique);
+		source->set3dAttenuation(static_cast<unsigned>(attenuation), rolloff);
+		source->set3dMinMaxDistance(minDistance, maxDistance);
+		source->setVolume(volume);
 
 		return true;
 	}
 
 	void Sound::Unload()
 	{
-		if (hBuffer != AL_NONE)
-		{
-			alDeleteBuffers(1, &hBuffer);
-			AL_DEBUG_CHECK();
-			hBuffer = 0;
-		}
+		delete source;
+		source = nullptr;
+
+		buffer.clear();
 	}
 
-	unsigned Sound::GetBufferHandle() const
+	void Sound::SetIs3D(bool _is3D)
 	{
-		return hBuffer;
+		if (_is3D)
+		{
+			source->mFlags |= SoLoud::AudioSource::PROCESS_3D;
+		}
+		else
+		{
+			source->mFlags &= ~SoLoud::AudioSource::PROCESS_3D;
+		}
+
+		is3D = _is3D;
+	}
+
+	bool Sound::Is3D() const
+	{
+		return is3D;
+	}
+
+	void Sound::SetLooping(bool _loop)
+	{
+		source->setLooping(_loop);
+
+		loop = _loop;
+	}
+
+	bool Sound::IsLooping() const
+	{
+		return loop;
+	}
+
+	void Sound::SetIsUnique(bool _unique)
+	{
+		source->setSingleInstance(_unique);
+
+		unique = _unique;
+	}
+
+	bool Sound::IsUnique() const
+	{
+		return unique;
+	}
+
+	void Sound::SetAttenuation(AttenuationFunc func, float _rolloff)
+	{
+		ASSERT(_rolloff >= 0.0f, "'_rolloff' must be non negative.");
+		ASSERT(func != AttenuationFunc::Linear || _rolloff <= 1.0f, "'_rolloff' cannot be greater than 1 when using linear attenuation.");
+
+		source->set3dAttenuation(static_cast<unsigned>(func), _rolloff);
+
+		attenuation = func;
+		rolloff = _rolloff;
+	}
+
+	AttenuationFunc Sound::GetAttenuationFunc() const
+	{
+		return attenuation;
+	}
+
+	float Sound::GetAttenuationRolloff() const
+	{
+		return rolloff;
+	}
+
+	void Sound::SetDistances(float min, float max)
+	{
+		ASSERT(min > 0.0f, "'min' must be greater than zero.");
+		ASSERT(max >= min, "'max' must be greater than or equal to 'min'");
+
+		source->set3dMinMaxDistance(min, max);
+
+		minDistance = min;
+		maxDistance = max;
+	}
+
+	float Sound::GetMinDistance() const
+	{
+		return minDistance;
+	}
+
+	float Sound::GetMaxDistance() const
+	{
+		return maxDistance;
+	}
+
+	void Sound::SetVolume(float _volume)
+	{
+		ASSERT(_volume >= 0.0f, "'volume' must be non negative.");
+
+		source->setVolume(_volume);
+
+		volume = _volume;
+	}
+
+	float Sound::GetVolume() const
+	{
+		return volume;
+	}
+
+	AttenuationFunc StringToAttenuationFunc(std::string_view str)
+	{
+		if (CompareLowercase(str, "inversedistance"))
+			return AttenuationFunc::InverseDistance;
+		else if (CompareLowercase(str, "linear"))
+			return AttenuationFunc::Linear;
+		else if (CompareLowercase(str, "exponential"))
+			return AttenuationFunc::Exponential;
+		else
+			return AttenuationFunc::None;
+	}
+
+	std::string_view AttenuationFuncToString(AttenuationFunc mode)
+	{
+		switch (mode)
+		{
+		default:
+		case AttenuationFunc::None:            return "none";
+		case AttenuationFunc::InverseDistance: return "inversedistance";
+		case AttenuationFunc::Linear:          return "linear";
+		case AttenuationFunc::Exponential:     return "exponential";
+		}
 	}
 }

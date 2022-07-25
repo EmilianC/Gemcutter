@@ -25,7 +25,7 @@ namespace gem
 
 	void SoundListener::OnDisable()
 	{
-		auto listenerEntity = GetListener();
+		Entity::Ptr listenerEntity = GetListener();
 
 		// If we are in fact the currently active listener, we can be disabled.
 		if (listenerEntity == owner)
@@ -38,8 +38,8 @@ namespace gem
 	void SoundListener::OnEnable()
 	{
 		// If there is already an active listener, we must disable it
-		// because OpenAL only supports one active listener at a time.
-		if (auto listenerEntity = GetListener())
+		// because we only support one active listener at a time.
+		if (Entity::Ptr listenerEntity = GetListener())
 		{
 			listenerEntity->Disable<SoundListener>();
 		}

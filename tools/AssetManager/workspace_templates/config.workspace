@@ -31,5 +31,21 @@
       <extension>mat</extension>
       <encoder>${CMAKE_RUNTIME_OUTPUT_DIRECTORY}\\[[Config]]\\material_encoder.exe</encoder>
     </EncoderLink>
+    <EncoderLink>
+      <extension>wav</extension>
+      <encoder>${CMAKE_RUNTIME_OUTPUT_DIRECTORY}\\[[Config]]\\sound_encoder.exe</encoder>
+    </EncoderLink>
+    <EncoderLink>
+      <extension>flac</extension>
+      <encoder>${CMAKE_RUNTIME_OUTPUT_DIRECTORY}\\[[Config]]\\sound_encoder.exe</encoder>
+    </EncoderLink>
+    <EncoderLink>
+      <extension>ogg</extension>
+      <encoder>${CMAKE_RUNTIME_OUTPUT_DIRECTORY}\\[[Config]]\\sound_encoder.exe</encoder>
+    </EncoderLink>
+    <EncoderLink>
+      <extension>mp3</extension>
+      <encoder>${CMAKE_RUNTIME_OUTPUT_DIRECTORY}\\[[Config]]\\sound_encoder.exe</encoder>
+    </EncoderLink>
   </encoders>
 </WorkspaceConfig>
