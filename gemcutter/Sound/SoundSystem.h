@@ -9,7 +9,7 @@ namespace gem
 	{
 		friend class ApplicationSingleton; // For Update().
 	public:
-		bool Init();
+		bool Init(unsigned bufferSize = 1024);
 		bool IsLoaded() const;
 		void Unload();
 

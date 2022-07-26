@@ -16,9 +16,12 @@ namespace gem
 
 	SoLoud::Soloud audioEngine;
 
-	bool SoundSystemSingleton::Init()
+	bool SoundSystemSingleton::Init(unsigned bufferSize)
 	{
-		SoLoud::result result = audioEngine.init();
+		ASSERT(bufferSize > 0, "'bufferSize' must be greater than zero.");
+
+		using SoLoud::Soloud;
+		SoLoud::result result = audioEngine.init(Soloud::CLIP_ROUNDOFF, Soloud::AUTO, Soloud::AUTO, bufferSize);
 		if (result != SoLoud::SOLOUD_ERRORS::SO_NO_ERROR)
 		{
 			Error("SoundSystem: %s", audioEngine.getErrorString(result));
