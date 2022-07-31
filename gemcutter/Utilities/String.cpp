@@ -155,7 +155,7 @@ namespace gem
 	{
 		std::string result;
 
-		if (vsnprintf(buffer, BUFFER_SIZE, format, args) >= 0)
+		if (vsnprintf_s(buffer, BUFFER_SIZE, format, args) >= 0)
 		{
 			result = buffer;
 		}
