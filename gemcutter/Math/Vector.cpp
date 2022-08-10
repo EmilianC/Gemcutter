@@ -572,6 +572,69 @@ namespace gem
 		return v * invLength;
 	}
 
+	vec2 SnapLength(const vec2& v, float step)
+	{
+		float length = Length(v);
+		float target = SnapToGrid(length, step);
+		ASSERT(!Equals(length, 0.0f), "Zero length vector cannot be snapped to length.");
+
+		return v * (target / length);
+	}
+
+	vec3 SnapLength(const vec3& v, float step)
+	{
+		float length = Length(v);
+		float target = SnapToGrid(length, step);
+		ASSERT(!Equals(length, 0.0f), "Zero length vector cannot be snapped to length.");
+
+		return v * (target / length);
+	}
+
+	vec4 SnapLength(const vec4& v, float step)
+	{
+		float length = Length(v);
+		float target = SnapToGrid(length, step);
+		ASSERT(!Equals(length, 0.0f), "Zero length vector cannot be snapped to length.");
+
+		return v * (target / length);
+	}
+
+	vec2 SnapLengthSafe(const vec2& v, float step)
+	{
+		float length = Length(v);
+		if (Equals(length, 0.0f))
+		{
+			return vec2::Zero;
+		}
+
+		float target = SnapToGrid(length, step);
+		return v * (target / length);
+	}
+
+	vec3 SnapLengthSafe(const vec3& v, float step)
+	{
+		float length = Length(v);
+		if (Equals(length, 0.0f))
+		{
+			return vec3::Zero;
+		}
+
+		float target = SnapToGrid(length, step);
+		return v * (target / length);
+	}
+
+	vec4 SnapLengthSafe(const vec4& v, float step)
+	{
+		float length = Length(v);
+		if (Equals(length, 0.0f))
+		{
+			return vec4::Zero;
+		}
+
+		float target = SnapToGrid(length, step);
+		return v * (target / length);
+	}
+
 	vec3 Cross(const vec3& v1, const vec3& v2)
 	{
 		return vec3(

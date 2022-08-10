@@ -154,6 +154,12 @@ namespace gem
 	[[nodiscard]] vec2 NormalizeSafe(const vec2&);
 	[[nodiscard]] vec3 NormalizeSafe(const vec3&);
 	[[nodiscard]] vec4 NormalizeSafe(const vec4&);
+	[[nodiscard]] vec2 SnapLength(const vec2&, float step);
+	[[nodiscard]] vec3 SnapLength(const vec3&, float step);
+	[[nodiscard]] vec4 SnapLength(const vec4&, float step);
+	[[nodiscard]] vec2 SnapLengthSafe(const vec2&, float step);
+	[[nodiscard]] vec3 SnapLengthSafe(const vec3&, float step);
+	[[nodiscard]] vec4 SnapLengthSafe(const vec4&, float step);
 	[[nodiscard]] vec3 Cross(const vec3&, const vec3&);
 	[[nodiscard]] vec2 Reflect(const vec2& incident, const vec2& normal);
 	[[nodiscard]] vec3 Reflect(const vec3& incident, const vec3& normal);
