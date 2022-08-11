@@ -151,9 +151,6 @@ namespace gem
 			camera->Get<Camera>().Bind();
 		}
 
-		textures.Bind();
-		buffers.Bind();
-
 		boundPass = this;
 	}
 
@@ -219,6 +216,10 @@ namespace gem
 			return;
 		}
 
+		// These must be re-bound for each renderable in case
+		// they had been overridden by a previous entity.
+		textures.Bind();
+		buffers.Bind();
 		BindRenderable(*renderable, shader.get());
 
 		// Update transform uniforms.
