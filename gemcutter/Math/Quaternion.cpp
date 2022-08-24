@@ -15,8 +15,8 @@ namespace gem
 	}
 
 	quat::quat(const vec3& right, const vec3& up, const vec3& forward)
+		: quat(mat3(right, up, forward))
 	{
-		*this = quat(mat3(right, up, forward));
 	}
 
 	quat::quat(const mat3& rotation)
@@ -127,10 +127,10 @@ namespace gem
 		float rz = ToRadian(degrees.z) * 0.5f;
 
 	    float cx = cos(rx);
-	    float sx = sin(rx);
 	    float cy = cos(ry);
-	    float sy = sin(ry);
 		float cz = cos(rz);
+	    float sx = sin(rx);
+	    float sy = sin(ry);
 	    float sz = sin(rz);
 
 	    x = sx * cy * cz - cx * sy * sz;
@@ -261,10 +261,10 @@ namespace gem
 	quat Slerp(const quat& p0, const quat& p1, float percent)
 	{
 		float dot = Abs(Dot(p0, p1));
-		if (dot == 1.0f)
+		if (Equals(dot, 1.0f))
 		{
 			// Quaternions are the same.
-			return p0;
+			return p1;
 		}
 
 		float angle = acos(dot);
