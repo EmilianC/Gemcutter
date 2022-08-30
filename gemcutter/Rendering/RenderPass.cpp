@@ -16,6 +16,7 @@
 #include "gemcutter/Resource/Texture.h"
 #include "gemcutter/Resource/UniformBuffer.h"
 #include "gemcutter/Resource/VertexArray.h"
+#include "gemcutter/Utilities/StdExt.h"
 // Renderables
 #include "gemcutter/Rendering/Text.h"
 
@@ -99,9 +100,9 @@ namespace gem
 		return *this;
 	}
 
-	void RenderPass::SetCamera(Entity::Ptr _camera)
+	void RenderPass::SetCamera(Entity::WeakPtr _camera)
 	{
-		ASSERT(!_camera || _camera->Has<Camera>(), "'camera' must have a camera component.");
+		ASSERT(_camera.expired() || _camera.lock()->Has<Camera>(), "'camera' must have a camera component.");
 
 		camera = std::move(_camera);
 	}
@@ -146,9 +147,13 @@ namespace gem
 			Application.GetScreenViewport().bind();
 		}
 
-		if (camera)
+		if (Entity::Ptr cameraLock = camera.lock())
 		{
-			camera->Get<Camera>().Bind();
+			auto& cameraComponent = cameraLock->Get<Camera>();
+			cameraComponent.Bind();
+
+			viewMatrix = cameraComponent.GetViewMatrix();
+			viewProjMatrix = cameraComponent.GetProjMatrix();
 		}
 
 		boundPass = this;
@@ -174,7 +179,7 @@ namespace gem
 			RenderTarget::UnBind();
 		}
 
-		if (camera != nullptr)
+		if (!IsPtrNull(camera))
 		{
 			Camera::UnBind();
 		}
@@ -225,14 +230,11 @@ namespace gem
 		// Update transform uniforms.
 		const mat4 worldTransform = ent.GetWorldTransform();
 
-		if (camera)
+		if (!IsPtrNull(camera))
 		{
-			auto& cameraComponent = camera->Get<Camera>();
+			const mat4 mv = viewMatrix * worldTransform;
 
-			const mat4 mv = cameraComponent.GetViewMatrix() * worldTransform;
-			const mat4 mvp = cameraComponent.GetProjMatrix() * mv;
-
-			MVP.Set(mvp);
+			MVP.Set(viewProjMatrix * mv);
 			modelView.Set(mv);
 		}
 		else
@@ -346,18 +348,19 @@ namespace gem
 				glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * 18, points);
 
 				/* Render */
-				if (camera)
+				if (!IsPtrNull(camera))
 				{
-					auto& cameraComponent = camera->Get<Camera>();
+					const mat4 mv = viewMatrix * newTransform;
 
-					MVP.Set(cameraComponent.GetViewProjMatrix() * newTransform);
-					modelView.Set(cameraComponent.GetViewMatrix() * newTransform);
+					MVP.Set(viewProjMatrix * mv);
+					modelView.Set(mv);
 				}
 				else
 				{
 					MVP.Set(mat4::Identity);
 					modelView.Set(mat4::Identity);
 				}
+
 				model.Set(newTransform);
 				invModel.Set(newTransform.GetFastInverse());
 				transformBuffer.Bind(static_cast<unsigned>(UniformBufferSlot::Model));
