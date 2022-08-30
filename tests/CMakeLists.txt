@@ -8,6 +8,7 @@ list(APPEND unit_test_files
 	"Math.cpp"
 	"Meta.cpp"
 	"String.cpp"
+	"WeakPtr.cpp"
 )
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${unit_test_files})

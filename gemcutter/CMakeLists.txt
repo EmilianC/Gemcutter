@@ -123,12 +123,12 @@ list(APPEND gemcutter_files
 	"Sound/SoundSystem.cpp"
 	"Sound/SoundSystem.h"
 
-	"Utilities/Container.h"
 	"Utilities/EnumFlags.h"
 	"Utilities/Meta.h"
 	"Utilities/Random.cpp"
 	"Utilities/Random.h"
 	"Utilities/ScopeGuard.h"
+	"Utilities/StdExt.h"
 	"Utilities/String.cpp"
 	"Utilities/String.h"
 )

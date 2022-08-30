@@ -52,8 +52,7 @@ namespace gem
 	template<typename... Params>
 	auto Delegate<Return(Args...)>::operator()(Params&&... params) -> std::conditional_t<HasReturnValue, std::optional<Return>, void>
 	{
-		// This checks if the pointer is initialized (not nullptr).
-		if (std::weak_ptr<void>{}.owner_before(lifetimePtr))
+		if (!IsPtrNull(lifetimePtr))
 		{
 			if (lifetimePtr.expired())
 			{
@@ -153,8 +152,7 @@ namespace gem
 		{
 			Binding& binding = bindings[i];
 
-			// This checks if the pointer is initialized (not nullptr).
-			if (std::weak_ptr<void>{}.owner_before(binding.lifetimePtr))
+			if (!IsPtrNull(binding.lifetimePtr))
 			{
 				if (binding.lifetimePtr.expired())
 				{

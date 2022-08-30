@@ -1,6 +1,7 @@
 // Copyright (c) 2021 Emilian Cioca
 #pragma once
 #include "gemcutter/Application/Logging.h"
+#include "gemcutter/Utilities/StdExt.h"
 
 #include <functional>
 #include <memory>
