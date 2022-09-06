@@ -555,14 +555,9 @@ namespace gem
 
 	void ApplicationSingleton::GameLoop(const std::function<void()>& update, const std::function<void()>& draw)
 	{
+		ASSERT(hwnd != NULL, "A window must be created before a calling GameLoop().");
 		ASSERT(update, "An update function must be provided.");
 		ASSERT(draw, "A draw function must be provided.");
-
-		if (hwnd == NULL)
-		{
-			Error("Application: Must be initialized and have a window created before a call to GameLoop().");
-			return;
-		}
 
 		// Timing control variables.
 		constexpr unsigned MAX_CONCURRENT_UPDATES = 5;
@@ -702,7 +697,7 @@ namespace gem
 
 	std::string ApplicationSingleton::GetOpenGLVersionString() const
 	{
-		ASSERT(hwnd != NULL, "A game window must be created before calling this function.");
+		ASSERT(hwnd != NULL, "A game window must be created before calling GetOpenGLVersionString().");
 
 		return reinterpret_cast<const char*>(glGetString(GL_VERSION));
 	}
@@ -941,6 +936,16 @@ namespace gem
 		}
 
 		return true;
+	}
+
+	void ApplicationSingleton::MaximizeWindow()
+	{
+		ASSERT(hwnd != NULL, "A game window must be created before calling MaximizeWindow().");
+
+		if (IsFullscreen())
+			return;
+
+		ShowWindow(hwnd, SW_MAXIMIZE);
 	}
 
 	HWND ApplicationSingleton::GetWindowHandle()

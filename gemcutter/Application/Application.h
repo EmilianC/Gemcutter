@@ -83,6 +83,9 @@ namespace gem
 		bool SetResizable(bool state);
 		bool SetResolution(unsigned width, unsigned height);
 
+		// Enlarges the window to fit the desktop area. Has no effect when running fullscreen.
+		void MaximizeWindow();
+
 	private:
 		HWND GetWindowHandle();
 
