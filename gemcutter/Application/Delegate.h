@@ -131,6 +131,9 @@ namespace gem
 
 		std::vector<Binding> bindings;
 	};
+
+	Delegate()   -> Delegate<void()>;
+	Dispatcher() -> Dispatcher<void()>;
 }
 
 #include "Delegate.inl"

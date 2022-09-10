@@ -128,7 +128,7 @@ TEST_CASE("Events")
 		int countA = 0;
 		int countB = 0;
 
-		Dispatcher<void()> dispatcher;
+		Dispatcher dispatcher;
 		CHECK(!dispatcher);
 
 		DelegateHandle handleA = dispatcher.Add([&]() { countA++; });
@@ -166,7 +166,7 @@ TEST_CASE("Events")
 
 		SECTION("Moved")
 		{
-			Dispatcher<void()> movedDispatcher = std::move(dispatcher);
+			Dispatcher movedDispatcher = std::move(dispatcher);
 			CHECK(movedDispatcher);
 
 			movedDispatcher.Dispatch();
