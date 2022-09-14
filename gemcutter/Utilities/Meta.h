@@ -1,6 +1,7 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
 #include <type_traits>
+#include <string_view>
 
 // Contains various helpers and utilities for compile-time metaprogramming.
 namespace gem::meta
@@ -97,14 +98,14 @@ namespace gem::meta
 		}
 	}
 
-	constexpr unsigned HashCRC(const char* str)
+	[[nodiscard]] constexpr unsigned HashCRC(const char* str)
 	{
 		return detail::HashCRC(str, detail::StrLen(str));
 	}
 
 	// Forces compile-time evaluation of the given expression.
 	// Can be used to wrap calls to constexpr functions.
-	consteval auto as_consteval(auto value) { return value; }
+	[[nodiscard]] consteval auto as_consteval(auto value) { return value; }
 
 	// Used for compile-time in-place strings for use as template parameters.
 	// STRING("...") will generate a strongly typed and constexpr string up to 64 max length.
@@ -164,4 +165,48 @@ namespace gem::meta
 	#define STRING_112(str) gem::meta::string<EXPAND_STRING_112(str)>
 	#define STRING_128(str) gem::meta::string<EXPAND_STRING_128(str)>
 	#define STRING(str) STRING_64(str)
+
+	namespace detail
+	{
+		template<typename T> [[nodiscard]]
+		consteval std::string_view GetTypeName()
+		{
+			std::string_view result = __FUNCSIG__;
+			const std::string_view functionStartTag = "GetTypeName<";
+			const std::string_view functionEndTag = ">(";
+			const std::string_view enumTag = "enum ";
+			const std::string_view classTag = "class ";
+			const std::string_view structTag = "struct ";
+
+			auto startIndex = result.find(functionStartTag) + functionStartTag.size();
+			auto endIndex = result.rfind(functionEndTag);
+
+			result = result.substr(startIndex, endIndex - startIndex);
+
+			if (result.starts_with(enumTag))
+			{
+				result.remove_prefix(enumTag.size());
+			}
+			
+			if (result.starts_with(classTag))
+			{
+				result.remove_prefix(classTag.size());
+			}
+			
+			if (result.starts_with(structTag))
+			{
+				result.remove_prefix(structTag.size());
+			}
+
+			return result;
+		}
+	}
+
+	// Returns a string representation of the given type's name.
+	// Results will vary by compiler and are best used for debug purposes only.
+	template<typename T> [[nodiscard]]
+	consteval std::string_view GetTypeName()
+	{
+		return detail::GetTypeName<std::remove_cv_t<T>>();
+	}
 }
