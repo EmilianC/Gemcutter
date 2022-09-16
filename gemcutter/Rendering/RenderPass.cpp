@@ -193,6 +193,9 @@ namespace gem
 		ASSERT(shader != nullptr, "RenderPass must have a Shader attached if it is a post-processing pass.");
 		ASSERT(Primitives.IsLoaded(), "Primitives system must be initialized in order to render a post-processing pass.");
 
+		textures.Bind();
+		buffers.Bind();
+
 		SetBlendFunc(BlendFunc::None);
 		SetDepthFunc(DepthFunc::None);
 
