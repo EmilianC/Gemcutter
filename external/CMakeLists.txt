@@ -22,14 +22,13 @@ add_library(freetype INTERFACE)
 target_include_directories(freetype INTERFACE freetype/)
 target_link_directories(freetype INTERFACE freetype/)
 target_link_libraries(freetype INTERFACE freetype${CMAKE_STATIC_LIBRARY_SUFFIX})
-
-file(MAKE_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Debug/" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Release/")
-execute_process( # Copy dlls alongside project executable.
-	COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_LIST_DIR}/freetype/freetype6.dll" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Debug/"
-	COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_LIST_DIR}/freetype/freetype6.dll" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Release/"
-	COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_LIST_DIR}/freetype/zlib1.dll" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Debug/"
-	COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_LIST_DIR}/freetype/zlib1.dll" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Release/"
-)
+foreach(LOOP_CONFIG IN LISTS CMAKE_CONFIGURATION_TYPES) # Copy dlls alongside project executables.
+	file(MAKE_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${LOOP_CONFIG}/")
+	execute_process(
+		COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_LIST_DIR}/freetype/freetype6.dll" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${LOOP_CONFIG}/"
+		COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_LIST_DIR}/freetype/zlib1.dll" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${LOOP_CONFIG}/"
+	)
+endforeach()
 
 # GLEW #
 set(CMAKE_FOLDER "${PARENT_FOLDER}/external/glew")
@@ -40,7 +39,7 @@ target_link_libraries(glew INTERFACE glew32s${CMAKE_STATIC_LIBRARY_SUFFIX})
 target_compile_definitions(glew INTERFACE GLEW_STATIC)
 
 # Imgui #
-if (ENABLE_IMGUI_SUPPORT)
+if (ENABLE_IMGUI_SUPPORT OR ENABLE_IMGUI_DEV_SUPPORT)
 	set(CMAKE_FOLDER "${PARENT_FOLDER}/external/imgui")
 	add_library(imgui STATIC
 		"imgui/backends/imgui_impl_win32.cpp"

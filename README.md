@@ -33,9 +33,14 @@ If you just want to download the framework, then simply clone the repo and confi
 > cmake ..                       # Default configuration, or
 > cmake .. -DENABLE_SAMPLES=OFF  # Default configuration without downloading samples
 ```
-And that's it! You'll find your generated projects under the `build/` folder. Code samples can be found under `samples/` if they were enabled.
+And that's it! Any required git submodules are pulled automatically. You'll find your generated projects under the `build/` folder. Code samples can be found under `samples/` if they were enabled.
 
-Any git submodules which are required by your configuration are automatically pulled, so feel free to omit them when cloning.
+The following build configurations will be available:
+| Config         | defines            | optimizations | asserts | tools |
+|----------------|--------------------|---------------|---------|-------|
+| Debug          | GEM_DEBUG, GEM_DEV | off           | on      | on    |
+| RelWithDebInfo | GEM_DEV            | on            | off     | on    |
+| Release        | GEM_PRODUCTION     | on            | off     | off   |
 
 # Upcoming Features
 Gemcutter is always being updated and improved. See the [Trello board](https://trello.com/b/Oc2GFT2A/gemcutter) to follow development.

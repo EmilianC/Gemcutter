@@ -73,6 +73,12 @@ set_target_properties(asset_manager PROPERTIES
 	WIN32_EXECUTABLE
 		TRUE
 )
+target_compile_definitions(asset_manager
+	PUBLIC
+		$<$<CONFIG:Debug>:GEM_DEBUG>
+		$<$<CONFIG:Debug,RelWithDebInfo>:GEM_DEV>
+		$<$<CONFIG:Release>:GEM_PRODUCTION>
+)
 
 csharp_set_windows_forms_properties(
 	"Manager.cs"

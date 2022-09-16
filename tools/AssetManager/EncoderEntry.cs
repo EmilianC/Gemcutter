@@ -119,6 +119,12 @@ namespace AssetManager
 					return false;
 				}
 
+				if (!EncoderExists(encoderBox.Text.Replace("[[Config]]", "RelWithDebInfo")))
+				{
+					statusLog.SetToolTip(status, "The RelWithDebInfo build of the Encoder does not exist on the disk.");
+					return false;
+				}
+
 				if (!EncoderExists(encoderBox.Text.Replace("[[Config]]", "Release")))
 				{
 					statusLog.SetToolTip(status, "The Release build of the Encoder does not exist on the disk.");

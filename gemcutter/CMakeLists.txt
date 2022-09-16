@@ -156,6 +156,8 @@ target_link_libraries(gemcutter
 
 if (ENABLE_IMGUI_SUPPORT)
 	target_link_libraries(gemcutter PUBLIC imgui)
+elseif (ENABLE_IMGUI_DEV_SUPPORT)
+	target_link_libraries(gemcutter PUBLIC $<$<CONFIG:Debug,RelWithDebInfo>:imgui>)
 endif()
 
 target_compile_definitions(gemcutter
@@ -163,6 +165,9 @@ target_compile_definitions(gemcutter
 		_CRT_SECURE_NO_WARNINGS
 		WIN32_LEAN_AND_MEAN
 		NOMINMAX
+		$<$<CONFIG:Debug>:GEM_DEBUG>
+		$<$<CONFIG:Debug,RelWithDebInfo>:GEM_DEV>
+		$<$<CONFIG:Release>:GEM_PRODUCTION>
 )
 
 option(ENABLE_PCH "Use a precompiled header file." TRUE)

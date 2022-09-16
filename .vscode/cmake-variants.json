@@ -8,9 +8,14 @@
 				"long": "Optimizations disabled.",
 				"buildType": "Debug"
 			},
-			"release": {
-				"short": "Release",
-				"long": "Optimizations enabled.",
+			"development": {
+				"short": "Development",
+				"long": "Optimizations enabled with development tools.",
+				"buildType": "RelWithDebInfo"
+			},
+			"production": {
+				"short": "Production",
+				"long": "Optimizations enabled without development tools.",
 				"buildType": "Release"
 			}
 		}

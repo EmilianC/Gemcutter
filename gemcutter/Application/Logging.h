@@ -7,9 +7,7 @@
 
  "Log_Output.txt" is appended with every message if it has been previously opened with OpenOutputLog().
  Console output can be toggled as well with CreateConsoleWindow() and DestroyConsoleWindow().
- DEBUG_* macros allow you to log only when in debug mode.
-
- To force macros off, define GEM_DISABLE_DEBUG_MESSAGES.
+ DEBUG_* and ASSERT() macros allow you to log in debug builds.
 */
 
 namespace gem
@@ -56,7 +54,7 @@ namespace gem
 	void Assert(const char* exp, const char* format, ...);
 }
 
-#if defined(_DEBUG) && !defined(GEM_DISABLE_DEBUG_MESSAGES)
+#if defined(GEM_DEBUG)
 	#define DEBUG_LOG(format, ...) gem::Log((format), ##__VA_ARGS__)
 	#define DEBUG_ERROR(format, ...) gem::Error((format), ##__VA_ARGS__)
 	#define DEBUG_WARNING(format, ...) gem::Warning((format), ##__VA_ARGS__)

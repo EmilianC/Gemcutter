@@ -31,8 +31,9 @@ function(update_submodule submodule_dir)
 	endif()
 endfunction()
 
-option(ENABLE_IMGUI_SUPPORT "Build and use ImGui." ON)
-if (ENABLE_IMGUI_SUPPORT)
+option(ENABLE_IMGUI_DEV_SUPPORT "Build and use ImGui in development configurations." ON)
+option(ENABLE_IMGUI_SUPPORT "Build and use ImGui in all configurations." OFF)
+if (ENABLE_IMGUI_DEV_SUPPORT OR ENABLE_IMGUI_SUPPORT)
 	update_submodule("${CMAKE_CURRENT_LIST_DIR}/external/imgui")
 endif()
 

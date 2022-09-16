@@ -146,7 +146,7 @@ namespace
 		return true;
 	}
 
-#ifdef _DEBUG
+#ifdef GEM_DEBUG
 	void CALLBACK OpenGLDebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* msg, const void* /* unused */)
 	{
 		// Ignored messages.
@@ -310,7 +310,7 @@ namespace
 				WGL_CONTEXT_MAJOR_VERSION_ARB, static_cast<int>(glMajorVersion),
 				WGL_CONTEXT_MINOR_VERSION_ARB, static_cast<int>(glMinorVersion),
 				WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
-#ifdef _DEBUG
+#ifdef GEM_DEBUG
 				WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB | WGL_CONTEXT_DEBUG_BIT_ARB,
 #else
 				WGL_CONTEXT_FLAGS_ARB, WGL_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
@@ -361,7 +361,7 @@ namespace
 			// Initializing GLEW can sometimes emit an GL_INVALID_ENUM error, so we discard any errors here.
 			glGetError();
 
-#ifdef _DEBUG
+#ifdef GEM_DEBUG
 			glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 			glDebugMessageCallback(OpenGLDebugCallback, NULL);
 			glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, NULL, GL_TRUE);
@@ -537,7 +537,7 @@ namespace gem
 
 		ShowCursor(true);
 
-#ifdef _DEBUG
+#ifdef GEM_DEBUG
 		// Some drivers will emit erroneous errors on shutdown, so we disable debug info first.
 		glDebugMessageCallback(NULL, NULL);
 #endif

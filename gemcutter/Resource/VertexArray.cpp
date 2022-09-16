@@ -467,7 +467,7 @@ namespace gem
 
 	void VertexArray::SetVertexCount(unsigned count)
 	{
-#ifdef _DEBUG
+#ifdef GEM_DEBUG
 		if (count > 0)
 		{
 			// Check to ensure that the specified count would not cause us to read past any of the buffers.
@@ -493,7 +493,7 @@ namespace gem
 
 	void VertexArray::SetInstanceCount(unsigned count)
 	{
-#ifdef _DEBUG
+#ifdef GEM_DEBUG
 		if (count > 0)
 		{
 			// Check to ensure that the specified number of instances would not cause us to read past any of the instanced streams.

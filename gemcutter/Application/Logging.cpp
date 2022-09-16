@@ -23,7 +23,7 @@ namespace
 			std::cout << header << message << std::endl;
 		}
 
-#if defined(_MSC_VER) && defined(_DEBUG)
+#if defined(_MSC_VER) && defined(GEM_DEBUG)
 		OutputDebugString(header.data());
 		OutputDebugString(message.data());
 		OutputDebugString("\n");

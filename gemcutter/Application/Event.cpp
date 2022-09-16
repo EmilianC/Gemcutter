@@ -1,7 +1,7 @@
 // Copyright (c) 2017 Emilian Cioca
 #include "Event.h"
 
-#ifdef _DEBUG
+#ifdef GEM_DEBUG
 #include "gemcutter/Application/Logging.h"
 #endif
 

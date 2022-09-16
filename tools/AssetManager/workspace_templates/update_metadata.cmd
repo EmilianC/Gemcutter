@@ -7,6 +7,12 @@ if exist "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Release/asset_manager.exe" (
     goto :end
 )
 
+if exist "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/RelWithDebInfo/asset_manager.exe" (
+    title Updating Metadata [RelWithDebInfo]
+    call "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/RelWithDebInfo/asset_manager.exe" --update
+    goto :end
+)
+
 title Updating Metadata [Debug]
 call "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Debug/asset_manager.exe" --update
 

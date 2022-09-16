@@ -35,8 +35,10 @@ namespace AssetManager
 		public Manager()
 		{
 			InitializeComponent();
-#if DEBUG
+#if GEM_DEBUG
 			Text += " [Debug]";
+#elif GEM_DEV
+			Text += " [RelWithDebInfo]";
 #endif
 
 			inputPath = Directory.GetCurrentDirectory();
@@ -436,8 +438,10 @@ namespace AssetManager
 				foreach (var link in config.encoders)
 				{
 					var process = new Process();
-#if DEBUG
+#if GEM_DEBUG
 					process.StartInfo.FileName = Environment.ExpandEnvironmentVariables(link.encoder.Replace("[[Config]]", "Debug"));
+#elif GEM_DEV
+					process.StartInfo.FileName = Environment.ExpandEnvironmentVariables(link.encoder.Replace("[[Config]]", "RelWithDebInfo"));
 #else
 					process.StartInfo.FileName = Environment.ExpandEnvironmentVariables(link.encoder.Replace("[[Config]]", "Release"));
 #endif
