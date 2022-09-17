@@ -124,6 +124,7 @@ list(APPEND gemcutter_files
 	"Sound/SoundSystem.h"
 
 	"Utilities/EnumFlags.h"
+	"Utilities/Identifier.h"
 	"Utilities/Meta.h"
 	"Utilities/Random.cpp"
 	"Utilities/Random.h"
