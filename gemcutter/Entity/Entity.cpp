@@ -147,23 +147,18 @@ namespace gem
 
 	void Entity::RemoveAllComponents()
 	{
-		unsigned i = components.size();
-
 		// This loop safely removes all components even if they remove others during destruction.
-		while (i-- != 0)
+		while (!components.empty())
 		{
-			if (i < components.size())
+			auto* comp = components.back();
+			components.pop_back();
+
+			if (comp->IsEnabled())
 			{
-				auto* comp = components[i];
-				components.erase(components.begin() + i);
-
-				if (comp->IsEnabled())
-				{
-					Unindex(*comp);
-				}
-
-				delete comp;
+				Unindex(*comp);
 			}
+
+			delete comp;
 		}
 	}
 

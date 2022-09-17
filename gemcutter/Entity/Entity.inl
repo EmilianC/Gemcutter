@@ -90,7 +90,8 @@ namespace gem
 				if (safe_cast<T>(components[i]))
 				{
 					auto* comp = components[i];
-					components.erase(components.begin() + i);
+					components[i] = components.back();
+					components.pop_back();
 
 					if (comp->IsEnabled())
 					{
