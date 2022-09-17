@@ -54,7 +54,7 @@ namespace gem
 	void Assert(const char* exp, const char* format, ...);
 }
 
-#if defined(GEM_DEBUG)
+#ifdef GEM_DEBUG
 	#define DEBUG_LOG(format, ...) gem::Log((format), ##__VA_ARGS__)
 	#define DEBUG_ERROR(format, ...) gem::Error((format), ##__VA_ARGS__)
 	#define DEBUG_WARNING(format, ...) gem::Warning((format), ##__VA_ARGS__)

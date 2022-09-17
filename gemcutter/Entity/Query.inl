@@ -5,11 +5,11 @@ namespace gem
 	{
 		// Index of all Entities for each component and tag type.
 		// Sorted to allow for logical operations, such as ANDing, between multiple tables in the index.
-		extern std::unordered_map<unsigned, std::vector<Entity*>> entityIndex;
+		extern std::unordered_map<ComponentId, std::vector<Entity*>> entityIndex;
 
 		// Index of all Components of a particular type.
 		// Not sorted since no logical operations are performed using these tables.
-		extern std::unordered_map<unsigned, std::vector<ComponentBase*>> componentIndex;
+		extern std::unordered_map<ComponentId, std::vector<ComponentBase*>> componentIndex;
 
 		// A lightweight tag representing the end of a query's range. We use this rather than creating another
 		// potentially large end-iterator. Our custom iterators already have all the information they need to
@@ -215,7 +215,7 @@ namespace gem
 		template<typename Arg>
 		EntityIterator BuildRootIterator()
 		{
-			auto& index = entityIndex[Arg::GetComponentId()];
+			auto& index = entityIndex[Arg::uniqueId];
 			auto begin = index.begin();
 			auto end = index.end();
 
@@ -226,7 +226,7 @@ namespace gem
 		template<typename Arg1, typename Arg2, typename... Args>
 		auto BuildRootIterator()
 		{
-			auto& index = entityIndex[Arg1::GetComponentId()];
+			auto& index = entityIndex[Arg1::uniqueId];
 			auto begin = index.begin();
 			auto end = index.end();
 
@@ -247,7 +247,7 @@ namespace gem
 			"Cannot query tags with All<>(). Use With<>() instead.");
 
 		using namespace detail;
-		auto& index = componentIndex[Component::GetComponentId()];
+		auto& index = componentIndex[Component::uniqueId];
 		auto itr = ComponentIterator<Component>(index.begin(), index.end());
 
 		return detail::Range(itr);
@@ -286,7 +286,7 @@ namespace gem
 		if constexpr (sizeof...(Args) == 0)
 		{
 			using namespace detail;
-			result.reserve(entityIndex[Arg1::GetComponentId()].size());
+			result.reserve(entityIndex[Arg1::uniqueId].size());
 		}
 
 		for (Entity& ent : With<Arg1, Args...>())
@@ -303,6 +303,6 @@ namespace gem
 	std::vector<ComponentBase*>& GetComponentIndex()
 	{
 		using namespace detail;
-		return componentIndex[Component::GetComponentId()];
+		return componentIndex[Component::uniqueId];
 	}
 }

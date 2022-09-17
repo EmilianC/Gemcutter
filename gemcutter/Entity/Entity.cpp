@@ -10,11 +10,11 @@ namespace gem
 {
 	namespace detail
 	{
-		std::unordered_map<unsigned, std::vector<Entity*>> entityIndex;
-		std::unordered_map<unsigned, std::vector<ComponentBase*>> componentIndex;
+		std::unordered_map<ComponentId, std::vector<Entity*>> entityIndex;
+		std::unordered_map<ComponentId, std::vector<ComponentBase*>> componentIndex;
 	}
 
-	ComponentBase::ComponentBase(Entity& _owner, unsigned _componentId)
+	ComponentBase::ComponentBase(Entity& _owner, ComponentId _componentId)
 		: owner(_owner)
 		, componentId(_componentId)
 	{
@@ -28,12 +28,6 @@ namespace gem
 	bool ComponentBase::IsComponentEnabled() const
 	{
 		return isEnabled;
-	}
-
-	unsigned ComponentBase::GenerateID()
-	{
-		static unsigned counter = 1;
-		return counter++;
 	}
 
 	Entity::Entity(std::string name)
@@ -232,7 +226,7 @@ namespace gem
 		return isEnabled;
 	}
 
-	void Entity::Tag(unsigned tagId)
+	void Entity::Tag(ComponentId tagId)
 	{
 		if (IsEnabled())
 		{
@@ -242,7 +236,7 @@ namespace gem
 		tags.push_back(tagId);
 	}
 
-	void Entity::RemoveTag(unsigned tagId)
+	void Entity::RemoveTag(ComponentId tagId)
 	{
 		auto itr = std::find(tags.begin(), tags.end(), tagId);
 		if (itr == tags.end())
@@ -257,14 +251,14 @@ namespace gem
 		}
 	}
 
-	void Entity::IndexTag(unsigned tagId)
+	void Entity::IndexTag(ComponentId tagId)
 	{
 		// Adjust [id, entity] index.
 		auto& table = detail::entityIndex[tagId];
 		table.insert(std::lower_bound(table.begin(), table.end(), this), this);
 	}
 
-	void Entity::UnindexTag(unsigned tagId)
+	void Entity::UnindexTag(ComponentId tagId)
 	{
 		// Adjust [id, entity] index.
 		auto& table = detail::entityIndex[tagId];

@@ -5,7 +5,7 @@ namespace gem
 	{
 		// Allows for compile-time decision of whether or not a dynamic cast is required.
 		// A dynamic cast is required when a class inherits from Component indirectly, and
-		// as such, doesn't compile its own unique component type ID.
+		// as such, doesn't generate its own unique ComponentId.
 		template<class T>
 		T* safe_cast(ComponentBase* comp)
 		{
@@ -20,15 +20,12 @@ namespace gem
 		}
 	}
 
-	template<class derived>
-	Component<derived>::Component(Entity& owner)
-		: ComponentBase(owner, componentId)
-	{}
+	template<class derived> const ComponentId Component<derived>::uniqueId = GenerateUniqueId<ComponentId>();
 
 	template<class derived>
-	unsigned Component<derived>::GetComponentId()
+	Component<derived>::Component(Entity& owner)
+		: ComponentBase(owner, uniqueId)
 	{
-		return componentId;
 	}
 
 	template<class T, typename... Args>
@@ -85,7 +82,7 @@ namespace gem
 
 		for (unsigned i = 0; i < components.size(); ++i)
 		{
-			if (components[i]->componentId == T::GetComponentId())
+			if (components[i]->componentId == T::uniqueId)
 			{
 				if (safe_cast<T>(components[i]))
 				{
@@ -113,9 +110,9 @@ namespace gem
 
 		if constexpr (std::is_base_of_v<TagBase, T>)
 		{
-			for (unsigned tag : tags)
+			for (ComponentId tag : tags)
 			{
-				if (tag == T::GetComponentId())
+				if (tag == T::uniqueId)
 				{
 					return true;
 				}
@@ -138,7 +135,7 @@ namespace gem
 		( [this]() {
 			if (!Has<Args>())
 			{
-				Tag(Args::GetComponentId());
+				Tag(Args::uniqueId);
 			}
 		}(), ... );
 	}
@@ -148,7 +145,7 @@ namespace gem
 	{
 		static_assert(std::is_base_of_v<TagBase, T>, "Template argument must inherit from Tag.");
 
-		RemoveTag(T::GetComponentId());
+		RemoveTag(T::uniqueId);
 	}
 
 	template<class T>
@@ -156,12 +153,12 @@ namespace gem
 	{
 		static_assert(std::is_base_of_v<TagBase, T>, "Template argument must inherit from Tag.");
 
-		std::vector<Entity*>& taggedEntities = detail::entityIndex[T::GetComponentId()];
+		std::vector<Entity*>& taggedEntities = detail::entityIndex[T::uniqueId];
 		for (Entity* ent : taggedEntities)
 		{
 			auto& tags = ent->tags;
 
-			auto itr = std::find(tags.begin(), tags.end(), T::GetComponentId());
+			auto itr = std::find(tags.begin(), tags.end(), T::uniqueId);
 			*itr = tags.back();
 			tags.pop_back();
 		}
@@ -228,7 +225,7 @@ namespace gem
 		while (true)
 		{
 			ASSERT(itr != components.end(), "Entity did not have the expected component.");
-			if ((*itr)->componentId == T::GetComponentId())
+			if ((*itr)->componentId == T::uniqueId)
 			{
 				ASSERT(safe_cast<T>(*itr), "Entity did not have the expected component.");
 				return *static_cast<T*>(*itr);
@@ -247,7 +244,7 @@ namespace gem
 
 		for (auto* comp : components)
 		{
-			if (comp->componentId == T::GetComponentId())
+			if (comp->componentId == T::uniqueId)
 			{
 				return safe_cast<T>(comp);
 			}
@@ -255,4 +252,16 @@ namespace gem
 
 		return nullptr;
 	}
+}
+
+namespace std
+{
+	template<>
+	struct hash<gem::ComponentId>
+	{
+		size_t operator()(const gem::ComponentId& id) const noexcept
+		{
+			return std::hash<gem::ComponentId::ValueType>{}(id.GetValue());
+		}
+	};
 }

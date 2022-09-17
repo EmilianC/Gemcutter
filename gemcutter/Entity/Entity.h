@@ -4,6 +4,7 @@
 #include "gemcutter/Math/Matrix.h"
 #include "gemcutter/Math/Transform.h"
 #include "gemcutter/Resource/Shareable.h"
+#include "gemcutter/Utilities/Identifier.h"
 #include "gemcutter/Utilities/Meta.h"
 
 #include <tuple>
@@ -13,6 +14,7 @@
 namespace gem
 {
 	class Entity;
+	struct ComponentId : public Identifier<short> {};
 
 	class ComponentBase
 	{
@@ -20,7 +22,7 @@ namespace gem
 	public:
 		ComponentBase() = delete;
 		ComponentBase(const ComponentBase&) = delete;
-		ComponentBase(Entity& owner, unsigned componentId);
+		ComponentBase(Entity& owner, ComponentId componentId);
 		ComponentBase& operator=(const ComponentBase&) = delete;
 		virtual ~ComponentBase() = default;
 
@@ -39,12 +41,9 @@ namespace gem
 		// Called when the component is added from queries.
 		virtual void OnEnable() {}
 
-		// Consumes a new component-Id. Used statically by derived components.
-		static unsigned GenerateID();
-
 	private:
 		// The unique ID used by the derived component.
-		const unsigned componentId;
+		const ComponentId componentId;
 
 		bool isEnabled = true;
 	};
@@ -61,15 +60,8 @@ namespace gem
 		Component(Entity& owner);
 		virtual ~Component() = default;
 
-		// Returns the unique Id for the component.
-		static unsigned GetComponentId();
-
-	private:
-		// A unique Id given to each component type.
-		static unsigned componentId;
+		static const ComponentId uniqueId;
 	};
-
-	template<class derived> unsigned Component<derived>::componentId = ComponentBase::GenerateID();
 
 	struct TagBase {};
 	// Base class for all tags. Cannot be instantiated.
@@ -188,17 +180,17 @@ namespace gem
 		template<class T>
 		T* TryComponent() const;
 
-		void Tag(unsigned tagId);
-		void RemoveTag(unsigned tagId);
+		void Tag(ComponentId tagId);
+		void RemoveTag(ComponentId tagId);
 
-		void IndexTag(unsigned tagId);
-		void UnindexTag(unsigned tagId);
+		void IndexTag(ComponentId tagId);
+		void UnindexTag(ComponentId tagId);
 
 		void Index(ComponentBase& comp);
 		void Unindex(ComponentBase& comp);
 
 		std::vector<ComponentBase*> components;
-		std::vector<unsigned> tags;
+		std::vector<ComponentId> tags;
 
 		bool isEnabled = true;
 	};
