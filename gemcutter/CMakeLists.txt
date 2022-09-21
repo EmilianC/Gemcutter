@@ -132,6 +132,8 @@ list(APPEND gemcutter_files
 	"Utilities/StdExt.h"
 	"Utilities/String.cpp"
 	"Utilities/String.h"
+
+	"Gemcutter.natvis"
 )
 
 source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${gemcutter_files})

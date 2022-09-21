@@ -21,7 +21,7 @@ indent_style = space
 indent_size = 2
 
 # Config files
-[*.{config,resx,xml,cache,workspace}]
+[*.{config,resx,xml,cache,workspace,natvis}]
 indent_style = space
 indent_size = 2
 

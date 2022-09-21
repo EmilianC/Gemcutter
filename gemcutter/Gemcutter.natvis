@@ -1,0 +1,618 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+
+  <!--    -->
+  <!-- AI -->
+  <!--    -->
+
+  <Type Name="gem::ProbabilityMatrix">
+    <DisplayString>{{ states={numStates}, actions={numActions}} }</DisplayString>
+    <Expand>
+      <ArrayItems Condition="data != nullptr">
+        <Size>numStates * numActions</Size>
+        <ValuePointer>data</ValuePointer>
+      </ArrayItems>
+    </Expand>
+  </Type>
+
+
+  <!--           -->
+  <!-- Delegates -->
+  <!--           -->
+
+  <Type Name="gem::DelegateHandle">
+    <DisplayString>{{ DelegateHandle={id} }}</DisplayString>
+  </Type>
+
+
+  <Type Name="gem::Delegate&lt;*&gt;" Inheritable="false">
+    <DisplayString>{{ binding={func} }}</DisplayString>
+    <Expand>
+      <ExpandedItem>func</ExpandedItem>
+      <Item Name="LifetimeObject">lifetimePtr</Item>
+      <Synthetic Name="DelegateHandle" Condition="id != 0">
+        <DisplayString>{id}</DisplayString>
+      </Synthetic>
+      <Synthetic Name="DelegateHandle" Condition="id == 0">
+        <DisplayString>none</DisplayString>
+      </Synthetic>
+    </Expand>
+  </Type>
+
+
+  <Type Name="gem::Dispatcher&lt;*&gt;::Binding" Inheritable="false">
+    <DisplayString>{{ binding={func} }}</DisplayString>
+    <Expand>
+      <ExpandedItem>func</ExpandedItem>
+      <Item Name="LifetimeObject">lifetimePtr</Item>
+      <Synthetic Name="DelegateHandle" Condition="id != 0">
+        <DisplayString>{id}</DisplayString>
+      </Synthetic>
+      <Synthetic Name="DelegateHandle" Condition="id == 0">
+        <DisplayString>none</DisplayString>
+      </Synthetic>
+    </Expand>
+  </Type>
+
+
+  <Type Name="gem::Dispatcher&lt;*&gt;" Inheritable="false">
+    <DisplayString>{{ bindings={bindings} }}</DisplayString>
+    <Expand>
+      <ExpandedItem>bindings,view(simple)</ExpandedItem>
+    </Expand>
+  </Type>
+
+
+  <!--        -->
+  <!-- Events -->
+  <!--        -->
+
+  <Type Name="gem::Event&lt;*&gt;" Inheritable="false">
+    <DisplayString>{{ Listeners={listeners} }}</DisplayString>
+  </Type>
+
+
+  <!--      -->
+  <!-- Math -->
+  <!--      -->
+
+  <Type Name="gem::mat2">
+    <DisplayString>{{ mat2={data} }}</DisplayString>
+    <Expand>
+      <Synthetic Name="row 1">
+        <DisplayString>{{ {data[0]}, {data[2]} }}</DisplayString>
+      </Synthetic>
+      <Synthetic Name="row 2">
+        <DisplayString>{{ {data[1]}, {data[3]} }}</DisplayString>
+      </Synthetic>
+    </Expand>
+  </Type>
+
+
+  <Type Name="gem::mat3">
+    <DisplayString>{{ mat3={data} }}</DisplayString>
+    <Expand>
+      <Synthetic Name="row 1">
+        <DisplayString>{{ {data[0]}, {data[3]}, {data[6]} }}</DisplayString>
+      </Synthetic>
+      <Synthetic Name="row 2">
+        <DisplayString>{{ {data[1]}, {data[4]}, {data[7]} }}</DisplayString>
+      </Synthetic>
+      <Synthetic Name="row 3">
+        <DisplayString>{{ {data[2]}, {data[5]}, {data[8]} }}</DisplayString>
+      </Synthetic>
+    </Expand>
+  </Type>
+
+
+  <Type Name="gem::mat4">
+    <DisplayString>{{ mat4={data} }}</DisplayString>
+    <Expand>
+      <Synthetic Name="row 1">
+        <DisplayString>{{ {data[0]}, {data[4]}, {data[8]}, {data[12]} }}</DisplayString>
+      </Synthetic>
+      <Synthetic Name="row 2">
+        <DisplayString>{{ {data[1]}, {data[5]}, {data[9]}, {data[13]} }}</DisplayString>
+      </Synthetic>
+      <Synthetic Name="row 3">
+        <DisplayString>{{ {data[2]}, {data[6]}, {data[10]}, {data[14]} }}</DisplayString>
+      </Synthetic>
+      <Synthetic Name="row 4">
+        <DisplayString>{{ {data[3]}, {data[7]}, {data[11]}, {data[15]} }}</DisplayString>
+      </Synthetic>
+    </Expand>
+  </Type>
+
+
+  <Type Name="gem::Transform">
+    <DisplayString>{{ pos={position} }}</DisplayString>
+  </Type>
+
+
+  <!--          -->
+  <!-- Entities -->
+  <!--          -->
+
+  <Type Name="gem::ComponentId">
+    <DisplayString Condition="value==invalid">Invalid</DisplayString>
+    <DisplayString Condition="value!=invalid">{gem::detail::componentNames[value],nasb}</DisplayString>
+  </Type>
+
+
+  <Type Name="std::vector&lt;gem::ComponentId,*&gt;">
+    <Intrinsic Name="first" Expression="_Mypair._Myval2._Myfirst" />
+    <Intrinsic Name="last" Expression="_Mypair._Myval2._Mylast" />
+    <Intrinsic Name="data" Expression="first()" />
+    <Intrinsic Name="size" Expression="(size_t)(last() - first())" />
+    <Intrinsic Name="capacity" Expression="(size_t)(_Mypair._Myval2._Myend - first())" />
+    <DisplayString Condition="size()==0">{{ size=0 }}</DisplayString>
+    <DisplayString Condition="size()==1">{{ size={size()} }}: {data()[0]}</DisplayString>
+    <DisplayString Condition="size()==2">{{ size={size()} }}: {data()[0]}, {data()[1]}</DisplayString>
+    <DisplayString Condition="size()==3">{{ size={size()} }}: {data()[0]}, {data()[1]}, {data()[2]}</DisplayString>
+    <DisplayString Condition="size()==4">{{ size={size()} }}: {data()[0]}, {data()[1]}, {data()[2]}, {data()[3]}</DisplayString>
+    <DisplayString                      >{{ size={size()} }}: {data()[0]}, {data()[1]}, {data()[2]}, {data()[3]}, &lt;...&gt;</DisplayString>
+    <Expand>
+      <Item Name="[capacity]" ExcludeView="simple">capacity()</Item>
+      <ArrayItems>
+        <Size>size()</Size>
+        <ValuePointer>data()</ValuePointer>
+      </ArrayItems>
+    </Expand>
+  </Type>
+
+
+  <Type Name="std::vector&lt;gem::ComponentBase*,*&gt;">
+    <Intrinsic Name="first" Expression="_Mypair._Myval2._Myfirst" />
+    <Intrinsic Name="last" Expression="_Mypair._Myval2._Mylast" />
+    <Intrinsic Name="data" Expression="first()" />
+    <Intrinsic Name="size" Expression="(size_t)(last() - first())" />
+    <Intrinsic Name="capacity" Expression="(size_t)(_Mypair._Myval2._Myend - first())" />
+    <DisplayString Condition="size()==0">{{ size=0 }}</DisplayString>
+    <DisplayString Condition="size()==1">{{ size={size()} }}: {data()[0]-&gt;componentId} }}</DisplayString>
+    <DisplayString Condition="size()==2">{{ size={size()} }}: {data()[0]-&gt;componentId}, {data()[1]-&gt;componentId} }}</DisplayString>
+    <DisplayString Condition="size()==3">{{ size={size()} }}: {data()[0]-&gt;componentId}, {data()[1]-&gt;componentId}, {data()[2]-&gt;componentId} }}</DisplayString>
+    <DisplayString Condition="size()==4">{{ size={size()} }}: {data()[0]-&gt;componentId}, {data()[1]-&gt;componentId}, {data()[2]-&gt;componentId}, {data()[3]-&gt;componentId} }}</DisplayString>
+    <DisplayString                      >{{ size={size()} }}: {data()[0]-&gt;componentId}, {data()[1]-&gt;componentId}, {data()[2]-&gt;componentId}, {data()[3]-&gt;componentId}, &lt;...&gt; }}</DisplayString>
+    <Expand>
+      <Item Name="[capacity]" ExcludeView="simple">capacity()</Item>
+      <CustomListItems>
+        <Variable Name="i" InitialValue="0" />
+        <Size>size()</Size>
+        <Loop>
+          <Item Name="{data()[i]-&gt;componentId}">data()[i],na</Item>
+          <Exec>++i</Exec>
+        </Loop>
+      </CustomListItems>
+    </Expand>
+  </Type>
+
+
+  <Type Name="gem::Entity">
+    <DisplayString Condition="isEnabled">{{ components={components} }}</DisplayString>
+    <DisplayString Condition="!isEnabled">[disabled] {{ components={components} }}</DisplayString>
+    <Expand>
+      <!-- Look for a Name component -->
+      <CustomListItems>
+        <Variable Name="i" InitialValue="0" />
+        <Size>1</Size>
+        <Loop>
+          <If Condition="i >= components.size()">
+            <Item Name="[Name]">"-Unnamed-"</Item>
+            <Break/>
+          </If>
+          <If Condition="dynamic_cast&lt;gem::Name*&gt;(components.data()[i]) != nullptr">
+            <Item Name="[Name]">dynamic_cast&lt;gem::Name*&gt;(components.data()[i])-&gt;name</Item>
+            <Break/>
+          </If>
+          <Exec>++i</Exec>
+        </Loop>
+      </CustomListItems>
+      <Item Name="Transform">(gem::Transform*)this,ndna</Item>
+      <Item Name="Components">components,view(simple)</Item>
+      <Item Name="Tags">tags,view(simple)</Item>
+    </Expand>
+  </Type>
+
+
+  <!--            -->
+  <!-- Components -->
+  <!--            -->
+
+  <Type Name="gem::ComponentBase">
+    <DisplayString Condition="isEnabled">[Enabled]</DisplayString>
+    <DisplayString Condition="!isEnabled">[Disabled]</DisplayString>
+    <Expand>
+      <Item Name="owner">owner</Item>
+      <Item Name="isEnabled">isEnabled</Item>
+    </Expand>
+  </Type>
+
+
+  <Type Name="gem::Hierarchy">
+    <DisplayString>{{ parent={parent,view(ptr)} children={children} }}</DisplayString>
+    <Expand>
+      <Item Name="parentHierarchy" Condition="parentHierarchy">parentHierarchy</Item>
+      <Item Name="parent" Condition="parentHierarchy">parent,view(ptr)</Item>
+      <Item Name="children">children,view(simple)nr</Item>
+      <Item Name="propagateTransform">propagateTransform</Item>
+    </Expand>
+  </Type>
+
+
+  <Type Name="gem::Renderable">
+    <DisplayString>{*material}</DisplayString>
+    <Expand>
+      <Item Name="material">*material</Item>
+      <Item Name="definitions">variants,nr</Item>
+      <Item Name="buffers">buffers</Item>
+      <Item Name="array">array</Item>
+    </Expand>
+  </Type>
+
+
+  <Type Name="gem::Text">
+    <DisplayString>[Text] {{ font={*font} text={string} }}</DisplayString>
+    <Expand>
+      <Item Name="[Renderable]">*(gem::Renderable*)this,nd</Item>
+      <Item Name="font">*font</Item>
+      <Item Name="string">string</Item>
+      <Item Name="centeredX">centeredX</Item>
+      <Item Name="centeredY">centeredY</Item>
+      <Item Name="kerning">kerning</Item>
+    </Expand>
+  </Type>
+
+
+  <Type Name="gem::Sprite">
+    <DisplayString>[Sprite] {*material}</DisplayString>
+    <Expand>
+      <Item Name="[Renderable]">*(gem::Renderable*)this,nd</Item>
+      <Item Name="alignment">alignment,en</Item>
+      <Item Name="billBoarded">billBoarded</Item>
+    </Expand>
+  </Type>
+
+
+  <Type Name="gem::ParticleEmitter">
+    <DisplayString>[ParticleEmitter] {{ mat={*material} numParticles={numCurrentParticles}/{maxParticles} }}</DisplayString>
+    <Expand>
+      <Item Name="[Renderable]">*(gem::Renderable*)this,nd</Item>
+      <Item Name="functors">functors,view(simple)nr</Item>
+      <Item Name="velocity">velocity</Item>
+      <Item Name="lifetime">lifetime</Item>
+      <Item Name="spawnPerSecond">spawnPerSecond</Item>
+      <Item Name="isPaused">isPaused</Item>
+      <Item Name="localSpace">localSpace</Item>
+      <Item Name="spawnType">spawnType,en</Item>
+      <Item Name="radius" Condition="spawnType==gem::ParticleEmitter::Type::Omni">radius</Item>
+      <Item Name="axisX" Condition="spawnType==gem::ParticleEmitter::Type::Box">axisX</Item>
+      <Item Name="axisY" Condition="spawnType==gem::ParticleEmitter::Type::Box">axisY</Item>
+      <Item Name="axisZ" Condition="spawnType==gem::ParticleEmitter::Type::Box">axisZ</Item>
+      <Item Name="particleParameters">particleParameters</Item>
+    </Expand>
+  </Type>
+
+
+  <Type Name="gem::Mesh">
+    <DisplayString>[Mesh] {*model}</DisplayString>
+    <Expand>
+      <Item Name="[Renderable]">*(gem::Renderable*)this,nd</Item>
+      <Item Name="model">*model</Item>
+    </Expand>
+  </Type>
+
+
+  <Type Name="gem::SoundSource">
+    <DisplayString>{*data}</DisplayString>
+    <Expand>
+      <Item Name="volume">volume</Item>
+    </Expand>
+  </Type>
+
+
+  <Type Name="gem::Name">
+    <DisplayString>{{ name={name} }}</DisplayString>
+  </Type>
+
+
+  <Type Name="gem::Camera">
+    <DisplayString Condition="isPerspective">{{ Perspective }}</DisplayString>
+    <DisplayString Condition="!isPerspective">{{ Orthographic }}</DisplayString>
+    <Expand>
+      <Item Name="fovyDegrees" Condition="isPerspective">fovyDegrees</Item>
+      <Item Name="aspectRatio">aspectRatio</Item>
+      <Item Name="zNear">zNear</Item>
+      <Item Name="zFar">zFar</Item>
+      <Item Name="left" Condition="!isPerspective">left</Item>
+      <Item Name="right" Condition="!isPerspective">right</Item>
+      <Item Name="top" Condition="!isPerspective">top</Item>
+      <Item Name="bottom" Condition="!isPerspective">bottom</Item>
+    </Expand>
+  </Type>
+
+
+  <Type Name="gem::Light">
+    <DisplayString>{{ type={type.data(),en} }}</DisplayString>
+    <Expand>
+      <Item Name="color">color,view(simple)</Item>
+      <Item Name="attenuationLinear">attenuationLinear,view(simple)</Item>
+      <Item Name="attenuationQuadratic">attenuationQuadratic,view(simple)</Item>
+      <Item Name="angle" Condition="*type.data()==gem::Light::Type::Spot">angle</Item>
+    </Expand>
+  </Type>
+
+
+  <Type Name="gem::Widget">
+    <DisplayString>[Widget]</DisplayString>
+    <Expand>
+      <!-- Look for a Hierarchy component -->
+      <CustomListItems>
+        <Variable Name="i" InitialValue="0" />
+        <Size>1</Size>
+        <Loop>
+          <If Condition="i >= owner.components.size()">
+            <Item Name="[Hierarchy]">"!Error. No Hierarchy!"</Item>
+            <Break/>
+          </If>
+          <If Condition="dynamic_cast&lt;gem::Hierarchy*&gt;(owner.components.data()[i]) != nullptr">
+            <Item Name="[Hierarchy]">dynamic_cast&lt;gem::Hierarchy*&gt;(owner.components.data()[i])</Item>
+            <Break/>
+          </If>
+          <Exec>++i</Exec>
+        </Loop>
+      </CustomListItems>
+      <Item Name="top">top</Item>
+      <Item Name="bottom">bottom</Item>
+      <Item Name="left">left</Item>
+      <Item Name="right">right</Item>
+      <Item Name="absoluteBounds">absoluteBounds</Item>
+    </Expand>
+  </Type>
+
+
+  <Type Name="gem::Screen">
+    <DisplayString>[Screen]</DisplayString>
+    <Expand>
+      <Item Name="[Widget]">*(gem::Widget*)this,nd</Item>
+    </Expand>
+  </Type>
+
+
+  <Type Name="gem::Label">
+    <DisplayString>[Label]</DisplayString>
+    <Expand>
+      <Item Name="[Widget]">*(gem::Widget*)this,nd</Item>
+      <Item Name="[Text]">text</Item>
+      <Item Name="textScale">textScale</Item>
+      <Item Name="textWidth">textWidth</Item>
+    </Expand>
+  </Type>
+
+
+  <Type Name="gem::Image">
+    <DisplayString>[Image] {*sprite-&gt;material}</DisplayString>
+    <Expand>
+      <Item Name="[Widget]">*(gem::Widget*)this,nd</Item>
+      <Item Name="[Sprite]">sprite</Item>
+    </Expand>
+  </Type>
+
+
+  <Type Name="gem::Button">
+    <DisplayString>[Button] {{ state={state,en} }}</DisplayString>
+    <Expand>
+      <Item Name="[Widget]">*(gem::Widget*)this,nd</Item>
+      <Item Name="[Image]">image</Item>
+      <Item Name="[Label]">label</Item>
+      <Item Name="pressedSound">pressedSound,view(ptr)nr</Item>
+      <Item Name="idleTexture">idleTexture,view(ptr)nr</Item>
+      <Item Name="hoverTexture">hoverTexture,view(ptr)nr</Item>
+      <Item Name="pressedTexture">pressedTexture,view(ptr)nr</Item>
+      <Item Name="onClick">onClick</Item>
+    </Expand>
+  </Type>
+
+
+  <!--           -->
+  <!-- Resources -->
+  <!--           -->
+
+  <Type Name="std::vector&lt;gem::BufferSlot,*&gt;">
+    <Intrinsic Name="first" Expression="_Mypair._Myval2._Myfirst" />
+    <Intrinsic Name="last" Expression="_Mypair._Myval2._Mylast" />
+    <Intrinsic Name="data" Expression="first()" />
+    <Intrinsic Name="size" Expression="(size_t)(last() - first())" />
+    <Intrinsic Name="capacity" Expression="(size_t)(_Mypair._Myval2._Myend - first())" />
+    <DisplayString>{{ size={size()} }}</DisplayString>
+    <Expand>
+      <CustomListItems>
+        <Variable Name="i" InitialValue="0" />
+        <Size>size()</Size>
+        <Loop>
+          <Item Name="unit {data()[i].unit}">*data()[i].buffer</Item>
+          <Exec>++i</Exec>
+        </Loop>
+      </CustomListItems>
+    </Expand>
+  </Type>
+
+
+  <Type Name="gem::BufferList">
+    <DisplayString>{{ size={buffers.size()} }}</DisplayString>
+    <Expand>
+      <ExpandedItem>buffers,view(simple)</ExpandedItem>
+    </Expand>
+  </Type>
+
+
+  <Type Name="std::vector&lt;gem::TextureSlot,*&gt;">
+    <Intrinsic Name="first" Expression="_Mypair._Myval2._Myfirst" />
+    <Intrinsic Name="last" Expression="_Mypair._Myval2._Mylast" />
+    <Intrinsic Name="data" Expression="first()" />
+    <Intrinsic Name="size" Expression="(size_t)(last() - first())" />
+    <Intrinsic Name="capacity" Expression="(size_t)(_Mypair._Myval2._Myend - first())" />
+    <DisplayString>{{ size={size()} }}</DisplayString>
+    <Expand>
+      <CustomListItems>
+        <Variable Name="i" InitialValue="0" />
+        <Size>size()</Size>
+        <Loop>
+          <Item Name="unit {data()[i].unit}">*data()[i].tex</Item>
+          <Exec>++i</Exec>
+        </Loop>
+      </CustomListItems>
+    </Expand>
+  </Type>
+
+
+  <Type Name="gem::TextureList">
+    <DisplayString>{{ size={textureSlots.size()} }}</DisplayString>
+    <Expand>
+      <ExpandedItem>textureSlots,view(simple)</ExpandedItem>
+    </Expand>
+  </Type>
+
+
+  <Type Name="gem::TextureWraps">
+    <DisplayString Condition="x==y">{x,en}</DisplayString>
+    <DisplayString Condition="x!=y">{{ x={x,en}, y={y,en} }}</DisplayString>
+    <Expand>
+      <Item Name="x">x,en</Item>
+      <Item Name="y">y,en</Item>
+    </Expand>
+  </Type>
+
+
+  <Type Name="gem::Texture">
+    <DisplayString>{{ {path,na} }}</DisplayString>
+    <Expand>
+      <Synthetic Name="Dimensions">
+        <DisplayString>{{ {width} x {height} }}</DisplayString>
+      </Synthetic>
+      <Item Name="format">format,en</Item>
+      <Item Name="filter">filter,en</Item>
+      <Item Name="anisotropicLevel">anisotropicLevel</Item>
+      <Item Name="numSamples">numSamples</Item>
+      <Item Name="wrapping">wraps,nr</Item>
+    </Expand>
+  </Type>
+
+
+  <Type Name="gem::Resource&lt;*&gt;">
+    <DisplayString>{{ {path} }}</DisplayString>
+  </Type>
+
+
+  <Type Name="gem::Shader">
+    <DisplayString Condition="loaded">{{ {path} }}</DisplayString>
+    <DisplayString Condition="!loaded">{{ [not loaded] }}</DisplayString>
+    <Expand>
+      <Item Condition="loaded" Name="textures">textures,nr</Item>
+      <Item Condition="loaded" Name="buffers">buffers,nr</Item>
+      <Item Condition="loaded" Name="variants">variants,view(simple)nr</Item>
+      <Item Condition="loaded" Name="source_textures">textureBindings,view(simple)nr</Item>
+      <Item Condition="loaded" Name="source_buffers">bufferBindings,view(simple)nr</Item>
+      <Item Condition="loaded" Name="source_attributes">attributes</Item>
+      <Item Condition="loaded" Name="source_samplers">samplers</Item>
+      <Item Condition="loaded" Name="source_uniformBuffers">uniformBuffers</Item>
+      <Item Condition="loaded" Name="source_vertex">vertexSource</Item>
+      <Item Condition="loaded" Name="source_geometry">geometrySource</Item>
+      <Item Condition="loaded" Name="source_fragment">fragmentSrouce</Item>
+    </Expand>
+  </Type>
+
+
+  <Type Name="gem::Material">
+    <DisplayString>{{ {path} }}</DisplayString>
+    <Expand>
+      <Item Name="blendMode">blendMode,en</Item>
+      <Item Name="depthMode">depthMode,en</Item>
+      <Item Name="cullMode">cullMode,en</Item>
+      <Item Name="shader">*shader</Item>
+      <Item Name="textures">textures,nr</Item>
+    </Expand>
+  </Type>
+
+
+  <Type Name="gem::ShaderVariantControl::Entry">
+    <DisplayString Condition="value.size() == 0">{{ {name} }}</DisplayString>
+    <DisplayString Condition="value.size() != 0">{{ "{name,sb}={value,sb}" }}</DisplayString>
+  </Type>
+
+
+  <Type Name="gem::ShaderVariantControl">
+    <DisplayString>{{ size={defines.size()} }}</DisplayString>
+    <Expand>
+      <ExpandedItem>defines,view(simple)</ExpandedItem>
+    </Expand>
+  </Type>
+
+
+  <Type Name="gem::Font">
+    <DisplayString>{{ {path} }}</DisplayString>
+    <Expand>
+      <Item Name="width">width</Item>
+      <Item Name="height">height</Item>
+    </Expand>
+  </Type>
+
+
+  <Type Name="gem::Model">
+    <DisplayString>{{ {path} }}</DisplayString>
+    <Expand>
+      <Item Name="minBounds">minBounds</Item>
+      <Item Name="maxBounds">maxBounds</Item>
+      <Item Name="hasUvs">hasUvs</Item>
+      <Item Name="hasNormals">hasNormals</Item>
+      <Item Name="hasTangents">hasTangents</Item>
+      <Item Name="array">array</Item>
+    </Expand>
+  </Type>
+
+
+  <Type Name="gem::Sound">
+    <DisplayString>{{ {path} }}</DisplayString>
+    <Expand>
+      <Item Name="is3D">is3D</Item>
+      <Item Name="loop">loop</Item>
+      <Item Name="unique">unique</Item>
+      <Item Name="attenuation">attenuation,en</Item>
+      <Item Name="rolloff">rolloff</Item>
+      <Item Name="volume">volume</Item>
+      <Synthetic Name="Distance">
+        <DisplayString>[{minDistance}, {maxDistance}]</DisplayString>
+      </Synthetic>
+    </Expand>
+  </Type>
+
+
+  <Type Name="gem::VertexBuffer">
+    <DisplayString Condition="target == 0x8892">{{ {usage,en} Data Buffer }}</DisplayString>
+    <DisplayString Condition="target != 0x8892">{{ {usage,en} Index Buffer }}</DisplayString>
+    <Expand>
+      <Item Name="size">size</Item>
+      <Item Name="VBO">VBO</Item>
+    </Expand>
+  </Type>
+
+
+  <Type Name="gem::UniformHandle&lt;*&gt;">
+    <Intrinsic Name="data" Optional="true" Expression="reinterpret_cast&lt;$T1*&gt;(static_cast&lt;char*&gt;(uniformBuffer-&gt;buffer) + offset)" />
+    <DisplayString Condition="uniformBuffer==nullptr">-unbound-</DisplayString>
+    <DisplayString Condition="uniformBuffer!=nullptr" ExcludeView="simple">{{ buffer={uniformBuffer}, data={data(),na} }}</DisplayString>
+    <DisplayString Condition="uniformBuffer!=nullptr" IncludeView="simple">{data(),na}</DisplayString>
+    <Expand>
+      <Item Name="value" Condition="uniformBuffer!=nullptr">data(),na</Item>
+    </Expand>
+  </Type>
+
+
+  <!--        -->
+  <!-- Hidden -->
+  <!--        -->
+
+  <Type Name="gem::Shareable&lt;*&gt;">
+    <DisplayString/>
+  </Type>
+
+</AutoVisualizer>

@@ -3,6 +3,12 @@ namespace gem
 {
 	namespace detail
 	{
+#ifdef GEM_DEV
+		// Key type must be 'int' instead of 'ComponentId' to support custom natvis views.
+		extern std::unordered_map<int, std::string_view>& componentNames;
+		std::unordered_map<int, std::string_view>& GetComponentNames();
+#endif
+
 		// Allows for compile-time decision of whether or not a dynamic cast is required.
 		// A dynamic cast is required when a class inherits from Component indirectly, and
 		// as such, doesn't generate its own unique ComponentId.
@@ -20,7 +26,14 @@ namespace gem
 		}
 	}
 
-	template<class derived> const ComponentId Component<derived>::uniqueId = GenerateUniqueId<ComponentId>();
+	template<class derived> const ComponentId Component<derived>::uniqueId = [] {
+		const ComponentId id = GenerateUniqueId<ComponentId>();
+
+#ifdef GEM_DEV
+		detail::GetComponentNames().emplace(static_cast<int>(id.GetValue()), meta::GetTypeName<derived>());
+#endif
+		return id;
+	}();
 
 	template<class derived>
 	Component<derived>::Component(Entity& owner)

@@ -9,6 +9,7 @@
             "program": "${command:cmake.launchTargetPath}",
             "args": [],
             "cwd": "${workspaceFolder}\\samples",
+            "visualizerFile": "${workspaceFolder}\\gemcutter\\Gemcutter.natvis",
             "environment": []
         }
     ]

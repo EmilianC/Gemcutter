@@ -10,6 +10,14 @@ namespace gem
 {
 	namespace detail
 	{
+#ifdef GEM_DEV
+		std::unordered_map<int, std::string_view>& componentNames = GetComponentNames();
+		std::unordered_map<int, std::string_view>& GetComponentNames()
+		{
+			static std::unordered_map<int, std::string_view> names;
+			return names;
+		}
+#endif
 		std::unordered_map<ComponentId, std::vector<Entity*>> entityIndex;
 		std::unordered_map<ComponentId, std::vector<ComponentBase*>> componentIndex;
 	}
