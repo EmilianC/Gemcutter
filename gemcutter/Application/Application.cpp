@@ -508,6 +508,7 @@ namespace gem
 		}
 
 		GPUInfo.ScanDevice();
+		Shader::BuildCommonHeader();
 
 		SetFullscreen(fullscreen);
 		ShowWindow(hwnd, SW_SHOW);

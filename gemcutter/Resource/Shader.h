@@ -98,6 +98,7 @@ namespace gem
 	// For global use, Textures and UniformBuffers can be attached directly to the shader.
 	class Shader : public Resource<Shader>, public Shareable<Shader>
 	{
+		friend class ApplicationSingleton; // For BuildCommonHeader().
 	public:
 		static constexpr std::string_view Extension = ".shader";
 
@@ -170,6 +171,8 @@ namespace gem
 		bool ParseUniforms(const Block& block);
 		bool ParseUniformBlock(const Block& block, std::string_view name, unsigned Id, bool isInstance, bool isStatic);
 		bool ParseSamplers(const Block& block);
+
+		static void BuildCommonHeader();
 
 		bool loaded = false;
 

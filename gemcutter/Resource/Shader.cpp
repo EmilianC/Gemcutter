@@ -456,19 +456,6 @@ namespace gem
 	{
 		ASSERT(!IsLoaded(), "A Shader is already loaded. Call ShaderData::Unload() first.");
 
-		// Build version identifier from the current openGL version.
-		if (commonHeader.empty())
-		{
-			int major = 0;
-			int minor = 0;
-			glGetIntegerv(GL_MAJOR_VERSION, &major);
-			glGetIntegerv(GL_MINOR_VERSION, &minor);
-
-			// Our minimum supported version is 3.3, where the format of the GLSL
-			// version identifier begins to be symmetrical with the GL version.
-			commonHeader = "#version " + std::to_string(major) + std::to_string(minor) + "0\n" + std::string(header);
-		}
-
 		// Clean up the source to make parsing easier.
 		RemoveComments(source);
 		RemoveRedundantWhitespace(source);
@@ -1105,6 +1092,18 @@ namespace gem
 		}
 
 		return true;
+	}
+
+	void Shader::BuildCommonHeader()
+	{
+		int major = 0;
+		int minor = 0;
+		glGetIntegerv(GL_MAJOR_VERSION, &major);
+		glGetIntegerv(GL_MINOR_VERSION, &minor);
+
+		// Our minimum supported version is 3.3, where the format of the GLSL
+		// version identifier begins to be symmetrical with the GL version.
+		commonHeader = "#version " + std::to_string(major) + std::to_string(minor) + "0\n" + std::string(header);
 	}
 
 	bool Shader::IsLoaded() const
