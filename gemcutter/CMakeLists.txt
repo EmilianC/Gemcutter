@@ -156,6 +156,7 @@ target_link_libraries(gemcutter
 		Xinput
 		glew
 		soloud
+		loupe
 )
 
 if (ENABLE_IMGUI_SUPPORT)

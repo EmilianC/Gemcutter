@@ -13,17 +13,11 @@ find_package(OpenGL REQUIRED)
 function(update_submodule submodule_dir)
 	if (NOT EXISTS "${submodule_dir}/.git")
 		execute_process(
-			COMMAND "${GIT_EXECUTABLE}" submodule init "${submodule_dir}/"
+			COMMAND "${GIT_EXECUTABLE}" submodule update --init --recursive --remote --merge "${submodule_dir}/"
 			WORKING_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}"
-			RESULT_VARIABLE error_code_init
+			RESULT_VARIABLE error_code_submodule
 		)
-		execute_process(
-			COMMAND "${GIT_EXECUTABLE}" submodule update --recursive --remote --merge "${submodule_dir}/"
-			WORKING_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}"
-			RESULT_VARIABLE error_code_update
-		)
-
-		if (error_code OR error_code_update)
+		if (error_code_submodule)
 			message(FATAL_ERROR "Failed to update submodule: ${submodule_dir}")
 		else()
 			message(STATUS "Submodule updated: ${submodule_dir}")
@@ -44,6 +38,7 @@ if (ENABLE_IMGUI_DEV_SUPPORT OR ENABLE_IMGUI_SUPPORT)
 	update_submodule("${CMAKE_CURRENT_LIST_DIR}/external/imgui")
 endif()
 
+update_submodule("${CMAKE_CURRENT_LIST_DIR}/external/loupe")
 update_submodule("${CMAKE_CURRENT_LIST_DIR}/external/scaffold")
 update_submodule("${CMAKE_CURRENT_LIST_DIR}/external/soloud")
 

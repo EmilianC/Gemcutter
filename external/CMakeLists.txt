@@ -56,6 +56,10 @@ if (ENABLE_IMGUI_SUPPORT OR ENABLE_IMGUI_DEV_SUPPORT)
 	sf_target_compile_disable_exceptions(imgui)
 endif()
 
+# Loupe #
+set(CMAKE_FOLDER "${PARENT_FOLDER}/external/loupe")
+add_subdirectory(loupe)
+
 # SOIL ext #
 set(CMAKE_FOLDER "${PARENT_FOLDER}/external/soil")
 add_library(soil INTERFACE)
