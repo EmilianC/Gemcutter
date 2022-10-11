@@ -17,6 +17,8 @@ list(APPEND gemcutter_files
 	"Application/HierarchicalEvent.h"
 	"Application/Logging.cpp"
 	"Application/Logging.h"
+	"Application/Reflection.cpp"
+	"Application/Reflection.h"
 	"Application/Timer.cpp"
 	"Application/Timer.h"
 
@@ -192,6 +194,7 @@ if (ENABLE_PCH)
 			<unordered_map>
 			<vector>
 			Application/Logging.h
+			Application/Reflection.h
 			Entity/Entity.h
 			GUI/Widget.h
 			Math/Matrix.h
