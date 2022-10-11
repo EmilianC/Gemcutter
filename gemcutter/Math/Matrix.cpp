@@ -1,6 +1,7 @@
 // Copyright (c) 2017 Emilian Cioca
 #include "Matrix.h"
 #include "gemcutter/Application/Logging.h"
+#include "gemcutter/Application/Reflection.h"
 #include "gemcutter/Math/Math.h"
 #include "gemcutter/Math/Quaternion.h"
 #include "gemcutter/Math/Vector.h"
@@ -1494,3 +1495,7 @@ namespace gem
 		return { right, up, -forward, position };
 	}
 }
+
+REFLECT(gem::mat2) MEMBERS { REF_MEMBER(data) } REF_END;
+REFLECT(gem::mat3) MEMBERS { REF_MEMBER(data) } REF_END;
+REFLECT(gem::mat4) MEMBERS { REF_MEMBER(data) } REF_END;

@@ -1,6 +1,7 @@
 // Copyright (c) 2017 Emilian Cioca
 #include "Quaternion.h"
 #include "gemcutter/Application/Logging.h"
+#include "gemcutter/Application/Reflection.h"
 #include "gemcutter/Math/Math.h"
 #include "gemcutter/Math/Matrix.h"
 #include "gemcutter/Math/Vector.h"
@@ -279,3 +280,12 @@ namespace gem
 			coef1 * p0.w + coef2 * p1.w).GetNormalized();
 	}
 }
+
+REFLECT(gem::quat)
+	MEMBERS {
+		REF_MEMBER(x)
+		REF_MEMBER(y)
+		REF_MEMBER(z)
+		REF_MEMBER(w)
+	}
+REF_END;

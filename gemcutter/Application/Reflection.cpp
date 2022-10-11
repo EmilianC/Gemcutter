@@ -7,7 +7,12 @@ namespace gem
 
 	void InitializeReflectionTables()
 	{
-		reflection_tables = loupe::reflect();
+#ifdef GEM_DEBUG
+		static bool calledOnce = false;
+		ASSERT(!calledOnce, "InitializeReflectionTables() should not be called multiple times.");
+		calledOnce = true;
+#endif
+		reflection_tables = loupe::reflect(1);
 		loupe::clear_reflect_tasks();
 	}
 }

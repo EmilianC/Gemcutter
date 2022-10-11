@@ -1,6 +1,7 @@
 // Copyright (c) 2017 Emilian Cioca
 #include "Vector.h"
 #include "gemcutter/Application/Logging.h"
+#include "gemcutter/Application/Reflection.h"
 #include "gemcutter/Math/Math.h"
 
 namespace gem
@@ -883,3 +884,27 @@ namespace gem
 		return { vec.x * inverse, vec.y * inverse, vec.z * inverse, vec.w * inverse };
 	}
 }
+
+REFLECT(gem::vec2)
+	MEMBERS {
+		REF_MEMBER(x)
+		REF_MEMBER(y)
+	}
+REF_END;
+
+REFLECT(gem::vec3)
+	MEMBERS {
+		REF_MEMBER(x)
+		REF_MEMBER(y)
+		REF_MEMBER(z)
+	}
+REF_END;
+
+REFLECT(gem::vec4)
+	MEMBERS {
+		REF_MEMBER(x)
+		REF_MEMBER(y)
+		REF_MEMBER(z)
+		REF_MEMBER(w)
+	}
+REF_END;

@@ -2,6 +2,7 @@
 #include "Rendering.h"
 #include "gemcutter/Application/FileSystem.h"
 #include "gemcutter/Application/Logging.h"
+#include "gemcutter/Application/Reflection.h"
 #include "gemcutter/Math/Math.h"
 #include "gemcutter/Math/Vector.h"
 #include "gemcutter/Utilities/String.h"
@@ -571,3 +572,154 @@ namespace gem
 		return maxDrawBuffers;
 	}
 }
+
+REFLECT(gem::UniformBufferSlot)
+	ENUM_VALUES {
+		REF_VALUE(Camera)
+		REF_VALUE(Model)
+		REF_VALUE(Engine)
+		REF_VALUE(Time)
+		REF_VALUE(Particle)
+	}
+REF_END;
+
+REFLECT(gem::VertexFormat)
+	ENUM_VALUES {
+		REF_VALUE(Float)
+		REF_VALUE(Double)
+		REF_VALUE(Vec2)
+		REF_VALUE(Vec3)
+		REF_VALUE(Vec4)
+		REF_VALUE(Mat2)
+		REF_VALUE(Mat3)
+		REF_VALUE(Mat4)
+		REF_VALUE(Int)
+		REF_VALUE(uInt)
+		REF_VALUE(Short)
+		REF_VALUE(uShort)
+		REF_VALUE(Byte)
+		REF_VALUE(uByte)
+	}
+REF_END;
+
+REFLECT(gem::VertexArrayFormat)
+	ENUM_VALUES {
+		REF_VALUE(Point)
+		REF_VALUE(Line)
+		REF_VALUE(LineAdjacency)
+		REF_VALUE(LineLoop)
+		REF_VALUE(LineStrip)
+		REF_VALUE(LineStripAdjacency)
+		REF_VALUE(Triangle)
+		REF_VALUE(TriangleAdjacency)
+		REF_VALUE(TriangleFan)
+		REF_VALUE(TriangleStrip)
+		REF_VALUE(TriangleStripAdjacency)
+	}
+REF_END;
+
+REFLECT(gem::VertexAccess)
+	ENUM_VALUES {
+		REF_VALUE(ReadOnly)
+		REF_VALUE(WriteOnly)
+		REF_VALUE(ReadWrite)
+	}
+REF_END;
+
+REFLECT(gem::VertexBufferType)
+	ENUM_VALUES {
+		REF_VALUE(Data)
+		REF_VALUE(Index)
+	}
+REF_END;
+
+REFLECT(gem::BufferUsage)
+	ENUM_VALUES {
+		REF_VALUE(Static)
+		REF_VALUE(Dynamic)
+		REF_VALUE(Stream)
+	}
+REF_END;
+
+REFLECT(gem::TextureFormat)
+	ENUM_VALUES {
+		REF_VALUE(R_8)
+		REF_VALUE(R_16)
+		REF_VALUE(R_16F)
+		REF_VALUE(R_32)
+		REF_VALUE(R_32F)
+		REF_VALUE(RGB_8)
+		REF_VALUE(RGB_16)
+		REF_VALUE(RGB_16F)
+		REF_VALUE(RGB_32)
+		REF_VALUE(RGB_32F)
+		REF_VALUE(RGBA_8)
+		REF_VALUE(RGBA_16)
+		REF_VALUE(RGBA_16F)
+		REF_VALUE(RGBA_32)
+		REF_VALUE(RGBA_32F)
+		REF_VALUE(DEPTH_24)
+		REF_VALUE(sRGB_8)
+		REF_VALUE(sRGBA_8)
+	}
+REF_END;
+
+REFLECT(gem::TextureWrap)
+	ENUM_VALUES {
+		REF_VALUE(Clamp)
+		REF_VALUE(ClampWithBorder)
+		REF_VALUE(Repeat)
+		REF_VALUE(RepeatMirrored)
+		REF_VALUE(RepeatMirroredOnce)
+	}
+REF_END;
+
+REFLECT(gem::TextureWraps)
+	MEMBERS {
+		REF_MEMBER(x)
+		REF_MEMBER(y)
+	}
+REF_END;
+
+REFLECT(gem::TextureFilter)
+	ENUM_VALUES {
+		REF_VALUE(Point)
+		REF_VALUE(Linear)
+		REF_VALUE(Bilinear)
+		REF_VALUE(Trilinear)
+	}
+REF_END;
+
+REFLECT(gem::CullFunc)
+	ENUM_VALUES {
+		REF_VALUE(None)
+		REF_VALUE(Clockwise)
+		REF_VALUE(CounterClockwise)
+	}
+REF_END;
+
+REFLECT(gem::BlendFunc)
+	ENUM_VALUES {
+		REF_VALUE(None)
+		REF_VALUE(Linear)
+		REF_VALUE(Additive)
+		REF_VALUE(Multiplicative)
+	}
+REF_END;
+
+REFLECT(gem::DepthFunc)
+	ENUM_VALUES {
+		REF_VALUE(None)
+		REF_VALUE(WriteOnly)
+		REF_VALUE(TestOnly)
+		REF_VALUE(Normal)
+	}
+REF_END;
+
+REFLECT(gem::VSyncMode)
+	ENUM_VALUES {
+		REF_VALUE(Off)
+		REF_VALUE(On)
+		REF_VALUE(Adaptive)
+	}
+REF_END;

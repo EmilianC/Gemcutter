@@ -1,6 +1,7 @@
 // Copyright (c) 2017 Emilian Cioca
 #include "Transform.h"
 #include "gemcutter/Application/Logging.h"
+#include "gemcutter/Application/Reflection.h"
 #include "gemcutter/Math/Math.h"
 
 namespace gem
@@ -55,3 +56,11 @@ namespace gem
 		rotation.RotateZ(degrees);
 	}
 }
+
+REFLECT(gem::Transform)
+	MEMBERS {
+		REF_MEMBER(position)
+		REF_MEMBER(rotation)
+		REF_MEMBER(scale)
+	}
+REF_END;
