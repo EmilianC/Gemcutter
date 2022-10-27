@@ -74,5 +74,5 @@ namespace gem
 	#define DEBUG_WARNING(format, ...)
 	#define DEBUG_ERROR_BOX(format, ...)
 	#define DEBUG_WARNING_BOX(format, ...)
-	#define ASSERT(exp, format, ...)
+	#define ASSERT(exp, format, ...) __assume(exp)
 #endif
