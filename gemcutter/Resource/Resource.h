@@ -6,6 +6,7 @@
 
 #include <string_view>
 #include <string>
+#include <type_traits>
 #include <unordered_map>
 
 namespace gem
@@ -96,6 +97,7 @@ namespace gem
 	template<class Asset>
 	std::shared_ptr<Asset> Load(std::string filePath)
 	{
+		static_assert(std::is_base_of_v<Resource<Asset>, Asset>);
 		return Resource<Asset>::Load(std::move(filePath));
 	}
 
@@ -103,6 +105,7 @@ namespace gem
 	template<class Asset>
 	void UnloadAll()
 	{
+		static_assert(std::is_base_of_v<Resource<Asset>, Asset>);
 		Resource<Asset>::UnloadAll();
 	}
 }

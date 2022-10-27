@@ -10,7 +10,6 @@
 #include "gemcutter/Rendering/Rendering.h"
 #include "gemcutter/Resource/Font.h"
 #include "gemcutter/Resource/Model.h"
-#include "gemcutter/Resource/ParticleBuffer.h"
 #include "gemcutter/Resource/Shader.h"
 #include "gemcutter/Resource/Texture.h"
 #include "gemcutter/Resource/VertexArray.h"
@@ -529,7 +528,6 @@ namespace gem
 		UnloadAll<Shader>();
 		UnloadAll<Texture>();
 		UnloadAll<Model>();
-		UnloadAll<ParticleBuffer>();
 
 		if (IsFullscreen())
 		{
