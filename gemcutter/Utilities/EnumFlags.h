@@ -5,142 +5,82 @@
 namespace gem
 {
 	// Allows you to easily use a strongly-typed enum as if it was a bit-field.
-	template<typename Enumeration, typename Primitive = std::underlying_type_t<Enumeration>>
+	template<typename Enumeration>
 	class EnumFlags
 	{
 	public:
-		EnumFlags()
-			: value(Primitive{})
-		{
-		}
+		using PrimitiveType = std::underlying_type_t<Enumeration>;
 
-		EnumFlags(Enumeration val)
-			: value(static_cast<Primitive>(val))
-		{
-		}
-
-		EnumFlags(Primitive val)
-			: value(val)
-		{
-		}
+		EnumFlags()                  : value(PrimitiveType{}) {}
+		EnumFlags(Enumeration val)   : value(static_cast<PrimitiveType>(val)) {}
+		EnumFlags(PrimitiveType val) : value(val) {}
 
 		void Clear()
 		{
-			value = Primitive{};
+			value = PrimitiveType{};
 		}
 
+		[[nodiscard]]
+		PrimitiveType Value() const
+		{
+			return value;
+		}
+
+		[[nodiscard]]
 		bool Has(EnumFlags mask) const
 		{
-			return (value & mask.value) != Primitive{};
+			return (value & mask.value) != PrimitiveType{};
 		}
 
-		bool operator==(const EnumFlags& other) const
+		[[nodiscard]]
+		bool operator==(EnumFlags other) const
 		{
 			return value == other.value;
 		}
 
-		bool operator==(Enumeration val) const
-		{
-			return value == static_cast<Primitive>(val);
-		}
-
-		bool operator==(Primitive val) const
-		{
-			return value == val;
-		}
-
-		bool operator!=(const EnumFlags& other) const
+		[[nodiscard]]
+		bool operator!=(EnumFlags other) const
 		{
 			return value != other.value;
 		}
 
-		bool operator!=(Enumeration val) const
-		{
-			return value != static_cast<Primitive>(val);
-		}
-
-		bool operator!=(Primitive val) const
-		{
-			return value != val;
-		}
-
-		EnumFlags& operator|=(const EnumFlags& other)
+		EnumFlags& operator|=(EnumFlags other)
 		{
 			value = value | other.value;
 			return *this;
 		}
 
-		EnumFlags& operator|=(Enumeration val)
-		{
-			value = value | static_cast<Primitive>(val);
-			return *this;
-		}
-
-		EnumFlags& operator|=(Primitive val)
-		{
-			value = value | val;
-			return *this;
-		}
-
-		EnumFlags& operator&=(const EnumFlags& other)
+		EnumFlags& operator&=(EnumFlags other)
 		{
 			value = value & other.value;
 			return *this;
 		}
 
-		EnumFlags& operator&=(Enumeration val)
-		{
-			value = value & static_cast<Primitive>(val);
-			return *this;
-		}
-
-		EnumFlags& operator&=(Primitive val)
-		{
-			value = value & val;
-			return *this;
-		}
-
-		EnumFlags operator|(const EnumFlags& other) const
+		[[nodiscard]]
+		EnumFlags operator|(EnumFlags other) const
 		{
 			return value | other.value;
 		}
 
-		EnumFlags operator|(Enumeration val) const
-		{
-			return value | static_cast<Primitive>(val);
-		}
-
-		EnumFlags operator|(Primitive val) const
-		{
-			return value | val;
-		}
-
-		EnumFlags operator&(const EnumFlags& other) const
+		[[nodiscard]]
+		EnumFlags operator&(EnumFlags other) const
 		{
 			return value & other.value;
 		}
 
-		EnumFlags operator&(Enumeration val) const
-		{
-			return value & static_cast<Primitive>(val);
-		}
-
-		EnumFlags operator&(Primitive val) const
-		{
-			return value & val;
-		}
-
-		operator Enumeration() const
+		[[nodiscard]]
+		explicit operator Enumeration() const
 		{
 			return static_cast<Enumeration>(value);
 		}
 
-		operator Primitive() const
+		[[nodiscard]]
+		explicit operator PrimitiveType() const
 		{
 			return value;
 		}
 
 	private:
-		Primitive value;
+		PrimitiveType value;
 	};
 }

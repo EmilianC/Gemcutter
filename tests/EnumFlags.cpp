@@ -3,15 +3,16 @@
 
 using namespace gem;
 
-enum class Values
+enum class Values : unsigned int
 {
 	One   = 0b0001,
 	Two   = 0b0010,
 	Three = 0b0100,
-	Four  = 0b1000,
+	Four  = 0b1000
 };
 
 static_assert(std::is_trivially_copyable_v<EnumFlags<Values>>);
+static_assert(std::is_same_v<EnumFlags<Values>::PrimitiveType, unsigned int>);
 
 TEST_CASE("EnumFlags")
 {
@@ -21,6 +22,8 @@ TEST_CASE("EnumFlags")
 	CHECK(!flags.Has(Values::Two));
 	CHECK(!flags.Has(Values::Three));
 	CHECK(!flags.Has(Values::Four));
+	CHECK(flags.Value() == 0);
+	CHECK(flags == 0b0000);
 
 	SECTION("OR-ing Flags")
 	{
@@ -29,24 +32,32 @@ TEST_CASE("EnumFlags")
 		CHECK(!flags.Has(Values::Two));
 		CHECK(!flags.Has(Values::Three));
 		CHECK(!flags.Has(Values::Four));
+		CHECK(flags.Value() == 0b0001);
+		CHECK(flags == 0b0001);
 
-		flags |= Values::Two;
+		flags |= EnumFlags{Values::Two};
 		CHECK(flags.Has(Values::One));
 		CHECK(flags.Has(Values::Two));
 		CHECK(!flags.Has(Values::Three));
 		CHECK(!flags.Has(Values::Four));
+		CHECK(flags.Value() == 0b0011);
+		CHECK(flags == 0b0011);
 
 		flags |= 0b0100;
 		CHECK(flags.Has(Values::One));
 		CHECK(flags.Has(Values::Two));
 		CHECK(flags.Has(Values::Three));
 		CHECK(!flags.Has(Values::Four));
+		CHECK(flags.Value() == 0b0111);
+		CHECK(flags == 0b0111);
 
 		flags |= Values::Four;
 		CHECK(flags.Has(0b0001));
 		CHECK(flags.Has(0b0010));
 		CHECK(flags.Has(0b0100));
 		CHECK(flags.Has(0b1000));
+		CHECK(flags.Value() == 0b1111);
+		CHECK(flags == 0b1111);
 	}
 
 	SECTION("AND-ing Flags")
@@ -56,6 +67,8 @@ TEST_CASE("EnumFlags")
 		CHECK(!flags.Has(Values::Two));
 		CHECK(flags.Has(Values::Three));
 		CHECK(flags.Has(Values::Four));
+		CHECK(flags.Value() == 0b1100);
+		CHECK(flags == 0b1100);
 
 		SECTION("Test 1")
 		{
@@ -64,6 +77,8 @@ TEST_CASE("EnumFlags")
 			CHECK(!flags.Has(Values::Two));
 			CHECK(flags.Has(Values::Three));
 			CHECK(!flags.Has(Values::Four));
+			CHECK(flags.Value() == 0b0100);
+			CHECK(flags == 0b0100);
 		}
 
 		SECTION("Test 2")
@@ -73,6 +88,8 @@ TEST_CASE("EnumFlags")
 			CHECK(!flags.Has(Values::Two));
 			CHECK(flags.Has(Values::Three));
 			CHECK(flags.Has(Values::Four));
+			CHECK(flags.Value() == 0b1100);
+			CHECK(flags == 0b1100);
 		}
 
 		SECTION("Test 3")
@@ -82,6 +99,8 @@ TEST_CASE("EnumFlags")
 			CHECK(!flags.Has(Values::Two));
 			CHECK(!flags.Has(Values::Three));
 			CHECK(flags.Has(Values::Four));
+			CHECK(flags.Value() == 0b1000);
+			CHECK(flags == 0b1000);
 		}
 	}
 
@@ -90,4 +109,6 @@ TEST_CASE("EnumFlags")
 	CHECK(!flags.Has(Values::Two));
 	CHECK(!flags.Has(Values::Three));
 	CHECK(!flags.Has(Values::Four));
+	CHECK(flags.Value() == 0b0000);
+	CHECK(flags == 0b0000);
 }
