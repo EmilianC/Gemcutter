@@ -561,9 +561,9 @@ namespace gem
 		// Timing control variables.
 		constexpr unsigned MAX_CONCURRENT_UPDATES = 5;
 		unsigned fpsCounter = 0;
-		__int64 lastUpdate = Timer::GetCurrentTick();
-		__int64 lastRender = lastUpdate;
-		__int64 lastFpsCapture = lastRender;
+		int64_t lastUpdate = Timer::GetCurrentTick();
+		int64_t lastRender = lastUpdate;
+		int64_t lastFpsCapture = lastRender;
 
 		while (true)
 		{
@@ -573,7 +573,7 @@ namespace gem
 				return;
 
 			// Record the FPS for the previous second of time.
-			__int64 currentTime = Timer::GetCurrentTick();
+			int64_t currentTime = Timer::GetCurrentTick();
 			if (currentTime - lastFpsCapture >= Timer::GetTicksPerSecond())
 			{
 				// We don't want to update the timer variable with "+= 1.0" here. After a lag spike this

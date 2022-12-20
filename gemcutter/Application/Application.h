@@ -3,6 +3,7 @@
 #include "gemcutter/Application/Event.h"
 #include "gemcutter/Rendering/Viewport.h"
 
+#include <cstdint>
 #include <functional>
 #include <string_view>
 
@@ -92,9 +93,9 @@ namespace gem
 		bool appIsRunning = true;
 
 		// The target amount of time between updates.
-		__int64 updateStep = 0;
+		int64_t updateStep = 0;
 		// The target amount of time between renders.
-		__int64 renderStep = 0;
+		int64_t renderStep = 0;
 
 		bool skipToPresent = false;
 

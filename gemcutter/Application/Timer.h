@@ -1,6 +1,8 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
 
+#include <cstdint>
+
 namespace gem
 {
 	class Timer
@@ -13,13 +15,13 @@ namespace gem
 		static bool IsSupported();
 
 		// Returns the resolution of the timer in ticks-per-millisecond.
-		static __int64 GetTicksPerMS();
+		static int64_t GetTicksPerMS();
 		// Returns the resolution of the timer in ticks-per-second.
-		static __int64 GetTicksPerSecond();
+		static int64_t GetTicksPerSecond();
 
 		// Returns the current global tick count. Can be subtracted from a previous call
 		// in order to calculate the amount of time that has passed.
-		static __int64 GetCurrentTick();
+		static int64_t GetCurrentTick();
 
 		// Sets the reference time for any other functions called in the future.
 		void Reset();
@@ -45,6 +47,6 @@ namespace gem
 		void AddTimeSeconds(double seconds);
 
 	private:
-		__int64 startTime;
+		int64_t startTime;
 	};
 }
