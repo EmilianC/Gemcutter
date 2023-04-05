@@ -1,5 +1,8 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
+
+#define FROG
+
 #include "gemcutter/Application/Event.h"
 #include "gemcutter/Rendering/Viewport.h"
 
