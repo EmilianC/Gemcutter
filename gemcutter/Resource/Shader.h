@@ -78,20 +78,20 @@ namespace gem
 	struct BufferBinding
 	{
 		// The name of the uniform buffer in the shader.
-		const std::string name;
+		std::string name;
 		// The unit connecting this buffer to a BufferSlot of the same unit.
-		const unsigned unit;
+		unsigned unit;
 		// A template of the shader's buffer which can be copied from. Only exists for 'instance' buffers.
-		const UniformBuffer::Ptr templateBuff;
+		UniformBuffer::Ptr templateBuff;
 	};
 
 	// Used internally to expose Samplers from the shader to TextureSlots.
 	struct TextureBinding
 	{
 		// The name of the sampler in the shader.
-		const std::string name;
+		std::string name;
 		// The unit connecting this texture sampler to a TextureSlot of the same unit.
-		const unsigned unit;
+		unsigned unit;
 	};
 
 	// Manages a shader and all its variants.
@@ -126,6 +126,7 @@ namespace gem
 		// These buffers will be bound whenever the shader is used in rendering.
 		BufferList buffers;
 
+		const std::vector<TextureBinding>& GetTextureBindings() const;
 		const std::vector<BufferBinding>& GetBufferBindings() const;
 
 	private:

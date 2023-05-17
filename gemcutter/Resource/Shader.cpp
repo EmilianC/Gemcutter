@@ -1168,7 +1168,7 @@ namespace gem
 			else
 			{
 				// Make sure the samplers are all set to the correct bindings.
-				for (auto& binding : textureBindings)
+				for (const auto& binding : textureBindings)
 				{
 					unsigned location = glGetUniformLocation(variant.program, binding.name.c_str());
 					// Not finding a location is not an error.
@@ -1180,7 +1180,7 @@ namespace gem
 				}
 
 				// Make sure the UniformBuffers are all set to the correct bindings.
-				for (auto& binding : bufferBindings)
+				for (const auto& binding : bufferBindings)
 				{
 					unsigned block = glGetUniformBlockIndex(variant.program, ("Gem_User_" + binding.name).c_str());
 					if (block != GL_INVALID_INDEX)
@@ -1208,6 +1208,11 @@ namespace gem
 
 		textures.UnBind();
 		buffers.UnBind();
+	}
+
+	const std::vector<TextureBinding>& Shader::GetTextureBindings() const
+	{
+		return textureBindings;
 	}
 
 	const std::vector<BufferBinding>& Shader::GetBufferBindings() const
