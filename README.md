@@ -6,7 +6,7 @@ and fine-grain control of both 2D and 3D rendering.
 
 # Why use Gemcutter?
 The framework facilitates expressive and succinct code that is both easy to read, and to use.
-With a thin API and C++20 features, Gemcutter provides powerful features without feeling clunky.
+With a thin API and C++23 features, Gemcutter provides powerful features without feeling clunky.
 
 Highlight features include:
 * [A rich shader workflow](docs/Shader.md)
