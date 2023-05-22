@@ -142,6 +142,7 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${gemcutter_files})
 
 add_library(gemcutter STATIC ${gemcutter_files})
 sf_target_compile_disable_exceptions(gemcutter OPTIONAL)
+sf_target_compile_disable_rtti(gemcutter OPTIONAL)
 sf_target_compile_fast_fp(gemcutter OPTIONAL)
 sf_target_compile_warnings_as_errors(gemcutter OPTIONAL)
 sf_target_compile_warnings(gemcutter)
