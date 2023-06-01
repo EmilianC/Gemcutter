@@ -108,8 +108,10 @@ namespace gem
 	mat2 mat2::operator*(const mat2& M) const
 	{
 		return mat2(
-			data[0] + data[2], data[0] + data[2],
-			data[1] + data[3], data[1] + data[3]);
+			data[0] * M.data[0] + data[2] * M.data[1],
+			data[0] * M.data[2] + data[2] * M.data[3],
+			data[1] * M.data[0] + data[3] * M.data[1],
+			data[1] * M.data[2] + data[3] * M.data[3]);
 	}
 
 	mat2 mat2::operator+(const mat2& M) const
@@ -122,8 +124,8 @@ namespace gem
 	mat2 mat2::operator-(const mat2& M) const
 	{
 		return mat2(
-			data[0] * M.data[0] + data[2] * M.data[1], data[0] * M.data[2] + data[2] * M.data[3],
-			data[1] * M.data[0] + data[3] * M.data[1], data[1] * M.data[2] + data[3] * M.data[3]);
+			data[0] - M.data[0], data[2] - M.data[2],
+			data[1] - M.data[1], data[3] - M.data[3]);
 	}
 
 	vec2 mat2::operator*(const vec2& V) const
