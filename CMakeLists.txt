@@ -31,6 +31,13 @@ function(update_submodule submodule_dir)
 	endif()
 endfunction()
 
+if (MSVC)
+	option(MSVC_MULTIPROCESSOR_COMPILATION "Whether compilation can use multiple CPU cores (/MP)." ON)
+	if (MSVC_MULTIPROCESSOR_COMPILATION)
+		add_compile_options(/MP)
+	endif()
+endif()
+
 option(ENABLE_IMGUI_DEV_SUPPORT "Build and use ImGui in development configurations." ON)
 option(ENABLE_IMGUI_SUPPORT "Build and use ImGui in all configurations." OFF)
 if (ENABLE_IMGUI_DEV_SUPPORT OR ENABLE_IMGUI_SUPPORT)
