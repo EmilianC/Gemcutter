@@ -12,6 +12,7 @@ Highlight features include:
 * [A rich shader workflow](docs/Shader.md)
 * [Efficient entity queries](docs/Entity.md)
 * [Extendable asset management](docs/AssetManager.md)
+* Run-time reflection
 * A modular and extendable particle system
 * Audio powered by [SoLoud](https://github.com/EmilianC/soloud)
 * Mesh and Texture loading
@@ -50,10 +51,10 @@ Future highlight features include:
 * Bullet physics integration
 * Configurable memory management
 * C++ reflection driven features:
-	* Animation of arbitrary values
 	* Serialization and deserialization
-	* Replication over networks
 	* Seamless editor integration of user data-types
+	* Animation of arbitrary values
+	* Replication over networks
 
 # Dependencies
 All Dependencies used under their respective licenses. Copyright is held by their respective owners.
@@ -66,6 +67,7 @@ All Dependencies used under their respective licenses. Copyright is held by thei
 * [dirent 1.23.2](https://github.com/tronkko/dirent)
 * [XInput 1.4](https://msdn.microsoft.com/en-us/library/windows/desktop/ee417001(v=vs.85).aspx)
 * [Imgui 1.85](https://github.com/ocornut/imgui)
+* [Loupe](https://github.com/EmilianC/Loupe)
 
 # Notes
 * Gemcutter is built and tested on Windows with the latest version of Visual Studio.
