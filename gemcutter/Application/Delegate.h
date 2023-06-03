@@ -1,6 +1,7 @@
 // Copyright (c) 2021 Emilian Cioca
 #pragma once
 #include "gemcutter/Application/Logging.h"
+#include "gemcutter/Utilities/Identifier.h"
 #include "gemcutter/Utilities/StdExt.h"
 
 #include <functional>
@@ -17,6 +18,8 @@ namespace gem
 
 	namespace detail
 	{
+		struct DelegateId : public Identifier<unsigned> {};
+
 		// Enables DelegateHandles to safely access their associated Delegate/Dispatcher.
 		class DelegateBase
 		{
@@ -36,8 +39,6 @@ namespace gem
 			};
 
 		protected:
-			inline static unsigned idGenerator = 1;
-
 			std::shared_ptr<ControlBlock> controlBlock;
 		};
 	}
@@ -50,7 +51,7 @@ namespace gem
 
 		DelegateHandle(const DelegateHandle&) = delete;
 		DelegateHandle& operator=(const DelegateHandle&) = delete;
-		DelegateHandle(std::weak_ptr<detail::DelegateBase::ControlBlock> blockPtr, unsigned handleId);
+		DelegateHandle(std::weak_ptr<detail::DelegateBase::ControlBlock> blockPtr, detail::DelegateId handleId);
 	public:
 		DelegateHandle(DelegateHandle&&) = default;
 		DelegateHandle& operator=(DelegateHandle&&) = default;
@@ -61,7 +62,7 @@ namespace gem
 
 	private:
 		std::weak_ptr<detail::DelegateBase::ControlBlock> controlBlock;
-		unsigned id;
+		detail::DelegateId id;
 	};
 
 	// Represents a safe binding to a single functor.
@@ -94,7 +95,7 @@ namespace gem
 
 		std::weak_ptr<void> lifetimePtr;
 		std::function<Return(Args...)> func;
-		unsigned id = 0;
+		detail::DelegateId id;
 	};
 
 	// A Delegate which supports multiple bound functors.
@@ -126,7 +127,7 @@ namespace gem
 		{
 			std::weak_ptr<void> lifetimePtr;
 			std::function<Return(Args...)> func;
-			unsigned id = 0;
+			detail::DelegateId id;
 		};
 
 		std::vector<Binding> bindings;

@@ -25,7 +25,7 @@ namespace gem
 		}
 	}
 
-	DelegateHandle::DelegateHandle(std::weak_ptr<detail::DelegateBase::ControlBlock> blockPtr, unsigned handleId)
+	DelegateHandle::DelegateHandle(std::weak_ptr<detail::DelegateBase::ControlBlock> blockPtr, detail::DelegateId handleId)
 		: controlBlock(std::move(blockPtr))
 		, id(handleId)
 	{

@@ -8,7 +8,7 @@ namespace gem
 
 		lifetimePtr.reset();
 		func = std::move(functor);
-		id = ++idGenerator;
+		id = GenerateUniqueId<detail::DelegateId>();
 
 		return {controlBlock, id};
 	}
@@ -21,7 +21,7 @@ namespace gem
 
 		lifetimePtr = std::move(lifetimeObject);
 		func = std::move(functor);
-		id = 0;
+		id.Reset();
 	}
 
 	template<typename Return, typename... Args>
@@ -31,7 +31,7 @@ namespace gem
 
 		lifetimePtr.reset();
 		func = std::move(functor);
-		id = ++idGenerator;
+		id = GenerateUniqueId<detail::DelegateId>();
 	}
 
 	template<typename Return, typename... Args>
@@ -39,7 +39,7 @@ namespace gem
 	{
 		lifetimePtr.reset();
 		func = nullptr;
-		id = 0;
+		id.Reset();
 	}
 
 	template<typename Return, typename... Args>
@@ -101,7 +101,7 @@ namespace gem
 	{
 		ASSERT(functor, "'functor' is null.");
 
-		const unsigned id = ++idGenerator;
+		const auto id = GenerateUniqueId<detail::DelegateId>();
 		bindings.emplace_back(std::weak_ptr<void>{}, std::move(functor), id);
 
 		return {controlBlock, id};
@@ -113,7 +113,7 @@ namespace gem
 		ASSERT(functor, "'functor' is null.");
 		ASSERT(!lifetimeObject.expired(), "'lifetimeObject' is already expired.");
 
-		bindings.emplace_back(std::move(lifetimeObject), std::move(functor), 0);
+		bindings.emplace_back(std::move(lifetimeObject), std::move(functor), detail::DelegateId{});
 	}
 
 	template<typename Return, typename... Args>
@@ -121,7 +121,7 @@ namespace gem
 	{
 		ASSERT(functor, "'functor' is null.");
 
-		const unsigned id = ++idGenerator;
+		const auto id = GenerateUniqueId<detail::DelegateId>();
 		bindings.emplace_back(std::weak_ptr<void>{}, std::move(functor), id);
 	}
 
