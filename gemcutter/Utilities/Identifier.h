@@ -10,12 +10,12 @@ namespace gem
 	// A base class for strongly-typed identifiers.
 	// The intended usage is to derive from this structure:
 	//
-	// struct CustomId : public Identifier<char> {};
+	// struct CustomId : public Identifier<short> {};
 	// CustomId id = GenerateUniqueId<CustomId>();
 	//
 	// Please note that you will need to specialize std::hash<>
 	// if you wish to use your identifiers as keys in containers.
-	template<typename T = unsigned>
+	template<typename T>
 	struct Identifier
 	{
 		static_assert(std::is_integral_v<T>);
@@ -38,7 +38,7 @@ namespace gem
 	template<typename IdType>
 	IdType GenerateUniqueId()
 	{
-		static IdType::ValueType counter = IdType::invalid;
+		constinit static IdType::ValueType counter = IdType::invalid;
 
 		ASSERT(counter != std::numeric_limits<typename IdType::ValueType>::max(),
 			"The underlying identifier type ran out of unique values to generate.");
