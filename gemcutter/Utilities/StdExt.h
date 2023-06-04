@@ -3,6 +3,7 @@
 #include <memory>
 #include <string>
 #include <string_view>
+#include <variant>
 
 namespace gem
 {
@@ -25,5 +26,17 @@ namespace gem
 	{
 		std::weak_ptr<void> empty;
 		return !ptr.owner_before(empty) && !empty.owner_before(ptr);
+	}
+
+	// Helper for visiting all the alternatives in a variant with lambdas.
+	template<typename Variant, typename... Visitors>
+	auto Visit(Variant&& variant, Visitors&&... visitors)
+	{
+		struct Overload : public Visitors...
+		{
+			using Visitors::operator()...;
+		};
+	
+		return std::visit(Overload { std::forward<Visitors>(visitors)... }, std::forward<Variant>(variant));
 	}
 }
