@@ -12,31 +12,31 @@ namespace
 {
 	GLenum* drawBuffers = nullptr;
 
+	// Although undocumented, these seem to be the correct values expected by glReadPixels.
+	constexpr unsigned pixelFormat_resolve[] = {
+		GL_RED_INTEGER,       // R_8
+		GL_RED_INTEGER,       // R_16
+		GL_RED,               // R_16F
+		GL_RED_INTEGER,       // R_32
+		GL_RED,               // R_32F
+		GL_RGB_INTEGER,       // RGB_8
+		GL_RGB_INTEGER,       // RGB_16
+		GL_RGB,               // RGB_16F
+		GL_RGB_INTEGER,       // RGB_32
+		GL_RGB,               // RGB_32F
+		GL_RGBA_INTEGER,      // RGBA_8
+		GL_RGBA_INTEGER,      // RGBA_16
+		GL_RGBA,              // RGBA_16F
+		GL_RGBA_INTEGER,      // RGBA_32
+		GL_RGBA,              // RGBA_32F
+		GL_DEPTH_COMPONENT,   // DEPTH_24
+		GL_RGB_INTEGER,       // sRGB_8
+		GL_RGBA_INTEGER       // sRGBA_8
+	};
+
 	constexpr unsigned ResolvePixelFormat(gem::TextureFormat format)
 	{
-		// Although undocumented, these seem to be the correct values expected by glReadPixels.
-		const unsigned resolve[] = {
-			GL_RED_INTEGER,       // R_8
-			GL_RED_INTEGER,       // R_16
-			GL_RED,               // R_16F
-			GL_RED_INTEGER,       // R_32
-			GL_RED,               // R_32F
-			GL_RGB_INTEGER,       // RGB_8
-			GL_RGB_INTEGER,       // RGB_16
-			GL_RGB,               // RGB_16F
-			GL_RGB_INTEGER,       // RGB_32
-			GL_RGB,               // RGB_32F
-			GL_RGBA_INTEGER,      // RGBA_8
-			GL_RGBA_INTEGER,      // RGBA_16
-			GL_RGBA,              // RGBA_16F
-			GL_RGBA_INTEGER,      // RGBA_32
-			GL_RGBA,              // RGBA_32F
-			GL_DEPTH_COMPONENT,   // DEPTH_24
-			GL_RGB_INTEGER,       // sRGB_8
-			GL_RGBA_INTEGER       // sRGBA_8
-		};
-
-		return resolve[static_cast<unsigned>(format)];
+		return pixelFormat_resolve[static_cast<unsigned>(format)];
 	}
 }
 
