@@ -5,6 +5,7 @@
 #include "gemcutter/Resource/Shareable.h"
 
 #include <vector>
+#include <numeric>
 
 namespace gem
 {
@@ -63,7 +64,7 @@ namespace gem
 		VertexBufferType GetBufferType() const;
 
 		// Special index value used to restart Triangle/line fans/strips/loops.
-		static const unsigned short RESTART_INDEX;
+		static constexpr unsigned short RESTART_INDEX = std::numeric_limits<unsigned short>::max();
 
 	private:
 		void Bind() const;

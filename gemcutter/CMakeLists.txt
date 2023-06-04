@@ -182,6 +182,7 @@ if (ENABLE_PCH)
 			<functional>
 			<map>
 			<memory>
+			<numeric>
 			<optional>
 			<string_view>
 			<string>

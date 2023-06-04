@@ -9,8 +9,6 @@
 
 namespace gem
 {
-	const unsigned short VertexBuffer::RESTART_INDEX = std::numeric_limits<unsigned short>::max();
-
 	BufferMapping::BufferMapping(VertexBuffer& _buffer, VertexAccess accessMode)
 		: buffer(_buffer)
 	{
