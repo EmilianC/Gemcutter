@@ -165,48 +165,4 @@ namespace gem::meta
 	#define STRING_112(str) gem::meta::string<EXPAND_STRING_112(str)>
 	#define STRING_128(str) gem::meta::string<EXPAND_STRING_128(str)>
 	#define STRING(str) STRING_64(str)
-
-	namespace detail
-	{
-		template<typename T> [[nodiscard]]
-		consteval std::string_view GetTypeName()
-		{
-			std::string_view result = __FUNCSIG__;
-			const std::string_view functionStartTag = "GetTypeName<";
-			const std::string_view functionEndTag = ">(";
-			const std::string_view enumTag = "enum ";
-			const std::string_view classTag = "class ";
-			const std::string_view structTag = "struct ";
-
-			auto startIndex = result.find(functionStartTag) + functionStartTag.size();
-			auto endIndex = result.rfind(functionEndTag);
-
-			result = result.substr(startIndex, endIndex - startIndex);
-
-			if (result.starts_with(enumTag))
-			{
-				result.remove_prefix(enumTag.size());
-			}
-			
-			if (result.starts_with(classTag))
-			{
-				result.remove_prefix(classTag.size());
-			}
-			
-			if (result.starts_with(structTag))
-			{
-				result.remove_prefix(structTag.size());
-			}
-
-			return result;
-		}
-	}
-
-	// Returns a string representation of the given type's name.
-	// Results will vary by compiler and are best used for debug purposes only.
-	template<typename T> [[nodiscard]]
-	consteval std::string_view GetTypeName()
-	{
-		return detail::GetTypeName<std::remove_cv_t<T>>();
-	}
 }

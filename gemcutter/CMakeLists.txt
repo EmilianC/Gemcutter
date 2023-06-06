@@ -19,6 +19,7 @@ list(APPEND gemcutter_files
 	"Application/Logging.h"
 	"Application/Reflection.cpp"
 	"Application/Reflection.h"
+	"Application/Reflection.inl"
 	"Application/Timer.cpp"
 	"Application/Timer.h"
 

@@ -8,7 +8,7 @@ namespace gem
 	void InitializeReflectionTables()
 	{
 #ifdef GEM_DEBUG
-		static bool calledOnce = false;
+		constinit static bool calledOnce = false;
 		ASSERT(!calledOnce, "InitializeReflectionTables() should not be called multiple times.");
 		calledOnce = true;
 #endif
@@ -16,3 +16,6 @@ namespace gem
 		loupe::clear_reflect_tasks();
 	}
 }
+
+REFLECT_SIMPLE(gem::ReadOnly);
+REFLECT_SIMPLE(gem::Hidden);
