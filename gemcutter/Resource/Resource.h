@@ -11,9 +11,21 @@
 
 namespace gem
 {
-	// Base resource class. Provides an interface for cached loading.
+	// Base class for all resources loadable from a path on disk.
+	class ResourceBase
+	{
+	public:
+		const std::string& GetPath() const { return path; }
+
+	protected:
+		ResourceBase() = default;
+
+		std::string path;
+	};
+
+	// Provides an interface for cached loading of the specified asset.
 	template<class Asset>
-	class Resource
+	class Resource : public ResourceBase
 	{
 	protected:
 		Resource() = default;
@@ -21,8 +33,6 @@ namespace gem
 	public:
 		Resource(const Resource&) = delete;
 		Resource& operator=(const Resource&) = delete;
-
-		const std::string& GetPath() const { return path; }
 
 		// Loads an asset from the specified file, or retrieves it from the cache.
 		// Calls the derived class's Load() with the normalized file path.
@@ -89,8 +99,6 @@ namespace gem
 		}
 
 		static inline std::unordered_map<std::string, std::shared_ptr<Asset>, string_hash, std::equal_to<>> resourceCache;
-
-		std::string path;
 	};
 
 	// Helper function to load an asset.
