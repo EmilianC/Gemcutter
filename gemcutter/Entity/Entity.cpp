@@ -10,21 +10,14 @@ namespace gem
 {
 	namespace detail
 	{
-#ifdef GEM_DEV
-		std::unordered_map<int, std::string_view>& componentNames = GetComponentNames();
-		std::unordered_map<int, std::string_view>& GetComponentNames()
-		{
-			static std::unordered_map<int, std::string_view> names;
-			return names;
-		}
-#endif
-		std::unordered_map<ComponentId, std::vector<Entity*>> entityIndex;
-		std::unordered_map<ComponentId, std::vector<ComponentBase*>> componentIndex;
+		std::unordered_map<ComponentId, std::vector<Entity*>> tagIndex;
+		std::unordered_map<const loupe::type*, std::vector<Entity*>> typeIndex;
+		std::unordered_map<const loupe::type*, std::vector<ComponentBase*>> componentLists;
 	}
 
-	ComponentBase::ComponentBase(Entity& _owner, ComponentId _componentId)
+	ComponentBase::ComponentBase(Entity& _owner, detail::ComponentId id)
 		: owner(_owner)
-		, componentId(_componentId)
+		, componentId(id)
 	{
 	}
 
@@ -36,6 +29,16 @@ namespace gem
 	bool ComponentBase::IsComponentEnabled() const
 	{
 		return isEnabled;
+	}
+
+	const loupe::type& ComponentBase::GetType() const
+	{
+		return *typeId;
+	}
+
+	bool ComponentBase::IsA(const loupe::type& baseType) const
+	{
+		return typeId->is_a(baseType);
 	}
 
 	Entity::Entity(std::string name)
@@ -234,7 +237,7 @@ namespace gem
 		return isEnabled;
 	}
 
-	void Entity::Tag(ComponentId tagId)
+	void Entity::Tag(detail::ComponentId tagId)
 	{
 		if (IsEnabled())
 		{
@@ -244,7 +247,7 @@ namespace gem
 		tags.push_back(tagId);
 	}
 
-	void Entity::RemoveTag(ComponentId tagId)
+	void Entity::RemoveTag(detail::ComponentId tagId)
 	{
 		auto itr = std::find(tags.begin(), tags.end(), tagId);
 		if (itr == tags.end())
@@ -259,37 +262,39 @@ namespace gem
 		}
 	}
 
-	void Entity::IndexTag(ComponentId tagId)
+	void Entity::IndexTag(detail::ComponentId tagId)
 	{
 		// Adjust [id, entity] index.
-		auto& table = detail::entityIndex[tagId];
-		table.insert(std::lower_bound(table.begin(), table.end(), this), this);
+		auto& table = detail::tagIndex[tagId];
+		table.insert(std::lower_bound(std::begin(table), std::end(table), this), this);
 	}
 
-	void Entity::UnindexTag(ComponentId tagId)
+	void Entity::UnindexTag(detail::ComponentId tagId)
 	{
 		// Adjust [id, entity] index.
-		auto& table = detail::entityIndex[tagId];
-		table.erase(std::lower_bound(table.begin(), table.end(), this));
+		auto& table = detail::tagIndex[tagId];
+		table.erase(std::lower_bound(std::begin(table), std::end(table), this));
 	}
 
 	void Entity::Index(ComponentBase& comp)
 	{
-		// Adjust [id, entity] index.
-		IndexTag(comp.componentId);
+		// Adjust [typeId, entity] index.
+		auto& table = detail::typeIndex[comp.typeId];
+		table.insert(std::lower_bound(std::begin(table), std::end(table), this), this);
 
 		// Adjust [id, component] index.
-		detail::componentIndex[comp.componentId].push_back(&comp);
+		detail::componentLists[comp.typeId].push_back(&comp);
 	}
 
-	void Entity::Unindex(ComponentBase& comp)
+	void Entity::Unindex(const ComponentBase& comp)
 	{
-		// Adjust [id, entity] index.
-		UnindexTag(comp.componentId);
+		// Adjust [typeId, entity] index.
+		auto& table = detail::typeIndex[comp.typeId];
+		table.erase(std::lower_bound(std::begin(table), std::end(table), this));
 
 		// Adjust [id, component] index.
-		auto& componentTable = detail::componentIndex[comp.componentId];
-		auto itr = std::find(componentTable.begin(), componentTable.end(), &comp);
+		auto& componentTable = detail::componentLists[comp.typeId];
+		auto itr = std::find(std::begin(componentTable), std::end(componentTable), &comp);
 		*itr = componentTable.back();
 		componentTable.pop_back();
 	}
@@ -324,3 +329,24 @@ namespace gem
 		return lhs.get() != &rhs;
 	}
 }
+
+REFLECT_SIMPLE(gem::detail::ComponentId);
+REFLECT_SIMPLE(gem::TagBase);
+
+REFLECT(gem::ComponentBase)
+	MEMBERS {
+		REF_PRIVATE_MEMBER(typeId)
+		REF_PRIVATE_MEMBER(isEnabled)
+	}
+REF_END;
+
+REFLECT(gem::Entity)
+	BASES {
+		REF_BASE(gem::Transform)
+	}
+	MEMBERS {
+		REF_PRIVATE_MEMBER(components)
+		REF_PRIVATE_MEMBER(tags)
+		REF_PRIVATE_MEMBER(isEnabled)
+	}
+REF_END;
