@@ -433,7 +433,7 @@ namespace gem
 
 	//-----------------------------------------------------------------------------------------------------
 
-	RawImage::RawImage(int _width, int _height, TextureFormat _format, const unsigned char* _data)
+	RawImage::RawImage(int _width, int _height, TextureFormat _format, unsigned char* _data)
 		: width(_width)
 		, height(_height)
 		, format(_format)
@@ -443,7 +443,7 @@ namespace gem
 
 	RawImage::~RawImage()
 	{
-		free(const_cast<unsigned char*>(data));
+		free(data);
 	}
 
 	RawImage RawImage::Load(std::string_view file, bool flipY, bool sRGB)

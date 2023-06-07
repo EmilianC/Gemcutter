@@ -114,13 +114,13 @@ namespace gem
 		// Loads *.png, *.jpg, *.tga, and *.bmp.
 		[[nodiscard]] static RawImage Load(std::string_view file, bool flipY, bool sRGB);
 
-		const int width;
-		const int height;
-		const TextureFormat format;
-		const unsigned char* data;
+		int width;
+		int height;
+		TextureFormat format;
+		unsigned char* data;
 
 	private:
-		RawImage(int width, int height, TextureFormat format, const unsigned char* data);
+		RawImage(int width, int height, TextureFormat format, unsigned char* data);
 	};
 
 	// Flips the image contained in `data` on the Y axis.
