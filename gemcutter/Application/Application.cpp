@@ -648,9 +648,9 @@ namespace gem
 			button.Update();
 		}
 
-		for (Entity& entity : With<ParticleUpdaterTag>())
+		for (auto& emitter : All<ParticleEmitter>())
 		{
-			entity.Get<ParticleEmitter>().Update();
+			emitter.Update();
 		}
 
 		for (auto& light : All<Light>())

@@ -12,7 +12,6 @@ namespace gem
 	{
 		ASSERT(maxParticles > 0, "'maxParticles' must be greater than 0.");
 
-		owner.Tag<ParticleUpdaterTag>();
 		InitUniformBuffer();
 
 		array = data.GetArray();
@@ -25,15 +24,9 @@ namespace gem
 	{
 		ASSERT(maxParticles > 0, "'maxParticles' must be greater than 0.");
 
-		owner.Tag<ParticleUpdaterTag>();
 		InitUniformBuffer();
 
 		array = data.GetArray();
-	}
-
-	ParticleEmitter::~ParticleEmitter()
-	{
-		owner.RemoveTag<ParticleUpdaterTag>();
 	}
 
 	void ParticleEmitter::Warmup(float time, float step)
@@ -235,7 +228,7 @@ namespace gem
 			// We have more particles to generate this frame...
 			numToSpawn >= 1.0f)
 		{
-			if (spawnType == Omni)
+			if (spawnType == Type::Omni)
 			{
 				data.positions[numCurrentParticles] = RandomDirection() * radius.Random();
 			}
