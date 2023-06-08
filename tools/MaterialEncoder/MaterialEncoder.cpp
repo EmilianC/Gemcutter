@@ -17,9 +17,9 @@ gem::ConfigTable MaterialEncoder::GetDefault() const
 	defaultConfig.SetString("shader", "");
 	defaultConfig.SetString("texture_bind_points", "");
 	defaultConfig.SetString("textures", "");
-	defaultConfig.SetString("blend_mode", "none");
-	defaultConfig.SetString("depth_mode", "normal");
-	defaultConfig.SetString("cull_mode", "clockwise");
+	defaultConfig.SetString("blend_mode", gem::EnumToString(gem::BlendFunc::None));
+	defaultConfig.SetString("depth_mode", gem::EnumToString(gem::DepthFunc::Normal));
+	defaultConfig.SetString("cull_mode",  gem::EnumToString(gem::CullFunc::Clockwise));
 
 	return defaultConfig;
 }
@@ -105,17 +105,7 @@ bool MaterialEncoder::Validate(const gem::ConfigTable& metadata, unsigned loaded
 			return false;
 		}
 
-		auto str = data.GetString("blend_mode");
-		if (!gem::CompareLowercase(str, "none") &&
-			!gem::CompareLowercase(str, "linear") &&
-			!gem::CompareLowercase(str, "additive") &&
-			!gem::CompareLowercase(str, "multiplicative"))
-		{
-			gem::Error("\"blend_mode\" is invalid. Valid options are \"none\", \"linear\", \"additive\", or \"multiplicative\".");
-			return false;
-		}
-
-		return true;
+		return gem::ValidateEnumValue<gem::BlendFunc>("blend_mode", data.GetString("blend_mode"));
 	};
 
 	auto validateDepthMode = [](const gem::ConfigTable& data)
@@ -126,17 +116,7 @@ bool MaterialEncoder::Validate(const gem::ConfigTable& metadata, unsigned loaded
 			return false;
 		}
 
-		auto str = data.GetString("depth_mode");
-		if (!gem::CompareLowercase(str, "none") &&
-			!gem::CompareLowercase(str, "writeonly") &&
-			!gem::CompareLowercase(str, "testonly") &&
-			!gem::CompareLowercase(str, "normal"))
-		{
-			gem::Error("\"depth_mode\" is invalid. Valid options are \"none\", \"writeonly\", \"testonly\", or \"normal\".");
-			return false;
-		}
-
-		return true;
+		return gem::ValidateEnumValue<gem::DepthFunc>("depth_mode", data.GetString("depth_mode"));
 	};
 
 	auto validateCullMode = [](const gem::ConfigTable& data)
@@ -147,16 +127,7 @@ bool MaterialEncoder::Validate(const gem::ConfigTable& metadata, unsigned loaded
 			return false;
 		}
 
-		auto str = data.GetString("cull_mode");
-		if (!gem::CompareLowercase(str, "none") &&
-			!gem::CompareLowercase(str, "clockwise") &&
-			!gem::CompareLowercase(str, "counterclockwise"))
-		{
-			gem::Error("\"cull_mode\" is invalid. Valid options are \"none\", \"clockwise\", or \"counterclockwise\".");
-			return false;
-		}
-
-		return true;
+		return gem::ValidateEnumValue<gem::CullFunc>("cull_mode", data.GetString("cull_mode"));
 	};
 
 	if (!validateShader(metadata)) return false;
@@ -184,9 +155,9 @@ bool MaterialEncoder::Convert(std::string_view source, std::string_view destinat
 	const std::string shader = metadata.GetString("shader");
 	const std::vector<int> units = metadata.GetIntArray("texture_bind_points");
 	const std::vector<std::string> textures = metadata.GetStringArray("textures");
-	const gem::BlendFunc BlendMode = gem::StringToBlendFunc(metadata.GetString("blend_mode"));
-	const gem::DepthFunc DepthMode = gem::StringToDepthFunc(metadata.GetString("depth_mode"));
-	const gem::CullFunc cullMode = gem::StringToCullFunc(metadata.GetString("cull_mode"));
+	const auto BlendMode = gem::StringToEnum<gem::BlendFunc>(metadata.GetString("blend_mode")).value();
+	const auto DepthMode = gem::StringToEnum<gem::DepthFunc>(metadata.GetString("depth_mode")).value();
+	const auto cullMode  = gem::StringToEnum<gem::CullFunc>(metadata.GetString("cull_mode")).value();
 
 	// Save file.
 	FILE* materialFile = fopen(outputFile.c_str(), "wb");

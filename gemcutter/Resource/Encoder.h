@@ -3,6 +3,7 @@
 #include "gemcutter/Application/CmdArgs.h"
 #include "gemcutter/Application/FileSystem.h"
 #include "gemcutter/Application/Logging.h"
+#include "gemcutter/Application/Reflection.h"
 #include "gemcutter/Resource/ConfigTable.h"
 #include "gemcutter/Utilities/ScopeGuard.h"
 #include "gemcutter/Utilities/String.h"
@@ -237,4 +238,45 @@ namespace gem
 		// The newest version of the metaData.
 		const unsigned version;
 	};
+
+	// Returns true if the value name matches one of the enum options.
+	// Otherwise prints an error message containing the valid options and returns false.
+	template<typename Enum> [[nodiscard]]
+	bool ValidateEnumValue(std::string_view optionName, std::string_view valueName)
+	{
+		static_assert(std::is_enum_v<Enum>);
+
+		const loupe::type& enumType = gem::ReflectType<Enum>();
+		const auto& enumeration = std::get<loupe::enumeration>(enumType.data);
+
+		if (!!enumeration.find_value(valueName))
+		{
+			return true;
+		}
+
+		if (enumeration.entries.empty())
+		{
+			gem::Error("\"%s\" is invalid. No valid options are reflected for the enum type.", optionName);
+			return false;
+		}
+
+		std::string error;
+		error.reserve(128);
+		error += '\"';
+		error += optionName;
+		error += "\" is invalid. Valid options are: ";
+
+		for (loupe::enum_entry entry : enumeration.entries)
+		{
+			error += '\"';
+			error += entry.name;
+			error += "\", ";
+		}
+
+		error.pop_back();
+		error.back() = '.';
+
+		gem::Error(error);
+		return false;
+	}
 }

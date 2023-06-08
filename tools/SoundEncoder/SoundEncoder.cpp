@@ -18,7 +18,7 @@ gem::ConfigTable SoundEncoder::GetDefault() const
 	defaultConfig.SetBool("3d", false);
 	defaultConfig.SetBool("loop", false);
 	defaultConfig.SetBool("unique_instance", false);
-	defaultConfig.SetString("3d_attenuation", "none");
+	defaultConfig.SetString("3d_attenuation", gem::EnumToString(gem::AttenuationFunc::None));
 	defaultConfig.SetFloat("3d_attenuation_rolloff", 1.0f);
 	defaultConfig.SetFloat("volume", 1.0f);
 	defaultConfig.SetFloat("3d_min_distance", 1.0f);
@@ -54,12 +54,8 @@ bool SoundEncoder::Validate(const gem::ConfigTable& metadata, unsigned loadedVer
 	}
 
 	const std::string attenuation = metadata.GetString("3d_attenuation");
-	if (!gem::CompareLowercase(attenuation, "none") &&
-		!gem::CompareLowercase(attenuation, "inversedistance") &&
-		!gem::CompareLowercase(attenuation, "linear") &&
-		!gem::CompareLowercase(attenuation, "exponential"))
+	if (!gem::ValidateEnumValue<gem::AttenuationFunc>("3d_attenuation", attenuation))
 	{
-		gem::Error("\"3d_attenuation\" is invalid. Valid options are \"none\", \"inversedistance\", \"linear\", or \"exponential\".");
 		return false;
 	}
 
@@ -141,7 +137,7 @@ bool SoundEncoder::Convert(std::string_view source, std::string_view destination
 	const bool is3D = metadata.GetBool("3d");
 	const bool loop = metadata.GetBool("loop");
 	const bool unique = metadata.GetBool("unique_instance");
-	const gem::AttenuationFunc attenuation = gem::StringToAttenuationFunc(metadata.GetString("3d_attenuation"));
+	const auto attenuation = gem::StringToEnum<gem::AttenuationFunc>(metadata.GetString("3d_attenuation")).value();
 	const float rolloff = metadata.GetFloat("3d_attenuation_rolloff");
 	const float volume = metadata.GetFloat("volume");
 	const float minDistance = metadata.GetFloat("3d_min_distance");

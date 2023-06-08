@@ -169,28 +169,4 @@ namespace gem
 	{
 		return volume;
 	}
-
-	AttenuationFunc StringToAttenuationFunc(std::string_view str)
-	{
-		if (CompareLowercase(str, "inversedistance"))
-			return AttenuationFunc::InverseDistance;
-		else if (CompareLowercase(str, "linear"))
-			return AttenuationFunc::Linear;
-		else if (CompareLowercase(str, "exponential"))
-			return AttenuationFunc::Exponential;
-		else
-			return AttenuationFunc::None;
-	}
-
-	std::string_view AttenuationFuncToString(AttenuationFunc mode)
-	{
-		switch (mode)
-		{
-		default:
-		case AttenuationFunc::None:            return "none";
-		case AttenuationFunc::InverseDistance: return "inversedistance";
-		case AttenuationFunc::Linear:          return "linear";
-		case AttenuationFunc::Exponential:     return "exponential";
-		}
-	}
 }

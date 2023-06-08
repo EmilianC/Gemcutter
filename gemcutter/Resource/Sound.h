@@ -72,6 +72,4 @@ namespace gem
 		float maxDistance = 1.0f;
 	};
 
-	AttenuationFunc StringToAttenuationFunc(std::string_view);
-	std::string_view AttenuationFuncToString(AttenuationFunc);
 }
