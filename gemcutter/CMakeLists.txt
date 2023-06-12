@@ -162,6 +162,10 @@ target_link_libraries(gemcutter
 		soloud
 		loupe
 )
+target_link_options(gemcutter
+	PUBLIC
+		$<$<CXX_COMPILER_ID:MSVC>:/WHOLEARCHIVE:gemcutter.lib>
+)
 
 if (ENABLE_IMGUI_SUPPORT)
 	target_link_libraries(gemcutter PUBLIC imgui)
