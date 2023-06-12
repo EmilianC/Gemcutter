@@ -152,6 +152,7 @@ target_link_libraries(gemcutter
 	PUBLIC
 		OpenGL::GL
 		soil
+		$<$<PLATFORM_ID:Windows>:ws2_32>
 		Xinput
 		glew
 		soloud
