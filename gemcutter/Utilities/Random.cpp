@@ -1,5 +1,7 @@
 // Copyright (c) 2017 Emilian Cioca
 #include "Random.h"
+#include "gemcutter/Application/Logging.h"
+#include "gemcutter/Math/Math.h"
 #include "gemcutter/Math/Vector.h"
 
 #include <random>
@@ -62,7 +64,7 @@ namespace gem
 
 	Range Range::Deviation(float value, float deviation)
 	{
-		float halfRange = deviation * 0.5f;
+		float halfRange = Abs(deviation) * 0.5f;
 		return { value - halfRange, value + halfRange };
 	}
 
