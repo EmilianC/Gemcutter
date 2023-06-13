@@ -189,6 +189,6 @@ namespace gem
 		std::string uniformBuffers;
 		std::string vertexSource;
 		std::string geometrySource;
-		std::string fragmentSrouce;
+		std::string fragmentSource;
 	};
 }

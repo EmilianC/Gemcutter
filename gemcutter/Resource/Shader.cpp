@@ -601,7 +601,7 @@ namespace gem
 		}
 
 		// We must have at least one shader.
-		if (vertexSource.empty() && geometrySource.empty() && fragmentSrouce.empty())
+		if (vertexSource.empty() && geometrySource.empty() && fragmentSource.empty())
 		{
 			Error("Must specify at least one shader.");
 			return false;
@@ -612,9 +612,9 @@ namespace gem
 		{
 			vertexSource = passThroughVertex;
 		}
-		else if (fragmentSrouce.empty())
+		else if (fragmentSource.empty())
 		{
-			fragmentSrouce = passThroughFragment;
+			fragmentSource = passThroughFragment;
 		}
 
 		loaded = true;
@@ -665,7 +665,7 @@ namespace gem
 			output = &geometrySource;
 			break;
 		case BlockType::Fragment:
-			output = &fragmentSrouce;
+			output = &fragmentSource;
 			break;
 		default:
 			ASSERT(false, "Expected a Shader block type.");
@@ -1128,7 +1128,7 @@ namespace gem
 		uniformBuffers.clear();
 		vertexSource.clear();
 		geometrySource.clear();
-		fragmentSrouce.clear();
+		fragmentSource.clear();
 	}
 
 	void Shader::Bind()
@@ -1152,7 +1152,7 @@ namespace gem
 				commonHeader + uniformBuffers + samplers + defines,
 				attributes + vertexSource,
 				geometrySource,
-				fragmentSrouce))
+				fragmentSource))
 			{
 				if (!defines.empty())
 				{
