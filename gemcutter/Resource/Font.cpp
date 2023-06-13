@@ -14,15 +14,6 @@ namespace gem
 	unsigned Font::VAO = 0;
 	unsigned Font::VBO = 0;
 
-	Font::Font()
-	{
-		memset(textures,   0, sizeof(unsigned) * 94);
-		memset(dimensions, 0, sizeof(CharData) * 94);
-		memset(positions,  0, sizeof(CharData) * 94);
-		memset(advances,   0, sizeof(CharData) * 94);
-		memset(masks,  false, sizeof(bool) * 94);
-	}
-
 	Font::~Font()
 	{
 		Unload();

@@ -20,7 +20,6 @@ namespace gem
 	public:
 		static constexpr std::string_view Extension = ".font";
 
-		Font();
 		~Font();
 
 		// Loads pre-packed *.font resources.
@@ -46,15 +45,15 @@ namespace gem
 		static unsigned GetVBO();
 
 	private:
-		unsigned textures[94];
+		unsigned textures[94] = {};
 		// Each character's dimensions.
-		CharData dimensions[94];
+		CharData dimensions[94] = {};
 		// The position of each character.
-		CharData positions[94];
+		CharData positions[94] = {};
 		// The distance from one character to the next.
-		CharData advances[94];
+		CharData advances[94] = {};
 		// Whether the character is included in the font.
-		bool masks[94];
+		bool masks[94] = {};
 		unsigned width  = 0;
 		unsigned height = 0;
 
