@@ -7,7 +7,7 @@
 #include <freetype/freetype.h>
 #include <vector>
 
-#define CURRENT_VERSION 2
+#define CURRENT_VERSION 3
 
 struct CharData
 {
@@ -68,7 +68,7 @@ bool FontEncoder::Validate(const gem::ConfigTable& metadata, unsigned loadedVers
 		return true;
 	};
 
-	auto checkTextureFilter = [](const gem::ConfigTable& data)
+	auto checkTextureFilter = [](const gem::ConfigTable& data, bool caseSensitive)
 	{
 		if (!data.HasSetting("texture_filter"))
 		{
@@ -76,7 +76,7 @@ bool FontEncoder::Validate(const gem::ConfigTable& metadata, unsigned loadedVers
 			return false;
 		}
 
-		return gem::ValidateEnumValue<gem::TextureFilter>("texture_filter", data.GetString("texture_filter"));
+		return gem::ValidateEnumValue<gem::TextureFilter>("texture_filter", data.GetString("texture_filter"), caseSensitive);
 	};
 
 	if (!checkWidth(metadata)) return false;
@@ -93,7 +93,8 @@ bool FontEncoder::Validate(const gem::ConfigTable& metadata, unsigned loadedVers
 		break;
 
 	case 2:
-		if (!checkTextureFilter(metadata)) return false;
+		if (!checkTextureFilter(metadata, false))
+			return false;
 
 		if (metadata.GetSize() != 4)
 		{
@@ -101,6 +102,21 @@ bool FontEncoder::Validate(const gem::ConfigTable& metadata, unsigned loadedVers
 			return false;
 		}
 		break;
+
+	case 3:
+		if (!checkTextureFilter(metadata, true))
+			return false;
+
+		if (metadata.GetSize() != 4)
+		{
+			gem::Error("Incorrect number of value entries.");
+			return false;
+		}
+		break;
+
+	default:
+		gem::Error("Missing validation code for version %d", loadedVersion);
+		return false;
 	}
 
 	return true;
@@ -256,7 +272,12 @@ bool FontEncoder::Upgrade(gem::ConfigTable& metadata, unsigned loadedVersion) co
 	{
 	case 1:
 		// Added texture_filter field.
-		metadata.SetString("texture_filter", "bilinear");
+		metadata.SetString("texture_filter", gem::EnumToString(gem::TextureFilter::Bilinear));
+		break;
+
+	case 2:
+		// Enums became case sensitive.
+		metadata.SetString("texture_filter", gem::FixEnumCasing(metadata.GetString("texture_filter"), gem::TextureFilter::Bilinear));
 		break;
 	}
 

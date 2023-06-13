@@ -85,6 +85,10 @@ bool MeshEncoder::Validate(const gem::ConfigTable& metadata, unsigned loadedVers
 			return false;
 		}
 		break;
+
+	default:
+		gem::Error("Missing validation code for version %d", loadedVersion);
+		return false;
 	}
 
 	return true;

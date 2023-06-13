@@ -4,7 +4,7 @@
 #include <gemcutter/Resource/Texture.h>
 #include <gemcutter/Utilities/String.h>
 
-#define CURRENT_VERSION 2
+#define CURRENT_VERSION 3
 
 TextureEncoder::TextureEncoder()
 	: gem::Encoder(CURRENT_VERSION)
@@ -46,7 +46,7 @@ bool TextureEncoder::Validate(const gem::ConfigTable& metadata, unsigned loadedV
 		return true;
 	};
 
-	auto validateTextureFilter = [](const gem::ConfigTable& data)
+	auto validateTextureFilter = [](const gem::ConfigTable& data, bool caseSensitive)
 	{
 		if (!data.HasSetting("filter"))
 		{
@@ -54,10 +54,10 @@ bool TextureEncoder::Validate(const gem::ConfigTable& metadata, unsigned loadedV
 			return false;
 		}
 
-		return gem::ValidateEnumValue<gem::TextureFilter>("filter", data.GetString("filter"));
+		return gem::ValidateEnumValue<gem::TextureFilter>("filter", data.GetString("filter"), caseSensitive);
 	};
 
-	auto validateWrap = [](const gem::ConfigTable& data, std::string_view mode)
+	auto validateWrap = [](const gem::ConfigTable& data, std::string_view mode, bool caseSensitive)
 	{
 		if (!data.HasSetting(mode))
 		{
@@ -65,7 +65,7 @@ bool TextureEncoder::Validate(const gem::ConfigTable& metadata, unsigned loadedV
 			return false;
 		}
 
-		return gem::ValidateEnumValue<gem::TextureWrap>(mode, data.GetString(mode));
+		return gem::ValidateEnumValue<gem::TextureWrap>(mode, data.GetString(mode), caseSensitive);
 	};
 
 	if (!metadata.HasSetting("cubemap"))
@@ -74,10 +74,11 @@ bool TextureEncoder::Validate(const gem::ConfigTable& metadata, unsigned loadedV
 		return false;
 	}
 
+	const bool caseSensitiveEnums = loadedVersion > 2;
 	if (!validateAnisotropicLevel(metadata)) return false;
-	if (!validateTextureFilter(metadata)) return false;
-	if (!validateWrap(metadata, "wrap_x")) return false;
-	if (!validateWrap(metadata, "wrap_y")) return false;
+	if (!validateTextureFilter(metadata, caseSensitiveEnums)) return false;
+	if (!validateWrap(metadata, "wrap_x", caseSensitiveEnums)) return false;
+	if (!validateWrap(metadata, "wrap_y", caseSensitiveEnums)) return false;
 
 	switch (loadedVersion)
 	{
@@ -89,7 +90,8 @@ bool TextureEncoder::Validate(const gem::ConfigTable& metadata, unsigned loadedV
 		}
 		break;
 
-	case 2:
+	case 2: [[fallthrough]];
+	case 3:
 		if (!metadata.HasSetting("s_rgb"))
 		{
 			gem::Error("Missing \"s_rgb\" value.");
@@ -102,6 +104,10 @@ bool TextureEncoder::Validate(const gem::ConfigTable& metadata, unsigned loadedV
 			return false;
 		}
 		break;
+
+	default:
+		gem::Error("Missing validation code for version %d", loadedVersion);
+		return false;
 	}
 
 	return true;
@@ -223,6 +229,13 @@ bool TextureEncoder::Upgrade(gem::ConfigTable& metadata, unsigned loadedVersion)
 	case 1:
 		// Added s_rgb field.
 		metadata.SetBool("s_rgb", true);
+		break;
+
+	case 2:
+		// Enums became case sensitive.
+		metadata.SetString("filter", gem::FixEnumCasing(metadata.GetString("filter"), gem::TextureFilter::Linear));
+		metadata.SetString("wrap_x", gem::FixEnumCasing(metadata.GetString("wrap_x"), gem::TextureWrap::Clamp));
+		metadata.SetString("wrap_y", gem::FixEnumCasing(metadata.GetString("wrap_y"), gem::TextureWrap::Clamp));
 		break;
 	}
 

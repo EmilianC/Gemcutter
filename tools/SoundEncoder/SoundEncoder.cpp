@@ -3,7 +3,7 @@
 #include <gemcutter/Resource/Sound.h>
 #include <gemcutter/Utilities/String.h>
 
-#define CURRENT_VERSION 1
+#define CURRENT_VERSION 2
 
 SoundEncoder::SoundEncoder()
 	: gem::Encoder(CURRENT_VERSION)
@@ -53,8 +53,9 @@ bool SoundEncoder::Validate(const gem::ConfigTable& metadata, unsigned loadedVer
 		return false;
 	}
 
+	const bool caseSensitiveEnums = loadedVersion > 1;
 	const std::string attenuation = metadata.GetString("3d_attenuation");
-	if (!gem::ValidateEnumValue<gem::AttenuationFunc>("3d_attenuation", attenuation))
+	if (!gem::ValidateEnumValue<gem::AttenuationFunc>("3d_attenuation", attenuation, caseSensitiveEnums))
 	{
 		return false;
 	}
@@ -119,13 +120,18 @@ bool SoundEncoder::Validate(const gem::ConfigTable& metadata, unsigned loadedVer
 
 	switch (loadedVersion)
 	{
-	case 1:
+	case 1: [[fallthrough]];
+	case 2:
 		if (metadata.GetSize() != 9)
 		{
 			gem::Error("Incorrect number of value entries.");
 			return false;
 		}
 		break;
+
+	default:
+		gem::Error("Missing validation code for version %d", loadedVersion);
+		return false;
 	}
 
 	return true;
@@ -175,6 +181,19 @@ bool SoundEncoder::Convert(std::string_view source, std::string_view destination
 	{
 		gem::Error("Failed to generate Sound Binary\nOutput file could not be saved.");
 		return false;
+	}
+
+	return true;
+}
+
+bool SoundEncoder::Upgrade(gem::ConfigTable& metadata, unsigned loadedVersion) const
+{
+	switch (loadedVersion)
+	{
+	case 1:
+		// Enums became case sensitive.
+		metadata.SetString("3d_attenuation", gem::FixEnumCasing(metadata.GetString("3d_attenuation"), gem::AttenuationFunc::None));
+		break;
 	}
 
 	return true;

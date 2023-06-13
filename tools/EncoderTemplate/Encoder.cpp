@@ -31,6 +31,11 @@ bool Encoder::Validate(const gem::ConfigTable& metadata, unsigned loadedVersion)
 			gem::Error("Incorrect number of value entries.");
 			return false;
 		}
+		break;
+
+	default:
+		gem::Error("Missing validation code for version %d", loadedVersion);
+		return false;
 	}
 
 	return true;

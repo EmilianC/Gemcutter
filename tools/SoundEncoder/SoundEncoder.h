@@ -13,4 +13,6 @@ public:
 
 private:
 	bool Convert(std::string_view source, std::string_view destination, const gem::ConfigTable& metadata) const override;
+
+	bool Upgrade(gem::ConfigTable& metadata, unsigned loadedVersion) const override;
 };
