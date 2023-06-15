@@ -235,8 +235,6 @@ namespace gem
 	}
 }
 
-REFLECT_TAG(gem::HierarchyRoot);
-
 REFLECT(gem::Hierarchy) BASES { REF_BASE(gem::ComponentBase) }
 	MEMBERS {
 		REF_MEMBER(propagateTransform)

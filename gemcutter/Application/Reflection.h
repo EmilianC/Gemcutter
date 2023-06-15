@@ -38,6 +38,5 @@ namespace gem
 
 #define REFLECT_RESOURCE_SIMPLE(resource) REFLECT(resource) BASES { REF_BASE(gem::ResourceBase) } REF_END;
 #define REFLECT_COMPONENT_SIMPLE(component) REFLECT(component) BASES { REF_BASE(gem::ComponentBase) } REF_END;
-#define REFLECT_TAG(tag) REFLECT(tag) BASES { REF_BASE(gem::TagBase) } REF_END;
 
 #include "Reflection.inl"

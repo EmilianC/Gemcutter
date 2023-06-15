@@ -331,7 +331,6 @@ namespace gem
 }
 
 REFLECT_SIMPLE(gem::detail::ComponentId);
-REFLECT_SIMPLE(gem::TagBase);
 
 REFLECT(gem::ComponentBase)
 	MEMBERS {
