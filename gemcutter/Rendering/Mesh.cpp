@@ -46,3 +46,9 @@ namespace gem
 		return model.get();
 	}
 }
+
+REFLECT(gem::Mesh) BASES { REF_BASE(gem::Renderable) }
+	MEMBERS {
+		REF_PRIVATE_MEMBER(model, gem::ReadOnly)
+	}
+REF_END;

@@ -4,6 +4,7 @@
 #include "gemcutter/Math/Math.h"
 #include "gemcutter/Math/Vector.h"
 
+#include <loupe/loupe.h>
 #include <random>
 
 namespace gem
@@ -85,3 +86,10 @@ namespace gem
 		return value >= min && value <= max;
 	}
 }
+
+REFLECT(gem::Range)
+	MEMBERS {
+		REF_MEMBER(min)
+		REF_MEMBER(max)
+	}
+REF_END;

@@ -5,6 +5,7 @@
 #include "gemcutter/Utilities/ScopeGuard.h"
 
 #include <glew/glew.h>
+#include <loupe/loupe.h>
 #include <numeric>
 
 namespace gem
@@ -517,3 +518,17 @@ namespace gem
 		return instanceCount;
 	}
 }
+
+REFLECT_SIMPLE(gem::VertexBuffer);
+
+REFLECT(gem::VertexStream)
+	MEMBERS {
+		REF_MEMBER(buffer)
+		REF_MEMBER(bindingUnit)
+		REF_MEMBER(format)
+		REF_MEMBER(normalized)
+		REF_MEMBER(startOffset)
+		REF_MEMBER(stride)
+		REF_MEMBER(divisor)
+	}
+REF_END;

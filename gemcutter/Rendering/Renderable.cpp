@@ -72,3 +72,9 @@ namespace gem
 		return *material;
 	}
 }
+
+REFLECT(gem::Renderable) BASES { REF_BASE(gem::ComponentBase) }
+	MEMBERS {
+		REF_PRIVATE_MEMBER(material, gem::ReadOnly)
+	}
+REF_END;

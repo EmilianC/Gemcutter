@@ -37,5 +37,9 @@ namespace gem
 		// A handle for the sound instance.
 		unsigned hSound = 0;
 		float volume = 1.0f;
+
+	public:
+		PRIVATE_MEMBER(SoundSource, data);
+		PRIVATE_MEMBER(SoundSource, volume);
 	};
 }

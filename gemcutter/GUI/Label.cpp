@@ -94,3 +94,9 @@ namespace gem
 		}
 	}
 }
+
+REFLECT(gem::Label) BASES { REF_BASE(gem::Widget) }
+	MEMBERS {
+		REF_MEMBER(textScale)
+	}
+REF_END;

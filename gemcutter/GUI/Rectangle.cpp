@@ -1,6 +1,8 @@
 // Copyright (c) 2021 Emilian Cioca
 #include "Rectangle.h"
 
+#include <loupe/loupe.h>
+
 namespace gem
 {
 	float Rectangle::GetAspectRatio() const
@@ -21,3 +23,12 @@ namespace gem
 		return Contains(pos.x, pos.y);
 	}
 }
+
+REFLECT(gem::Rectangle)
+	MEMBERS {
+		REF_MEMBER(x)
+		REF_MEMBER(y)
+		REF_MEMBER(width)
+		REF_MEMBER(height)
+	}
+REF_END;

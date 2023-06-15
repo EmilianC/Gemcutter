@@ -2,13 +2,13 @@
 #include "Rendering.h"
 #include "gemcutter/Application/FileSystem.h"
 #include "gemcutter/Application/Logging.h"
-#include "gemcutter/Application/Reflection.h"
 #include "gemcutter/Math/Math.h"
 #include "gemcutter/Math/Vector.h"
 #include "gemcutter/Utilities/String.h"
 
 #include <glew/glew.h>
 #include <glew/wglew.h>
+#include <loupe/loupe.h>
 #include <SOIL/SOIL.h>
 
 namespace

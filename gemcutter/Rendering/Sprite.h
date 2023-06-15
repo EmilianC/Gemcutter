@@ -36,5 +36,9 @@ namespace gem
 	private:
 		Alignment alignment = Alignment::BottomLeft;
 		bool billBoarded = false;
+
+	public:
+		PRIVATE_MEMBER(Sprite, alignment);
+		PRIVATE_MEMBER(Sprite, billBoarded);
 	};
 }

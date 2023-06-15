@@ -54,5 +54,8 @@ namespace gem
 		State state = State::Idle;
 		Image* image = nullptr;
 		Label* label = nullptr;
+
+	public:
+		PRIVATE_MEMBER(Button, state);
 	};
 }

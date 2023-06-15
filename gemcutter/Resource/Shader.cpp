@@ -1308,3 +1308,5 @@ namespace gem
 		glUseProgram(program);
 	}
 }
+
+REFLECT_RESOURCE_SIMPLE(gem::Shader);

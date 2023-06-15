@@ -70,6 +70,15 @@ namespace gem
 		float volume = 1.0f;
 		float minDistance = 0.0f;
 		float maxDistance = 1.0f;
-	};
 
+	public:
+		PRIVATE_MEMBER(Sound, is3D);
+		PRIVATE_MEMBER(Sound, loop);
+		PRIVATE_MEMBER(Sound, unique);
+		PRIVATE_MEMBER(Sound, attenuation);
+		PRIVATE_MEMBER(Sound, rolloff);
+		PRIVATE_MEMBER(Sound, volume);
+		PRIVATE_MEMBER(Sound, minDistance);
+		PRIVATE_MEMBER(Sound, maxDistance);
+	};
 }

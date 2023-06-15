@@ -1,8 +1,9 @@
 // Copyright (c) 2017 Emilian Cioca
 #include "Vector.h"
 #include "gemcutter/Application/Logging.h"
-#include "gemcutter/Application/Reflection.h"
 #include "gemcutter/Math/Math.h"
+
+#include <loupe/loupe.h>
 
 namespace gem
 {

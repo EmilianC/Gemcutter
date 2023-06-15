@@ -2,6 +2,7 @@
 #pragma once
 
 #include <cstdint>
+#include <loupe/loupe.h>
 
 namespace gem
 {
@@ -48,5 +49,8 @@ namespace gem
 
 	private:
 		int64_t startTime;
+
+	public:
+		PRIVATE_MEMBER(Timer, startTime);
 	};
 }

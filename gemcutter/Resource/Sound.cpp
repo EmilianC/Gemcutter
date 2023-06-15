@@ -170,3 +170,25 @@ namespace gem
 		return volume;
 	}
 }
+
+REFLECT(gem::AttenuationFunc)
+	ENUM_VALUES {
+		REF_VALUE(None)
+		REF_VALUE(InverseDistance)
+		REF_VALUE(Linear)
+		REF_VALUE(Exponential)
+	}
+REF_END;
+
+REFLECT(gem::Sound) BASES { REF_BASE(gem::ResourceBase) }
+	MEMBERS {
+		REF_PRIVATE_MEMBER(is3D, gem::ReadOnly)
+		REF_PRIVATE_MEMBER(loop, gem::ReadOnly)
+		REF_PRIVATE_MEMBER(unique, gem::ReadOnly)
+		REF_PRIVATE_MEMBER(attenuation, gem::ReadOnly)
+		REF_PRIVATE_MEMBER(rolloff, gem::ReadOnly)
+		REF_PRIVATE_MEMBER(volume, gem::ReadOnly)
+		REF_PRIVATE_MEMBER(minDistance, gem::ReadOnly)
+		REF_PRIVATE_MEMBER(maxDistance, gem::ReadOnly)
+	}
+REF_END;

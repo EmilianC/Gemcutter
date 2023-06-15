@@ -115,5 +115,16 @@ namespace gem
 		float right = 100.0f;
 		float top = 100.0f;
 		float bottom = -100.0f;
+
+	public:
+		PRIVATE_MEMBER(Camera, isPerspective);
+		PRIVATE_MEMBER(Camera, fovyDegrees);
+		PRIVATE_MEMBER(Camera, aspectRatio);
+		PRIVATE_MEMBER(Camera, zNear);
+		PRIVATE_MEMBER(Camera, zFar);
+		PRIVATE_MEMBER(Camera, left);
+		PRIVATE_MEMBER(Camera, right);
+		PRIVATE_MEMBER(Camera, top);
+		PRIVATE_MEMBER(Camera, bottom);
 	};
 }

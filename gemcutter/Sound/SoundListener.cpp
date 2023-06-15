@@ -48,3 +48,5 @@ namespace gem
 		SoundSystem.Unmute();
 	}
 }
+
+REFLECT_COMPONENT_SIMPLE(gem::SoundListener);

@@ -30,5 +30,8 @@ namespace gem
 
 	private:
 		Material::Ptr material;
+
+	public:
+		PRIVATE_MEMBER(Renderable, material);
 	};
 }

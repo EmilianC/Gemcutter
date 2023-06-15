@@ -1,10 +1,11 @@
 // Copyright (c) 2017 Emilian Cioca
 #include "Matrix.h"
 #include "gemcutter/Application/Logging.h"
-#include "gemcutter/Application/Reflection.h"
 #include "gemcutter/Math/Math.h"
 #include "gemcutter/Math/Quaternion.h"
 #include "gemcutter/Math/Vector.h"
+
+#include <loupe/loupe.h>
 
 namespace gem
 {

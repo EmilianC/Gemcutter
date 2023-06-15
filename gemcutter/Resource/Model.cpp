@@ -123,3 +123,5 @@ namespace gem
 		return hasTangents;
 	}
 }
+
+REFLECT_RESOURCE_SIMPLE(gem::Model);

@@ -4,6 +4,7 @@
 #include "gemcutter/Utilities/StdExt.h"
 #include "gemcutter/Utilities/String.h"
 
+#include <loupe/loupe.h>
 #include <string_view>
 #include <string>
 #include <type_traits>
@@ -21,6 +22,9 @@ namespace gem
 		ResourceBase() = default;
 
 		std::string path;
+
+	public:
+		PRIVATE_MEMBER(ResourceBase, path);
 	};
 
 	// Provides an interface for cached loading of the specified asset.
