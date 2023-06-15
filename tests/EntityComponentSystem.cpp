@@ -1,5 +1,7 @@
 #include <catch/catch.hpp>
 #include <gemcutter/Entity/Entity.h>
+#include <gemcutter/Application/Reflection.h>
+#include <gemcutter/Utilities/StdExt.h>
 
 using namespace gem;
 
@@ -22,6 +24,7 @@ public:
 
 	bool onEnableCalled = false;
 	bool onDisableCalled = false;
+	bool reflectionTarget = false;
 
 	void OnEnable() override { onEnableCalled = true; }
 	void OnDisable() override { onDisableCalled = true; }
@@ -38,12 +41,36 @@ public:
 class DerivedB : public Base
 {
 public:
-	DerivedB(Entity& owner) : Base(owner) {}
+	using Base::Base;
+};
+
+// Inherits indirectly from Component<>, and doesn't generate its own Component ID.
+class DerivedC : public Comp2
+{
+public:
+	using Comp2::Comp2;
 };
 
 class TagA : public Tag<TagA> {};
 class TagB : public Tag<TagB> {};
 class TagC : public Tag<TagC> {};
+
+REFLECT_COMPONENT_SIMPLE(Comp1);
+REFLECT_COMPONENT_SIMPLE(Comp2);
+REFLECT(Base)
+	BASES {
+		REF_BASE(gem::ComponentBase)
+	}
+	MEMBERS {
+		REF_MEMBER(onEnableCalled)
+		REF_MEMBER(onDisableCalled)
+		REF_MEMBER(reflectionTarget)
+	}
+REF_END;
+
+REFLECT(DerivedA) BASES { REF_BASE(Base) } REF_END;
+REFLECT(DerivedB) BASES { REF_BASE(Base) } REF_END;
+REFLECT(DerivedC) BASES { REF_BASE(Comp2) } REF_END;
 
 TEST_CASE("Entity-Component-System")
 {
@@ -330,6 +357,103 @@ TEST_CASE("Entity-Component-System")
 		}
 	}
 
+	SECTION("Reflection")
+	{
+		auto ent = Entity::MakeNew();
+		auto [comp1, derivedA, derivedC] = ent->Add<Comp1, DerivedA, DerivedC>();
+
+		SECTION("IsA<>()")
+		{
+			CHECK(comp1.IsA<ComponentBase>());
+			CHECK(derivedA.IsA<ComponentBase>());
+			CHECK(derivedC.IsA<ComponentBase>());
+
+			CHECK(comp1.IsA<Comp1>());
+			CHECK_FALSE(comp1.IsA<Comp2>());
+			CHECK_FALSE(comp1.IsA<Base>());
+			CHECK_FALSE(comp1.IsA<DerivedA>());
+			CHECK_FALSE(comp1.IsA<DerivedB>());
+			CHECK_FALSE(comp1.IsA<DerivedC>());
+
+			CHECK(derivedA.IsA<Base>());
+			CHECK(derivedA.IsA<DerivedA>());
+			CHECK_FALSE(derivedA.IsA<Comp1>());
+			CHECK_FALSE(derivedA.IsA<Comp2>());
+			CHECK_FALSE(derivedA.IsA<DerivedB>());
+			CHECK_FALSE(derivedA.IsA<DerivedC>());
+
+			CHECK(derivedC.IsA<Comp2>());
+			CHECK(derivedC.IsA<DerivedC>());
+			CHECK_FALSE(derivedC.IsA<Comp1>());
+			CHECK_FALSE(derivedC.IsA<Base>());
+			CHECK_FALSE(derivedC.IsA<DerivedA>());
+			CHECK_FALSE(derivedC.IsA<DerivedB>());
+		}
+
+		SECTION("component_cast")
+		{
+			Base& base = ent->Get<Base>();
+			Comp2& comp2 = ent->Get<Comp2>();
+
+			CHECK(base.IsA<DerivedA>());
+			CHECK(comp2.IsA<DerivedC>());
+
+			CHECK(component_cast<DerivedA*>(&base));
+			CHECK_FALSE(component_cast<Comp1*>(&base));
+			CHECK_FALSE(component_cast<Comp2*>(&base));
+			CHECK_FALSE(component_cast<DerivedB*>(&base));
+			CHECK_FALSE(component_cast<DerivedC*>(&base));
+
+			CHECK(component_cast<DerivedC*>(&comp2));
+			CHECK_FALSE(component_cast<Base*>(&comp2));
+			CHECK_FALSE(component_cast<Comp1*>(&comp2));
+			CHECK_FALSE(component_cast<DerivedA*>(&comp2));
+			CHECK_FALSE(component_cast<DerivedB*>(&comp2));
+		}
+
+		SECTION("Type Info")
+		{
+			const loupe::type& typeId = derivedA.GetType();
+
+			CHECK(typeId.name == "DerivedA");
+			CHECK(typeId.size == sizeof(DerivedA));
+			CHECK(typeId.alignment == alignof(DerivedA));
+			CHECK(&typeId == &ReflectType<DerivedA>());
+
+			auto count = 0;
+			Visit(typeId.data,
+				[](const loupe::fundamental& data) {
+					CHECK(false);
+				},
+				[&](const loupe::structure& data) {
+					++count;
+				},
+				[](const loupe::enumeration& data) {
+					CHECK(false);
+				}
+			);
+
+			REQUIRE(count == 1);
+			REQUIRE(std::holds_alternative<loupe::structure>(typeId.data));
+
+			const loupe::structure& structure = std::get<loupe::structure>(typeId.data);
+			CHECK(structure.is_derived_from(ReflectType<Base>()));
+
+			const loupe::member* refTarget = structure.find_member("reflectionTarget");
+			REQUIRE(refTarget);
+			REQUIRE(refTarget->data == reflection_tables.find_property<bool>());
+
+			void* objPtr = &derivedA;
+			bool* boolPtr = (bool*)(reinterpret_cast<std::byte*>(objPtr) + refTarget->offset);
+
+			*boolPtr = true;
+			CHECK(derivedA.reflectionTarget);
+
+			*boolPtr = false;
+			CHECK_FALSE(derivedA.reflectionTarget);
+		}
+	}
+
 	SECTION("Queries")
 	{
 		auto ent1 = Entity::MakeNew();
@@ -405,7 +529,7 @@ TEST_CASE("Entity-Component-System")
 		{
 			SECTION("1 Component")
 			{
-				// Target Entity with Comp2
+				// Target Entity with Comp2.
 				ent1->Add<Comp2>();
 
 				// Some database noise.
@@ -427,9 +551,49 @@ TEST_CASE("Entity-Component-System")
 				CHECK(count == 1);
 			}
 
+			SECTION("1 Descendant Component")
+			{
+				// Target Entity with DerivedA.
+				ent1->Add<DerivedA>();
+
+				// Some database noise.
+				ent2->Tag<TagA>();
+				ent3->Add<Comp2>();
+				ent3->Tag<TagB, TagC>();
+
+				// Query the Entity Database. We expect only our target Entity as a result.
+				auto count = 0;
+				SECTION("Query by Derived")
+				{
+					for (Entity& e : With<DerivedA>())
+					{
+						CHECK(e == ent1);
+						count++;
+
+						REQUIRE(e.Has<DerivedA>());
+						CHECK(e.Get<DerivedA>().IsEnabled());
+						CHECK(e.IsEnabled());
+					}
+				}
+
+				SECTION("Query by Base")
+				{
+					for (Entity& e : With<Base>())
+					{
+						CHECK(e == ent1);
+						count++;
+
+						REQUIRE(e.Has<Base>());
+						CHECK(e.Get<Base>().IsEnabled());
+						CHECK(e.IsEnabled());
+					}
+				}
+				CHECK(count == 1);
+			}
+
 			SECTION("1 Tag")
 			{
-				// Target Entity with TagA
+				// Target Entity with TagA.
 				ent1->Tag<TagA>();
 
 				// Some database noise.
@@ -453,7 +617,7 @@ TEST_CASE("Entity-Component-System")
 
 			SECTION("2 Components")
 			{
-				// Target Entity with Comp1/Comp2
+				// Target Entity with Comp1/Comp2.
 				ent1->Add<Comp1, Comp2>();
 
 				// Some database noise.
@@ -500,9 +664,75 @@ TEST_CASE("Entity-Component-System")
 				CHECK(count == 1);
 			}
 
+			SECTION("2 Descendant Components")
+			{
+				// Target Entity with DerivedA/DerivedC.
+				ent1->Add<DerivedA, DerivedC>();
+
+				// Some database noise.
+				ent2->Add<Comp2>();
+				ent2->Tag<TagA>();
+				ent3->Add<Comp1>();
+				ent3->Tag<TagB>();
+
+				// Query the Entity Database. We expect only our target Entity as a result.
+				auto count = 0;
+				SECTION("Order 1")
+				{
+					for (Entity& e : With<DerivedA, DerivedC>())
+					{
+						CHECK(e == ent1);
+						count++;
+
+						REQUIRE(e.Has<DerivedA>());
+						REQUIRE(e.Has<DerivedC>());
+						CHECK(e.Get<DerivedA>().IsEnabled());
+						CHECK(e.Get<DerivedC>().IsEnabled());
+						CHECK(e.Get<DerivedA>().IsComponentEnabled());
+						CHECK(e.Get<DerivedC>().IsComponentEnabled());
+						CHECK(e.IsEnabled());
+					}
+				}
+
+				SECTION("Order 2")
+				{
+					for (Entity& e : With<DerivedC, DerivedA>())
+					{
+						CHECK(e == ent1);
+						count++;
+
+						REQUIRE(e.Has<DerivedA>());
+						REQUIRE(e.Has<DerivedC>());
+						CHECK(e.Get<DerivedA>().IsEnabled());
+						CHECK(e.Get<DerivedC>().IsEnabled());
+						CHECK(e.Get<DerivedA>().IsComponentEnabled());
+						CHECK(e.Get<DerivedC>().IsComponentEnabled());
+						CHECK(e.IsEnabled());
+					}
+				}
+
+				SECTION("Query by Base")
+				{
+					for (Entity& e : With<Base, Comp2>())
+					{
+						CHECK(e == ent1);
+						count++;
+
+						REQUIRE(e.Has<Base>());
+						REQUIRE(e.Has<Comp2>());
+						CHECK(e.Get<Base>().IsEnabled());
+						CHECK(e.Get<Comp2>().IsEnabled());
+						CHECK(e.Get<Base>().IsComponentEnabled());
+						CHECK(e.Get<Comp2>().IsComponentEnabled());
+						CHECK(e.IsEnabled());
+					}
+				}
+				CHECK(count == 1);
+			}
+
 			SECTION("2 Entities With 2 Components")
 			{
-				// Target Entities with Comp1/Comp2
+				// Target Entities with Comp1/Comp2.
 				ent1->Add<Comp1, Comp2>();
 				ent2->Add<Comp1, Comp2>();
 
@@ -558,7 +788,7 @@ TEST_CASE("Entity-Component-System")
 
 			SECTION("2 Tags")
 			{
-				// Target Entity with TagA/TagB
+				// Target Entity with TagA/TagB.
 				ent1->Tag<TagA>();
 				ent1->Tag<TagB>();
 
@@ -600,7 +830,7 @@ TEST_CASE("Entity-Component-System")
 
 			SECTION("2 Components : 1 Tag")
 			{
-				// Target Entity with Comp1/Comp2/TagA
+				// Target Entity with Comp1/Comp2/TagA.
 				ent1->Add<Comp1, Comp2>();
 				ent1->Tag<TagA>();
 
@@ -652,7 +882,7 @@ TEST_CASE("Entity-Component-System")
 
 			SECTION("3 Components : 3 Tags")
 			{
-				// Target Entity with Comp1/Comp2/Base/TagA/TagB/TagC
+				// Target Entity with Comp1/Comp2/Base/TagA/TagB/TagC.
 				ent1->Add<Comp1, Comp2, Base>();
 				ent1->Tag<TagA>();
 				ent1->Tag<TagB>();
@@ -719,9 +949,9 @@ TEST_CASE("Entity-Component-System")
 
 			SECTION("Nested")
 			{
-				// Target #1 with Comp1
+				// Target #1 with Comp1.
 				ent1->Add<Comp1>();
-				// Target #2 with Comp2
+				// Target #2 with Comp2.
 				ent2->Add<Comp2>();
 
 				// Some database noise.
@@ -795,40 +1025,30 @@ TEST_CASE("Entity-Component-System")
 
 				// Query the Entity Database. No Entities should match these queries.
 				auto count = 0;
-				for (Entity& e : With<Comp1, Comp2>())
-				{
-					count++;
-				}
-				for (Entity& e : With<TagA, TagB, TagC>())
-				{
-					count++;
-				}
-				for (Entity& e : With<Base>())
-				{
-					count++;
-				}
-				for (Base& b : All<Base>())
-				{
-					count++;
-				}
+				for (Entity& e : With<Comp1, Comp2>())     { count++; }
+				for (Entity& e : With<TagA, TagB, TagC>()) { count++; }
+				for (Entity& e : With<Base>())             { count++; }
+				for (Entity& e : With<DerivedA>())         { count++; }
+				for (Entity& e : With<DerivedB>())         { count++; }
+				for (Entity& e : With<DerivedC>())         { count++; }
+				for (Base& b   : All<Base>())              { count++; }
 				CHECK(count == 0);
 			}
 		}
 
 		SECTION("CaptureWith<>()")
 		{
-			ent1->Add<Comp1>();
 			ent1->Add<Comp2>();
-			ent1->Tag<TagA>();
-
+			ent1->Add<Comp1>();
 			ent2->Add<Comp1>();
 			ent2->Add<Comp2>();
-			ent2->Tag<TagC>();
 
+			// Some database noise.
+			ent1->Tag<TagA>();
+			ent2->Tag<TagC>();
 			ent3->Add<Comp1>();
 			ent3->Tag<TagB>();
 			ent3->Disable();
-
 			ent4->Disable();
 			ent4->Add<Comp1>();
 
