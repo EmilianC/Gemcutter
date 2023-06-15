@@ -37,7 +37,7 @@ namespace gem
 
 		T* dest = static_cast<T*>(GetBufferLoc(name));
 		ASSERT(dest, "Could not find uniform parameter ( %s ).", name.data());
-		ASSERT(reinterpret_cast<char*>(dest) + sizeof(T) <= static_cast<char*>(buffer) + bufferSize,
+		ASSERT(reinterpret_cast<std::byte*>(dest) + sizeof(T) <= static_cast<std::byte*>(buffer) + bufferSize,
 			"Setting uniform ( %s ) out of bounds of the buffer.", name.data());
 
 		*dest = data;
@@ -52,7 +52,7 @@ namespace gem
 
 		void* dest = GetBufferLoc(name);
 		ASSERT(dest, "Could not find uniform parameter ( %s ).", name.data());
-		ASSERT(static_cast<char*>(dest) + sizeof(T) * numElements <= static_cast<char*>(buffer) + bufferSize,
+		ASSERT(static_cast<std::byte*>(dest) + sizeof(T) * numElements <= static_cast<std::byte*>(buffer) + bufferSize,
 			"Setting uniform ( %s ) out of bounds of the buffer.", name.data());
 
 		memcpy(dest, data, sizeof(T) * numElements);
@@ -90,7 +90,7 @@ namespace gem
 		ASSERT(uniformBuffer, "Uniform handle is not associated with a UniformBuffer.");
 		ASSERT(uniformBuffer->buffer, "The associated UniformBuffer has not been initialized yet.");
 
-		T* ptr = reinterpret_cast<T*>(static_cast<char*>(uniformBuffer->buffer) + offset);
+		T* ptr = reinterpret_cast<T*>(static_cast<std::byte*>(uniformBuffer->buffer) + offset);
 		*ptr = value;
 
 		uniformBuffer->dirty = true;
@@ -102,7 +102,7 @@ namespace gem
 		ASSERT(uniformBuffer, "Uniform handle is not associated with a UniformBuffer.");
 		ASSERT(uniformBuffer->buffer, "The associated UniformBuffer has not been initialized yet.");
 
-		return *reinterpret_cast<T*>(static_cast<char*>(uniformBuffer->buffer) + offset);
+		return *reinterpret_cast<T*>(static_cast<std::byte*>(uniformBuffer->buffer) + offset);
 	}
 
 	extern template void UniformHandle<mat2>::Set(const mat2& value);

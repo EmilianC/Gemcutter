@@ -148,7 +148,7 @@ namespace gem
 		auto loc = table.find(name);
 		if (loc != table.end())
 		{
-			return static_cast<char*>(buffer) + loc->second;
+			return static_cast<std::byte*>(buffer) + loc->second;
 		}
 		else
 		{
@@ -161,7 +161,7 @@ namespace gem
 	{
 		vec4* dest = static_cast<vec4*>(GetBufferLoc(name));
 		ASSERT(dest, "Could not find uniform parameter ( %s ).", name.data());
-		ASSERT(reinterpret_cast<char*>(dest) + sizeof(vec4) * 2 <= static_cast<char*>(buffer) + bufferSize,
+		ASSERT(reinterpret_cast<std::byte*>(dest) + sizeof(vec4) * 2 <= static_cast<std::byte*>(buffer) + bufferSize,
 			"Setting uniform ( %s ) out of bounds of the buffer.", name.data());
 
 		dest[0].x = data[0];
@@ -176,7 +176,7 @@ namespace gem
 	{
 		vec4* dest = static_cast<vec4*>(GetBufferLoc(name));
 		ASSERT(dest, "Could not find uniform parameter ( %s ).", name.data());
-		ASSERT(reinterpret_cast<char*>(dest) + sizeof(vec4) * 3 <= static_cast<char*>(buffer) + bufferSize,
+		ASSERT(reinterpret_cast<std::byte*>(dest) + sizeof(vec4) * 3 <= static_cast<std::byte*>(buffer) + bufferSize,
 			"Setting uniform ( %s ) out of bounds of the buffer.", name.data());
 
 		dest[0].x = data[0];
@@ -278,7 +278,7 @@ namespace gem
 		ASSERT(uniformBuffer, "Uniform handle is not associated with a UniformBuffer.");
 		ASSERT(uniformBuffer->buffer, "The associated UniformBuffer has not been initialized yet.");
 
-		vec4* ptr = reinterpret_cast<vec4*>(static_cast<char*>(uniformBuffer->buffer) + offset);
+		vec4* ptr = reinterpret_cast<vec4*>(static_cast<std::byte*>(uniformBuffer->buffer) + offset);
 		ptr[0].x = value[0];
 		ptr[0].y = value[1];
 		ptr[1].x = value[2];
@@ -293,7 +293,7 @@ namespace gem
 		ASSERT(uniformBuffer, "Uniform handle is not associated with a UniformBuffer.");
 		ASSERT(uniformBuffer->buffer, "The associated UniformBuffer has not been initialized yet.");
 
-		vec4* ptr = reinterpret_cast<vec4*>(static_cast<char*>(uniformBuffer->buffer) + offset);
+		vec4* ptr = reinterpret_cast<vec4*>(static_cast<std::byte*>(uniformBuffer->buffer) + offset);
 
 		ptr[0].x = value[0];
 		ptr[0].y = value[1];
@@ -316,7 +316,7 @@ namespace gem
 		ASSERT(uniformBuffer, "Uniform handle is not associated with a UniformBuffer.");
 		ASSERT(uniformBuffer->buffer, "The associated UniformBuffer has not been initialized yet.");
 
-		const vec4* data = reinterpret_cast<vec4*>(static_cast<char*>(uniformBuffer->buffer) + offset);
+		const vec4* data = reinterpret_cast<vec4*>(static_cast<std::byte*>(uniformBuffer->buffer) + offset);
 
 		return { data[0].x, data[0].y, data[1].x, data[1].y };
 	}
@@ -327,7 +327,7 @@ namespace gem
 		ASSERT(uniformBuffer, "Uniform handle is not associated with a UniformBuffer.");
 		ASSERT(uniformBuffer->buffer, "The associated UniformBuffer has not been initialized yet.");
 
-		const mat4* data = reinterpret_cast<mat4*>(static_cast<char*>(uniformBuffer->buffer) + offset);
+		const mat4* data = reinterpret_cast<mat4*>(static_cast<std::byte*>(uniformBuffer->buffer) + offset);
 
 		return mat3(*data);
 	}

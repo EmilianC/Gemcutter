@@ -47,7 +47,7 @@ namespace gem
 
 		// Returns a handle that can be used to directly modify the value of a uniform.
 		// This is more performant then SetUniform() or SetUniformArray().
-		template<class T>
+		template<class T> [[nodiscard]]
 		UniformHandle<T> MakeHandle(std::string_view name);
 
 		int GetByteSize() const;
