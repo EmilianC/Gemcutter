@@ -36,7 +36,22 @@ namespace gem
 		{
 			using Visitors::operator()...;
 		};
-	
+
 		return std::visit(Overload { std::forward<Visitors>(visitors)... }, std::forward<Variant>(variant));
+	}
+
+	template<typename Container, typename Item> [[nodiscard]]
+	bool Contains(const Container& container, const Item& item)
+	{
+		if constexpr ( requires(Container& C, Item& I) { { C.contains(I) } -> std::same_as<bool>; } )
+		{
+			return container.contains(item);
+		}
+		else
+		{
+			auto&& begin = std::begin(container);
+			auto&& end = std::end(container);
+			return std::find(begin, end, item) != end;
+		}
 	}
 }
