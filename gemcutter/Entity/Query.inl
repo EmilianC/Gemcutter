@@ -236,6 +236,7 @@ namespace gem
 
 	// Returns the raw vector container for the specified Component.
 	// This can be useful in special cases when you need custom iterator logic.
+	// The index also includes all derived instances of the specified component.
 	template<class Component> [[nodiscard]]
 	std::vector<ComponentBase*>& GetComponentIndex()
 	{

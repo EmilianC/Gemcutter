@@ -202,14 +202,19 @@ namespace gem
 		template<class T>
 		T* TryComponent() const;
 
-		void Tag(detail::ComponentId tagId);
-		void RemoveTag(detail::ComponentId tagId);
+		void AddTag(detail::ComponentId);
+		void RemoveTag(detail::ComponentId);
 
-		void IndexTag(detail::ComponentId tagId);
-		void UnindexTag(detail::ComponentId tagId);
+		void IndexTag(detail::ComponentId);
+		void UnindexTag(detail::ComponentId);
 
-		void Index(ComponentBase& comp);
-		void Unindex(const ComponentBase& comp);
+		// Indexes the component to the specified type's index table.
+		void Index(ComponentBase&, const loupe::type&);
+		void Unindex(const ComponentBase&, const loupe::type&);
+
+		// Indexes the component along with all base component types.
+		void IndexWithBases(ComponentBase&);
+		void UnindexWithBases(const ComponentBase&);
 
 		std::vector<ComponentBase*> components;
 		std::vector<detail::ComponentId> tags;

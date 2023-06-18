@@ -1112,5 +1112,22 @@ TEST_CASE("Entity-Component-System")
 				CHECK(count == 2);
 			}
 		}
+
+		// Ensure cleanup is always stable.
+		ent1->RemoveAllComponents(); ent1->RemoveAllTags();
+		ent2->RemoveAllComponents(); ent2->RemoveAllTags();
+		ent3->RemoveAllComponents(); ent3->RemoveAllTags();
+		ent4->RemoveAllComponents(); ent4->RemoveAllTags();
+
+		CHECK(GetComponentIndex<Comp1>().empty());
+		CHECK(GetComponentIndex<Comp2>().empty());
+		CHECK(GetComponentIndex<Base>().empty());
+		CHECK(GetComponentIndex<DerivedA>().empty());
+		CHECK(GetComponentIndex<DerivedB>().empty());
+		CHECK(GetComponentIndex<DerivedC>().empty());
+
+		CHECK(detail::tagIndex[TagA::staticComponentId].empty());
+		CHECK(detail::tagIndex[TagB::staticComponentId].empty());
+		CHECK(detail::tagIndex[TagC::staticComponentId].empty());
 	}
 }

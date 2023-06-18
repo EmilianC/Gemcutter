@@ -10,6 +10,7 @@ namespace gem
 {
 	namespace detail
 	{
+		const loupe::type* componentBaseType = nullptr;
 		std::unordered_map<ComponentId, std::vector<Entity*>> tagIndex;
 		std::unordered_map<const loupe::type*, std::vector<Entity*>> typeIndex;
 		std::unordered_map<const loupe::type*, std::vector<ComponentBase*>> componentLists;
@@ -152,16 +153,23 @@ namespace gem
 
 	void Entity::RemoveAllComponents()
 	{
-		// This loop safely removes all components even if they remove others during destruction.
+		if (isEnabled)
+		{
+			for (const auto* comp : components)
+			{
+				if (comp->IsComponentEnabled())
+				{
+					UnindexWithBases(*comp);
+				}
+			}
+		}
+
+		// This iteration strategy safely removes all components
+		// even if they remove others during their destruction.
 		while (!components.empty())
 		{
 			auto* comp = components.back();
 			components.pop_back();
-
-			if (comp->IsEnabled())
-			{
-				Unindex(*comp);
-			}
 
 			delete comp;
 		}
@@ -169,7 +177,7 @@ namespace gem
 
 	void Entity::RemoveAllTags()
 	{
-		if (IsEnabled())
+		if (isEnabled)
 		{
 			for (auto tag : tags)
 			{
@@ -187,23 +195,28 @@ namespace gem
 			return;
 		}
 
-		// Re-Index all active components.
-		for (auto* comp : components)
-		{
-			if (comp->IsComponentEnabled())
-			{
-				Index(*comp);
-				comp->OnEnable();
-			}
-		}
+		isEnabled = true;
 
-		// Re-Index all tags.
 		for (auto tag : tags)
 		{
 			IndexTag(tag);
 		}
 
-		isEnabled = true;
+		for (auto* comp : components)
+		{
+			if (comp->IsComponentEnabled())
+			{
+				IndexWithBases(*comp);
+			}
+		}
+
+		for (auto* comp : components)
+		{
+			if (comp->IsComponentEnabled())
+			{
+				comp->OnEnable();
+			}
+		}
 	}
 
 	void Entity::Disable()
@@ -213,23 +226,28 @@ namespace gem
 			return;
 		}
 
-		// UnIndex all active components.
-		for (auto* comp : components)
-		{
-			if (comp->IsComponentEnabled())
-			{
-				Unindex(*comp);
-				comp->OnDisable();
-			}
-		}
+		isEnabled = false;
 
-		// UnIndex all tags.
 		for (auto tag : tags)
 		{
 			UnindexTag(tag);
 		}
 
-		isEnabled = false;
+		for (auto* comp : components)
+		{
+			if (comp->IsComponentEnabled())
+			{
+				UnindexWithBases(*comp);
+			}
+		}
+
+		for (auto* comp : components)
+		{
+			if (comp->IsComponentEnabled())
+			{
+				comp->OnDisable();
+			}
+		}
 	}
 
 	bool Entity::IsEnabled() const
@@ -237,7 +255,7 @@ namespace gem
 		return isEnabled;
 	}
 
-	void Entity::Tag(detail::ComponentId tagId)
+	void Entity::AddTag(detail::ComponentId tagId)
 	{
 		if (IsEnabled())
 		{
@@ -276,27 +294,77 @@ namespace gem
 		table.erase(std::lower_bound(std::begin(table), std::end(table), this));
 	}
 
-	void Entity::Index(ComponentBase& comp)
+	void Entity::Index(ComponentBase& comp, const loupe::type& typeId)
 	{
 		// Adjust [typeId, entity] index.
-		auto& table = detail::typeIndex[comp.typeId];
+		auto& table = detail::typeIndex[&typeId];
 		table.insert(std::lower_bound(std::begin(table), std::end(table), this), this);
 
 		// Adjust [id, component] index.
-		detail::componentLists[comp.typeId].push_back(&comp);
+		detail::componentLists[&typeId].push_back(&comp);
 	}
 
-	void Entity::Unindex(const ComponentBase& comp)
+	void Entity::Unindex(const ComponentBase& comp, const loupe::type& typeId)
 	{
 		// Adjust [typeId, entity] index.
-		auto& table = detail::typeIndex[comp.typeId];
+		auto& table = detail::typeIndex[&typeId];
 		table.erase(std::lower_bound(std::begin(table), std::end(table), this));
 
 		// Adjust [id, component] index.
-		auto& componentTable = detail::componentLists[comp.typeId];
+		auto& componentTable = detail::componentLists[&typeId];
 		auto itr = std::find(std::begin(componentTable), std::end(componentTable), &comp);
 		*itr = componentTable.back();
 		componentTable.pop_back();
+	}
+
+	void Entity::IndexWithBases(ComponentBase& comp)
+	{
+		Index(comp, *comp.typeId);
+
+		auto implementation = [this](this auto self, ComponentBase& comp, const loupe::structure& structure) -> bool {
+			for (const loupe::type* type : structure.bases)
+			{
+				if (type == detail::componentBaseType)
+				{
+					return true;
+				}
+
+				if (self(comp, std::get<loupe::structure>(type->data)))
+				{
+					Index(comp, *type);
+					return true;
+				}
+			}
+
+			return false;
+		};
+
+		implementation(comp, std::get<loupe::structure>(comp.typeId->data));
+	}
+
+	void Entity::UnindexWithBases(const ComponentBase& comp)
+	{
+		Unindex(comp, *comp.typeId);
+
+		auto implementation = [this](this auto self, const ComponentBase& comp, const loupe::structure& structure) -> bool {
+			for (const loupe::type* type : structure.bases)
+			{
+				if (type == detail::componentBaseType)
+				{
+					return true;
+				}
+
+				if (self(comp, std::get<loupe::structure>(type->data)))
+				{
+					Unindex(comp, *type);
+					return true;
+				}
+			}
+
+			return false;
+		};
+
+		implementation(comp, std::get<loupe::structure>(comp.typeId->data));
 	}
 
 	bool operator==(const Entity& lhs, const Entity& rhs)

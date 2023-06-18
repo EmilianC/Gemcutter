@@ -60,7 +60,14 @@ namespace gem
 
 		if (IsEnabled())
 		{
-			Index(*newComponent);
+			if constexpr (std::is_same_v<T, typename T::StaticComponentType>)
+			{
+				Index(*newComponent, *newComponent->typeId);
+			}
+			else
+			{
+				IndexWithBases(*newComponent);
+			}
 		}
 
 		return *newComponent;
@@ -109,9 +116,9 @@ namespace gem
 					components[i] = components.back();
 					components.pop_back();
 
-					if (comp->IsEnabled())
+					if (isEnabled && comp->isEnabled)
 					{
-						Unindex(*comp);
+						UnindexWithBases(*comp);
 					}
 
 					delete comp;
@@ -153,7 +160,7 @@ namespace gem
 		( [this]() {
 			if (!Has<Args>())
 			{
-				Tag(Args::staticComponentId);
+				AddTag(Args::staticComponentId);
 			}
 		}(), ... );
 	}
@@ -193,17 +200,12 @@ namespace gem
 		auto& comp = Get<T>();
 
 		// The component state changes either way, but it only gets indexed if the Entity is also enabled.
-		bool wasEnabled = comp.isEnabled;
+		const bool wasCompEnabled = comp.isEnabled;
 		comp.isEnabled = true;
 
-		if (!this->IsEnabled())
+		if (this->isEnabled && !wasCompEnabled)
 		{
-			return;
-		}
-
-		if (!wasEnabled)
-		{
-			Index(comp);
+			IndexWithBases(comp);
 			static_cast<ComponentBase&>(comp).OnEnable();
 		}
 	}
@@ -216,18 +218,13 @@ namespace gem
 
 		auto& comp = Get<T>();
 
-		// The component state changes either way, but it only gets removed if the Entity is enabled.
-		bool wasEnabled = comp.isEnabled;
+		// The component state changes either way, but it only gets removed if the Entity is also enabled.
+		const bool wasCompEnabled = comp.isEnabled;
 		comp.isEnabled = false;
 
-		if (!this->IsEnabled())
+		if (this->isEnabled && wasCompEnabled)
 		{
-			return;
-		}
-
-		if (wasEnabled)
-		{
-			Unindex(comp);
+			UnindexWithBases(comp);
 			static_cast<ComponentBase&>(comp).OnDisable();
 		}
 	}
