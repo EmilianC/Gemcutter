@@ -148,6 +148,12 @@ namespace gem
 	[[nodiscard]] float Dot(const vec2&, const vec2&);
 	[[nodiscard]] float Dot(const vec3&, const vec3&);
 	[[nodiscard]] float Dot(const vec4&, const vec4&);
+	[[nodiscard]] bool Parallel(const vec2&, const vec2&);
+	[[nodiscard]] bool Parallel(const vec3&, const vec3&);
+	[[nodiscard]] bool Parallel(const vec4&, const vec4&);
+	[[nodiscard]] bool Orthogonal(const vec2&, const vec2&);
+	[[nodiscard]] bool Orthogonal(const vec3&, const vec3&);
+	[[nodiscard]] bool Orthogonal(const vec4&, const vec4&);
 	[[nodiscard]] vec2 Normalize(const vec2&);
 	[[nodiscard]] vec3 Normalize(const vec3&);
 	[[nodiscard]] vec4 Normalize(const vec4&);

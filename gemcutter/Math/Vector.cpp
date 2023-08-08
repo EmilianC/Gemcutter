@@ -509,6 +509,54 @@ namespace gem
 		return (v1.x * v2.x) + (v1.y * v2.y) + (v1.z * v2.z) + (v1.w * v2.w);
 	}
 
+	bool Parallel(const vec2& v1, const vec2& v2)
+	{
+		ASSERT(Equals(Length(v1), 1.0f), "'v1' vector must be normalized.");
+		ASSERT(Equals(Length(v2), 1.0f), "'v2' vector must be normalized.");
+
+		return Equals(Abs(Dot(v1, v2)), 1.0f, 1.e-6f);
+	}
+
+	bool Parallel(const vec3& v1, const vec3& v2)
+	{
+		ASSERT(Equals(Length(v1), 1.0f), "'v1' vector must be normalized.");
+		ASSERT(Equals(Length(v2), 1.0f), "'v2' vector must be normalized.");
+
+		return Equals(Abs(Dot(v1, v2)), 1.0f, 1.e-6f);
+	}
+
+	bool Parallel(const vec4& v1, const vec4& v2)
+	{
+		ASSERT(Equals(Length(v1), 1.0f), "'v1' vector must be normalized.");
+		ASSERT(Equals(Length(v2), 1.0f), "'v2' vector must be normalized.");
+
+		return Equals(Abs(Dot(v1, v2)), 1.0f, 1.e-6f);
+	}
+
+	bool Orthogonal(const vec2& v1, const vec2& v2)
+	{
+		ASSERT(Equals(Length(v1), 1.0f), "'v1' vector must be normalized.");
+		ASSERT(Equals(Length(v2), 1.0f), "'v2' vector must be normalized.");
+
+		return Equals(Dot(v1, v2), 0.0f, 1.e-6f);
+	}
+
+	bool Orthogonal(const vec3& v1, const vec3& v2)
+	{
+		ASSERT(Equals(Length(v1), 1.0f), "'v1' vector must be normalized.");
+		ASSERT(Equals(Length(v2), 1.0f), "'v2' vector must be normalized.");
+
+		return Equals(Dot(v1, v2), 0.0f, 1.e-6f);
+	}
+
+	bool Orthogonal(const vec4& v1, const vec4& v2)
+	{
+		ASSERT(Equals(Length(v1), 1.0f), "'v1' vector must be normalized.");
+		ASSERT(Equals(Length(v2), 1.0f), "'v2' vector must be normalized.");
+
+		return Equals(Dot(v1, v2), 0.0f, 1.e-6f);
+	}
+
 	vec2 Normalize(const vec2& v)
 	{
 		float length = Length(v);
@@ -645,21 +693,29 @@ namespace gem
 
 	vec2 Reflect(const vec2& incident, const vec2& normal)
 	{
+		ASSERT(Equals(Length(normal), 1.0f), "'normal' vector must be normalized.");
+
 		return incident - 2.0f * Dot(normal, incident) * normal;
 	}
 
 	vec3 Reflect(const vec3& incident, const vec3& normal)
 	{
+		ASSERT(Equals(Length(normal), 1.0f), "'normal' vector must be normalized.");
+
 		return incident - 2.0f * Dot(normal, incident) * normal;
 	}
 
 	vec4 Reflect(const vec4& incident, const vec4& normal)
 	{
+		ASSERT(Equals(Length(normal), 1.0f), "'normal' vector must be normalized.");
+
 		return incident - 2.0f * Dot(normal, incident) * normal;
 	}
 
 	vec2 Refract(const vec2& incident, const vec2& normal, float index)
 	{
+		ASSERT(Equals(Length(normal), 1.0f), "'normal' vector must be normalized.");
+
 		vec2 result;
 
 		float dot = Dot(normal, incident);
@@ -675,6 +731,8 @@ namespace gem
 
 	vec3 Refract(const vec3& incident, const vec3& normal, float index)
 	{
+		ASSERT(Equals(Length(normal), 1.0f), "'normal' vector must be normalized.");
+
 		vec3 result;
 
 		float dot = Dot(normal, incident);
@@ -690,6 +748,8 @@ namespace gem
 
 	vec4 Refract(const vec4& incident, const vec4& normal, float index)
 	{
+		ASSERT(Equals(Length(normal), 1.0f), "'normal' vector must be normalized.");
+
 		vec4 result;
 
 		float dot = Dot(normal, incident);
