@@ -1,10 +1,13 @@
 // Copyright (c) 2017 Emilian Cioca
 #include "UniformBuffer.h"
 #include "gemcutter/Application/Logging.h"
+#include "gemcutter/Math/Matrix.h"
+#include "gemcutter/Math/Quaternion.h"
 #include "gemcutter/Math/Vector.h"
 
 #include <algorithm>
 #include <glew/glew.h>
+#include <loupe/loupe.h>
 
 namespace
 {
@@ -332,3 +335,16 @@ namespace gem
 		return mat3(*data);
 	}
 }
+
+REFLECT_SIMPLE(gem::UniformHandle<bool>);
+REFLECT_SIMPLE(gem::UniformHandle<unsigned>);
+REFLECT_SIMPLE(gem::UniformHandle<int>);
+REFLECT_SIMPLE(gem::UniformHandle<float>);
+REFLECT_SIMPLE(gem::UniformHandle<double>);
+REFLECT_SIMPLE(gem::UniformHandle<gem::vec2>);
+REFLECT_SIMPLE(gem::UniformHandle<gem::vec3>);
+REFLECT_SIMPLE(gem::UniformHandle<gem::vec4>);
+REFLECT_SIMPLE(gem::UniformHandle<gem::mat2>);
+REFLECT_SIMPLE(gem::UniformHandle<gem::mat3>);
+REFLECT_SIMPLE(gem::UniformHandle<gem::mat4>);
+REFLECT_SIMPLE(gem::UniformHandle<gem::quat>);

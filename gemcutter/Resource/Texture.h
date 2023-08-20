@@ -69,6 +69,15 @@ namespace gem
 		TextureFilter filter = TextureFilter::Point;
 		TextureWraps wraps = TextureWrap::Clamp;
 		float anisotropicLevel = 1.0f;
+
+	public:
+		PRIVATE_MEMBER(Texture, numSamples);
+		PRIVATE_MEMBER(Texture, width);
+		PRIVATE_MEMBER(Texture, height);
+		PRIVATE_MEMBER(Texture, format);
+		PRIVATE_MEMBER(Texture, filter);
+		PRIVATE_MEMBER(Texture, wraps);
+		PRIVATE_MEMBER(Texture, anisotropicLevel);
 	};
 
 	// Used to associate a Texture with a particular binding point.
@@ -102,6 +111,9 @@ namespace gem
 
 	private:
 		std::vector<TextureSlot> textureSlots;
+
+	public:
+		PRIVATE_MEMBER(TextureList, textureSlots);
 	};
 
 	// Loads raw image data from the disk.

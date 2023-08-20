@@ -3,13 +3,17 @@ namespace gem
 {
 	namespace detail
 	{
-		// Index of all Entities for each component and tag type.
+		// Index of all Entities with the keyed tag.
 		// Sorted to allow for logical operations, such as ANDing, between multiple tables in the index.
-		extern std::unordered_map<ComponentId, std::vector<Entity*>> entityIndex;
+		extern std::unordered_map<ComponentId, std::vector<Entity*>> tagIndex;
 
-		// Index of all Components of a particular type.
+		// Index of all Entities with the keyed component.
+		// Sorted to allow for logical operations, such as ANDing, between multiple tables in the index.
+		extern std::unordered_map<const loupe::type*, std::vector<Entity*>> typeIndex;
+
+		// Index of all Components of the keyed type.
 		// Not sorted since no logical operations are performed using these tables.
-		extern std::unordered_map<ComponentId, std::vector<ComponentBase*>> componentIndex;
+		extern std::unordered_map<const loupe::type*, std::vector<ComponentBase*>> componentLists;
 
 		// A lightweight tag representing the end of a query's range. We use this rather than creating another
 		// potentially large end-iterator. Our custom iterators already have all the information they need to
@@ -18,10 +22,10 @@ namespace gem
 
 		// Used to enumerate an Entity or Component index table.
 		// Although it models a single iterator, it knows when it has reached the end of the table.
-		template<class SourcePtr, class Target, bool UseDynamicCast = false>
+		template<class SourcePtr, class Target>
 		class SafeIterator
 		{
-			using Iterator          = std::vector<SourcePtr>::iterator;
+			using Iterator          = typename std::vector<SourcePtr>::iterator;
 		public:
 			using iterator_category = std::forward_iterator_tag;
 			using value_type        = Target&;
@@ -32,30 +36,12 @@ namespace gem
 			SafeIterator(Iterator _itr, Iterator _itrEnd)
 				: itr(_itr), itrEnd(_itrEnd)
 			{
-				if constexpr (UseDynamicCast)
-				{
-					if (!IsTerminated() && !dynamic_cast<Target*>(*itr))
-					{
-						++(*this);
-					}
-				}
 			}
 
 			SafeIterator& operator++()
 			{
 				ASSERT(!IsTerminated(), "Invalid range.");
 				++itr;
-
-				if constexpr (UseDynamicCast)
-				{
-					while (!IsTerminated())
-					{
-						if (dynamic_cast<Target*>(*itr))
-							break;
-
-						++itr;
-					}
-				}
 
 				return *this;
 			}
@@ -72,8 +58,8 @@ namespace gem
 				return static_cast<Target*>(*itr);
 			}
 
-			bool operator==(RangeEndSentinel) const { return IsTerminated(); }
-			bool operator!=(RangeEndSentinel) const { return !IsTerminated(); }
+			[[nodiscard]] bool operator==(RangeEndSentinel) const { return IsTerminated(); }
+			[[nodiscard]] bool operator!=(RangeEndSentinel) const { return !IsTerminated(); }
 
 			bool IsTerminated() const { return itr == itrEnd; }
 			void Terminate() { itr = itrEnd; }
@@ -86,10 +72,10 @@ namespace gem
 		};
 
 		template<class Component>
-		using ComponentIterator = SafeIterator<ComponentBase*, Component, !std::is_same_v<Component, typename Component::StaticComponentType>>;
-		using EntityIterator = SafeIterator<Entity*, Entity>;
+		using ComponentIterator = SafeIterator<ComponentBase*, Component>;
+		using EntityIterator    = SafeIterator<Entity*, Entity>;
 
-		// Provides functions to advance two SafeIterators as a logical AND of two entityIndex tables.
+		// Provides functions to advance two SafeIterators as a logical AND of two tables.
 		// This provider pattern will allow us to add more operations in the future.
 		struct Intersection
 		{
@@ -97,8 +83,8 @@ namespace gem
 			{
 				while (!(itr1.IsTerminated() || itr2.IsTerminated()))
 				{
-					Entity* p1 = itr1.Get();
-					Entity* p2 = itr2.Get();
+					const Entity* p1 = itr1.Get();
+					const Entity* p2 = itr2.Get();
 
 					if (p1 < p2)
 					{
@@ -172,8 +158,8 @@ namespace gem
 			EntityIterator& GetCurrentItr() { return itr1; }
 			Entity& operator*() const { return *itr1; }
 
-			bool operator==(RangeEndSentinel) const { return itr1.IsTerminated(); }
-			bool operator!=(RangeEndSentinel) const { return !itr1.IsTerminated(); }
+			[[nodiscard]] bool operator==(RangeEndSentinel) const { return itr1.IsTerminated(); }
+			[[nodiscard]] bool operator!=(RangeEndSentinel) const { return !itr1.IsTerminated(); }
 
 		private:
 			EntityIterator itr1;
@@ -204,6 +190,20 @@ namespace gem
 			RootIterator itr;
 		};
 
+		// Returns the appropriate index of entities for the given tag or component.
+		template<class Arg> [[nodiscard]]
+		std::vector<Entity*>& GetIndexFor()
+		{
+			if constexpr (std::is_base_of_v<TagBase, Arg>)
+			{
+				return tagIndex[Arg::staticComponentId];
+			}
+			else
+			{
+				return typeIndex[&ReflectType<Arg>()];
+			}
+		}
+
 		// Template deduction assisted construction.
 		template<class Iterator>
 		auto BuildLogicalIterator(EntityIterator&& set1, Iterator&& set2)
@@ -215,9 +215,9 @@ namespace gem
 		template<typename Arg>
 		EntityIterator BuildRootIterator()
 		{
-			auto& index = entityIndex[Arg::uniqueId];
-			auto begin = index.begin();
-			auto end = index.end();
+			auto& index = GetIndexFor<Arg>();
+			auto begin = std::begin(index);
+			auto end = std::end(index);
 
 			return EntityIterator(begin, end);
 		}
@@ -226,12 +226,22 @@ namespace gem
 		template<typename Arg1, typename Arg2, typename... Args>
 		auto BuildRootIterator()
 		{
-			auto& index = entityIndex[Arg1::uniqueId];
-			auto begin = index.begin();
-			auto end = index.end();
+			auto& index = GetIndexFor<Arg1>();
+			auto begin = std::begin(index);
+			auto end = std::end(index);
 
 			return BuildLogicalIterator(EntityIterator(begin, end), BuildRootIterator<Arg2, Args...>());
 		}
+	}
+
+	// Returns the raw vector container for the specified Component.
+	// This can be useful in special cases when you need custom iterator logic.
+	// The index also includes all derived instances of the specified component.
+	template<class Component> [[nodiscard]]
+	std::vector<ComponentBase*>& GetComponentIndex()
+	{
+		using namespace detail;
+		return componentLists[&ReflectType<Component>()];
 	}
 
 	// Returns an enumerable range of all enabled Components of the specified type.
@@ -247,8 +257,8 @@ namespace gem
 			"Cannot query tags with All<>(). Use With<>() instead.");
 
 		using namespace detail;
-		auto& index = componentIndex[Component::uniqueId];
-		auto itr = ComponentIterator<Component>(index.begin(), index.end());
+		auto& index = GetComponentIndex<Component>();
+		auto itr = ComponentIterator<Component>(std::begin(index), std::end(index));
 
 		return detail::Range(itr);
 	}
@@ -266,12 +276,9 @@ namespace gem
 		static_assert(meta::all_of_v<std::is_base_of_v<ComponentBase, Args>...>,
 			"All template arguments must be either Components or Tags.");
 
-		static_assert(meta::all_of_v<(std::is_same_v<Args, typename Args::StaticComponentType>)...>,
-			"Only a direct inheritor from Component<> can be used in a With<>() query. Use All<>() instead.");
-
 		using namespace detail;
-		auto&& itr = BuildRootIterator<Args...>();
 
+		auto&& itr = BuildRootIterator<Args...>();
 		return detail::Range(itr);
 	}
 
@@ -282,11 +289,13 @@ namespace gem
 	template<typename Arg1, typename... Args> [[nodiscard]]
 	std::vector<Entity::Ptr> CaptureWith()
 	{
+		using namespace detail;
+
 		std::vector<Entity::Ptr> result;
 		if constexpr (sizeof...(Args) == 0)
 		{
 			using namespace detail;
-			result.reserve(entityIndex[Arg1::uniqueId].size());
+			result.reserve(GetIndexFor<Arg1>().size());
 		}
 
 		for (Entity& ent : With<Arg1, Args...>())
@@ -295,14 +304,5 @@ namespace gem
 		}
 
 		return result;
-	}
-
-	// Returns the raw vector container of the specified Component.
-	// This can be useful in special cases when you need custom iterator logic.
-	template<class Component> [[nodiscard]]
-	std::vector<ComponentBase*>& GetComponentIndex()
-	{
-		using namespace detail;
-		return componentIndex[Component::uniqueId];
 	}
 }

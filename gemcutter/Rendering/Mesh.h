@@ -22,5 +22,8 @@ namespace gem
 
 	private:
 		Model::Ptr model;
+
+	public:
+		PRIVATE_MEMBER(Mesh, model);
 	};
 }

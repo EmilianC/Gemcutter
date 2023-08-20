@@ -12,8 +12,6 @@ namespace gem
 	struct vec2;
 	struct vec3;
 
-	struct ParticleUpdaterTag : public Tag<ParticleUpdaterTag> {};
-
 	// Spawns particles and updates their positions.
 	// Can be extended with ParticleFunctors to add custom functionality.
 	class ParticleEmitter : public Renderable
@@ -21,9 +19,8 @@ namespace gem
 	public:
 		ParticleEmitter(Entity& owner, unsigned maxParticles = 100);
 		ParticleEmitter(Entity& owner, Material::Ptr material, unsigned maxParticles = 100);
-		~ParticleEmitter();
 
-		enum Type : unsigned
+		enum class Type : unsigned
 		{
 			Omni,
 			Box
@@ -59,7 +56,7 @@ namespace gem
 
 		Range velocity{ 0.5f, 1.0f };
 		Range lifetime{ 5.0f, 10.0f };
-		Type spawnType = Omni;
+		Type spawnType = Type::Omni;
 		float spawnPerSecond = 10.0f;
 
 		// Used for box spawning.
@@ -86,5 +83,8 @@ namespace gem
 		unsigned numCurrentParticles = 0;
 
 		UniformBuffer::Ptr particleParameters;
+
+	public:
+		PRIVATE_MEMBER(ParticleEmitter, localSpace);
 	};
 }

@@ -2,7 +2,7 @@
 #include "MaterialEncoder.h"
 #include <gemcutter/Rendering/Rendering.h>
 
-#define CURRENT_VERSION 1
+#define CURRENT_VERSION 2
 
 MaterialEncoder::MaterialEncoder()
 	: gem::Encoder(CURRENT_VERSION)
@@ -17,9 +17,9 @@ gem::ConfigTable MaterialEncoder::GetDefault() const
 	defaultConfig.SetString("shader", "");
 	defaultConfig.SetString("texture_bind_points", "");
 	defaultConfig.SetString("textures", "");
-	defaultConfig.SetString("blend_mode", "none");
-	defaultConfig.SetString("depth_mode", "normal");
-	defaultConfig.SetString("cull_mode", "clockwise");
+	defaultConfig.SetString("blend_mode", gem::EnumToString(gem::BlendFunc::None));
+	defaultConfig.SetString("depth_mode", gem::EnumToString(gem::DepthFunc::Normal));
+	defaultConfig.SetString("cull_mode",  gem::EnumToString(gem::CullFunc::Clockwise));
 
 	return defaultConfig;
 }
@@ -85,7 +85,7 @@ bool MaterialEncoder::Validate(const gem::ConfigTable& metadata, unsigned loaded
 			}
 		}
 
-		for (std::string& texture : textures)
+		for (const std::string& texture : textures)
 		{
 			if (!gem::FileExists(texture))
 			{
@@ -97,7 +97,7 @@ bool MaterialEncoder::Validate(const gem::ConfigTable& metadata, unsigned loaded
 		return true;
 	};
 
-	auto validateBlendMode = [](const gem::ConfigTable& data)
+	auto validateBlendMode = [](const gem::ConfigTable& data, bool caseSensitive)
 	{
 		if (!data.HasSetting("blend_mode"))
 		{
@@ -105,20 +105,10 @@ bool MaterialEncoder::Validate(const gem::ConfigTable& metadata, unsigned loaded
 			return false;
 		}
 
-		auto str = data.GetString("blend_mode");
-		if (!gem::CompareLowercase(str, "none") &&
-			!gem::CompareLowercase(str, "linear") &&
-			!gem::CompareLowercase(str, "additive") &&
-			!gem::CompareLowercase(str, "multiplicative"))
-		{
-			gem::Error("\"blend_mode\" is invalid. Valid options are \"none\", \"linear\", \"additive\", or \"multiplicative\".");
-			return false;
-		}
-
-		return true;
+		return gem::ValidateEnumValue<gem::BlendFunc>("blend_mode", data.GetString("blend_mode"), caseSensitive);
 	};
 
-	auto validateDepthMode = [](const gem::ConfigTable& data)
+	auto validateDepthMode = [](const gem::ConfigTable& data, bool caseSensitive)
 	{
 		if (!data.HasSetting("depth_mode"))
 		{
@@ -126,20 +116,10 @@ bool MaterialEncoder::Validate(const gem::ConfigTable& metadata, unsigned loaded
 			return false;
 		}
 
-		auto str = data.GetString("depth_mode");
-		if (!gem::CompareLowercase(str, "none") &&
-			!gem::CompareLowercase(str, "writeonly") &&
-			!gem::CompareLowercase(str, "testonly") &&
-			!gem::CompareLowercase(str, "normal"))
-		{
-			gem::Error("\"depth_mode\" is invalid. Valid options are \"none\", \"writeonly\", \"testonly\", or \"normal\".");
-			return false;
-		}
-
-		return true;
+		return gem::ValidateEnumValue<gem::DepthFunc>("depth_mode", data.GetString("depth_mode"), caseSensitive);
 	};
 
-	auto validateCullMode = [](const gem::ConfigTable& data)
+	auto validateCullMode = [](const gem::ConfigTable& data, bool caseSensitive)
 	{
 		if (!data.HasSetting("cull_mode"))
 		{
@@ -147,32 +127,30 @@ bool MaterialEncoder::Validate(const gem::ConfigTable& metadata, unsigned loaded
 			return false;
 		}
 
-		auto str = data.GetString("cull_mode");
-		if (!gem::CompareLowercase(str, "none") &&
-			!gem::CompareLowercase(str, "clockwise") &&
-			!gem::CompareLowercase(str, "counterclockwise"))
-		{
-			gem::Error("\"cull_mode\" is invalid. Valid options are \"none\", \"clockwise\", or \"counterclockwise\".");
-			return false;
-		}
-
-		return true;
+		return gem::ValidateEnumValue<gem::CullFunc>("cull_mode", data.GetString("cull_mode"), caseSensitive);
 	};
 
+	const bool caseSensitiveEnums = loadedVersion > 1;
 	if (!validateShader(metadata)) return false;
 	if (!validateTextures(metadata)) return false;
-	if (!validateBlendMode(metadata)) return false;
-	if (!validateDepthMode(metadata)) return false;
-	if (!validateCullMode(metadata)) return false;
+	if (!validateBlendMode(metadata, caseSensitiveEnums)) return false;
+	if (!validateDepthMode(metadata, caseSensitiveEnums)) return false;
+	if (!validateCullMode(metadata, caseSensitiveEnums)) return false;
 
 	switch (loadedVersion)
 	{
-	case 1:
+	case 1: [[fallthrough]];
+	case 2:
 		if (metadata.GetSize() != 7)
 		{
 			gem::Error("Incorrect number of value entries.");
 			return false;
 		}
+		break;
+
+	default:
+		gem::Error("Missing validation code for version %d", loadedVersion);
+		return false;
 	}
 
 	return true;
@@ -184,9 +162,9 @@ bool MaterialEncoder::Convert(std::string_view source, std::string_view destinat
 	const std::string shader = metadata.GetString("shader");
 	const std::vector<int> units = metadata.GetIntArray("texture_bind_points");
 	const std::vector<std::string> textures = metadata.GetStringArray("textures");
-	const gem::BlendFunc BlendMode = gem::StringToBlendFunc(metadata.GetString("blend_mode"));
-	const gem::DepthFunc DepthMode = gem::StringToDepthFunc(metadata.GetString("depth_mode"));
-	const gem::CullFunc cullMode = gem::StringToCullFunc(metadata.GetString("cull_mode"));
+	const auto BlendMode = gem::StringToEnum<gem::BlendFunc>(metadata.GetString("blend_mode")).value();
+	const auto DepthMode = gem::StringToEnum<gem::DepthFunc>(metadata.GetString("depth_mode")).value();
+	const auto cullMode  = gem::StringToEnum<gem::CullFunc>(metadata.GetString("cull_mode")).value();
 
 	// Save file.
 	FILE* materialFile = fopen(outputFile.c_str(), "wb");
@@ -227,6 +205,21 @@ bool MaterialEncoder::Convert(std::string_view source, std::string_view destinat
 	{
 		gem::Error("Failed to generate Material Binary\nOutput file could not be saved.");
 		return false;
+	}
+
+	return true;
+}
+
+bool MaterialEncoder::Upgrade(gem::ConfigTable& metadata, unsigned loadedVersion) const
+{
+	switch (loadedVersion)
+	{
+	case 1:
+		// Enums became case sensitive.
+		metadata.SetString("blend_mode", gem::FixEnumCasing(metadata.GetString("blend_mode"), gem::BlendFunc::None));
+		metadata.SetString("depth_mode", gem::FixEnumCasing(metadata.GetString("depth_mode"), gem::DepthFunc::Normal));
+		metadata.SetString("cull_mode",  gem::FixEnumCasing(metadata.GetString("cull_mode"),  gem::CullFunc::Clockwise));
+		break;
 	}
 
 	return true;

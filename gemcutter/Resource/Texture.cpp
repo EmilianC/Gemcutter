@@ -494,3 +494,28 @@ namespace gem
 		}
 	}
 }
+
+REFLECT(gem::Texture) BASES { REF_BASE(gem::ResourceBase) }
+	MEMBERS {
+		REF_PRIVATE_MEMBER(numSamples, gem::ReadOnly)
+		REF_PRIVATE_MEMBER(width, gem::ReadOnly)
+		REF_PRIVATE_MEMBER(height, gem::ReadOnly)
+		REF_PRIVATE_MEMBER(format, gem::ReadOnly)
+		REF_PRIVATE_MEMBER(filter, gem::ReadOnly)
+		REF_PRIVATE_MEMBER(wraps, gem::ReadOnly)
+		REF_PRIVATE_MEMBER(anisotropicLevel, gem::ReadOnly)
+	}
+REF_END;
+
+REFLECT(gem::TextureSlot)
+	MEMBERS {
+		REF_MEMBER(tex)
+		REF_MEMBER(unit)
+	}
+REF_END;
+
+REFLECT(gem::TextureList)
+	MEMBERS {
+		REF_PRIVATE_MEMBER(textureSlots)
+	}
+REF_END;

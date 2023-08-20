@@ -516,3 +516,17 @@ namespace gem
 		uniformCameraPosition = buffer.MakeHandle<vec3>("CameraPosition");
 	}
 }
+
+REFLECT(gem::Camera) BASES { REF_BASE(gem::ComponentBase) }
+	MEMBERS {
+		REF_PRIVATE_MEMBER(isPerspective, gem::ReadOnly)
+		REF_PRIVATE_MEMBER(fovyDegrees, gem::ReadOnly)
+		REF_PRIVATE_MEMBER(aspectRatio, gem::ReadOnly)
+		REF_PRIVATE_MEMBER(zNear, gem::ReadOnly)
+		REF_PRIVATE_MEMBER(zFar, gem::ReadOnly)
+		REF_PRIVATE_MEMBER(left, gem::ReadOnly)
+		REF_PRIVATE_MEMBER(right, gem::ReadOnly)
+		REF_PRIVATE_MEMBER(top, gem::ReadOnly)
+		REF_PRIVATE_MEMBER(bottom, gem::ReadOnly)
+	}
+REF_END;

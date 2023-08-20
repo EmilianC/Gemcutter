@@ -8,6 +8,7 @@
 
 #include <glew/glew.h>
 #include <glew/wglew.h>
+#include <loupe/loupe.h>
 #include <SOIL/SOIL.h>
 
 namespace
@@ -218,126 +219,6 @@ namespace gem
 	unsigned ResolveDataFormat(TextureFormat format)
 	{
 		return dataFormat_resolve[static_cast<unsigned>(format)];
-	}
-
-	TextureFilter StringToTextureFilter(std::string_view str)
-	{
-		if (CompareLowercase(str, "linear"))
-			return TextureFilter::Linear;
-		else if (CompareLowercase(str, "bilinear"))
-			return TextureFilter::Bilinear;
-		else if (CompareLowercase(str, "trilinear"))
-			return TextureFilter::Trilinear;
-		else
-			return TextureFilter::Point;
-	}
-
-	TextureWrap StringToTextureWrap(std::string_view str)
-	{
-		if (CompareLowercase(str, "clampwithborder"))
-			return TextureWrap::ClampWithBorder;
-		else if (CompareLowercase(str, "repeat"))
-			return TextureWrap::Repeat;
-		else if (CompareLowercase(str, "repeatmirrored"))
-			return TextureWrap::RepeatMirrored;
-		else if (CompareLowercase(str, "repeatmirroredonce"))
-			return TextureWrap::RepeatMirroredOnce;
-		else
-			return TextureWrap::Clamp;
-	}
-
-	CullFunc StringToCullFunc(std::string_view str)
-	{
-		if (CompareLowercase(str, "clockwise"))
-			return CullFunc::Clockwise;
-		else if (CompareLowercase(str, "counterclockwise"))
-			return CullFunc::CounterClockwise;
-		else
-			return CullFunc::None;
-	}
-
-	BlendFunc StringToBlendFunc(std::string_view str)
-	{
-		if (CompareLowercase(str, "linear"))
-			return BlendFunc::Linear;
-		else if (CompareLowercase(str, "additive"))
-			return BlendFunc::Additive;
-		else if (CompareLowercase(str, "multiplicative"))
-			return BlendFunc::Multiplicative;
-		else
-			return BlendFunc::None;
-	}
-
-	DepthFunc StringToDepthFunc(std::string_view str)
-	{
-		if (CompareLowercase(str, "writeonly"))
-			return DepthFunc::WriteOnly;
-		else if (CompareLowercase(str, "testonly"))
-			return DepthFunc::TestOnly;
-		else if (CompareLowercase(str, "normal"))
-			return DepthFunc::Normal;
-		else
-			return DepthFunc::None;
-	}
-
-	std::string_view TextureFilterToString(TextureFilter filter)
-	{
-		switch (filter)
-		{
-		default:
-		case TextureFilter::Point:     return "Point";
-		case TextureFilter::Linear:    return "Linear";
-		case TextureFilter::Bilinear:  return "Bilinear";
-		case TextureFilter::Trilinear: return "Trilinear";
-		}
-	}
-
-	std::string_view TextureWrapToString(TextureWrap wrapMode)
-	{
-		switch (wrapMode)
-		{
-		default:
-		case TextureWrap::Clamp:              return "Clamp";
-		case TextureWrap::ClampWithBorder:    return "ClampWithBorder";
-		case TextureWrap::Repeat:             return "Repeat";
-		case TextureWrap::RepeatMirrored:     return "RepeatMirrored";
-		case TextureWrap::RepeatMirroredOnce: return "RepeatMirroredOnce";
-		}
-	}
-
-	std::string_view CullFuncToString(CullFunc cullFunc)
-	{
-		switch (cullFunc)
-		{
-		default:
-		case CullFunc::None:             return "None";
-		case CullFunc::Clockwise:        return "Clockwise";
-		case CullFunc::CounterClockwise: return "CounterClockwise";
-		}
-	}
-
-	std::string_view BlendFuncToString(BlendFunc blendFunc)
-	{
-		switch (blendFunc)
-		{
-		default:
-		case BlendFunc::None:           return "None";
-		case BlendFunc::Linear:         return "Linear";
-		case BlendFunc::Additive:       return "Additive";
-		case BlendFunc::Multiplicative: return "Multiplicative";
-		}
-	}
-
-	std::string_view DepthFuncToString(DepthFunc depthFunc)
-	{
-		switch (depthFunc)
-		{
-		default:
-		case DepthFunc::None:      return "None";
-		case DepthFunc::WriteOnly: return "WriteOnly";
-		case DepthFunc::TestOnly:  return "TestOnly";
-		case DepthFunc::Normal:    return "Normal";
-		}
 	}
 
 	unsigned CountBytes(VertexFormat format)
@@ -571,3 +452,154 @@ namespace gem
 		return maxDrawBuffers;
 	}
 }
+
+REFLECT(gem::UniformBufferSlot)
+	ENUM_VALUES {
+		REF_VALUE(Camera)
+		REF_VALUE(Model)
+		REF_VALUE(Engine)
+		REF_VALUE(Time)
+		REF_VALUE(Particle)
+	}
+REF_END;
+
+REFLECT(gem::VertexFormat)
+	ENUM_VALUES {
+		REF_VALUE(Float)
+		REF_VALUE(Double)
+		REF_VALUE(Vec2)
+		REF_VALUE(Vec3)
+		REF_VALUE(Vec4)
+		REF_VALUE(Mat2)
+		REF_VALUE(Mat3)
+		REF_VALUE(Mat4)
+		REF_VALUE(Int)
+		REF_VALUE(uInt)
+		REF_VALUE(Short)
+		REF_VALUE(uShort)
+		REF_VALUE(Byte)
+		REF_VALUE(uByte)
+	}
+REF_END;
+
+REFLECT(gem::VertexArrayFormat)
+	ENUM_VALUES {
+		REF_VALUE(Point)
+		REF_VALUE(Line)
+		REF_VALUE(LineAdjacency)
+		REF_VALUE(LineLoop)
+		REF_VALUE(LineStrip)
+		REF_VALUE(LineStripAdjacency)
+		REF_VALUE(Triangle)
+		REF_VALUE(TriangleAdjacency)
+		REF_VALUE(TriangleFan)
+		REF_VALUE(TriangleStrip)
+		REF_VALUE(TriangleStripAdjacency)
+	}
+REF_END;
+
+REFLECT(gem::VertexAccess)
+	ENUM_VALUES {
+		REF_VALUE(ReadOnly)
+		REF_VALUE(WriteOnly)
+		REF_VALUE(ReadWrite)
+	}
+REF_END;
+
+REFLECT(gem::VertexBufferType)
+	ENUM_VALUES {
+		REF_VALUE(Data)
+		REF_VALUE(Index)
+	}
+REF_END;
+
+REFLECT(gem::BufferUsage)
+	ENUM_VALUES {
+		REF_VALUE(Static)
+		REF_VALUE(Dynamic)
+		REF_VALUE(Stream)
+	}
+REF_END;
+
+REFLECT(gem::TextureFormat)
+	ENUM_VALUES {
+		REF_VALUE(R_8)
+		REF_VALUE(R_16)
+		REF_VALUE(R_16F)
+		REF_VALUE(R_32)
+		REF_VALUE(R_32F)
+		REF_VALUE(RGB_8)
+		REF_VALUE(RGB_16)
+		REF_VALUE(RGB_16F)
+		REF_VALUE(RGB_32)
+		REF_VALUE(RGB_32F)
+		REF_VALUE(RGBA_8)
+		REF_VALUE(RGBA_16)
+		REF_VALUE(RGBA_16F)
+		REF_VALUE(RGBA_32)
+		REF_VALUE(RGBA_32F)
+		REF_VALUE(DEPTH_24)
+		REF_VALUE(sRGB_8)
+		REF_VALUE(sRGBA_8)
+	}
+REF_END;
+
+REFLECT(gem::TextureWrap)
+	ENUM_VALUES {
+		REF_VALUE(Clamp)
+		REF_VALUE(ClampWithBorder)
+		REF_VALUE(Repeat)
+		REF_VALUE(RepeatMirrored)
+		REF_VALUE(RepeatMirroredOnce)
+	}
+REF_END;
+
+REFLECT(gem::TextureWraps)
+	MEMBERS {
+		REF_MEMBER(x)
+		REF_MEMBER(y)
+	}
+REF_END;
+
+REFLECT(gem::TextureFilter)
+	ENUM_VALUES {
+		REF_VALUE(Point)
+		REF_VALUE(Linear)
+		REF_VALUE(Bilinear)
+		REF_VALUE(Trilinear)
+	}
+REF_END;
+
+REFLECT(gem::CullFunc)
+	ENUM_VALUES {
+		REF_VALUE(None)
+		REF_VALUE(Clockwise)
+		REF_VALUE(CounterClockwise)
+	}
+REF_END;
+
+REFLECT(gem::BlendFunc)
+	ENUM_VALUES {
+		REF_VALUE(None)
+		REF_VALUE(Linear)
+		REF_VALUE(Additive)
+		REF_VALUE(Multiplicative)
+	}
+REF_END;
+
+REFLECT(gem::DepthFunc)
+	ENUM_VALUES {
+		REF_VALUE(None)
+		REF_VALUE(WriteOnly)
+		REF_VALUE(TestOnly)
+		REF_VALUE(Normal)
+	}
+REF_END;
+
+REFLECT(gem::VSyncMode)
+	ENUM_VALUES {
+		REF_VALUE(Off)
+		REF_VALUE(On)
+		REF_VALUE(Adaptive)
+	}
+REF_END;

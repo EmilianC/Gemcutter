@@ -4,7 +4,7 @@
 #include <gemcutter/Resource/Texture.h>
 #include <gemcutter/Utilities/String.h>
 
-#define CURRENT_VERSION 2
+#define CURRENT_VERSION 3
 
 TextureEncoder::TextureEncoder()
 	: gem::Encoder(CURRENT_VERSION)
@@ -19,9 +19,9 @@ gem::ConfigTable TextureEncoder::GetDefault() const
 	defaultConfig.SetFloat("anisotropic_level", 1.0f);
 	defaultConfig.SetBool("cubemap", false);
 	defaultConfig.SetBool("s_rgb", true);
-	defaultConfig.SetString("filter", "linear");
-	defaultConfig.SetString("wrap_x", "clamp");
-	defaultConfig.SetString("wrap_y", "clamp");
+	defaultConfig.SetString("filter", gem::EnumToString(gem::TextureFilter::Linear));
+	defaultConfig.SetString("wrap_x", gem::EnumToString(gem::TextureWrap::Clamp));
+	defaultConfig.SetString("wrap_y", gem::EnumToString(gem::TextureWrap::Clamp));
 
 	return defaultConfig;
 }
@@ -46,7 +46,7 @@ bool TextureEncoder::Validate(const gem::ConfigTable& metadata, unsigned loadedV
 		return true;
 	};
 
-	auto validateTextureFilter = [](const gem::ConfigTable& data)
+	auto validateTextureFilter = [](const gem::ConfigTable& data, bool caseSensitive)
 	{
 		if (!data.HasSetting("filter"))
 		{
@@ -54,20 +54,10 @@ bool TextureEncoder::Validate(const gem::ConfigTable& metadata, unsigned loadedV
 			return false;
 		}
 
-		auto str = data.GetString("filter");
-		if (!gem::CompareLowercase(str, "point") &&
-			!gem::CompareLowercase(str, "linear") &&
-			!gem::CompareLowercase(str, "bilinear") &&
-			!gem::CompareLowercase(str, "trilinear"))
-		{
-			gem::Error("\"filter\" is invalid. Valid options are \"point\", \"linear\", \"bilinear\", or \"trilinear\".");
-			return false;
-		}
-
-		return true;
+		return gem::ValidateEnumValue<gem::TextureFilter>("filter", data.GetString("filter"), caseSensitive);
 	};
 
-	auto validateWrap = [](const gem::ConfigTable& data, std::string_view mode)
+	auto validateWrap = [](const gem::ConfigTable& data, std::string_view mode, bool caseSensitive)
 	{
 		if (!data.HasSetting(mode))
 		{
@@ -75,18 +65,7 @@ bool TextureEncoder::Validate(const gem::ConfigTable& metadata, unsigned loadedV
 			return false;
 		}
 
-		auto str = data.GetString(mode);
-		if (!gem::CompareLowercase(str, "clamp") &&
-			!gem::CompareLowercase(str, "clampWithBorder") &&
-			!gem::CompareLowercase(str, "repeat") &&
-			!gem::CompareLowercase(str, "repeatMirrored") &&
-			!gem::CompareLowercase(str, "repeatMirroredOnce"))
-		{
-			gem::Error("\"%s\" is invalid. Valid options are \"clamp\", \"clampWithBorder\", \"repeat\", \"repeatMirrored\", or \"repeatMirroredOnce\".", mode.data());
-			return false;
-		}
-
-		return true;
+		return gem::ValidateEnumValue<gem::TextureWrap>(mode, data.GetString(mode), caseSensitive);
 	};
 
 	if (!metadata.HasSetting("cubemap"))
@@ -95,10 +74,11 @@ bool TextureEncoder::Validate(const gem::ConfigTable& metadata, unsigned loadedV
 		return false;
 	}
 
+	const bool caseSensitiveEnums = loadedVersion > 2;
 	if (!validateAnisotropicLevel(metadata)) return false;
-	if (!validateTextureFilter(metadata)) return false;
-	if (!validateWrap(metadata, "wrap_x")) return false;
-	if (!validateWrap(metadata, "wrap_y")) return false;
+	if (!validateTextureFilter(metadata, caseSensitiveEnums)) return false;
+	if (!validateWrap(metadata, "wrap_x", caseSensitiveEnums)) return false;
+	if (!validateWrap(metadata, "wrap_y", caseSensitiveEnums)) return false;
 
 	switch (loadedVersion)
 	{
@@ -110,7 +90,8 @@ bool TextureEncoder::Validate(const gem::ConfigTable& metadata, unsigned loadedV
 		}
 		break;
 
-	case 2:
+	case 2: [[fallthrough]];
+	case 3:
 		if (!metadata.HasSetting("s_rgb"))
 		{
 			gem::Error("Missing \"s_rgb\" value.");
@@ -123,6 +104,10 @@ bool TextureEncoder::Validate(const gem::ConfigTable& metadata, unsigned loadedV
 			return false;
 		}
 		break;
+
+	default:
+		gem::Error("Missing validation code for version %d", loadedVersion);
+		return false;
 	}
 
 	return true;
@@ -134,9 +119,9 @@ bool TextureEncoder::Convert(std::string_view source, std::string_view destinati
 	const float anisotropicLevel = metadata.GetFloat("anisotropic_level");
 	const bool isCubemap = metadata.GetBool("cubemap");
 	const bool isSRGB = metadata.GetBool("s_rgb");
-	const gem::TextureFilter filter = gem::StringToTextureFilter(metadata.GetString("filter"));
-	const gem::TextureWrap wrapX = gem::StringToTextureWrap(metadata.GetString("wrap_x"));
-	const gem::TextureWrap wrapY = gem::StringToTextureWrap(metadata.GetString("wrap_y"));
+	const auto filter = gem::StringToEnum<gem::TextureFilter>(metadata.GetString("filter")).value();
+	const auto wrapX  = gem::StringToEnum<gem::TextureWrap>(metadata.GetString("wrap_x")).value();
+	const auto wrapY  = gem::StringToEnum<gem::TextureWrap>(metadata.GetString("wrap_y")).value();
 
 	auto image = gem::RawImage::Load(source, !isCubemap, isSRGB);
 	if (image.data == nullptr)
@@ -165,7 +150,7 @@ bool TextureEncoder::Convert(std::string_view source, std::string_view destinati
 		if (wrapX != gem::TextureWrap::Clamp ||
 			wrapY != gem::TextureWrap::Clamp)
 		{
-			gem::Warning("Cubemaps must have \"clamp\" wrap modes. Forcing wrap modes to \"clamp\".");
+			gem::Warning("Cubemaps must have \"Clamp\" wrap modes. Forcing wrap modes to \"Clamp\".");
 		}
 
 		const unsigned faceSize = image.width / 4;
@@ -244,6 +229,13 @@ bool TextureEncoder::Upgrade(gem::ConfigTable& metadata, unsigned loadedVersion)
 	case 1:
 		// Added s_rgb field.
 		metadata.SetBool("s_rgb", true);
+		break;
+
+	case 2:
+		// Enums became case sensitive.
+		metadata.SetString("filter", gem::FixEnumCasing(metadata.GetString("filter"), gem::TextureFilter::Linear));
+		metadata.SetString("wrap_x", gem::FixEnumCasing(metadata.GetString("wrap_x"), gem::TextureWrap::Clamp));
+		metadata.SetString("wrap_y", gem::FixEnumCasing(metadata.GetString("wrap_y"), gem::TextureWrap::Clamp));
 		break;
 	}
 

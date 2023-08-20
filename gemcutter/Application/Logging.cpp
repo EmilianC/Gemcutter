@@ -2,8 +2,9 @@
 #include "Logging.h"
 #include "gemcutter/Utilities/String.h"
 
-#include <iostream>
 #include <fstream>
+#include <iostream>
+#include <loupe/loupe.h>
 #include <Windows.h>
 
 namespace
@@ -196,3 +197,23 @@ namespace gem
 		PushMessage(header, message, ConsoleColor::Pink);
 	}
 }
+
+REFLECT(gem::ConsoleColor)
+	ENUM_VALUES {
+		REF_VALUE(DarkBlue)
+		REF_VALUE(DarkGreen)
+		REF_VALUE(DarkTeal)
+		REF_VALUE(DarkRed)
+		REF_VALUE(DarkPink)
+		REF_VALUE(DarkYellow)
+		REF_VALUE(Gray)
+		REF_VALUE(DarkGray)
+		REF_VALUE(Blue)
+		REF_VALUE(Green)
+		REF_VALUE(Teal)
+		REF_VALUE(Red)
+		REF_VALUE(Pink)
+		REF_VALUE(Yellow)
+		REF_VALUE(White)
+	}
+REF_END;

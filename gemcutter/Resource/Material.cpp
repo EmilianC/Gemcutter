@@ -85,3 +85,13 @@ namespace gem
 		return true;
 	}
 }
+
+REFLECT(gem::Material) BASES { REF_BASE(gem::ResourceBase) }
+	MEMBERS {
+		REF_MEMBER(blendMode)
+		REF_MEMBER(depthMode)
+		REF_MEMBER(cullMode)
+		REF_MEMBER(shader)
+		REF_MEMBER(textures)
+	}
+REF_END;

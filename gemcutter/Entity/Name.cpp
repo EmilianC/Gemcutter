@@ -82,3 +82,9 @@ namespace gem
 	{
 	}
 }
+
+REFLECT(gem::Name) BASES { REF_BASE(gem::ComponentBase) }
+	MEMBERS {
+		REF_MEMBER(name)
+	}
+REF_END;

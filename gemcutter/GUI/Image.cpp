@@ -70,3 +70,5 @@ namespace gem
 		owner.scale.y = bounds.height;
 	}
 }
+
+REFLECT(gem::Image) BASES { REF_BASE(gem::Widget) } REF_END;

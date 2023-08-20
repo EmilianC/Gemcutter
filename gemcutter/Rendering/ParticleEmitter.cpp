@@ -12,7 +12,6 @@ namespace gem
 	{
 		ASSERT(maxParticles > 0, "'maxParticles' must be greater than 0.");
 
-		owner.Tag<ParticleUpdaterTag>();
 		InitUniformBuffer();
 
 		array = data.GetArray();
@@ -25,15 +24,9 @@ namespace gem
 	{
 		ASSERT(maxParticles > 0, "'maxParticles' must be greater than 0.");
 
-		owner.Tag<ParticleUpdaterTag>();
 		InitUniformBuffer();
 
 		array = data.GetArray();
-	}
-
-	ParticleEmitter::~ParticleEmitter()
-	{
-		owner.RemoveTag<ParticleUpdaterTag>();
 	}
 
 	void ParticleEmitter::Warmup(float time, float step)
@@ -235,7 +228,7 @@ namespace gem
 			// We have more particles to generate this frame...
 			numToSpawn >= 1.0f)
 		{
-			if (spawnType == Omni)
+			if (spawnType == Type::Omni)
 			{
 				data.positions[numCurrentParticles] = RandomDirection() * radius.Random();
 			}
@@ -304,3 +297,25 @@ namespace gem
 		buffers.Add(particleParameters, static_cast<unsigned>(UniformBufferSlot::Particle));
 	}
 }
+
+REFLECT(gem::ParticleEmitter::Type)
+	ENUM_VALUES {
+		REF_VALUE(Omni)
+		REF_VALUE(Box)
+	}
+REF_END;
+
+REFLECT(gem::ParticleEmitter) BASES { REF_BASE(gem::Renderable) }
+	MEMBERS {
+		REF_MEMBER(velocity)
+		REF_MEMBER(lifetime)
+		REF_MEMBER(spawnType)
+		REF_MEMBER(spawnPerSecond)
+		REF_MEMBER(axisX)
+		REF_MEMBER(axisY)
+		REF_MEMBER(axisZ)
+		REF_MEMBER(radius)
+		REF_MEMBER(isPaused)
+		REF_PRIVATE_MEMBER(localSpace, gem::ReadOnly)
+	}
+REF_END;

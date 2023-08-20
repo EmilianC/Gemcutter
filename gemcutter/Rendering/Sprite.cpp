@@ -58,3 +58,19 @@ namespace gem
 		return billBoarded;
 	}
 }
+
+REFLECT(gem::Alignment)
+	ENUM_VALUES {
+		REF_VALUE(BottomLeft)
+		REF_VALUE(BottomCenter)
+		REF_VALUE(LeftCenter)
+		REF_VALUE(Center)
+	}
+REF_END;
+
+REFLECT(gem::Sprite) BASES { REF_BASE(gem::Renderable) }
+	MEMBERS {
+		REF_PRIVATE_MEMBER(alignment, gem::ReadOnly);
+		REF_PRIVATE_MEMBER(billBoarded, gem::ReadOnly);
+	}
+REF_END;

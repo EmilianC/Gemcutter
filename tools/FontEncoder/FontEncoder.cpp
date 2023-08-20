@@ -7,7 +7,7 @@
 #include <freetype/freetype.h>
 #include <vector>
 
-#define CURRENT_VERSION 2
+#define CURRENT_VERSION 3
 
 struct CharData
 {
@@ -27,7 +27,7 @@ gem::ConfigTable FontEncoder::GetDefault() const
 	defaultConfig.SetInt("version", CURRENT_VERSION);
 	defaultConfig.SetInt("width", 64);
 	defaultConfig.SetInt("height", 64);
-	defaultConfig.SetString("texture_filter", "bilinear");
+	defaultConfig.SetString("texture_filter", gem::EnumToString(gem::TextureFilter::Bilinear));
 
 	return defaultConfig;
 }
@@ -68,7 +68,7 @@ bool FontEncoder::Validate(const gem::ConfigTable& metadata, unsigned loadedVers
 		return true;
 	};
 
-	auto checkTextureFilter = [](const gem::ConfigTable& data)
+	auto checkTextureFilter = [](const gem::ConfigTable& data, bool caseSensitive)
 	{
 		if (!data.HasSetting("texture_filter"))
 		{
@@ -76,17 +76,7 @@ bool FontEncoder::Validate(const gem::ConfigTable& metadata, unsigned loadedVers
 			return false;
 		}
 
-		auto str = data.GetString("texture_filter");
-		if (!gem::CompareLowercase(str, "point") &&
-			!gem::CompareLowercase(str, "linear") &&
-			!gem::CompareLowercase(str, "bilinear") &&
-			!gem::CompareLowercase(str, "trilinear"))
-		{
-			gem::Error("\"texture_filter\" is invalid. Valid options are \"point\", \"linear\", \"bilinear\", or \"trilinear\".");
-			return false;
-		}
-
-		return true;
+		return gem::ValidateEnumValue<gem::TextureFilter>("texture_filter", data.GetString("texture_filter"), caseSensitive);
 	};
 
 	if (!checkWidth(metadata)) return false;
@@ -103,7 +93,8 @@ bool FontEncoder::Validate(const gem::ConfigTable& metadata, unsigned loadedVers
 		break;
 
 	case 2:
-		if (!checkTextureFilter(metadata)) return false;
+		if (!checkTextureFilter(metadata, false))
+			return false;
 
 		if (metadata.GetSize() != 4)
 		{
@@ -111,6 +102,21 @@ bool FontEncoder::Validate(const gem::ConfigTable& metadata, unsigned loadedVers
 			return false;
 		}
 		break;
+
+	case 3:
+		if (!checkTextureFilter(metadata, true))
+			return false;
+
+		if (metadata.GetSize() != 4)
+		{
+			gem::Error("Incorrect number of value entries.");
+			return false;
+		}
+		break;
+
+	default:
+		gem::Error("Missing validation code for version %d", loadedVersion);
+		return false;
 	}
 
 	return true;
@@ -121,17 +127,7 @@ bool FontEncoder::Convert(std::string_view source, std::string_view destination,
 	const std::string outputFile = std::string(destination) + gem::ExtractFilename(source) + ".font";
 	const unsigned width = static_cast<unsigned>(metadata.GetInt("width"));
 	const unsigned height = static_cast<unsigned>(metadata.GetInt("height"));
-
-	gem::TextureFilter filter = gem::TextureFilter::Point;
-	{
-		std::string str = metadata.GetString("texture_filter");
-		if (gem::CompareLowercase(str, "linear"))
-			filter = gem::TextureFilter::Linear;
-		else if (gem::CompareLowercase(str, "bilinear"))
-			filter = gem::TextureFilter::Bilinear;
-		else if (gem::CompareLowercase(str, "trilinear"))
-			filter = gem::TextureFilter::Trilinear;
-	}
+	const auto filter = gem::StringToEnum<gem::TextureFilter>(metadata.GetString("texture_filter")).value();
 
 	// File preparation.
 	std::vector<unsigned char> bitmapBuffer;
@@ -276,7 +272,12 @@ bool FontEncoder::Upgrade(gem::ConfigTable& metadata, unsigned loadedVersion) co
 	{
 	case 1:
 		// Added texture_filter field.
-		metadata.SetString("texture_filter", "bilinear");
+		metadata.SetString("texture_filter", gem::EnumToString(gem::TextureFilter::Bilinear));
+		break;
+
+	case 2:
+		// Enums became case sensitive.
+		metadata.SetString("texture_filter", gem::FixEnumCasing(metadata.GetString("texture_filter"), gem::TextureFilter::Bilinear));
 		break;
 	}
 

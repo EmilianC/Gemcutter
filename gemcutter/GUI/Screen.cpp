@@ -26,3 +26,5 @@ namespace gem
 		};
 	}
 }
+
+REFLECT(gem::Screen) BASES { REF_BASE(gem::Widget) } REF_END;

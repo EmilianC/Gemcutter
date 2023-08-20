@@ -110,3 +110,19 @@ namespace gem
 		}
 	}
 }
+
+REFLECT(gem::Edge)
+	MEMBERS {
+		REF_MEMBER(anchor)
+		REF_MEMBER(offset)
+	}
+REF_END;
+
+REFLECT(gem::Widget) BASES { REF_BASE(gem::ComponentBase) }
+	MEMBERS {
+		REF_MEMBER(top)
+		REF_MEMBER(bottom)
+		REF_MEMBER(left)
+		REF_MEMBER(right)
+	}
+REF_END;

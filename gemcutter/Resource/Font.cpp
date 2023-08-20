@@ -250,3 +250,5 @@ namespace gem
 		return VBO;
 	}
 }
+
+REFLECT_RESOURCE_SIMPLE(gem::Font);

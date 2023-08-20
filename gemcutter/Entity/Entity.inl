@@ -1,43 +1,49 @@
 // Copyright (c) 2017 Emilian Cioca
 namespace gem
 {
-	namespace detail
+	template<class T>
+	bool ComponentBase::IsA() const
 	{
-#ifdef GEM_DEV
-		// Key type must be 'int' instead of 'ComponentId' to support custom natvis views.
-		extern std::unordered_map<int, std::string_view>& componentNames;
-		std::unordered_map<int, std::string_view>& GetComponentNames();
-#endif
-
-		// Allows for compile-time decision of whether or not a dynamic cast is required.
-		// A dynamic cast is required when a class inherits from Component indirectly, and
-		// as such, doesn't generate its own unique ComponentId.
-		template<class T>
-		T* safe_cast(ComponentBase* comp)
-		{
-			if constexpr (std::is_same_v<T, typename T::StaticComponentType>)
-			{
-				return static_cast<T*>(comp);
-			}
-			else
-			{
-				return dynamic_cast<T*>(comp);
-			}
-		}
+		return typeId->is_a(ReflectType<T>());
 	}
 
-	template<class derived> const ComponentId Component<derived>::uniqueId = [] {
-		const ComponentId id = GenerateUniqueId<ComponentId>();
+	template<class To> [[nodiscard]]
+	auto component_cast(ComponentBase* from)
+	{
+		using TargetComponent = std::remove_pointer_t<To>;
 
-#ifdef GEM_DEV
-		detail::GetComponentNames().emplace(static_cast<int>(id.GetValue()), meta::GetTypeName<derived>());
-#endif
-		return id;
-	}();
+		static_assert(std::is_pointer_v<To>, "component_cast must cast to a pointer type.");
+		static_assert(std::is_base_of_v<ComponentBase, TargetComponent>, "component_cast must cast to a Component type.");
+
+		ASSERT(from != nullptr, "component_cast cannot cast a null Component pointer.");
+
+		if constexpr (std::is_same_v<TargetComponent, typename TargetComponent::StaticComponentType>)
+		{
+			if (from->componentId == TargetComponent::staticComponentId)
+			{
+				return static_cast<To>(from);
+			}
+		}
+		else
+		{
+			if (from->IsA<TargetComponent>())
+			{
+				return static_cast<To>(from);
+			}
+		}
+
+		return static_cast<To>(nullptr);
+	}
+
+	template<class To> [[nodiscard]]
+	auto component_cast(const ComponentBase* from)
+	{
+		return const_cast<const To>(component_cast<To>(const_cast<ComponentBase*>(from)));
+	}
 
 	template<class derived>
 	Component<derived>::Component(Entity& owner)
-		: ComponentBase(owner, uniqueId)
+		: ComponentBase(owner, staticComponentId)
 	{
 	}
 
@@ -50,10 +56,18 @@ namespace gem
 
 		auto* newComponent = new T(*this, std::forward<Args>(constructorParams)...);
 		components.push_back(newComponent);
+		newComponent->typeId = &ReflectType<T>();
 
 		if (IsEnabled())
 		{
-			Index(*newComponent);
+			if constexpr (std::is_same_v<T, typename T::StaticComponentType>)
+			{
+				Index(*newComponent, *newComponent->typeId);
+			}
+			else
+			{
+				IndexWithBases(*newComponent);
+			}
 		}
 
 		return *newComponent;
@@ -89,28 +103,26 @@ namespace gem
 	template<class T>
 	void Entity::Remove()
 	{
-		using namespace detail;
 		static_assert(std::is_base_of_v<ComponentBase, T>, "Template argument must inherit from Component.");
 		static_assert(!std::is_base_of_v<TagBase, T>, "Template argument cannot be a Tag.");
 
 		for (unsigned i = 0; i < components.size(); ++i)
 		{
-			if (components[i]->componentId == T::uniqueId)
+			auto* comp = components[i];
+			if (comp->componentId == T::staticComponentId)
 			{
-				if (safe_cast<T>(components[i]))
+				if (comp->IsA<T>())
 				{
-					auto* comp = components[i];
 					components[i] = components.back();
 					components.pop_back();
 
-					if (comp->IsEnabled())
+					if (isEnabled && comp->isEnabled)
 					{
-						Unindex(*comp);
+						UnindexWithBases(*comp);
 					}
 
 					delete comp;
 				}
-
 				return;
 			}
 		}
@@ -123,9 +135,9 @@ namespace gem
 
 		if constexpr (std::is_base_of_v<TagBase, T>)
 		{
-			for (ComponentId tag : tags)
+			for (detail::ComponentId tag : tags)
 			{
-				if (tag == T::uniqueId)
+				if (tag == T::staticComponentId)
 				{
 					return true;
 				}
@@ -148,7 +160,7 @@ namespace gem
 		( [this]() {
 			if (!Has<Args>())
 			{
-				Tag(Args::uniqueId);
+				AddTag(Args::staticComponentId);
 			}
 		}(), ... );
 	}
@@ -158,7 +170,7 @@ namespace gem
 	{
 		static_assert(std::is_base_of_v<TagBase, T>, "Template argument must inherit from Tag.");
 
-		RemoveTag(T::uniqueId);
+		RemoveTag(T::staticComponentId);
 	}
 
 	template<class T>
@@ -166,12 +178,12 @@ namespace gem
 	{
 		static_assert(std::is_base_of_v<TagBase, T>, "Template argument must inherit from Tag.");
 
-		std::vector<Entity*>& taggedEntities = detail::entityIndex[T::uniqueId];
+		std::vector<Entity*>& taggedEntities = detail::tagIndex[T::staticComponentId];
 		for (Entity* ent : taggedEntities)
 		{
 			auto& tags = ent->tags;
 
-			auto itr = std::find(tags.begin(), tags.end(), T::uniqueId);
+			auto itr = std::find(std::begin(tags), std::end(tags), T::staticComponentId);
 			*itr = tags.back();
 			tags.pop_back();
 		}
@@ -188,17 +200,12 @@ namespace gem
 		auto& comp = Get<T>();
 
 		// The component state changes either way, but it only gets indexed if the Entity is also enabled.
-		bool wasEnabled = comp.isEnabled;
+		const bool wasCompEnabled = comp.isEnabled;
 		comp.isEnabled = true;
 
-		if (!this->IsEnabled())
+		if (this->isEnabled && !wasCompEnabled)
 		{
-			return;
-		}
-
-		if (!wasEnabled)
-		{
-			Index(comp);
+			IndexWithBases(comp);
 			static_cast<ComponentBase&>(comp).OnEnable();
 		}
 	}
@@ -211,18 +218,13 @@ namespace gem
 
 		auto& comp = Get<T>();
 
-		// The component state changes either way, but it only gets removed if the Entity is enabled.
-		bool wasEnabled = comp.isEnabled;
+		// The component state changes either way, but it only gets removed if the Entity is also enabled.
+		const bool wasCompEnabled = comp.isEnabled;
 		comp.isEnabled = false;
 
-		if (!this->IsEnabled())
+		if (this->isEnabled && wasCompEnabled)
 		{
-			return;
-		}
-
-		if (wasEnabled)
-		{
-			Unindex(comp);
+			UnindexWithBases(comp);
 			static_cast<ComponentBase&>(comp).OnDisable();
 		}
 	}
@@ -230,7 +232,6 @@ namespace gem
 	template<class T>
 	T& Entity::GetComponent() const
 	{
-		using namespace detail;
 		static_assert(std::is_base_of_v<ComponentBase, T>, "Template argument must inherit from Component.");
 		static_assert(!std::is_base_of_v<TagBase, T>, "Template argument cannot be a Tag.");
 
@@ -238,9 +239,9 @@ namespace gem
 		while (true)
 		{
 			ASSERT(itr != components.end(), "Entity did not have the expected component.");
-			if ((*itr)->componentId == T::uniqueId)
+			if ((*itr)->componentId == T::staticComponentId)
 			{
-				ASSERT(safe_cast<T>(*itr), "Entity did not have the expected component.");
+				ASSERT((*itr)->IsA<T>(), "Entity did not have the expected component.");
 				return *static_cast<T*>(*itr);
 			}
 
@@ -251,15 +252,14 @@ namespace gem
 	template<class T>
 	T* Entity::TryComponent() const
 	{
-		using namespace detail;
 		static_assert(std::is_base_of_v<ComponentBase, T>, "Template argument must inherit from Component.");
 		static_assert(!std::is_base_of_v<TagBase, T>, "Template argument cannot be a Tag.");
 
 		for (auto* comp : components)
 		{
-			if (comp->componentId == T::uniqueId)
+			if (comp->componentId == T::staticComponentId)
 			{
-				return safe_cast<T>(comp);
+				return component_cast<T*>(comp);
 			}
 		}
 
@@ -270,11 +270,11 @@ namespace gem
 namespace std
 {
 	template<>
-	struct hash<gem::ComponentId>
+	struct hash<gem::detail::ComponentId>
 	{
-		size_t operator()(const gem::ComponentId& id) const noexcept
+		size_t operator()(const gem::detail::ComponentId& id) const noexcept
 		{
-			return std::hash<gem::ComponentId::ValueType>{}(id.GetValue());
+			return std::hash<gem::detail::ComponentId::ValueType>{}(id.GetValue());
 		}
 	};
 }

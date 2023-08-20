@@ -5,6 +5,8 @@
 #include "gemcutter/Math/Matrix.h"
 #include "gemcutter/Math/Vector.h"
 
+#include <loupe/loupe.h>
+
 namespace gem
 {
 	const quat quat::Identity = quat();
@@ -279,3 +281,12 @@ namespace gem
 			coef1 * p0.w + coef2 * p1.w).GetNormalized();
 	}
 }
+
+REFLECT(gem::quat)
+	MEMBERS {
+		REF_MEMBER(x)
+		REF_MEMBER(y)
+		REF_MEMBER(z)
+		REF_MEMBER(w)
+	}
+REF_END;

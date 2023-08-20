@@ -169,28 +169,26 @@ namespace gem
 	{
 		return volume;
 	}
-
-	AttenuationFunc StringToAttenuationFunc(std::string_view str)
-	{
-		if (CompareLowercase(str, "inversedistance"))
-			return AttenuationFunc::InverseDistance;
-		else if (CompareLowercase(str, "linear"))
-			return AttenuationFunc::Linear;
-		else if (CompareLowercase(str, "exponential"))
-			return AttenuationFunc::Exponential;
-		else
-			return AttenuationFunc::None;
-	}
-
-	std::string_view AttenuationFuncToString(AttenuationFunc mode)
-	{
-		switch (mode)
-		{
-		default:
-		case AttenuationFunc::None:            return "none";
-		case AttenuationFunc::InverseDistance: return "inversedistance";
-		case AttenuationFunc::Linear:          return "linear";
-		case AttenuationFunc::Exponential:     return "exponential";
-		}
-	}
 }
+
+REFLECT(gem::AttenuationFunc)
+	ENUM_VALUES {
+		REF_VALUE(None)
+		REF_VALUE(InverseDistance)
+		REF_VALUE(Linear)
+		REF_VALUE(Exponential)
+	}
+REF_END;
+
+REFLECT(gem::Sound) BASES { REF_BASE(gem::ResourceBase) }
+	MEMBERS {
+		REF_PRIVATE_MEMBER(is3D, gem::ReadOnly)
+		REF_PRIVATE_MEMBER(loop, gem::ReadOnly)
+		REF_PRIVATE_MEMBER(unique, gem::ReadOnly)
+		REF_PRIVATE_MEMBER(attenuation, gem::ReadOnly)
+		REF_PRIVATE_MEMBER(rolloff, gem::ReadOnly)
+		REF_PRIVATE_MEMBER(volume, gem::ReadOnly)
+		REF_PRIVATE_MEMBER(minDistance, gem::ReadOnly)
+		REF_PRIVATE_MEMBER(maxDistance, gem::ReadOnly)
+	}
+REF_END;

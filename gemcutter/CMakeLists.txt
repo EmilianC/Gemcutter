@@ -14,9 +14,13 @@ list(APPEND gemcutter_files
 	"Application/Event.inl"
 	"Application/FileSystem.cpp"
 	"Application/FileSystem.h"
+	"Application/HierarchicalEvent.cpp"
 	"Application/HierarchicalEvent.h"
 	"Application/Logging.cpp"
 	"Application/Logging.h"
+	"Application/Reflection.cpp"
+	"Application/Reflection.h"
+	"Application/Reflection.inl"
 	"Application/Timer.cpp"
 	"Application/Timer.h"
 
@@ -101,6 +105,7 @@ list(APPEND gemcutter_files
 	"Resource/ParticleBuffer.h"
 	"Resource/ParticleFunctor.cpp"
 	"Resource/ParticleFunctor.h"
+	"Resource/Resource.cpp"
 	"Resource/Resource.h"
 	"Resource/Shader.cpp"
 	"Resource/Shader.h"
@@ -140,11 +145,12 @@ source_group(TREE ${CMAKE_CURRENT_SOURCE_DIR} FILES ${gemcutter_files})
 
 add_library(gemcutter STATIC ${gemcutter_files})
 sf_target_compile_disable_exceptions(gemcutter OPTIONAL)
+sf_target_compile_disable_rtti(gemcutter OPTIONAL)
 sf_target_compile_fast_fp(gemcutter OPTIONAL)
 sf_target_compile_warnings_as_errors(gemcutter OPTIONAL)
 sf_target_compile_warnings(gemcutter)
 
-target_compile_features(gemcutter PUBLIC cxx_std_20)
+target_compile_features(gemcutter PUBLIC cxx_std_23)
 target_include_directories(gemcutter PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../)
 target_link_libraries(gemcutter
 	PRIVATE
@@ -156,6 +162,11 @@ target_link_libraries(gemcutter
 		Xinput
 		glew
 		soloud
+		loupe
+)
+target_link_options(gemcutter
+	PUBLIC
+		$<$<CXX_COMPILER_ID:MSVC>:/WHOLEARCHIVE:gemcutter.lib>
 )
 
 if (ENABLE_IMGUI_SUPPORT)
@@ -191,6 +202,7 @@ if (ENABLE_PCH)
 			<unordered_map>
 			<vector>
 			Application/Logging.h
+			Application/Reflection.h
 			Entity/Entity.h
 			GUI/Widget.h
 			Math/Matrix.h

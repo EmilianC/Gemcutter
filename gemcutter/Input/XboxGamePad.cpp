@@ -2,6 +2,7 @@
 #include "XboxGamePad.h"
 #include "gemcutter/Application/Logging.h"
 
+#include <loupe/loupe.h>
 #include <Windows.h>
 #include <Xinput.h>
 
@@ -133,3 +134,22 @@ namespace gem
 		}
 	}
 }
+
+REFLECT(gem::XboxGamePad::Buttons)
+	ENUM_VALUES {
+		REF_VALUE(DPadUp)
+		REF_VALUE(DPadDown)
+		REF_VALUE(DPadLeft)
+		REF_VALUE(DPadRight)
+		REF_VALUE(Start)
+		REF_VALUE(Back)
+		REF_VALUE(LeftThumb)
+		REF_VALUE(RightThumb)
+		REF_VALUE(LeftShoulder)
+		REF_VALUE(RightShoulder)
+		REF_VALUE(A)
+		REF_VALUE(B)
+		REF_VALUE(X)
+		REF_VALUE(Y)
+	}
+REF_END;

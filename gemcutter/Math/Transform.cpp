@@ -3,6 +3,8 @@
 #include "gemcutter/Application/Logging.h"
 #include "gemcutter/Math/Math.h"
 
+#include <loupe/loupe.h>
+
 namespace gem
 {
 	Transform::Transform(const vec3& _position)
@@ -55,3 +57,11 @@ namespace gem
 		rotation.RotateZ(degrees);
 	}
 }
+
+REFLECT(gem::Transform)
+	MEMBERS {
+		REF_MEMBER(position)
+		REF_MEMBER(rotation)
+		REF_MEMBER(scale)
+	}
+REF_END;

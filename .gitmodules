@@ -11,3 +11,6 @@
 [submodule "external/soloud"]
 	path = external/soloud
 	url = https://github.com/EmilianC/soloud.git
+[submodule "external/loupe"]
+	path = external/loupe
+	url = https://github.com/EmilianC/Loupe.git

@@ -5,6 +5,8 @@
 #include "gemcutter/Math/Quaternion.h"
 #include "gemcutter/Math/Vector.h"
 
+#include <loupe/loupe.h>
+
 namespace gem
 {
 	const mat2 mat2::Identity = mat2();
@@ -1494,3 +1496,7 @@ namespace gem
 		return { right, up, -forward, position };
 	}
 }
+
+REFLECT(gem::mat2) MEMBERS { REF_MEMBER(data) } REF_END;
+REFLECT(gem::mat3) MEMBERS { REF_MEMBER(data) } REF_END;
+REFLECT(gem::mat4) MEMBERS { REF_MEMBER(data) } REF_END;

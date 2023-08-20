@@ -252,7 +252,7 @@ namespace gem
 
 		transformBuffer.Bind(static_cast<unsigned>(UniformBufferSlot::Model));
 
-		if (auto* text = dynamic_cast<const Text*>(renderable))
+		if (auto* text = component_cast<Text*>(renderable))
 		{
 			auto& font = text->font;
 			ASSERT(font != nullptr, "Entity has a Text component but does not have a Font to render with.");

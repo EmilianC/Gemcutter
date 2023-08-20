@@ -108,3 +108,23 @@ namespace gem
 		cosAngle.Set(cos(ToRadian(angle)));
 	}
 }
+
+REFLECT(gem::Light::Type)
+	ENUM_VALUES {
+		REF_VALUE(Point)
+		REF_VALUE(Directional)
+		REF_VALUE(Spot)
+	}
+REF_END;
+
+REFLECT_SIMPLE(gem::UniformHandle<gem::Light::Type>);
+
+REFLECT(gem::Light) BASES { REF_BASE(gem::ComponentBase) }
+	MEMBERS {
+		REF_MEMBER(type)
+		REF_MEMBER(color)
+		REF_MEMBER(attenuationLinear)
+		REF_MEMBER(attenuationQuadratic)
+		REF_MEMBER(angle)
+	}
+REF_END;

@@ -180,3 +180,21 @@ namespace gem
 		label->owner.Enable();
 	}
 }
+
+REFLECT(gem::Button::State)
+	ENUM_VALUES {
+		REF_VALUE(Idle)
+		REF_VALUE(Hover)
+		REF_VALUE(Pressed)
+	}
+REF_END;
+
+REFLECT(gem::Button) BASES { REF_BASE(gem::Widget) }
+	MEMBERS {
+		REF_MEMBER(pressedSound)
+		REF_MEMBER(idleTexture)
+		REF_MEMBER(hoverTexture)
+		REF_MEMBER(pressedTexture)
+		REF_PRIVATE_MEMBER(state, gem::ReadOnly)
+	}
+REF_END;

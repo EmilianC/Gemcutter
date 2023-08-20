@@ -3,7 +3,7 @@
 #include <gemcutter/Resource/Sound.h>
 #include <gemcutter/Utilities/String.h>
 
-#define CURRENT_VERSION 1
+#define CURRENT_VERSION 2
 
 SoundEncoder::SoundEncoder()
 	: gem::Encoder(CURRENT_VERSION)
@@ -18,7 +18,7 @@ gem::ConfigTable SoundEncoder::GetDefault() const
 	defaultConfig.SetBool("3d", false);
 	defaultConfig.SetBool("loop", false);
 	defaultConfig.SetBool("unique_instance", false);
-	defaultConfig.SetString("3d_attenuation", "none");
+	defaultConfig.SetString("3d_attenuation", gem::EnumToString(gem::AttenuationFunc::None));
 	defaultConfig.SetFloat("3d_attenuation_rolloff", 1.0f);
 	defaultConfig.SetFloat("volume", 1.0f);
 	defaultConfig.SetFloat("3d_min_distance", 1.0f);
@@ -53,13 +53,10 @@ bool SoundEncoder::Validate(const gem::ConfigTable& metadata, unsigned loadedVer
 		return false;
 	}
 
+	const bool caseSensitiveEnums = loadedVersion > 1;
 	const std::string attenuation = metadata.GetString("3d_attenuation");
-	if (!gem::CompareLowercase(attenuation, "none") &&
-		!gem::CompareLowercase(attenuation, "inversedistance") &&
-		!gem::CompareLowercase(attenuation, "linear") &&
-		!gem::CompareLowercase(attenuation, "exponential"))
+	if (!gem::ValidateEnumValue<gem::AttenuationFunc>("3d_attenuation", attenuation, caseSensitiveEnums))
 	{
-		gem::Error("\"3d_attenuation\" is invalid. Valid options are \"none\", \"inversedistance\", \"linear\", or \"exponential\".");
 		return false;
 	}
 
@@ -123,13 +120,18 @@ bool SoundEncoder::Validate(const gem::ConfigTable& metadata, unsigned loadedVer
 
 	switch (loadedVersion)
 	{
-	case 1:
+	case 1: [[fallthrough]];
+	case 2:
 		if (metadata.GetSize() != 9)
 		{
 			gem::Error("Incorrect number of value entries.");
 			return false;
 		}
 		break;
+
+	default:
+		gem::Error("Missing validation code for version %d", loadedVersion);
+		return false;
 	}
 
 	return true;
@@ -141,7 +143,7 @@ bool SoundEncoder::Convert(std::string_view source, std::string_view destination
 	const bool is3D = metadata.GetBool("3d");
 	const bool loop = metadata.GetBool("loop");
 	const bool unique = metadata.GetBool("unique_instance");
-	const gem::AttenuationFunc attenuation = gem::StringToAttenuationFunc(metadata.GetString("3d_attenuation"));
+	const auto attenuation = gem::StringToEnum<gem::AttenuationFunc>(metadata.GetString("3d_attenuation")).value();
 	const float rolloff = metadata.GetFloat("3d_attenuation_rolloff");
 	const float volume = metadata.GetFloat("volume");
 	const float minDistance = metadata.GetFloat("3d_min_distance");
@@ -179,6 +181,19 @@ bool SoundEncoder::Convert(std::string_view source, std::string_view destination
 	{
 		gem::Error("Failed to generate Sound Binary\nOutput file could not be saved.");
 		return false;
+	}
+
+	return true;
+}
+
+bool SoundEncoder::Upgrade(gem::ConfigTable& metadata, unsigned loadedVersion) const
+{
+	switch (loadedVersion)
+	{
+	case 1:
+		// Enums became case sensitive.
+		metadata.SetString("3d_attenuation", gem::FixEnumCasing(metadata.GetString("3d_attenuation"), gem::AttenuationFunc::None));
+		break;
 	}
 
 	return true;

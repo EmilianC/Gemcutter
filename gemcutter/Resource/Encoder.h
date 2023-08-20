@@ -3,6 +3,7 @@
 #include "gemcutter/Application/CmdArgs.h"
 #include "gemcutter/Application/FileSystem.h"
 #include "gemcutter/Application/Logging.h"
+#include "gemcutter/Application/Reflection.h"
 #include "gemcutter/Resource/ConfigTable.h"
 #include "gemcutter/Utilities/ScopeGuard.h"
 #include "gemcutter/Utilities/String.h"
@@ -237,4 +238,94 @@ namespace gem
 		// The newest version of the metaData.
 		const unsigned version;
 	};
+
+	// Returns true if the value name matches one of the enum options.
+	// Otherwise prints an error message containing the valid options and returns false.
+	template<typename Enum> [[nodiscard]]
+	bool ValidateEnumValue(std::string_view optionName, std::string_view valueName, bool caseSensitive = true)
+	{
+		static_assert(std::is_enum_v<Enum>);
+
+		const loupe::type& enumType = ReflectType<Enum>();
+		const auto& enumeration = std::get<loupe::enumeration>(enumType.data);
+		if (enumeration.entries.empty())
+		{
+			Error("\"%s\" is invalid. No valid options are reflected for the enum type.", optionName);
+			return false;
+		}
+
+		for (const loupe::enum_entry& entry : enumeration.entries)
+		{
+			if (caseSensitive && (entry.name == valueName) || CompareLowercase(entry.name, valueName))
+			{
+				return true;
+			}
+		}
+
+		std::string error;
+		error.reserve(128);
+		error += '\"';
+		error += optionName;
+		error += "\" is invalid. Valid options are: ";
+
+		for (const loupe::enum_entry& entry : enumeration.entries)
+		{
+			error += '\"';
+			error += entry.name;
+			error += "\", ";
+		}
+
+		error.pop_back();
+		error.back() = '.';
+
+		Error(error);
+		return false;
+	}
+
+	// Ensures that the given enum value name matches the casing in the enum definition.
+	template<typename Enum> [[nodiscard]]
+	std::string_view FixEnumCasing(std::string_view valueName, Enum defaultValue)
+	{
+		static_assert(std::is_enum_v<Enum>);
+
+		const loupe::type& enumType = ReflectType<Enum>();
+		const auto& enumeration = std::get<loupe::enumeration>(enumType.data);
+
+		for (const loupe::enum_entry& entry : enumeration.entries)
+		{
+			if (entry.name == valueName)
+			{
+				return valueName;
+			}
+		}
+
+		for (const loupe::enum_entry& entry : enumeration.entries)
+		{
+			if (CompareLowercase(entry.name, valueName))
+			{
+				return entry.name;
+			}
+		}
+
+		std::string_view defaultName;
+		for (const loupe::enum_entry& entry : enumeration.entries)
+		{
+			if (static_cast<Enum>(entry.value) == defaultValue)
+			{
+				defaultName = entry.name;
+				break;
+			}
+		}
+
+		if (defaultName.empty())
+		{
+			Error("Could not find a match for enum value \"%s\", or a valid default.", valueName.data());
+		}
+		else
+		{
+			Warning("Could not find a match for enum value \"%s\", defaulting back to \"%s\".", valueName.data(), defaultName.data());
+		}
+
+		return defaultName;
+	}
 }

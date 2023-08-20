@@ -3,6 +3,8 @@
 #include "gemcutter/Application/Logging.h"
 #include "gemcutter/Math/Math.h"
 
+#include <loupe/loupe.h>
+
 namespace gem
 {
 	const vec2 vec2::Zero  = vec2(0.0f, 0.0f);
@@ -883,3 +885,27 @@ namespace gem
 		return { vec.x * inverse, vec.y * inverse, vec.z * inverse, vec.w * inverse };
 	}
 }
+
+REFLECT(gem::vec2)
+	MEMBERS {
+		REF_MEMBER(x)
+		REF_MEMBER(y)
+	}
+REF_END;
+
+REFLECT(gem::vec3)
+	MEMBERS {
+		REF_MEMBER(x)
+		REF_MEMBER(y)
+		REF_MEMBER(z)
+	}
+REF_END;
+
+REFLECT(gem::vec4)
+	MEMBERS {
+		REF_MEMBER(x)
+		REF_MEMBER(y)
+		REF_MEMBER(z)
+		REF_MEMBER(w)
+	}
+REF_END;

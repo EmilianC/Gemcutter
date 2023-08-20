@@ -95,6 +95,11 @@ namespace gem
 		Hierarchy* parentHierarchy = nullptr;
 		Entity::WeakPtr parent;
 		std::vector<Entity::Ptr> children;
+
+	public:
+		PRIVATE_MEMBER(Hierarchy, parentHierarchy);
+		PRIVATE_MEMBER(Hierarchy, parent);
+		PRIVATE_MEMBER(Hierarchy, children);
 	};
 }
 
