@@ -1,7 +1,6 @@
 // Copyright (c) 2023 Emilian Cioca
 namespace gem
 {
-	// Returns the reflection information for the given type.
 	template<typename T> [[nodiscard]]
 	const loupe::type& ReflectType()
 	{
@@ -40,8 +39,6 @@ namespace gem
 		return *result;
 	}
 
-	// Returns a string representation of the given type's name.
-	// Results will vary by compiler and are best used for debug purposes only.
 	template<typename T> [[nodiscard]]
 	consteval std::string_view GetTypeName()
 	{
