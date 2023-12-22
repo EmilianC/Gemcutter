@@ -1,12 +1,14 @@
 // Copyright (c) 2017 Emilian Cioca
 #include "Application.h"
 #include "gemcutter/Application/Logging.h"
+#include "gemcutter/Application/Reflection.h"
 #include "gemcutter/Application/Timer.h"
 #include "gemcutter/GUI/Button.h"
 #include "gemcutter/GUI/Widget.h"
 #include "gemcutter/Input/Input.h"
 #include "gemcutter/Rendering/Light.h"
 #include "gemcutter/Rendering/ParticleEmitter.h"
+#include "gemcutter/Rendering/Primitives.h"
 #include "gemcutter/Rendering/Rendering.h"
 #include "gemcutter/Resource/Font.h"
 #include "gemcutter/Resource/Model.h"
@@ -46,9 +48,39 @@ namespace
 	HINSTANCE apInstance = NULL;
 	HGLRC renderContext = NULL;
 	HDC deviceContext = NULL;
-	gem::Viewport screenViewport{ 0, 0, 800, 600 };
+	gem::Viewport screenViewport{ 0, 0, 1280, 720 };
 	unsigned glMajorVersion = 3;
 	unsigned glMinorVersion = 3;
+
+	bool SetVsync(gem::VSyncMode mode)
+	{
+		if (!wglewIsSupported("WGL_EXT_swap_control"))
+		{
+			gem::Error("VSync is not supported on this system.");
+			return false;
+		}
+
+		auto wglSwapIntervalEXT = reinterpret_cast<bool (APIENTRY *)(int)>(wglGetProcAddress("wglSwapIntervalEXT"));
+		if (!wglSwapIntervalEXT)
+		{
+			gem::Error("Could not retrieve \"wglSwapIntervalEXT\" function.");
+			return false;
+		}
+
+		if (mode == gem::VSyncMode::Adaptive && !wglewIsSupported("WGL_EXT_swap_control_tear"))
+		{
+			gem::Error("Adaptive VSync is not supported on this system. VSync mode left unchanged.");
+			return false;
+		}
+
+		if (!wglSwapIntervalEXT(static_cast<int>(mode)))
+		{
+			gem::Error("Failed to change VSync mode to (%s).", EnumToString(mode));
+			return false;
+		}
+
+		return true;
+	}
 
 	constexpr LONG GetStyle(bool fullScreen, bool bordered, bool resizable)
 	{
@@ -418,6 +450,33 @@ namespace gem
 {
 	ApplicationSingleton Application;
 
+	ConfigTable LoadApplicationConfig()
+	{
+		ConfigTable config;
+		config.SetDefaultBool("bordered", true);
+		config.SetDefaultBool("resizable", false);
+		config.SetDefaultBool("fullscreen", false);
+		config.SetDefaultInt("resolution_x", 1280);
+		config.SetDefaultInt("resolution_y", 720);
+		config.SetDefaultInt("openGL_Major", 3);
+		config.SetDefaultInt("openGL_Minor", 3);
+		config.SetDefaultInt("updatesPerSecond", 120);
+		config.SetDefaultInt("FPSCap", 120);
+		config.SetDefaultString("vsync", "Adaptive");
+
+		if (!config.Load("settings.cfg"))
+		{
+			Warning("Could not load \"settings.cfg\". Generating a new default.");
+
+			if (!config.Save("settings.cfg"))
+			{
+				Warning("Failed to generate a new settings.cfg file.");
+			}
+		}
+
+		return config;
+	}
+
 	void ApplicationSingleton::GatherSystemEvents()
 	{
 		// Windows message loop.
@@ -453,6 +512,74 @@ namespace gem
 				DispatchMessage(&msg);
 			}
 		}
+	}
+
+	bool ApplicationSingleton::Startup()
+	{
+		OpenOutputLog();
+#ifdef GEM_DEBUG
+		CreateConsoleWindow();
+#endif
+		Log("-- Application Starting Up --");
+
+		InitializeReflectionTables();
+		SeedRandomNumberGenerator();
+
+		SoundSystem.Init();
+
+		return true;
+	}
+
+	void ApplicationSingleton::Shutdown()
+	{
+		ASSERT(hwnd == NULL, __FUNCTION__ "() cannot be called while a game window is still active.");
+
+		Log("-- Application Shutting Down --");
+
+		SoundSystem.Unload();
+
+#ifdef GEM_DEBUG
+		DestroyConsoleWindow();
+#endif
+		CloseOutputLog();
+	}
+
+	bool ApplicationSingleton::CreateGameWindow(std::string_view title, const ConfigTable& config)
+	{
+		ASSERT(hwnd == NULL, "A game window is already open.");
+
+		bool success = true;
+		auto CheckSetting = [&](std::string_view setting) {
+			if (!config.HasSetting(setting))
+			{
+				Error("Config is missing the (%s) field.", setting.data());
+				success = false;
+			}
+		};
+
+		CheckSetting("bordered");
+		CheckSetting("resizable");
+		CheckSetting("fullscreen");
+		CheckSetting("resolution_x");
+		CheckSetting("resolution_y");
+		CheckSetting("openGL_Major");
+		CheckSetting("openGL_Minor");
+		CheckSetting("updatesPerSecond");
+		CheckSetting("FPSCap");
+		CheckSetting("vsync");
+
+		if (!success)
+		{
+			return false;
+		}
+
+		return CreateGameWindow(title,
+			config.GetInt("openGL_Major"), config.GetInt("openGL_Minor"),
+			config.GetInt("resolution_x"), config.GetInt("resolution_y"),
+			config.GetBool("fullscreen"), config.GetBool("bordered"), config.GetBool("resizable"),
+			StringToEnum<VSyncMode>(config.GetString("vsync")).value(),
+			config.GetInt("updatesPerSecond"), config.GetInt("FPSCap")
+		);
 	}
 
 	bool ApplicationSingleton::CreateGameWindow(std::string_view title, unsigned _glMajorVersion, unsigned _glMinorVersion)
@@ -509,14 +636,56 @@ namespace gem
 		GPUInfo.ScanDevice();
 		Shader::BuildCommonHeader();
 
-		SetFullscreen(fullscreen);
 		ShowWindow(hwnd, SW_SHOW);
 		SetForegroundWindow(hwnd);
+
+		SetVsync(vsyncMode);
+
+		if (!Primitives.Load())
+		{
+			return false;
+		}
 
 		// Ensure that the deltaTime between frames has been computed.
 		SetUpdatesPerSecond(updatesPerSecond);
 
+		Log("Initialized Window. OpenGL version: " + Application.GetOpenGLVersionString());
 		return true;
+	}
+
+	bool ApplicationSingleton::CreateGameWindow(std::string_view title,
+		unsigned _glMajorVersion, unsigned _glMinorVersion,
+		unsigned width, unsigned height,
+		bool _fullscreen, bool _bordered, bool _resizable,
+		VSyncMode _vsyncMode, int _updatesPerSecond, int _FPSCap)
+	{
+		ASSERT(hwnd == NULL, "A game window is already open.");
+
+		{
+			RECT desktop = {};
+			const bool safeDesktopResolution = GetWindowRect(GetDesktopWindow(), &desktop) == TRUE;
+
+			if (width == 0)
+			{
+				width = safeDesktopResolution ? static_cast<int>(desktop.right) : 1280;
+			}
+
+			if (height == 0)
+			{
+				height = safeDesktopResolution ? static_cast<int>(desktop.bottom) : 720;
+			}
+
+			SetResolution(width, height);
+		}
+
+		SetBordered(_bordered);
+		SetResizable(_resizable);
+		SetFullscreen(_fullscreen);
+		SetUpdatesPerSecond(_updatesPerSecond);
+		SetFPSCap(_FPSCap);
+		vsyncMode = _vsyncMode;
+
+		return CreateGameWindow(title, _glMajorVersion, _glMinorVersion);
 	}
 
 	void ApplicationSingleton::DestroyGameWindow()
@@ -529,6 +698,8 @@ namespace gem
 		UnloadAll<Shader>();
 		UnloadAll<Texture>();
 		UnloadAll<Model>();
+
+		Primitives.Unload();
 
 		if (IsFullscreen())
 		{
@@ -553,11 +724,11 @@ namespace gem
 		hwnd = NULL;
 	}
 
-	void ApplicationSingleton::GameLoop(const std::function<void()>& update, const std::function<void()>& draw)
+	void ApplicationSingleton::GameLoop(void (*updateFunc)(), void (*drawFunc)())
 	{
-		ASSERT(hwnd != NULL, "A window must be created before a calling GameLoop().");
-		ASSERT(update, "An update function must be provided.");
-		ASSERT(draw, "A draw function must be provided.");
+		ASSERT(hwnd != NULL, "A window must be created before a calling " __FUNCTION__ "().");
+		ASSERT(updateFunc, "An update function must be provided.");
+		ASSERT(drawFunc, "A draw function must be provided.");
 
 		// Timing control variables.
 		constexpr unsigned MAX_CONCURRENT_UPDATES = 5;
@@ -573,66 +744,66 @@ namespace gem
 			if (!appIsRunning) [[unlikely]]
 				return;
 
-			// Record the FPS for the previous second of time.
-			int64_t currentTime = Timer::GetCurrentTick();
-			if (currentTime - lastFpsCapture >= Timer::GetTicksPerSecond())
-			{
-				// We don't want to update the timer variable with "+= 1.0" here. After a lag spike this
-				// would cause FPS to suddenly be recorded more often than once a second.
-				lastFpsCapture = currentTime;
+				// Record the FPS for the previous second of time.
+				int64_t currentTime = Timer::GetCurrentTick();
+				if (currentTime - lastFpsCapture >= Timer::GetTicksPerSecond())
+				{
+					// We don't want to update the timer variable with "+= 1.0" here. After a lag spike this
+					// would cause FPS to suddenly be recorded more often than once a second.
+					lastFpsCapture = currentTime;
 
-				fps = fpsCounter;
-				fpsCounter = 0;
-			}
+					fps = fpsCounter;
+					fpsCounter = 0;
+				}
 
-			// Update to keep up with real time.
-			unsigned updateCount = 0;
-			while (currentTime - lastUpdate >= updateStep)
-			{
+				// Update to keep up with real time.
+				unsigned updateCount = 0;
+				while (currentTime - lastUpdate >= updateStep)
+				{
 #if IMGUI_ENABLED
-				ImGui_ImplWin32_NewFrame();
-				ImGui_ImplOpenGL3_NewFrame();
-				ImGui::NewFrame();
-				update();
-				ImGui::EndFrame();
+					ImGui_ImplWin32_NewFrame();
+					ImGui_ImplOpenGL3_NewFrame();
+					ImGui::NewFrame();
+					updateFunc();
+					ImGui::EndFrame();
 #else
-				update();
+					updateFunc();
 #endif
-				// The user might have requested to exit during update().
-				if (!appIsRunning) [[unlikely]]
-					return;
+					// The user might have requested to exit during update().
+					if (!appIsRunning) [[unlikely]]
+						return;
 
-				lastUpdate += updateStep;
-				updateCount++;
+						lastUpdate += updateStep;
+						updateCount++;
 
-				if (skipToPresent) [[unlikely]]
-				{
-					lastUpdate = currentTime;
-					skipToPresent = false;
-					break;
+						if (skipToPresent) [[unlikely]]
+							{
+								lastUpdate = currentTime;
+								skipToPresent = false;
+								break;
+							}
+
+								// Avoid spiral of death. This also allows us to keep rendering even in a worst-case scenario.
+								if (updateCount >= MAX_CONCURRENT_UPDATES)
+									break;
 				}
 
-				// Avoid spiral of death. This also allows us to keep rendering even in a worst-case scenario.
-				if (updateCount >= MAX_CONCURRENT_UPDATES)
-					break;
-			}
-
-			if (updateCount > 0)
-			{
-				// If the frame rate is uncapped or we are due for a new frame, render the latest game-state.
-				if (FPSCap == 0 || (currentTime - lastRender) >= renderStep)
+				if (updateCount > 0)
 				{
-					draw();
+					// If the frame rate is uncapped or we are due for a new frame, render the latest game-state.
+					if (FPSCap == 0 || (currentTime - lastRender) >= renderStep)
+					{
+						drawFunc();
 #if IMGUI_ENABLED
-					ImGui::Render();
-					ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+						ImGui::Render();
+						ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 #endif
-					SwapBuffers(deviceContext);
+						SwapBuffers(deviceContext);
 
-					lastRender += renderStep;
-					fpsCounter++;
+						lastRender += renderStep;
+						fpsCounter++;
+					}
 				}
-			}
 		}
 	}
 
@@ -697,7 +868,7 @@ namespace gem
 
 	std::string ApplicationSingleton::GetOpenGLVersionString() const
 	{
-		ASSERT(hwnd != NULL, "A game window must be created before calling GetOpenGLVersionString().");
+		ASSERT(hwnd != NULL, "A game window must be created before calling " __FUNCTION__ "().");
 
 		return reinterpret_cast<const char*>(glGetString(GL_VERSION));
 	}
@@ -777,7 +948,7 @@ namespace gem
 			return static_cast<unsigned>(devMode.dmDisplayFrequency);
 		}
 
-		Warning("Could not retrieve the system display's refresh rate. Assuming 60hz.");
+		Warning("Could not retrieve the display's refresh rate. Assuming 60hz.");
 		return 60;
 	}
 
@@ -808,6 +979,30 @@ namespace gem
 	const Viewport& ApplicationSingleton::GetScreenViewport() const
 	{
 		return screenViewport;
+	}
+
+	bool ApplicationSingleton::SetVsyncMode(VSyncMode mode)
+	{
+		if (hwnd != NULL)
+		{
+			if (mode == vsyncMode)
+			{
+				return true;
+			}
+
+			if (!SetVsync(mode))
+			{
+				return false;
+			}
+		}
+
+		vsyncMode = mode;
+		return true;
+	}
+
+	VSyncMode ApplicationSingleton::GetVsyncMode() const
+	{
+		return vsyncMode;
 	}
 
 	bool ApplicationSingleton::SetFullscreen(bool state)
@@ -972,3 +1167,11 @@ namespace gem
 		return static_cast<float>(width) / static_cast<float>(height);
 	}
 }
+
+REFLECT(gem::VSyncMode)
+	ENUM_VALUES {
+		REF_VALUE(Off)
+		REF_VALUE(On)
+		REF_VALUE(Adaptive)
+	}
+REF_END;

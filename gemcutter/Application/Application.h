@@ -2,15 +2,32 @@
 #pragma once
 #include "gemcutter/Application/Event.h"
 #include "gemcutter/Rendering/Viewport.h"
+#include "gemcutter/Resource/ConfigTable.h"
 
 #include <cstdint>
-#include <functional>
 #include <string_view>
 
 struct HWND__; typedef HWND__* HWND;
 
 namespace gem
 {
+	enum class VSyncMode
+	{
+		// Frames are sent to display device as soon as they are ready.
+		// Screen tearing can occur but input is most responsive.
+		Off = 0,
+		// Framerate is locked to multiples of the display's refresh rate to eliminate tearing.
+		// Can introduce input lag or stuttering.
+		On = 1,
+		// Vsync is on when the framerate exceeds the display's refresh rate to eliminate tearing.
+		// When the framerate drops, Vsync turns off to eliminate stuttering and input lag.
+		Adaptive = -1
+	};
+
+	// Loads or creates a default settings.cfg file.
+	// The defaults contain the required fields for CreateGameWindow().
+	ConfigTable LoadApplicationConfig();
+
 	// Provides an interface to the operating system and the game window.
 	// The class also responsible for scheduling and executing the game-loop.
 	extern class ApplicationSingleton Application;
@@ -21,20 +38,29 @@ namespace gem
 		ApplicationSingleton() = default;
 		~ApplicationSingleton();
 
+		bool Startup();
+		void Shutdown();
+
+		bool CreateGameWindow(std::string_view title, const ConfigTable& config);
 		bool CreateGameWindow(std::string_view title, unsigned glMajorVersion, unsigned glMinorVersion);
+		bool CreateGameWindow(std::string_view title, unsigned glMajorVersion, unsigned glMinorVersion,
+			unsigned width, unsigned height, 
+			bool fullscreen, bool border, bool resizable,
+			VSyncMode vsyncMode, int updatesPerSecond, int FPSCap
+		);
 		void DestroyGameWindow();
 
 		// Starts the main game-loop.
-		void GameLoop(const std::function<void()>& update, const std::function<void()>& draw);
+		void GameLoop(void (*updateFunc)(), void (*drawFunc)());
+
+		// Marks the program to close at the start of the next game-loop.
+		void Exit();
 
 		// Updates systems provided by the engine.
 		// - Dispatches the event queue.
 		// - Updates all Engine-Side components.
 		// - Steps the Sound System.
 		void UpdateEngine();
-
-		// Marks the program to close at the start of the next game-loop.
-		void Exit();
 
 		// Shows or hides the default system cursor.
 		void ShowCursor(bool visibility);
@@ -79,6 +105,9 @@ namespace gem
 		const Viewport& GetScreenViewport() const;
 		std::string GetOpenGLVersionString() const;
 
+		bool SetVsyncMode(VSyncMode mode);
+		VSyncMode GetVsyncMode() const;
+
 		bool SetFullscreen(bool state);
 		bool SetBordered(bool state);
 		bool SetResizable(bool state);
@@ -96,6 +125,8 @@ namespace gem
 		int64_t updateStep = 0;
 		// The target amount of time between renders.
 		int64_t renderStep = 0;
+
+		VSyncMode vsyncMode = VSyncMode::Adaptive;
 
 		bool skipToPresent = false;
 

@@ -153,19 +153,6 @@ namespace gem
 		Normal
 	};
 
-	enum class VSyncMode
-	{
-		// Frames are sent to display device as soon as they are ready.
-		// Screen tearing can occur but input is most responsive.
-		Off = 0,
-		// Framerate is locked to multiples of the display's refresh rate to eliminate tearing.
-		// Can introduce input lag or stuttering.
-		On = 1,
-		// Vsync is on when the framerate exceeds the display's refresh rate to eliminate tearing.
-		// When the framerate drops, Vsync turns off to eliminate stuttering and input lag.
-		Adaptive = -1
-	};
-
 	// Used internally to convert enum values to OpenGL values.
 	int ResolveVertexFormat(VertexFormat);
 	int ResolveVertexArrayFormat(VertexArrayFormat);
@@ -195,7 +182,6 @@ namespace gem
 	void SetViewport(unsigned x, unsigned y, unsigned width, unsigned height);
 	void SetScissor(unsigned x, unsigned y, unsigned width, unsigned height);
 	void SetScissor(bool enabled);
-	bool SetVSync(VSyncMode mode);
 
 	// Saves a screenshot of the currently bound RenderTarget or the backbuffer.
 	// This is a very slow function and should only be used for debugging or when absolutely necessary.

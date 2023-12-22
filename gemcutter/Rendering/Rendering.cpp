@@ -371,36 +371,6 @@ namespace gem
 		}
 	}
 
-	bool SetVSync(VSyncMode mode)
-	{
-		if (!wglewIsSupported("WGL_EXT_swap_control"))
-		{
-			Error("VSync is not supported on this system.");
-			return false;
-		}
-
-		auto wglSwapIntervalEXT = reinterpret_cast<bool (APIENTRY *)(int)>(wglGetProcAddress("wglSwapIntervalEXT"));
-		if (!wglSwapIntervalEXT)
-		{
-			Error("Could not retrieve \"wglSwapIntervalEXT\" function.");
-			return false;
-		}
-
-		if (mode == VSyncMode::Adaptive && !wglewIsSupported("WGL_EXT_swap_control_tear"))
-		{
-			Error("Adaptive VSync is not supported on this system. VSync mode left unchanged.");
-			return false;
-		}
-
-		bool result = wglSwapIntervalEXT(static_cast<int>(mode));
-		if (!result)
-		{
-			Error("Failed to change VSync mode.");
-		}
-
-		return result;
-	}
-
 	bool SaveScreenshot(std::string_view filePath, unsigned x, unsigned y, unsigned width, unsigned height)
 	{
 		ASSERT(!filePath.empty(), "Must provide a valid path and filename.");
@@ -593,13 +563,5 @@ REFLECT(gem::DepthFunc)
 		REF_VALUE(WriteOnly)
 		REF_VALUE(TestOnly)
 		REF_VALUE(Normal)
-	}
-REF_END;
-
-REFLECT(gem::VSyncMode)
-	ENUM_VALUES {
-		REF_VALUE(Off)
-		REF_VALUE(On)
-		REF_VALUE(Adaptive)
 	}
 REF_END;
