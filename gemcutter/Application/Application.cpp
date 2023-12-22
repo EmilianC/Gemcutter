@@ -521,7 +521,8 @@ namespace gem
 
 	void ApplicationSingleton::DestroyGameWindow()
 	{
-		ASSERT(hwnd != NULL, "A game window must be created before calling this function.");
+		if (hwnd == NULL)
+			return;
 
 		// Delete all resources that require the OpenGL context.
 		UnloadAll<Font>();
