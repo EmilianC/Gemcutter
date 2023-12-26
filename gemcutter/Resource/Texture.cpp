@@ -455,7 +455,7 @@ namespace gem
 		unsigned char* data = SOIL_load_image(file.data(), &width, &height, &numChannels, SOIL_LOAD_AUTO);
 		if (data == nullptr)
 		{
-			Error("Texture: ( %s )\n%s", file.data(), SOIL_last_result());
+			Error("RawImage: ( %s )\n%s", file.data(), SOIL_last_result());
 			return { 0, 0, TextureFormat::RGB_8, nullptr };
 		}
 
@@ -475,7 +475,7 @@ namespace gem
 		}
 		else
 		{
-			Error("Texture: ( %s )\nUnsupported format. Must have 3 or 4 color channels.", file.data());
+			Error("RawImage: ( %s )\nUnsupported format. Must have 3 or 4 color channels.", file.data());
 			return { 0, 0, TextureFormat::RGB_8, nullptr };
 		}
 	}
