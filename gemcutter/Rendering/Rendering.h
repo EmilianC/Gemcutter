@@ -194,15 +194,19 @@ namespace gem
 	public:
 		unsigned GetMaxTextureSlots() const;
 		unsigned GetMaxUniformBufferSlots() const;
-		unsigned GetMaxRenderTargetTextures() const;
+		unsigned GetMaxColorAttachments() const;
 		unsigned GetMaxDrawBuffers() const;
+		unsigned GetMaxTextureSize() const;
+		unsigned GetMaxCubeMapSize() const;
 
 	private:
 		void ScanDevice();
 
 		unsigned maxTextureSlots = 0;
 		unsigned maxUniformBufferSlots = 0;
-		unsigned maxRenderTargetTextures = 0;
+		unsigned maxColorAttachments = 0;
 		unsigned maxDrawBuffers = 0;
+		unsigned maxTextureSize = 0;
+		unsigned maxCubeMapSize = 0;
 	};
 }

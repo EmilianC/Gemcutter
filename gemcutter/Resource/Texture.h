@@ -15,11 +15,10 @@ namespace gem
 	public:
 		static constexpr std::string_view Extension = ".texture";
 
-		Texture() = default;
 		~Texture();
 
-		// Creates an empty texture for render targets or custom data.
-		void Create(
+		// Creates an empty 2D texture for render targets or custom data.
+		bool Create(
 			unsigned width, unsigned height,
 			TextureFormat format,
 			TextureFilter filter = TextureFilter::Point,

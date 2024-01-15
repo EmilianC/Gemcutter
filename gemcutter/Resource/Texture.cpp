@@ -1,6 +1,7 @@
 // Copyright (c) 2017 Emilian Cioca
 #include "Texture.h"
 #include "gemcutter/Application/Logging.h"
+#include "gemcutter/Rendering/Rendering.h"
 #include "gemcutter/Utilities/ScopeGuard.h"
 
 #include <algorithm>
@@ -14,11 +15,20 @@ namespace gem
 		Unload();
 	}
 
-	void Texture::Create(unsigned _width, unsigned _height, TextureFormat _format, TextureFilter _filter, TextureWraps _wraps, float _anisotropicLevel, unsigned _numSamples)
+	bool Texture::Create(unsigned _width, unsigned _height, TextureFormat _format, TextureFilter _filter, TextureWraps _wraps, float _anisotropicLevel, unsigned _numSamples)
 	{
 		ASSERT(hTex == 0, "Texture already has a texture loaded.");
 		ASSERT(_anisotropicLevel >= 1.0f && _anisotropicLevel <= 16.0f, "'anisotropicLevel' must be in the range of [1, 16].");
 		ASSERT(_numSamples == 1 || _numSamples == 2 || _numSamples == 4 || _numSamples == 8 || _numSamples == 16, "'numSamples' must be a power of 2 between 1 and 16.");
+
+		if (_width > GPUInfo.GetMaxTextureSize() ||
+			_height > GPUInfo.GetMaxTextureSize())
+		{
+			Error("Texture: The requested texture size (%dx%d) is not supported. The maximum is (%dx%d).",
+				_width, _height, GPUInfo.GetMaxTextureSize(), GPUInfo.GetMaxTextureSize());
+
+			return false;
+		}
 
 		width = static_cast<int>(_width);
 		height = static_cast<int>(_height);
@@ -59,6 +69,7 @@ namespace gem
 		}
 
 		glBindTexture(target, GL_NONE);
+		return true;
 	}
 
 	void Texture::SetData(const unsigned char* data, TextureFormat sourceFormat)
@@ -82,7 +93,6 @@ namespace gem
 		ASSERT(hTex == 0, "Texture already has a texture loaded.");
 
 		unsigned numLevels = 0;
-
 		if (filePath.ends_with(Texture::Extension))
 		{
 			FILE* textureFile = fopen(filePath.data(), "rb");
@@ -95,9 +105,23 @@ namespace gem
 
 			// Read header.
 			bool isCubeMap = false;
+			int _width = 0;
+			int _height = 0;
 			fread(&isCubeMap, sizeof(bool), 1, textureFile);
-			fread(&width, sizeof(unsigned), 1, textureFile);
-			fread(&height, sizeof(unsigned), 1, textureFile);
+			fread(&_width, sizeof(unsigned), 1, textureFile);
+			fread(&_height, sizeof(unsigned), 1, textureFile);
+
+			const int maxSize = isCubeMap ? GPUInfo.GetMaxCubeMapSize() : GPUInfo.GetMaxTextureSize();
+			if (_width > maxSize || _height > maxSize)
+			{
+				Error("Texture: The requested texture size (%dx%d) is not supported. The maximum is (%dx%d).",
+					_width, _height, maxSize, maxSize);
+
+				return false;
+			}
+
+			width = _width;
+			height = _height;
 			fread(&format, sizeof(TextureFormat), 1, textureFile);
 			fread(&filter, sizeof(TextureFilter), 1, textureFile);
 			fread(&wraps.x, sizeof(TextureWrap), 1, textureFile);
@@ -160,6 +184,15 @@ namespace gem
 			if (image.data == nullptr)
 				return false;
 
+			const int maxSize = GPUInfo.GetMaxTextureSize();
+			if (image.width > maxSize || image.height > maxSize)
+			{
+				Error("Texture: The requested texture size (%dx%d) is not supported. The maximum is (%dx%d).",
+					image.width, image.height, maxSize, maxSize);
+
+				return false;
+			}
+
 			width = image.width;
 			height = image.height;
 			format = image.format;
@@ -185,7 +218,6 @@ namespace gem
 		}
 
 		glBindTexture(target, GL_NONE);
-
 		return true;
 	}
 

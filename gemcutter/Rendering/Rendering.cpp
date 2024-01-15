@@ -398,8 +398,10 @@ namespace gem
 	{
 		glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, reinterpret_cast<int*>(&maxTextureSlots));
 		glGetIntegerv(GL_MAX_UNIFORM_BUFFER_BINDINGS, reinterpret_cast<int*>(&maxUniformBufferSlots));
-		glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS, reinterpret_cast<int*>(&maxRenderTargetTextures));
+		glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS, reinterpret_cast<int*>(&maxColorAttachments));
 		glGetIntegerv(GL_MAX_DRAW_BUFFERS, reinterpret_cast<int*>(&maxDrawBuffers));
+		glGetIntegerv(GL_MAX_TEXTURE_SIZE, reinterpret_cast<int*>(&maxTextureSize));
+		glGetIntegerv(GL_MAX_CUBE_MAP_TEXTURE_SIZE, reinterpret_cast<int*>(&maxCubeMapSize));
 	}
 
 	unsigned GPUInfoSingleton::GetMaxTextureSlots() const
@@ -412,14 +414,24 @@ namespace gem
 		return maxUniformBufferSlots;
 	}
 
-	unsigned GPUInfoSingleton::GetMaxRenderTargetTextures() const
+	unsigned GPUInfoSingleton::GetMaxColorAttachments() const
 	{
-		return maxRenderTargetTextures;
+		return maxColorAttachments;
 	}
 
 	unsigned GPUInfoSingleton::GetMaxDrawBuffers() const
 	{
 		return maxDrawBuffers;
+	}
+
+	unsigned GPUInfoSingleton::GetMaxTextureSize() const
+	{
+		return maxTextureSize;
+	}
+
+	unsigned GPUInfoSingleton::GetMaxCubeMapSize() const
+	{
+		return maxCubeMapSize;
 	}
 }
 

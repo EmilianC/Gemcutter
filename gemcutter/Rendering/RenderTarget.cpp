@@ -58,7 +58,7 @@ namespace gem
 		// First time setup.
 		if (!drawBuffers)
 		{
-			unsigned maxTextureAttachments = GPUInfo.GetMaxRenderTargetTextures();
+			unsigned maxTextureAttachments = GPUInfo.GetMaxColorAttachments();
 			drawBuffers = static_cast<GLenum*>(malloc(sizeof(GLenum) * maxTextureAttachments));
 
 			for (unsigned i = 0; i < maxTextureAttachments; ++i)
@@ -89,7 +89,7 @@ namespace gem
 
 		if (numColorTextures > 0)
 		{
-			if (numColorTextures > GPUInfo.GetMaxRenderTargetTextures() ||
+			if (numColorTextures > GPUInfo.GetMaxColorAttachments() ||
 				numColorTextures > GPUInfo.GetMaxDrawBuffers())
 			{
 				Error("RenderTarget: Number of color textures exceeds amount supported by the OpenGL drivers.");
