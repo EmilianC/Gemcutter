@@ -2,7 +2,9 @@
 #include "RenderTarget.h"
 #include "gemcutter/Application/Application.h"
 #include "gemcutter/Application/Logging.h"
+#include "gemcutter/Math/Math.h"
 #include "gemcutter/Math/Vector.h"
+#include "gemcutter/Rendering/Rendering.h"
 #include "gemcutter/Resource/Texture.h"
 #include "gemcutter/Utilities/ScopeGuard.h"
 
@@ -42,72 +44,119 @@ namespace
 
 namespace gem
 {
-	RenderTarget::RenderTarget(unsigned _width, unsigned _height, unsigned _numColorTextures, bool hasDepth, unsigned _numSamples)
-		: FBO(GL_NONE)
-		, numColorTextures(_numColorTextures)
-		, numSamples(_numSamples)
-		, width(_width)
-		, height(_height)
+	RenderTarget::~RenderTarget()
 	{
-		ASSERT(width != 0, "'width' must be greater than 0.");
-		ASSERT(height != 0, "'height' must be greater than 0.");
-		ASSERT(numSamples == 1 || numSamples == 2 || numSamples == 4 || numSamples == 8 || numSamples == 16,
+		Unload();
+	}
+
+	bool RenderTarget::Init(unsigned _width, unsigned _height, unsigned _numColorTextures, bool hasDepth, unsigned _numSamples)
+	{
+		ASSERT(_width != 0, "'width' must be greater than 0.");
+		ASSERT(_height != 0, "'height' must be greater than 0.");
+		ASSERT(_numSamples == 1 || _numSamples == 2 || _numSamples == 4 || _numSamples == 8 || _numSamples == 16,
 			"'numSamples' must be 1, 2, 4, 8, or 16.");
 		ASSERT(_numColorTextures > 0 || hasDepth, "A RenderTarget cannot be made without any textures.");
 
-		// First time setup.
-		if (!drawBuffers)
+		if (_numColorTextures > GPUInfo.GetMaxColorAttachments() || _numColorTextures > GPUInfo.GetMaxDrawBuffers())
 		{
-			unsigned maxTextureAttachments = GPUInfo.GetMaxColorAttachments();
-			drawBuffers = static_cast<GLenum*>(malloc(sizeof(GLenum) * maxTextureAttachments));
+			Error("RenderTarget: The requested number of color attachments is (%d). The maximum supported is (%d).",
+				_numColorTextures, Min(GPUInfo.GetMaxColorAttachments(), GPUInfo.GetMaxDrawBuffers()));
 
-			for (unsigned i = 0; i < maxTextureAttachments; ++i)
-			{
-				drawBuffers[i] = GL_COLOR_ATTACHMENT0 + i;
-			}
+			return false;
 		}
-
-		glGenFramebuffers(1, &FBO);
-		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
-		defer { glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE); };
 
 		if (hasDepth)
 		{
 			depth = Texture::MakeNew();
-			depth->Create(
-				width, height,
+			if (!depth->Create(
+				_width, _height,
 				TextureFormat::DEPTH_24, TextureFilter::Point,
-				TextureWrap::Clamp, 1.0f, numSamples);
+				TextureWrap::Clamp, 1.0f, _numSamples))
+			{
+				return false;
+			}
+		}
 
+		numColorTextures = _numColorTextures;
+		numSamples = _numSamples;
+		width = _width;
+		height = _height;
+
+		if (numColorTextures > 0)
+		{
+			colors = new Texture::Ptr[numColorTextures];
+		}
+
+		glGenFramebuffers(1, &FBO);
+		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+
+		if (hasDepth)
+		{
 			glFramebufferTexture2D(
 				GL_FRAMEBUFFER,
 				GL_DEPTH_ATTACHMENT,
 				IsMultisampled() ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D,
 				depth->GetHandle(),
-				0);
-		}
-
-		if (numColorTextures > 0)
-		{
-			if (numColorTextures > GPUInfo.GetMaxColorAttachments() ||
-				numColorTextures > GPUInfo.GetMaxDrawBuffers())
-			{
-				Error("RenderTarget: Number of color textures exceeds amount supported by the OpenGL drivers.");
-				return;
-			}
-
-			colors = new Texture::Ptr[numColorTextures];
+				0
+			);
 		}
 
 		// Set any color textures as write-able targets.
 		glDrawBuffers(numColorTextures, drawBuffers);
+		glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
+
+		return true;
 	}
 
-	RenderTarget::~RenderTarget()
+	bool RenderTarget::InitTexture(unsigned index, TextureFormat format, TextureFilter filter)
 	{
-		delete[] colors;
+		ASSERT(numColorTextures > 0, "RenderTarget does not have any color textures to initialize.");
+		ASSERT(index < numColorTextures, "'index' must specify a valid color texture.");
+		ASSERT(format != TextureFormat::DEPTH_24, "'format' cannot be DEPTH_24 for a color texture.");
+		ASSERT(!colors[index], "'index' is already initialized.");
 
-		glDeleteFramebuffers(1, &FBO);
+		colors[index] = Texture::MakeNew();
+		if (!colors[index]->Create(width, height, format, filter, TextureWrap::Clamp, 1.0f, numSamples))
+			return false;
+
+		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+
+		glFramebufferTexture2D(
+			GL_FRAMEBUFFER,
+			GL_COLOR_ATTACHMENT0 + index,
+			IsMultisampled() ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D,
+			colors[index]->GetHandle(),
+			0
+		);
+
+		glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
+		return true;
+	}
+
+	bool RenderTarget::Validate() const
+	{
+		if (FBO == GL_NONE)
+			return false;
+
+		if (numColorTextures > 0)
+		{
+			if (std::any_of(colors, colors + numColorTextures, [](const Texture::Ptr& Ptr) { return Ptr == nullptr; }))
+			{
+				Error("RenderTarget: One or more color attachments were not initialized.");
+				return false;
+			}
+		}
+
+		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+		defer { glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE); };
+
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		{
+			Error("RenderTarget: Failed to validate with the provided parameters.");
+			return false;
+		}
+
+		return true;
 	}
 
 	RenderTarget::Ptr RenderTarget::MakeResolve() const
@@ -115,7 +164,8 @@ namespace gem
 		ASSERT(IsMultisampled(), "Must be multisampled to create a resolve RenderTarget.");
 
 		// Mirror all textures, but with just one sample.
-		RenderTarget::Ptr resolve = RenderTarget::MakeNew(width, height, numColorTextures, HasDepth(), 1);
+		RenderTarget::Ptr resolve = RenderTarget::MakeNew();
+		resolve->Init(width, height, numColorTextures, HasDepth(), 1);
 
 		for (unsigned i = 0; i < numColorTextures; ++i)
 		{
@@ -130,40 +180,18 @@ namespace gem
 		return resolve;
 	}
 
-	void RenderTarget::InitTexture(unsigned index, TextureFormat format, TextureFilter filter)
+	void RenderTarget::Unload()
 	{
-		ASSERT(numColorTextures > 0, "RenderTarget does not have any color textures to initialize.");
-		ASSERT(index < numColorTextures, "'index' must specify a valid color texture.");
-		ASSERT(format != TextureFormat::DEPTH_24, "'format' cannot be DEPTH_24 for a color texture.");
-		ASSERT(!colors[index], "'index' is already initialized.");
+		depth.reset();
+		delete[] colors;
+		glDeleteFramebuffers(1, &FBO);
 
-		colors[index] = Texture::MakeNew();
-		colors[index]->Create(width, height, format, filter, TextureWrap::Clamp, 1.0f, numSamples);
-
-		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
-
-		glFramebufferTexture2D(
-			GL_FRAMEBUFFER,
-			GL_COLOR_ATTACHMENT0 + index,
-			IsMultisampled() ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D,
-			colors[index]->GetHandle(),
-			0);
-
-		glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
-	}
-
-	bool RenderTarget::Validate() const
-	{
-		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
-		defer { glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE); };
-
-		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-		{
-			Error("RenderTarget: Failed to validate with the provided parameters.");
-			return false;
-		}
-
-		return true;
+		colors = nullptr;
+		FBO = GL_NONE;
+		numColorTextures = 0;
+		numSamples = 0;
+		width = 0;
+		height = 0;
 	}
 
 	void RenderTarget::AttachDepthTexture(Texture::Ptr texture)
@@ -335,17 +363,21 @@ namespace gem
 		if (depth)
 		{
 			depth->Unload();
-			depth->Create(
+			if (!depth->Create(
 				newWidth, newHeight,
 				TextureFormat::DEPTH_24, TextureFilter::Point,
-				TextureWrap::Clamp, 1.0f, numSamples);
+				TextureWrap::Clamp, 1.0f, numSamples))
+			{
+				return false;
+			}
 
 			glFramebufferTexture2D(
 				GL_FRAMEBUFFER,
 				GL_DEPTH_ATTACHMENT,
 				IsMultisampled() ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D,
 				depth->GetHandle(),
-				0);
+				0
+			);
 		}
 
 		for (unsigned i = 0; i < numColorTextures; ++i)
@@ -355,16 +387,20 @@ namespace gem
 			const TextureFilter oldFilter = colors[i]->GetFilter();
 			const TextureWraps oldWrap = colors[i]->GetWrap();
 			const float oldAnisotropicLevel = colors[i]->GetAnisotropicLevel();
-			colors[i]->Unload();
 
-			colors[i]->Create(newWidth, newHeight, oldFormat, oldFilter, oldWrap, oldAnisotropicLevel, numSamples);
+			colors[i]->Unload();
+			if (!colors[i]->Create(newWidth, newHeight, oldFormat, oldFilter, oldWrap, oldAnisotropicLevel, numSamples))
+			{
+				return false;
+			}
 
 			glFramebufferTexture2D(
 				GL_FRAMEBUFFER,
 				GL_COLOR_ATTACHMENT0 + i,
 				IsMultisampled() ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D,
 				colors[i]->GetHandle(),
-				0);
+				0
+			);
 		}
 
 		// Validate will also unbind the buffer for us.
@@ -579,5 +615,16 @@ namespace gem
 	unsigned RenderTarget::GetHeight() const
 	{
 		return height;
+	}
+
+	void RenderTarget::InitDrawFlags()
+	{
+		const unsigned maxDrawBuffers = GPUInfo.GetMaxDrawBuffers();
+		drawBuffers = static_cast<GLenum*>(malloc(sizeof(GLenum) * maxDrawBuffers));
+
+		for (unsigned i = 0; i < maxDrawBuffers; ++i)
+		{
+			drawBuffers[i] = GL_COLOR_ATTACHMENT0 + i;
+		}
 	}
 }

@@ -10,6 +10,7 @@
 #include "gemcutter/Rendering/ParticleEmitter.h"
 #include "gemcutter/Rendering/Primitives.h"
 #include "gemcutter/Rendering/Rendering.h"
+#include "gemcutter/Rendering/RenderTarget.h"
 #include "gemcutter/Resource/Font.h"
 #include "gemcutter/Resource/Model.h"
 #include "gemcutter/Resource/Shader.h"
@@ -635,6 +636,7 @@ namespace gem
 
 		GPUInfo.ScanDevice();
 		Shader::BuildCommonHeader();
+		RenderTarget::InitDrawFlags();
 
 		ShowWindow(hwnd, SW_SHOW);
 		SetForegroundWindow(hwnd);

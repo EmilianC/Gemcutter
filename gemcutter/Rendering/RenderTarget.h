@@ -8,25 +8,42 @@ namespace gem
 	struct vec4;
 	struct Viewport;
 
-	// Contains a series of textures that can be rendered into.
+	// Contains a series of textures that can be rendered onto.
+	// The initialization process is:
+	// {
+	//    renderTarget = RenderTarget::MakeNew();
+	//    renderTarget->Init(width, height, numColorTextures, hasDepth);
+	//
+	//    renderTarget->InitTexture(0, format0, filter0);
+	//    renderTarget->InitTexture(1, format1, filter1);
+	//    // ... once for each color texture requested.
+	//
+	//    bool success = renderTarget->Validate();
+	// }
+	// Although each intermediate function returns a bool state, it is safe to
+	// reduce code bloat and simply check the final state returned by Validate().
 	class RenderTarget : public Shareable<RenderTarget>
 	{
-		friend ShareableAlloc;
+	public:
+		RenderTarget() = default;
 		~RenderTarget();
 
-	public:
 		RenderTarget(const RenderTarget&) = delete;
+		RenderTarget(RenderTarget&&) = delete;
 		RenderTarget& operator=(const RenderTarget&) = delete;
+		RenderTarget& operator=(RenderTarget&&) = delete;
 
-		RenderTarget(unsigned width, unsigned height, unsigned numColorTextures, bool hasDepth, unsigned numSamples = 1);
+		// Needs to be called first to set the initial state, including the expected number of color textures.
+		bool Init(unsigned width, unsigned height, unsigned numColorTextures, bool hasDepth, unsigned numSamples = 1);
 		// Allocates and initializes the texture slot specified by index. Must be called on each slot before use.
-		void InitTexture(unsigned index, TextureFormat format, TextureFilter filter);
+		bool InitTexture(unsigned index, TextureFormat format, TextureFilter filter);
+		// Should be called after all initialization is done to ensure the RenderTarget was created successfully.
+		bool Validate() const;
 
 		// Creates a non multisampled version of this RenderTarget to be used with the ResolveMultisampling() functions.
 		RenderTarget::Ptr MakeResolve() const;
 
-		// Should be called once after all texture slots are created. Returns true if the RenderTarget was created successfully.
-		bool Validate() const;
+		void Unload();
 
 		// Attach an existing texture.
 		void AttachDepthTexture(Texture::Ptr texture);
@@ -49,8 +66,7 @@ namespace gem
 		static void UnBind();
 
 		// Copies the internal multisampled textures to the target while also consolidating the samples.
-		// This must be done because multisample textures cannot be used directly.
-		// target should be a RenderTarget created with MakeResolve().
+		// Target should be a RenderTarget created previously with MakeResolve().
 		void ResolveMultisampling(const RenderTarget& target) const;
 		void ResolveMultisamplingDepth(const RenderTarget& target) const;
 		void ResolveMultisamplingColor(const RenderTarget& target) const;
@@ -65,7 +81,7 @@ namespace gem
 		void CopyColorToBackBuffer(unsigned index) const;
 
 		// Retrieves a pixel from the specified color buffer.
-		// * This is not recommended for real-time use because it is very expensive *
+		// * This is very expensive and not recommended for real-time use *
 		void ReadPixel(unsigned index, int x, int y, unsigned char& outR, unsigned char& outG, unsigned char& outB, unsigned char& outA) const;
 		void ReadPixel(unsigned index, int x, int y, unsigned short& outR, unsigned short& outG, unsigned short& outB, unsigned short& outA) const;
 		void ReadPixel(unsigned index, int x, int y, unsigned& outR, unsigned& outG, unsigned& outB, unsigned& outA) const;
@@ -85,11 +101,14 @@ namespace gem
 		unsigned GetHeight() const;
 
 	private:
-		unsigned FBO;
-		unsigned numColorTextures;
-		unsigned numSamples;
-		unsigned width;
-		unsigned height;
+		friend class ApplicationSingleton; // For InitDrawFlags().
+		static void InitDrawFlags();
+
+		unsigned FBO = 0;
+		unsigned numColorTextures = 0;
+		unsigned numSamples = 0;
+		unsigned width = 0;
+		unsigned height = 0;
 
 		Texture::Ptr depth;
 		Texture::Ptr* colors = nullptr;
