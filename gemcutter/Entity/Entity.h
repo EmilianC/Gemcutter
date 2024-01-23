@@ -8,6 +8,7 @@
 #include "gemcutter/Utilities/Identifier.h"
 #include "gemcutter/Utilities/Meta.h"
 
+#include <span>
 #include <tuple>
 #include <unordered_map>
 #include <vector>
@@ -128,6 +129,10 @@ namespace gem
 		// Attempt to fetch a component. Returns null if component does not exist.
 		template<class T> const T* Try() const;
 		template<class T>       T* Try();
+
+		// Returns all the components on the Entity, regardless of whether or not they are enabled.
+		std::span<const ComponentBase* const> GetAllComponents() const;
+		std::span<      ComponentBase* const> GetAllComponents();
 
 		// Removes the instance of the specified component from this Entity if one exists.
 		template<class T>

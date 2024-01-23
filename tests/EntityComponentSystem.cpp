@@ -154,6 +154,22 @@ TEST_CASE("Entity-Component-System")
 		CHECK(derived.IsEnabled());
 	}
 
+	SECTION("Getting Components")
+	{
+		auto ent = Entity::MakeNew();
+		auto [comp1, derivedA, derivedC] = ent->Add<Comp1, DerivedA, DerivedC>();
+
+		std::span span = ent->GetAllComponents();
+		REQUIRE(span.size() == 3);
+		CHECK(Contains(span, &derivedC));
+		CHECK(Contains(span, &derivedA));
+		CHECK(Contains(span, &comp1));
+
+		ent->RemoveAllComponents();
+		span = ent->GetAllComponents();
+		CHECK(span.empty());
+	}
+
 	SECTION("Try getting Components")
 	{
 		auto ent = Entity::MakeNew();

@@ -151,6 +151,16 @@ namespace gem
 		LookAt(position, targetPos, up);
 	}
 
+	std::span<const ComponentBase* const> Entity::GetAllComponents() const
+	{
+		return components;
+	}
+
+	std::span<ComponentBase* const> Entity::GetAllComponents()
+	{
+		return components;
+	}
+
 	void Entity::RemoveAllComponents()
 	{
 		if (isEnabled)
