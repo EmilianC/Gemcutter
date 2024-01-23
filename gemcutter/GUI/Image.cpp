@@ -47,7 +47,7 @@ namespace gem
 
 	Texture::Ptr Image::GetTexture() const
 	{
-		const std::vector<TextureSlot>& textureSlots = sprite->GetMaterial().textures.GetAll();
+		std::span textureSlots = sprite->GetMaterial().textures.GetAll();
 
 		return textureSlots.empty() ? nullptr : textureSlots[0].tex;
 	}

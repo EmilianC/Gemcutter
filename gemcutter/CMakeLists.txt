@@ -196,6 +196,7 @@ if (ENABLE_PCH)
 			<memory>
 			<numeric>
 			<optional>
+			<span>
 			<string_view>
 			<string>
 			<type_traits>

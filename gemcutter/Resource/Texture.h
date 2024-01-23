@@ -4,6 +4,7 @@
 #include "gemcutter/Resource/Resource.h"
 #include "gemcutter/Resource/Shareable.h"
 
+#include <span>
 #include <string_view>
 #include <vector>
 
@@ -106,7 +107,7 @@ namespace gem
 		// Returns the buffer bound at the specified unit.
 		Texture& operator[](unsigned unit);
 
-		const auto& GetAll() const { return textureSlots; }
+		std::span<const TextureSlot> GetAll() const { return textureSlots; }
 
 	private:
 		std::vector<TextureSlot> textureSlots;

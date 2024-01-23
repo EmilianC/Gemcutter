@@ -1210,12 +1210,12 @@ namespace gem
 		buffers.UnBind();
 	}
 
-	const std::vector<TextureBinding>& Shader::GetTextureBindings() const
+	std::span<const TextureBinding> Shader::GetTextureBindings() const
 	{
 		return textureBindings;
 	}
 
-	const std::vector<BufferBinding>& Shader::GetBufferBindings() const
+	std::span<const BufferBinding> Shader::GetBufferBindings() const
 	{
 		return bufferBindings;
 	}

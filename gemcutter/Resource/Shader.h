@@ -5,6 +5,7 @@
 #include "gemcutter/Resource/Texture.h"
 #include "gemcutter/Resource/UniformBuffer.h"
 
+#include <span>
 #include <string_view>
 #include <unordered_map>
 #include <vector>
@@ -125,8 +126,8 @@ namespace gem
 		// These buffers will be bound whenever the shader is used in rendering.
 		BufferList buffers;
 
-		const std::vector<TextureBinding>& GetTextureBindings() const;
-		const std::vector<BufferBinding>& GetBufferBindings() const;
+		std::span<const TextureBinding> GetTextureBindings() const;
+		std::span<const BufferBinding> GetBufferBindings() const;
 
 	private:
 		// Holds one compiled shader variation.

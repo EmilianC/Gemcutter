@@ -6,6 +6,7 @@
 #include "gemcutter/Resource/Shareable.h"
 #include "gemcutter/Utilities/StdExt.h"
 
+#include <span>
 #include <string_view>
 #include <string>
 #include <unordered_map>
@@ -91,7 +92,7 @@ namespace gem
 		// Returns the buffer bound at the specified unit.
 		UniformBuffer& operator[](unsigned unit);
 
-		const auto& GetAll() const { return buffers; }
+		std::span<const BufferSlot> GetAll() const { return buffers; }
 
 	private:
 		std::vector<BufferSlot> buffers;
