@@ -197,17 +197,7 @@ namespace gem
 		static_assert(std::is_base_of_v<ComponentBase, T>, "Template argument must inherit from Component.");
 		static_assert(!std::is_base_of_v<TagBase, T>, "Tags cannot be enabled or disabled. Add or remove them instead.");
 
-		auto& comp = Get<T>();
-
-		// The component state changes either way, but it only gets indexed if the Entity is also enabled.
-		const bool wasCompEnabled = comp.isEnabled;
-		comp.isEnabled = true;
-
-		if (this->isEnabled && !wasCompEnabled)
-		{
-			IndexWithBases(comp);
-			static_cast<ComponentBase&>(comp).OnEnable();
-		}
+		Enable(Get<T>());
 	}
 
 	template<class T>
@@ -216,17 +206,7 @@ namespace gem
 		static_assert(std::is_base_of_v<ComponentBase, T>, "Template argument must inherit from Component.");
 		static_assert(!std::is_base_of_v<TagBase, T>, "Tags cannot be enabled or disabled. Add or remove them instead.");
 
-		auto& comp = Get<T>();
-
-		// The component state changes either way, but it only gets removed if the Entity is also enabled.
-		const bool wasCompEnabled = comp.isEnabled;
-		comp.isEnabled = false;
-
-		if (this->isEnabled && wasCompEnabled)
-		{
-			UnindexWithBases(comp);
-			static_cast<ComponentBase&>(comp).OnDisable();
-		}
+		Disable(Get<T>());
 	}
 
 	template<class T>

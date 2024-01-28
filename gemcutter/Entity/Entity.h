@@ -169,10 +169,12 @@ namespace gem
 		// Enables the specific component. It will be made visible to queries if this Entity is also enabled.
 		template<class T>
 		void Enable();
+		void Enable(ComponentBase&);
 
 		// Disables the specific component. It will no longer be visible to queries.
 		template<class T>
 		void Disable();
+		void Disable(ComponentBase&);
 
 		// Whether or not this Entity is visible to queries.
 		bool IsEnabled() const;

@@ -260,6 +260,32 @@ namespace gem
 		}
 	}
 
+	void Entity::Enable(ComponentBase& comp)
+	{
+		// The component state changes either way, but it only gets indexed if the Entity is also enabled.
+		const bool wasCompEnabled = comp.isEnabled;
+		comp.isEnabled = true;
+
+		if (this->isEnabled && !wasCompEnabled)
+		{
+			IndexWithBases(comp);
+			comp.OnEnable();
+		}
+	}
+
+	void Entity::Disable(ComponentBase& comp)
+	{
+		// The component state changes either way, but it only gets removed if the Entity is also enabled.
+		const bool wasCompEnabled = comp.isEnabled;
+		comp.isEnabled = false;
+
+		if (this->isEnabled && wasCompEnabled)
+		{
+			UnindexWithBases(comp);
+			comp.OnDisable();
+		}
+	}
+
 	bool Entity::IsEnabled() const
 	{
 		return isEnabled;
