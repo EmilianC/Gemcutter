@@ -336,7 +336,7 @@ TEST_CASE("Entity-Component-System")
 			ent1->Disable();
 			ent2->Disable<Comp2>();
 			ent3->Disable();
-			ent4->Disable<DerivedB>();
+			ent4->Disable<Base>();
 
 			CHECK_FALSE(derivedA.onEnableCalled);
 			CHECK_FALSE(derivedB.onEnableCalled);
