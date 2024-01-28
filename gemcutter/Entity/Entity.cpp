@@ -181,7 +181,8 @@ namespace gem
 			auto* comp = components.back();
 			components.pop_back();
 
-			delete comp;
+			comp->~ComponentBase();
+			_aligned_free(comp);
 		}
 	}
 

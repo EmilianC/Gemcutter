@@ -54,7 +54,9 @@ namespace gem
 		static_assert(!std::is_base_of_v<TagBase, T>, "Template argument cannot be a Tag.");
 		ASSERT(!Has<typename T::StaticComponentType>(), "The Component (or one sharing a hierarchy) already exists on this entity.");
 
-		auto* newComponent = new T(*this, std::forward<Args>(constructorParams)...);
+		T* newComponent = static_cast<T*>(_aligned_malloc(sizeof(T), alignof(T)));
+		new (newComponent) T(*this, std::forward<Args>(constructorParams)...);
+
 		components.push_back(newComponent);
 		newComponent->typeId = &ReflectType<T>();
 
@@ -121,7 +123,8 @@ namespace gem
 						UnindexWithBases(*comp);
 					}
 
-					delete comp;
+					static_cast<T*>(comp)->~T();
+					_aligned_free(comp);
 				}
 				return;
 			}
