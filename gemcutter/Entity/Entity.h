@@ -29,7 +29,7 @@ namespace gem
 		// Returns true if the component and its owner are both enabled and visible to queries.
 		// Disabled components are still retrievable through entity.Get<>() or entity.Try<>().
 		bool IsEnabled() const;
-		// Returns true if the component itself is enabled, regardless of the owner's state.
+		// Returns true if the component itself is enabled, regardless of the owning Entity's state.
 		bool IsComponentEnabled() const;
 
 		// Returns the full type information reflected for the component.
@@ -106,19 +106,19 @@ namespace gem
 		Entity& operator=(const Entity&) = delete;
 		~Entity();
 
-		// Returns a pointer to the new Component.
+		// Returns a reference to the new component.
 		template<class T, typename... Args>
 		T& Add(Args&&... constructorParams);
 
-		// Returns new specified Components, default constructed.
+		// Returns the new specified components, default constructed.
 		template<class T1, class T2, typename... Tx>
 		std::tuple<T1&, T2&, Tx&...> Add();
 
-		// Adds the specified Component if it doesn't already exist.
+		// Adds the specified component if it is not already present.
 		template<class T>
 		T& Require();
 
-		// Adds all the specified Components if any don't already exist.
+		// Adds any of the components which are not already present.
 		template<class T1, class T2, typename... Tx>
 		std::tuple<T1&, T2&, Tx&...> Require();
 
@@ -126,7 +126,7 @@ namespace gem
 		template<class T> const T& Get() const;
 		template<class T>       T& Get();
 
-		// Attempt to fetch a component. Returns null if component does not exist.
+		// Attempts to find the specified component. Returns null if the component does not exist.
 		template<class T> const T* Try() const;
 		template<class T>       T* Try();
 
@@ -138,35 +138,35 @@ namespace gem
 		template<class T>
 		void Remove();
 
-		// Removes all components from the entity.
+		// Removes all components from the Entity.
 		void RemoveAllComponents();
 
 		// Returns true if the specified component or tag exists on this Entity.
-		template<class T>
+		template<class T> [[nodiscard]]
 		bool Has() const;
 
-		// Adds all the specified tags if any don't already exist.
+		// Adds any of the tags which are not already present.
 		template<typename... Args>
 		void Tag();
 
-		// Removes the specified tag ID from the Entity.
+		// Removes the specified tag from the Entity.
 		template<class T>
 		void RemoveTag();
 
-		// Removes all Tags from the entity.
+		// Removes all tags from the Entity.
 		void RemoveAllTags();
 
-		// Efficiently removes all tags of the given type from all entities.
+		// Efficiently removes all tags of the specified type from all Entities globally.
 		template<class T>
 		static void GlobalRemoveTag();
 
-		// Enabling this Entity is equivalent to individually
+		// Enabling the Entity allows it and its enabled components/tags to be visible to queries.
 		void Enable();
 
-		// Disabling this Entity is equivalent to individually disabling all its components.
+		// Disabling the Entity hides it and its components/tags from queries.
 		void Disable();
 
-		// Enables the specific component. It will be made visible to queries if this entity is also enabled.
+		// Enables the specific component. It will be made visible to queries if this Entity is also enabled.
 		template<class T>
 		void Enable();
 
@@ -194,10 +194,10 @@ namespace gem
 		// accumulated from the root of the hierarchy, if there is one.
 		quat GetWorldRotation() const;
 
-		// Positions the Entity at 'pos' looking towards the 'target' in local space.
+		// Positions the Entity at 'pos' looking towards the 'target' in local-space.
 		void LookAt(const vec3& pos, const vec3& target, const vec3& up = vec3::Up);
 
-		// Orients the Entity to face the target, with respect to hierarchy.
+		// Orients the Entity to face the target, with respect to any hierarchy.
 		void LookAt(const Entity& target, const vec3& up = vec3::Up);
 
 	private:
