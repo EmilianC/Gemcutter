@@ -251,4 +251,4 @@ namespace gem
 	}
 }
 
-REFLECT_RESOURCE_SIMPLE(gem::Font);
+REFLECT_RESOURCE(gem::Font) REF_END;

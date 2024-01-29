@@ -36,7 +36,7 @@ namespace gem
 	consteval std::string_view GetTypeName();
 }
 
-#define REFLECT_RESOURCE_SIMPLE(resource) REFLECT(resource) BASES { REF_BASE(gem::ResourceBase) } REF_END;
-#define REFLECT_COMPONENT_SIMPLE(component) REFLECT(component) BASES { REF_BASE(gem::ComponentBase) } REF_END;
+#define REFLECT_RESOURCE(resource)         REFLECT(resource)  BASES { REF_BASE(gem::ResourceBase) }
+#define REFLECT_COMPONENT(component, base) REFLECT(component) BASES { REF_BASE(base) } USER_CONSTRUCTOR(gem::Entity&)
 
 #include "Reflection.inl"

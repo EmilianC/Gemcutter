@@ -117,7 +117,7 @@ namespace gem
 	}
 }
 
-REFLECT(gem::Text) BASES { REF_BASE(gem::Renderable) }
+REFLECT_COMPONENT(gem::Text, gem::Renderable)
 	MEMBERS {
 		REF_MEMBER(font)
 		REF_MEMBER(string)

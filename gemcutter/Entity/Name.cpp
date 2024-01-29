@@ -83,7 +83,7 @@ namespace gem
 	}
 }
 
-REFLECT(gem::Name) BASES { REF_BASE(gem::ComponentBase) }
+REFLECT_COMPONENT(gem::Name, gem::ComponentBase)
 	MEMBERS {
 		REF_MEMBER(name)
 	}

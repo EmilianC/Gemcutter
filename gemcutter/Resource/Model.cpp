@@ -124,4 +124,4 @@ namespace gem
 	}
 }
 
-REFLECT_RESOURCE_SIMPLE(gem::Model);
+REFLECT_RESOURCE(gem::Model) REF_END;

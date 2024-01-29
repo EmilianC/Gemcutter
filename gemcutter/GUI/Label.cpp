@@ -95,7 +95,7 @@ namespace gem
 	}
 }
 
-REFLECT(gem::Label) BASES { REF_BASE(gem::Widget) }
+REFLECT_COMPONENT(gem::Label, gem::Widget)
 	MEMBERS {
 		REF_MEMBER(textScale)
 	}

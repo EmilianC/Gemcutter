@@ -68,7 +68,7 @@ REFLECT(gem::Alignment)
 	}
 REF_END;
 
-REFLECT(gem::Sprite) BASES { REF_BASE(gem::Renderable) }
+REFLECT_COMPONENT(gem::Sprite, gem::Renderable)
 	MEMBERS {
 		REF_PRIVATE_MEMBER(alignment, gem::ReadOnly);
 		REF_PRIVATE_MEMBER(billBoarded, gem::ReadOnly);

@@ -305,7 +305,7 @@ REFLECT(gem::ParticleEmitter::Type)
 	}
 REF_END;
 
-REFLECT(gem::ParticleEmitter) BASES { REF_BASE(gem::Renderable) }
+REFLECT_COMPONENT(gem::ParticleEmitter, gem::Renderable)
 	MEMBERS {
 		REF_MEMBER(velocity)
 		REF_MEMBER(lifetime)

@@ -179,6 +179,26 @@ namespace gem
 		// Whether or not this Entity is visible to queries.
 		bool IsEnabled() const;
 
+		// Reflection API equivalent for Add<>().
+		ComponentBase& Add(const loupe::type&);
+
+		// Reflection API equivalent for Require<>().
+		ComponentBase& Require(const loupe::type&);
+
+		// Reflection API equivalent for Get<>().
+		ComponentBase& Get(const loupe::type&);
+		const ComponentBase& Get(const loupe::type&) const;
+
+		// Reflection API equivalent for Try<>().
+		ComponentBase* Try(const loupe::type&);
+		const ComponentBase* Try(const loupe::type&) const;
+
+		// Reflection API equivalent for Has<>() (but for components only).
+		bool Has(const loupe::type&) const;
+
+		// Reflection API equivalent for Remove<>().
+		void Remove(const loupe::type&);
+
 		// Creates and returns a new Entity with a Hierarchy component.
 		[[nodiscard]] static Entity::Ptr MakeNewRoot();
 		[[nodiscard]] static Entity::Ptr MakeNewRoot(std::string name);
@@ -205,9 +225,11 @@ namespace gem
 	private:
 		template<class T>
 		T& GetComponent() const;
+		ComponentBase& GetComponent(const loupe::type&) const;
 
 		template<class T>
 		T* TryComponent() const;
+		ComponentBase* TryComponent(const loupe::type&) const;
 
 		void AddTag(detail::ComponentId);
 		void RemoveTag(detail::ComponentId);

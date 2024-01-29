@@ -292,6 +292,119 @@ namespace gem
 		return isEnabled;
 	}
 
+	ComponentBase& Entity::Add(const loupe::type& compType)
+	{
+		ASSERT(compType.is_a(*detail::componentBaseType), "\"compType\" must refer to a component type.");
+
+#if GEM_DEBUG
+		for (const auto* comp : components)
+		{
+			ASSERT(!comp->IsA(compType), "The Component (or one sharing a hierarchy) already exists on this entity.");
+			ASSERT(!compType.is_a(*comp->typeId), "The Component (or one sharing a hierarchy) already exists on this entity.");
+		}
+#endif
+
+		auto* newComponent = static_cast<ComponentBase*>(_aligned_malloc(compType.size, compType.alignment));
+		compType.user_construct_at(newComponent, *this);
+
+		newComponent->typeId = &compType;
+		components.push_back(newComponent);
+
+		if (IsEnabled())
+		{
+			IndexWithBases(*newComponent);
+		}
+
+		return *newComponent;
+	}
+
+	ComponentBase& Entity::Require(const loupe::type& compType)
+	{
+		ComponentBase* comp = Try(compType);
+		return comp ? *comp : Add(compType);
+	}
+	
+	ComponentBase& Entity::Get(const loupe::type& compType)
+	{
+		return GetComponent(compType);
+	}
+
+	const ComponentBase& Entity::Get(const loupe::type& compType) const
+	{
+		return GetComponent(compType);
+	}
+
+	ComponentBase* Entity::Try(const loupe::type& compType)
+	{
+		return TryComponent(compType);
+	}
+
+	const ComponentBase* Entity::Try(const loupe::type& compType) const
+	{
+		return TryComponent(compType);
+	}
+
+	bool Entity::Has(const loupe::type& compType) const
+	{
+		return Try(compType) != nullptr;
+	}
+
+	void Entity::Remove(const loupe::type& compType)
+	{
+		ASSERT(compType.is_a(*detail::componentBaseType), "\"compType\" must refer to a component type.");
+
+		for (unsigned i = 0; i < components.size(); ++i)
+		{
+			auto* comp = components[i];
+			if (comp->IsA(compType))
+			{
+				components[i] = components.back();
+				components.pop_back();
+
+				if (isEnabled && comp->isEnabled)
+				{
+					UnindexWithBases(*comp);
+				}
+
+				comp->~ComponentBase();
+				_aligned_free(comp);
+				return;
+			}
+		}
+	}
+
+	ComponentBase& Entity::GetComponent(const loupe::type& compType) const
+	{
+		ASSERT(compType.is_a(*detail::componentBaseType), "\"compType\" must refer to a component type.");
+
+		auto itr = components.begin();
+		while (true)
+		{
+			ASSERT(itr != components.end(), "Entity did not have the expected component.");
+			if ((*itr)->IsA(compType))
+			{
+				return **itr;
+			}
+
+			++itr;
+		}
+	}
+
+	ComponentBase* Entity::TryComponent(const loupe::type& compType) const
+	{
+		ASSERT(compType.is_a(*detail::componentBaseType), "\"compType\" must refer to a component type.");
+
+		for (auto* comp : components)
+		{
+			if (comp->IsA(compType))
+			{
+				return comp;
+			}
+		}
+
+		return nullptr;
+	}
+
 	void Entity::AddTag(detail::ComponentId tagId)
 	{
 		if (IsEnabled())

@@ -189,7 +189,7 @@ REFLECT(gem::Button::State)
 	}
 REF_END;
 
-REFLECT(gem::Button) BASES { REF_BASE(gem::Widget) }
+REFLECT_COMPONENT(gem::Button, gem::Widget)
 	MEMBERS {
 		REF_MEMBER(pressedSound)
 		REF_MEMBER(idleTexture)

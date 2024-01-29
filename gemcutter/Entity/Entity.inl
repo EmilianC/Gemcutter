@@ -57,8 +57,8 @@ namespace gem
 		T* newComponent = static_cast<T*>(_aligned_malloc(sizeof(T), alignof(T)));
 		new (newComponent) T(*this, std::forward<Args>(constructorParams)...);
 
-		components.push_back(newComponent);
 		newComponent->typeId = &ReflectType<T>();
+		components.push_back(newComponent);
 
 		if (IsEnabled())
 		{

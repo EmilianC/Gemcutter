@@ -73,7 +73,7 @@ namespace gem
 	}
 }
 
-REFLECT(gem::Renderable) BASES { REF_BASE(gem::ComponentBase) }
+REFLECT_COMPONENT(gem::Renderable, gem::ComponentBase)
 	MEMBERS {
 		REF_PRIVATE_MEMBER(material, gem::ReadOnly)
 	}

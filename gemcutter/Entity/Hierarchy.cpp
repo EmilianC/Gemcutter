@@ -235,7 +235,7 @@ namespace gem
 	}
 }
 
-REFLECT(gem::Hierarchy) BASES { REF_BASE(gem::ComponentBase) }
+REFLECT_COMPONENT(gem::Hierarchy, gem::ComponentBase)
 	MEMBERS {
 		REF_MEMBER(propagateTransform)
 		REF_PRIVATE_MEMBER(parentHierarchy, gem::ReadOnly)

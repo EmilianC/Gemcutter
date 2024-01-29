@@ -118,7 +118,7 @@ REFLECT(gem::Edge)
 	}
 REF_END;
 
-REFLECT(gem::Widget) BASES { REF_BASE(gem::ComponentBase) }
+REFLECT_COMPONENT(gem::Widget, gem::ComponentBase)
 	MEMBERS {
 		REF_MEMBER(top)
 		REF_MEMBER(bottom)

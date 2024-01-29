@@ -27,4 +27,4 @@ namespace gem
 	}
 }
 
-REFLECT(gem::Screen) BASES { REF_BASE(gem::Widget) } REF_END;
+REFLECT_COMPONENT(gem::Screen, gem::Widget) REF_END;

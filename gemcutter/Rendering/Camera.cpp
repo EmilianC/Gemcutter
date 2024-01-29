@@ -517,7 +517,7 @@ namespace gem
 	}
 }
 
-REFLECT(gem::Camera) BASES { REF_BASE(gem::ComponentBase) }
+REFLECT_COMPONENT(gem::Camera, gem::ComponentBase)
 	MEMBERS {
 		REF_PRIVATE_MEMBER(isPerspective, gem::ReadOnly)
 		REF_PRIVATE_MEMBER(fovyDegrees, gem::ReadOnly)

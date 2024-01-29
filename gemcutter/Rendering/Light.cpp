@@ -119,7 +119,7 @@ REF_END;
 
 REFLECT_SIMPLE(gem::UniformHandle<gem::Light::Type>);
 
-REFLECT(gem::Light) BASES { REF_BASE(gem::ComponentBase) }
+REFLECT_COMPONENT(gem::Light, gem::ComponentBase)
 	MEMBERS {
 		REF_MEMBER(type)
 		REF_MEMBER(color)

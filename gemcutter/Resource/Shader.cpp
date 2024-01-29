@@ -1309,4 +1309,4 @@ namespace gem
 	}
 }
 
-REFLECT_RESOURCE_SIMPLE(gem::Shader);
+REFLECT_RESOURCE(gem::Shader) REF_END;

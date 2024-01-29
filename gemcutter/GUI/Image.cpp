@@ -71,4 +71,4 @@ namespace gem
 	}
 }
 
-REFLECT(gem::Image) BASES { REF_BASE(gem::Widget) } REF_END;
+REFLECT_COMPONENT(gem::Image, gem::Widget) REF_END;

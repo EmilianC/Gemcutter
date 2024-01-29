@@ -98,7 +98,7 @@ namespace gem
 	}
 }
 
-REFLECT(gem::SoundSource) BASES { REF_BASE(gem::ComponentBase) }
+REFLECT_COMPONENT(gem::SoundSource, gem::ComponentBase)
 	MEMBERS {
 		REF_PRIVATE_MEMBER(data, gem::ReadOnly)
 		REF_PRIVATE_MEMBER(volume, gem::ReadOnly)

@@ -49,4 +49,4 @@ namespace gem
 	}
 }
 
-REFLECT_COMPONENT_SIMPLE(gem::SoundListener);
+REFLECT_COMPONENT(gem::SoundListener, gem::ComponentBase) REF_END;

@@ -55,12 +55,9 @@ class TagA : public Tag<TagA> {};
 class TagB : public Tag<TagB> {};
 class TagC : public Tag<TagC> {};
 
-REFLECT_COMPONENT_SIMPLE(Comp1);
-REFLECT_COMPONENT_SIMPLE(Comp2);
-REFLECT(Base)
-	BASES {
-		REF_BASE(gem::ComponentBase)
-	}
+REFLECT_COMPONENT(Comp1, gem::ComponentBase) REF_END;
+REFLECT_COMPONENT(Comp2, gem::ComponentBase) REF_END;
+REFLECT_COMPONENT(Base, gem::ComponentBase)
 	MEMBERS {
 		REF_MEMBER(onEnableCalled)
 		REF_MEMBER(onDisableCalled)
@@ -68,9 +65,9 @@ REFLECT(Base)
 	}
 REF_END;
 
-REFLECT(DerivedA) BASES { REF_BASE(Base) } REF_END;
-REFLECT(DerivedB) BASES { REF_BASE(Base) } REF_END;
-REFLECT(DerivedC) BASES { REF_BASE(Comp2) } REF_END;
+REFLECT_COMPONENT(DerivedA, Base) REF_END;
+REFLECT_COMPONENT(DerivedB, Base) REF_END;
+REFLECT_COMPONENT(DerivedC, Comp2) REF_END;
 
 TEST_CASE("Entity-Component-System")
 {
@@ -376,10 +373,11 @@ TEST_CASE("Entity-Component-System")
 	SECTION("Reflection")
 	{
 		auto ent = Entity::MakeNew();
-		auto [comp1, derivedA, derivedC] = ent->Add<Comp1, DerivedA, DerivedC>();
 
 		SECTION("IsA<>()")
 		{
+			auto [comp1, derivedA, derivedC] = ent->Add<Comp1, DerivedA, DerivedC>();
+
 			CHECK(comp1.IsA<ComponentBase>());
 			CHECK(derivedA.IsA<ComponentBase>());
 			CHECK(derivedC.IsA<ComponentBase>());
@@ -408,6 +406,8 @@ TEST_CASE("Entity-Component-System")
 
 		SECTION("component_cast")
 		{
+			auto [comp1, derivedA, derivedC] = ent->Add<Comp1, DerivedA, DerivedC>();
+
 			Base& base = ent->Get<Base>();
 			Comp2& comp2 = ent->Get<Comp2>();
 
@@ -429,6 +429,8 @@ TEST_CASE("Entity-Component-System")
 
 		SECTION("Type Info")
 		{
+			auto [comp1, derivedA, derivedC] = ent->Add<Comp1, DerivedA, DerivedC>();
+
 			const loupe::type& typeId = derivedA.GetType();
 
 			CHECK(typeId.name == "DerivedA");
@@ -467,6 +469,134 @@ TEST_CASE("Entity-Component-System")
 
 			*boolPtr = false;
 			CHECK_FALSE(derivedA.reflectionTarget);
+		}
+
+		SECTION("Adding / Removing")
+		{
+			const loupe::type* baseType = reflection_tables.find("Base");
+			const loupe::type* derivedAType = reflection_tables.find("DerivedA");
+			const loupe::type* derivedBType = reflection_tables.find("DerivedB");
+			REQUIRE(baseType);
+			REQUIRE(derivedAType);
+			REQUIRE(derivedBType);
+
+			SECTION("Base")
+			{
+				ComponentBase& base = ent->Add(*baseType);
+				CHECK(ent->Has(*baseType));
+				CHECK(!ent->Has(*derivedAType));
+				CHECK(!ent->Has(*derivedBType));
+				CHECK(ent->Has<Base>());
+				CHECK(!ent->Has<DerivedA>());
+				CHECK(!ent->Has<DerivedB>());
+
+				CHECK(ent->Try(*baseType) == &base);
+				CHECK(ent->Try(*derivedAType) == nullptr);
+				CHECK(ent->Try(*derivedBType) == nullptr);
+				CHECK(&ent->Get(*baseType) == &base);
+
+				SECTION("Dynamic Remove")
+				{
+					ent->Remove(*baseType);
+				}
+
+				SECTION("Static Remove")
+				{
+					ent->Remove<Base>();
+				}
+
+				CHECK(ent->Try(*baseType) == nullptr);
+				CHECK(ent->Try(*derivedAType) == nullptr);
+				CHECK(ent->Try(*derivedBType) == nullptr);
+				CHECK_FALSE(ent->Has(*baseType));
+				CHECK_FALSE(ent->Has(*derivedAType));
+				CHECK_FALSE(ent->Has(*derivedBType));
+				CHECK_FALSE(ent->Has<Base>());
+				CHECK_FALSE(ent->Has<DerivedA>());
+				CHECK_FALSE(ent->Has<DerivedB>());
+			}
+
+			SECTION("DerivedA")
+			{
+				ComponentBase& derivedA = ent->Require(*derivedAType);
+				CHECK(ent->Has(*baseType));
+				CHECK(ent->Has(*derivedAType));
+				CHECK(!ent->Has(*derivedBType));
+				CHECK(ent->Has<Base>());
+				CHECK(ent->Has<DerivedA>());
+				CHECK(!ent->Has<DerivedB>());
+
+				CHECK(ent->Try(*baseType) == &derivedA);
+				CHECK(ent->Try(*derivedAType) == &derivedA);
+				CHECK(ent->Try(*derivedBType) == nullptr);
+				CHECK(&ent->Get(*derivedAType) == &derivedA);
+
+				SECTION("Dynamic Remove")
+				{
+					ent->Remove(*derivedAType);
+				}
+
+				SECTION("Dynamic Remove by Base")
+				{
+					ent->Remove(*baseType);
+				}
+
+				SECTION("Static Remove")
+				{
+					ent->Remove<DerivedA>();
+				}
+
+				CHECK(ent->Try(*baseType) == nullptr);
+				CHECK(ent->Try(*derivedAType) == nullptr);
+				CHECK(ent->Try(*derivedBType) == nullptr);
+				CHECK_FALSE(ent->Has(*baseType));
+				CHECK_FALSE(ent->Has(*derivedAType));
+				CHECK_FALSE(ent->Has(*derivedBType));
+				CHECK_FALSE(ent->Has<Base>());
+				CHECK_FALSE(ent->Has<DerivedA>());
+				CHECK_FALSE(ent->Has<DerivedB>());
+			}
+
+			SECTION("DerivedB")
+			{
+				ComponentBase& derivedB = ent->Add(*derivedBType);
+				CHECK(ent->Has(*baseType));
+				CHECK(!ent->Has(*derivedAType));
+				CHECK(ent->Has(*derivedBType));
+				CHECK(ent->Has<Base>());
+				CHECK(!ent->Has<DerivedA>());
+				CHECK(ent->Has<DerivedB>());
+
+				CHECK(ent->Try(*baseType) == &derivedB);
+				CHECK(ent->Try(*derivedAType) == nullptr);
+				CHECK(ent->Try(*derivedBType) == &derivedB);
+				CHECK(&ent->Get(*derivedBType) == &derivedB);
+
+				SECTION("Dynamic Remove")
+				{
+					ent->Remove(*derivedBType);
+				}
+
+				SECTION("Dynamic Remove by Base")
+				{
+					ent->Remove(*baseType);
+				}
+
+				SECTION("Static Remove")
+				{
+					ent->Remove<DerivedB>();
+				}
+
+				CHECK(ent->Try(*baseType) == nullptr);
+				CHECK(ent->Try(*derivedAType) == nullptr);
+				CHECK(ent->Try(*derivedBType) == nullptr);
+				CHECK_FALSE(ent->Has(*baseType));
+				CHECK_FALSE(ent->Has(*derivedAType));
+				CHECK_FALSE(ent->Has(*derivedBType));
+				CHECK_FALSE(ent->Has<Base>());
+				CHECK_FALSE(ent->Has<DerivedA>());
+				CHECK_FALSE(ent->Has<DerivedB>());
+			}
 		}
 	}
 
