@@ -4,6 +4,9 @@ namespace gem
 	template<class T>
 	bool ComponentBase::IsA() const
 	{
+		static_assert(std::is_base_of_v<ComponentBase, T>, "Template argument must inherit from ComponentBase.");
+		static_assert(!std::is_base_of_v<TagBase, T>, "Template argument cannot be a Tag.");
+
 		return typeId->is_a(ReflectType<T>());
 	}
 
@@ -50,7 +53,7 @@ namespace gem
 	template<class T, typename... Args>
 	T& Entity::Add(Args&&... constructorParams)
 	{
-		static_assert(std::is_base_of_v<ComponentBase, T>, "Template argument must inherit from Component.");
+		static_assert(std::is_base_of_v<ComponentBase, T>, "Template argument must inherit from ComponentBase.");
 		static_assert(!std::is_base_of_v<TagBase, T>, "Template argument cannot be a Tag.");
 		ASSERT(!Has<typename T::StaticComponentType>(), "The Component (or one sharing a hierarchy) already exists on this entity.");
 
@@ -105,7 +108,7 @@ namespace gem
 	template<class T>
 	void Entity::Remove()
 	{
-		static_assert(std::is_base_of_v<ComponentBase, T>, "Template argument must inherit from Component.");
+		static_assert(std::is_base_of_v<ComponentBase, T>, "Template argument must inherit from ComponentBase.");
 		static_assert(!std::is_base_of_v<TagBase, T>, "Template argument cannot be a Tag.");
 
 		for (unsigned i = 0; i < components.size(); ++i)
@@ -134,7 +137,7 @@ namespace gem
 	template<typename T>
 	bool Entity::Has() const
 	{
-		static_assert(std::is_base_of_v<ComponentBase, T>, "Template argument must inherit from either Component or Tag.");
+		static_assert(std::is_base_of_v<ComponentBase, T>, "Template argument must inherit from either ComponentBase or Tag.");
 
 		if constexpr (std::is_base_of_v<TagBase, T>)
 		{
@@ -197,7 +200,7 @@ namespace gem
 	template<class T>
 	void Entity::Enable()
 	{
-		static_assert(std::is_base_of_v<ComponentBase, T>, "Template argument must inherit from Component.");
+		static_assert(std::is_base_of_v<ComponentBase, T>, "Template argument must inherit from ComponentBase.");
 		static_assert(!std::is_base_of_v<TagBase, T>, "Tags cannot be enabled or disabled. Add or remove them instead.");
 
 		Enable(Get<T>());
@@ -206,7 +209,7 @@ namespace gem
 	template<class T>
 	void Entity::Disable()
 	{
-		static_assert(std::is_base_of_v<ComponentBase, T>, "Template argument must inherit from Component.");
+		static_assert(std::is_base_of_v<ComponentBase, T>, "Template argument must inherit from ComponentBase.");
 		static_assert(!std::is_base_of_v<TagBase, T>, "Tags cannot be enabled or disabled. Add or remove them instead.");
 
 		Disable(Get<T>());
@@ -215,7 +218,7 @@ namespace gem
 	template<class T>
 	T& Entity::GetComponent() const
 	{
-		static_assert(std::is_base_of_v<ComponentBase, T>, "Template argument must inherit from Component.");
+		static_assert(std::is_base_of_v<ComponentBase, T>, "Template argument must inherit from ComponentBase.");
 		static_assert(!std::is_base_of_v<TagBase, T>, "Template argument cannot be a Tag.");
 
 		auto itr = components.begin();
@@ -235,7 +238,7 @@ namespace gem
 	template<class T>
 	T* Entity::TryComponent() const
 	{
-		static_assert(std::is_base_of_v<ComponentBase, T>, "Template argument must inherit from Component.");
+		static_assert(std::is_base_of_v<ComponentBase, T>, "Template argument must inherit from ComponentBase.");
 		static_assert(!std::is_base_of_v<TagBase, T>, "Template argument cannot be a Tag.");
 
 		for (auto* comp : components)
