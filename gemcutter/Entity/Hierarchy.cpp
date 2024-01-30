@@ -238,8 +238,8 @@ namespace gem
 REFLECT_COMPONENT(gem::Hierarchy, gem::ComponentBase)
 	MEMBERS {
 		REF_MEMBER(propagateTransform)
-		REF_PRIVATE_MEMBER(parentHierarchy, gem::ReadOnly)
-		REF_PRIVATE_MEMBER(parent, gem::ReadOnly)
-		REF_PRIVATE_MEMBER(children, gem::ReadOnly)
+		REF_PRIVATE_MEMBER(parentHierarchy, gem::ReadOnly, gem::Hidden)
+		REF_PRIVATE_MEMBER(parent, gem::ReadOnly, gem::Hidden)
+		REF_PRIVATE_MEMBER(children, gem::ReadOnly, gem::Hidden)
 	}
 REF_END;
