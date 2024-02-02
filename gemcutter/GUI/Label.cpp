@@ -8,7 +8,7 @@ namespace gem
 		: Widget(_owner)
 	{
 		auto material = Material::MakeNew();
-		material->shader = Load<Shader>("Shaders/Default/Font");
+		material->shader = Load<Shader>("Engine/Shaders/Font");
 		material->blendMode = BlendFunc::Linear;
 
 		text = &owner.Require<Text>();

@@ -9,7 +9,7 @@ namespace gem
 	{
 		auto material = Material::MakeNew();
 		material->depthMode = DepthFunc::None;
-		material->shader = Load<Shader>("Shaders/Default/Sprite");
+		material->shader = Load<Shader>("Engine/Shaders/Sprite");
 
 		sprite = &owner.Require<Sprite>();
 		sprite->SetAlignment(Alignment::Center);

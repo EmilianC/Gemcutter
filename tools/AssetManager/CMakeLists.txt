@@ -107,8 +107,17 @@ function(gem_set_up_workspace workspace_directory)
 
 	file(MAKE_DIRECTORY ${workspace_directory})
 
+	get_target_property(GEMCUTTER_SOURCE_DIR gemcutter SOURCE_DIR)
 	get_target_property(ASSET_MANAGER_SOURCE_DIR asset_manager SOURCE_DIR)
 	get_target_property(ASSET_MANAGER_BINARY_DIR asset_manager BINARY_DIR)
+
+	# Create symlink to gemcutter's default assets.
+	cmake_path(GET GEMCUTTER_SOURCE_DIR PARENT_PATH GEMCUTTER_ROOT_DIR)
+	file(CREATE_LINK ${GEMCUTTER_ROOT_DIR}/resources ${workspace_directory}/Engine RESULT SYMLINK_ERROR SYMBOLIC)
+
+	if (SYMLINK_ERROR)
+		message(FATAL_ERROR ${SYMLINK_ERROR})
+	endif()
 
 	configure_file(
 		"${ASSET_MANAGER_SOURCE_DIR}/workspace_templates/pack_assets.cmd"

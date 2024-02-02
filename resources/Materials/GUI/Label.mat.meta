@@ -1,0 +1,7 @@
+blend_mode=Linear
+cull_mode=None
+depth_mode=None
+shader=Engine/Shaders/Font.shader
+texture_bind_points=
+textures=
+version=2
