@@ -180,10 +180,10 @@ namespace
 			return vec3(0.0);
 		}
 
-		#define is_point_light(light) GEM_IS_POINT_LIGHT(light##.Type)
-		#define is_directional_light(light) GEM_IS_DIRECTIONAL_LIGHT(light##.Type)
-		#define is_spot_light(light) GEM_IS_SPOT_LIGHT(light##.Type)
-		#define compute_light(light, normal, pos) GEM_COMPUTE_LIGHT(normal, pos, light##.Color, light##.Position, light##.Direction, light##.AttenuationLinear, light##.AttenuationQuadratic, light##.Angle, light##.Type)
+		#define is_point_light(light) GEM_IS_POINT_LIGHT(light.Type)
+		#define is_directional_light(light) GEM_IS_DIRECTIONAL_LIGHT(light.Type)
+		#define is_spot_light(light) GEM_IS_SPOT_LIGHT(light.Type)
+		#define compute_light(light, normal, pos) GEM_COMPUTE_LIGHT(normal, pos, light.Color, light.Position, light.Direction, light.AttenuationLinear, light.AttenuationQuadratic, light.Angle, light.Type)
 	)";
 
 	unsigned CompileShader(unsigned program, unsigned type, std::string_view _header, std::string_view body)
