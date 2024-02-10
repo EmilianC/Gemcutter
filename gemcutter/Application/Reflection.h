@@ -11,7 +11,13 @@ namespace gem
 	struct ReadOnly {};
 	struct Hidden {};
 
+	// The core reflection data for the whole program.
 	extern loupe::reflection_blob reflection_tables;
+
+	// Common typeIds cached for use in quick comparisons. Will never be null.
+	extern const loupe::type* EntityTypeId;
+	extern const loupe::type* BaseComponentTypeId;
+	extern const loupe::type* BaseResourceTypeId;
 
 	// Populates the global reflection tables for the program.
 	// Should only be called once at the top of main().

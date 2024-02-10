@@ -10,7 +10,6 @@ namespace gem
 {
 	namespace detail
 	{
-		const loupe::type* componentBaseType = nullptr;
 		std::unordered_map<ComponentId, std::vector<Entity*>> tagIndex;
 		std::unordered_map<const loupe::type*, std::vector<Entity*>> typeIndex;
 		std::unordered_map<const loupe::type*, std::vector<ComponentBase*>> componentLists;
@@ -294,7 +293,7 @@ namespace gem
 
 	ComponentBase& Entity::Add(const loupe::type& compType)
 	{
-		ASSERT(compType.is_a(*detail::componentBaseType), "\"compType\" must refer to a component type.");
+		ASSERT(compType.is_a(*BaseComponentTypeId), "\"compType\" must refer to a component type.");
 
 #if GEM_DEBUG
 		for (const auto* comp : components)
@@ -351,7 +350,7 @@ namespace gem
 
 	void Entity::Remove(const loupe::type& compType)
 	{
-		ASSERT(compType.is_a(*detail::componentBaseType), "\"compType\" must refer to a component type.");
+		ASSERT(compType.is_a(*BaseComponentTypeId), "\"compType\" must refer to a component type.");
 
 		for (unsigned i = 0; i < components.size(); ++i)
 		{
@@ -375,7 +374,7 @@ namespace gem
 
 	ComponentBase& Entity::GetComponent(const loupe::type& compType) const
 	{
-		ASSERT(compType.is_a(*detail::componentBaseType), "\"compType\" must refer to a component type.");
+		ASSERT(compType.is_a(*BaseComponentTypeId), "\"compType\" must refer to a component type.");
 
 		auto itr = components.begin();
 		while (true)
@@ -392,7 +391,7 @@ namespace gem
 
 	ComponentBase* Entity::TryComponent(const loupe::type& compType) const
 	{
-		ASSERT(compType.is_a(*detail::componentBaseType), "\"compType\" must refer to a component type.");
+		ASSERT(compType.is_a(*BaseComponentTypeId), "\"compType\" must refer to a component type.");
 
 		for (auto* comp : components)
 		{
@@ -474,7 +473,7 @@ namespace gem
 		auto implementation = [this](this auto self, ComponentBase& comp, const loupe::structure& structure) -> bool {
 			for (const loupe::type* type : structure.bases)
 			{
-				if (type == detail::componentBaseType)
+				if (type == BaseComponentTypeId)
 				{
 					return true;
 				}
@@ -499,7 +498,7 @@ namespace gem
 		auto implementation = [this](this auto self, const ComponentBase& comp, const loupe::structure& structure) -> bool {
 			for (const loupe::type* type : structure.bases)
 			{
-				if (type == detail::componentBaseType)
+				if (type == BaseComponentTypeId)
 				{
 					return true;
 				}

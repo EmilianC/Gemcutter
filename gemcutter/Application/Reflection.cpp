@@ -1,13 +1,13 @@
 // Copyright (c) 2022 Emilian Cioca
 #include "Reflection.h"
 #include "gemcutter/Entity/Entity.h"
+#include "gemcutter/Resource/Resource.h"
 
 namespace gem
 {
-	namespace detail
-	{
-		extern const loupe::type* componentBaseType;
-	}
+	const loupe::type* EntityTypeId = nullptr;
+	const loupe::type* BaseComponentTypeId = nullptr;
+	const loupe::type* BaseResourceTypeId = nullptr;
 
 	loupe::reflection_blob reflection_tables;
 
@@ -21,7 +21,9 @@ namespace gem
 		reflection_tables = loupe::reflect(1);
 		loupe::clear_reflect_tasks();
 
-		detail::componentBaseType = &ReflectType<ComponentBase>();
+		EntityTypeId        = &ReflectType<Entity>();
+		BaseComponentTypeId = &ReflectType<ComponentBase>();
+		BaseResourceTypeId  = &ReflectType<ResourceBase>();
 	}
 }
 
