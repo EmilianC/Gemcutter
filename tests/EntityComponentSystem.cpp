@@ -26,6 +26,12 @@ public:
 	bool onDisableCalled = false;
 	bool reflectionTarget = false;
 
+	mutable int getterCallCount = 0;
+	mutable int setterCallCount = 0;
+
+	bool GetReflectionTarget() const   { ++getterCallCount; return reflectionTarget; }
+	void SetReflectionTarget(bool val) { ++setterCallCount; reflectionTarget = val; }
+
 	void OnEnable() override { onEnableCalled = true; }
 	void OnDisable() override { onDisableCalled = true; }
 };
@@ -61,7 +67,7 @@ REFLECT_COMPONENT(Base, gem::ComponentBase)
 	MEMBERS {
 		REF_MEMBER(onEnableCalled)
 		REF_MEMBER(onDisableCalled)
-		REF_MEMBER(reflectionTarget)
+		REF_MEMBER_GET_SET(reflectionTarget, &Base::GetReflectionTarget, &Base::SetReflectionTarget)
 	}
 REF_END;
 
@@ -462,13 +468,24 @@ TEST_CASE("Entity-Component-System")
 			REQUIRE(refTarget->data == reflection_tables.find_property<bool>());
 
 			void* objPtr = &derivedA;
-			bool* boolPtr = (bool*)(reinterpret_cast<std::byte*>(objPtr) + refTarget->offset);
+			bool* boolPtr = refTarget->offset_from<bool>(objPtr);
+			REQUIRE(boolPtr == &derivedA.reflectionTarget);
 
 			*boolPtr = true;
 			CHECK(derivedA.reflectionTarget);
 
 			*boolPtr = false;
 			CHECK_FALSE(derivedA.reflectionTarget);
+
+			refTarget->set_on<bool>(objPtr, true);
+			CHECK(derivedA.setterCallCount == 1);
+			CHECK(derivedA.reflectionTarget);
+			CHECK(refTarget->get_copy_from<bool>(objPtr));
+
+			refTarget->set_on<bool>(objPtr, false);
+			CHECK(derivedA.setterCallCount == 2);
+			CHECK_FALSE(derivedA.reflectionTarget);
+			CHECK_FALSE(refTarget->get_copy_from<bool>(objPtr));
 		}
 
 		SECTION("Adding / Removing")

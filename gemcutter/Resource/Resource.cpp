@@ -3,6 +3,6 @@
 
 REFLECT(gem::ResourceBase)
 	MEMBERS {
-		REF_PRIVATE_MEMBER(path)
+		REF_PRIVATE_MEMBER(path, gem::ReadOnly)
 	}
 REF_END;

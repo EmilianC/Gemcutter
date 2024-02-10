@@ -70,7 +70,7 @@ REF_END;
 
 REFLECT_COMPONENT(gem::Sprite, gem::Renderable)
 	MEMBERS {
-		REF_PRIVATE_MEMBER(alignment, gem::ReadOnly);
-		REF_PRIVATE_MEMBER(billBoarded, gem::ReadOnly);
+		REF_PRIVATE_MEMBER_GET_SET(alignment,   nullptr, &gem::Sprite::SetAlignment);
+		REF_PRIVATE_MEMBER_GET_SET(billBoarded, nullptr, &gem::Sprite::SetBillBoarded);
 	}
 REF_END;

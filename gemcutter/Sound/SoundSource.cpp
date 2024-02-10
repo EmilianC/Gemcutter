@@ -100,7 +100,7 @@ namespace gem
 
 REFLECT_COMPONENT(gem::SoundSource, gem::ComponentBase)
 	MEMBERS {
-		REF_PRIVATE_MEMBER(data, gem::ReadOnly)
-		REF_PRIVATE_MEMBER(volume, gem::ReadOnly)
+		REF_PRIVATE_MEMBER_GET_SET(data,   nullptr, &gem::SoundSource::SetData)
+		REF_PRIVATE_MEMBER_GET_SET(volume, nullptr, &gem::SoundSource::SetSourceVolume)
 	}
 REF_END;

@@ -316,6 +316,6 @@ REFLECT_COMPONENT(gem::ParticleEmitter, gem::Renderable)
 		REF_MEMBER(axisZ)
 		REF_MEMBER(radius)
 		REF_MEMBER(isPaused)
-		REF_PRIVATE_MEMBER(localSpace, gem::ReadOnly)
+		REF_PRIVATE_MEMBER_GET_SET(localSpace, nullptr, &gem::ParticleEmitter::SetLocalSpace)
 	}
 REF_END;
