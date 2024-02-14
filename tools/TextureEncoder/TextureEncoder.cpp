@@ -130,8 +130,8 @@ bool TextureEncoder::Convert(std::string_view source, std::string_view destinati
 	const unsigned elementCount = gem::CountChannels(image.format);
 
 	// Save file.
-	FILE* fontFile = fopen(outputFile.c_str(), "wb");
-	if (fontFile == nullptr)
+	FILE* textureFile = fopen(outputFile.c_str(), "wb");
+	if (textureFile == nullptr)
 	{
 		gem::Error("Output file could not be created.");
 		return false;
@@ -142,7 +142,7 @@ bool TextureEncoder::Convert(std::string_view source, std::string_view destinati
 		// Validate size. Width to height ratio must be 4/3.
 		if (image.width * 3 != image.height * 4)
 		{
-			fclose(fontFile);
+			fclose(textureFile);
 			gem::Error("Cubemap texture layout is incorrect.");
 			return false;
 		}
@@ -157,14 +157,14 @@ bool TextureEncoder::Convert(std::string_view source, std::string_view destinati
 		const gem::TextureWrap cubeMapWrapMode = gem::TextureWrap::Clamp;
 
 		// Write header.
-		fwrite(&isCubemap, sizeof(bool), 1, fontFile);
-		fwrite(&faceSize, sizeof(unsigned), 1, fontFile);
-		fwrite(&faceSize, sizeof(unsigned), 1, fontFile);
-		fwrite(&image.format, sizeof(gem::TextureFormat), 1, fontFile);
-		fwrite(&filter, sizeof(gem::TextureFilter), 1, fontFile);
-		fwrite(&cubeMapWrapMode, sizeof(gem::TextureWrap), 1, fontFile);
-		fwrite(&cubeMapWrapMode, sizeof(gem::TextureWrap), 1, fontFile);
-		fwrite(&anisotropicLevel, sizeof(float), 1, fontFile);
+		fwrite(&isCubemap, sizeof(bool), 1, textureFile);
+		fwrite(&faceSize, sizeof(unsigned), 1, textureFile);
+		fwrite(&faceSize, sizeof(unsigned), 1, textureFile);
+		fwrite(&image.format, sizeof(gem::TextureFormat), 1, textureFile);
+		fwrite(&filter, sizeof(gem::TextureFilter), 1, textureFile);
+		fwrite(&cubeMapWrapMode, sizeof(gem::TextureWrap), 1, textureFile);
+		fwrite(&cubeMapWrapMode, sizeof(gem::TextureWrap), 1, textureFile);
+		fwrite(&anisotropicLevel, sizeof(float), 1, textureFile);
 
 		// Write faces.
 		const unsigned textureSize = faceSize * faceSize * elementCount;
@@ -193,26 +193,26 @@ bool TextureEncoder::Convert(std::string_view source, std::string_view destinati
 		copyFace(data + 4 * textureSize, faceSize, faceSize);		// +Z
 		copyFace(data + 5 * textureSize, faceSize * 3, faceSize);	// -Z
 
-		fwrite(data, sizeof(unsigned char), textureSize * 6, fontFile);
+		fwrite(data, sizeof(unsigned char), textureSize * 6, textureFile);
 	}
 	else
 	{
 		// Write header.
-		fwrite(&isCubemap, sizeof(bool), 1, fontFile);
-		fwrite(&image.width, sizeof(unsigned), 1, fontFile);
-		fwrite(&image.height, sizeof(unsigned), 1, fontFile);
-		fwrite(&image.format, sizeof(gem::TextureFormat), 1, fontFile);
-		fwrite(&filter, sizeof(gem::TextureFilter), 1, fontFile);
-		fwrite(&wrapX, sizeof(gem::TextureWrap), 1, fontFile);
-		fwrite(&wrapY, sizeof(gem::TextureWrap), 1, fontFile);
-		fwrite(&anisotropicLevel, sizeof(float), 1, fontFile);
+		fwrite(&isCubemap, sizeof(bool), 1, textureFile);
+		fwrite(&image.width, sizeof(unsigned), 1, textureFile);
+		fwrite(&image.height, sizeof(unsigned), 1, textureFile);
+		fwrite(&image.format, sizeof(gem::TextureFormat), 1, textureFile);
+		fwrite(&filter, sizeof(gem::TextureFilter), 1, textureFile);
+		fwrite(&wrapX, sizeof(gem::TextureWrap), 1, textureFile);
+		fwrite(&wrapY, sizeof(gem::TextureWrap), 1, textureFile);
+		fwrite(&anisotropicLevel, sizeof(float), 1, textureFile);
 
 		// Write Data.
 		const unsigned textureSize = image.width * image.height * elementCount;
-		fwrite(image.data, sizeof(unsigned char), textureSize, fontFile);
+		fwrite(image.data, sizeof(unsigned char), textureSize, textureFile);
 	}
 
-	auto result = fclose(fontFile);
+	auto result = fclose(textureFile);
 	if (result != 0)
 	{
 		gem::Error("Failed to generate Texture Binary\nOutput file could not be saved.");
