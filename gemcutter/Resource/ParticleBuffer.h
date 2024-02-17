@@ -8,7 +8,7 @@ namespace gem
 	struct vec2;
 	struct vec3;
 
-	enum class ParticleAttributes : unsigned
+	enum class ParticleAttributes : uint16_t
 	{
 		None = 0,
 		Size = 1,      // vec2

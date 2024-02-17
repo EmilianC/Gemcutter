@@ -22,7 +22,7 @@ namespace gem
 		Button(Entity& owner, Texture::Ptr idle, Texture::Ptr hover, Texture::Ptr pressed);
 		Button(Entity& owner, Font::Ptr font, std::string_view text, Texture::Ptr idle, Texture::Ptr hover, Texture::Ptr pressed);
 
-		enum class State
+		enum class State : uint16_t
 		{
 			Idle,
 			Hover,

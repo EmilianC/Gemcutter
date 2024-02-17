@@ -11,17 +11,17 @@ struct HWND__; typedef HWND__* HWND;
 
 namespace gem
 {
-	enum class VSyncMode
+	enum class VSyncMode : uint16_t
 	{
 		// Frames are sent to display device as soon as they are ready.
 		// Screen tearing can occur but input is most responsive.
-		Off = 0,
+		Off,
 		// Framerate is locked to multiples of the display's refresh rate to eliminate tearing.
 		// Can introduce input lag or stuttering.
-		On = 1,
+		On,
 		// Vsync is on when the framerate exceeds the display's refresh rate to eliminate tearing.
 		// When the framerate drops, Vsync turns off to eliminate stuttering and input lag.
-		Adaptive = -1
+		Adaptive
 	};
 
 	// Loads or creates a default settings.cfg file.

@@ -20,7 +20,7 @@ namespace gem
 		ParticleEmitter(Entity& owner, unsigned maxParticles = 100);
 		ParticleEmitter(Entity& owner, Material::Ptr material, unsigned maxParticles = 100);
 
-		enum class Type : unsigned
+		enum class Type : uint16_t
 		{
 			Omni,
 			Box

@@ -4,7 +4,7 @@
 
 namespace gem
 {
-	enum class Alignment
+	enum class Alignment : uint16_t
 	{
 		BottomLeft,
 		BottomCenter,

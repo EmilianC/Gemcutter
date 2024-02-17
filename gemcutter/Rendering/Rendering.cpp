@@ -166,22 +166,22 @@ namespace gem
 
 	int ResolveVertexFormat(VertexFormat format)
 	{
-		return vertexFormat_Resolve[static_cast<unsigned>(format)];
+		return vertexFormat_Resolve[std::to_underlying(format)];
 	}
 
 	int ResolveVertexArrayFormat(VertexArrayFormat format)
 	{
-		return vertexArrayFormat_Resolve[static_cast<unsigned>(format)];
+		return vertexArrayFormat_Resolve[std::to_underlying(format)];
 	}
 
 	int ResolveVertexAccess(VertexAccess access)
 	{
-		return vertexAccess_Resolve[static_cast<unsigned>(access)];
+		return vertexAccess_Resolve[std::to_underlying(access)];
 	}
 
 	int ResolveBufferUsage(BufferUsage usage)
 	{
-		return bufferUsage_Resolve[static_cast<unsigned>(usage)];
+		return bufferUsage_Resolve[std::to_underlying(usage)];
 	}
 
 	int ResolveFilterMag(TextureFilter filter)
@@ -198,7 +198,7 @@ namespace gem
 
 	int ResolveFilterMin(TextureFilter filter)
 	{
-		return filterMin_Resolve[static_cast<unsigned>(filter)];
+		return filterMin_Resolve[std::to_underlying(filter)];
 	}
 
 	bool ResolveMipMapping(TextureFilter filter)
@@ -208,22 +208,22 @@ namespace gem
 
 	int ResolveWrap(TextureWrap wrap)
 	{
-		return wrap_Resolve[static_cast<unsigned>(wrap)];
+		return wrap_Resolve[std::to_underlying(wrap)];
 	}
 
 	unsigned ResolveFormat(TextureFormat format)
 	{
-		return format_Resolve[static_cast<unsigned>(format)];
+		return format_Resolve[std::to_underlying(format)];
 	}
 
 	unsigned ResolveDataFormat(TextureFormat format)
 	{
-		return dataFormat_resolve[static_cast<unsigned>(format)];
+		return dataFormat_resolve[std::to_underlying(format)];
 	}
 
 	unsigned CountBytes(VertexFormat format)
 	{
-		return vertexFormatSize_Resolve[static_cast<unsigned>(format)];
+		return vertexFormatSize_Resolve[std::to_underlying(format)];
 	}
 
 	unsigned CountMipLevels(unsigned width, unsigned height, TextureFilter filter)
@@ -240,7 +240,7 @@ namespace gem
 
 	unsigned CountChannels(TextureFormat format)
 	{
-		return textureFormatChannelCount_Resolve[static_cast<unsigned>(format)];
+		return textureFormatChannelCount_Resolve[std::to_underlying(format)];
 	}
 
 	void ClearBackBuffer()

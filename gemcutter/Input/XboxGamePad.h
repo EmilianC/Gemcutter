@@ -9,7 +9,7 @@ namespace gem
 	class XboxGamePad
 	{
 	public:
-		enum class Buttons
+		enum class Buttons : uint16_t
 		{
 			DPadUp = 1,
 			DPadDown = 2,

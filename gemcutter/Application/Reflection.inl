@@ -19,7 +19,7 @@ namespace gem
 		ASSERT(descriptor, "The enum type was not reflected.");
 
 		const auto& enumeration = std::get<loupe::enumeration>(descriptor->data);
-		const std::size_t* result = enumeration.find_value(valueName);
+		const uint16_t* result = enumeration.find_value(valueName);
 
 		return result ? std::optional<Enum>{static_cast<Enum>(*result)} : std::nullopt;
 	}
@@ -33,7 +33,7 @@ namespace gem
 		ASSERT(descriptor, "The enum type was not reflected.");
 
 		const auto& enumeration = std::get<loupe::enumeration>(descriptor->data);
-		const std::string_view* result = enumeration.find_name(static_cast<std::size_t>(value));
+		const std::string_view* result = enumeration.find_name(static_cast<uint16_t>(value));
 		ASSERT(result, "The enum value was not reflected.");
 
 		return *result;

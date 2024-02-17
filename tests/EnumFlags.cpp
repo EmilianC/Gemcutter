@@ -3,7 +3,7 @@
 
 using namespace gem;
 
-enum class Values : unsigned int
+enum class Values : uint16_t
 {
 	One   = 0b0001,
 	Two   = 0b0010,
@@ -12,7 +12,7 @@ enum class Values : unsigned int
 };
 
 static_assert(std::is_trivially_copyable_v<EnumFlags<Values>>);
-static_assert(std::is_same_v<EnumFlags<Values>::PrimitiveType, unsigned int>);
+static_assert(std::is_same_v<EnumFlags<Values>::PrimitiveType, uint16_t>);
 
 TEST_CASE("EnumFlags")
 {

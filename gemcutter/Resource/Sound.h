@@ -10,7 +10,7 @@ namespace SoLoud
 
 namespace gem
 {
-	enum class AttenuationFunc
+	enum class AttenuationFunc : uint16_t
 	{
 		None = 0,
 		InverseDistance = 1,

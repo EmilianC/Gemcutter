@@ -7,7 +7,7 @@ namespace gem
 	struct vec4;
 
 	// Binding locations for built-in uniform buffers.
-	enum class UniformBufferSlot : unsigned
+	enum class UniformBufferSlot : uint16_t
 	{
 		Camera = 10,
 		Model = 11,
@@ -16,7 +16,7 @@ namespace gem
 		Particle = 14
 	};
 
-	enum class VertexFormat
+	enum class VertexFormat : uint16_t
 	{
 		Float,
 		Double,
@@ -34,7 +34,7 @@ namespace gem
 		uByte
 	};
 
-	enum class VertexArrayFormat
+	enum class VertexArrayFormat : uint16_t
 	{
 		Point,
 		Line,
@@ -49,14 +49,14 @@ namespace gem
 		TriangleStripAdjacency
 	};
 
-	enum class VertexAccess
+	enum class VertexAccess : uint16_t
 	{
 		ReadOnly,
 		WriteOnly,
 		ReadWrite
 	};
 
-	enum class VertexBufferType
+	enum class VertexBufferType : uint16_t
 	{
 		// The buffer contains vertex data or attributes.
 		Data,
@@ -64,7 +64,7 @@ namespace gem
 		Index
 	};
 
-	enum class BufferUsage
+	enum class BufferUsage : uint16_t
 	{
 		// The buffer is not expected to change and will be kept on the GPU only.
 		Static,
@@ -74,7 +74,7 @@ namespace gem
 		Stream
 	};
 
-	enum class TextureFormat
+	enum class TextureFormat : uint16_t
 	{
 		R_8,
 		R_16,
@@ -96,7 +96,7 @@ namespace gem
 		sRGBA_8
 	};
 
-	enum class TextureWrap
+	enum class TextureWrap : uint16_t
 	{
 		Clamp,
 		ClampWithBorder,
@@ -115,7 +115,7 @@ namespace gem
 		TextureWrap y = TextureWrap::Clamp;
 	};
 
-	enum class TextureFilter
+	enum class TextureFilter : uint16_t
 	{
 		Point,
 		Linear,
@@ -123,7 +123,7 @@ namespace gem
 		Trilinear
 	};
 
-	enum class CullFunc
+	enum class CullFunc : uint16_t
 	{
 		// Both back and front faces are rendered.
 		None,
@@ -133,7 +133,7 @@ namespace gem
 		CounterClockwise
 	};
 
-	enum class BlendFunc
+	enum class BlendFunc : uint16_t
 	{
 		// Blending is disabled.
 		None,
@@ -145,7 +145,7 @@ namespace gem
 		Multiplicative
 	};
 
-	enum class DepthFunc
+	enum class DepthFunc : uint16_t
 	{
 		None,
 		WriteOnly,

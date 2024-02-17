@@ -143,7 +143,7 @@ namespace gem
 		};
 
 		// Used to identify the content of a Program block.
-		enum class BlockType : unsigned
+		enum class BlockType : uint16_t
 		{
 			None       = 0,
 			Attributes = 1,

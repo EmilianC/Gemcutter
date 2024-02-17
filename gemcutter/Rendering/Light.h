@@ -10,7 +10,7 @@ namespace gem
 	class Light : public Component<Light>
 	{
 	public:
-		enum class Type : unsigned
+		enum class Type : uint16_t
 		{
 			Point,
 			Directional,

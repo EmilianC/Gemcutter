@@ -12,7 +12,7 @@
 
 namespace gem
 {
-	enum class ConsoleColor
+	enum class ConsoleColor : uint16_t
 	{
 		DarkBlue = 1,
 		DarkGreen,

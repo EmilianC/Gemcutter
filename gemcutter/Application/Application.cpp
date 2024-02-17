@@ -68,13 +68,19 @@ namespace
 			return false;
 		}
 
-		if (mode == gem::VSyncMode::Adaptive && !wglewIsSupported("WGL_EXT_swap_control_tear"))
+		int modeValue = static_cast<int>(mode);
+		if (mode == gem::VSyncMode::Adaptive)
 		{
-			gem::Error("Adaptive VSync is not supported on this system. VSync mode left unchanged.");
-			return false;
+			modeValue = -1;
+
+			if (!wglewIsSupported("WGL_EXT_swap_control_tear"))
+			{
+				gem::Error("The system does not support Adaptive VSync. VSync mode left unchanged.");
+				return false;
+			}
 		}
 
-		if (!wglSwapIntervalEXT(static_cast<int>(mode)))
+		if (!wglSwapIntervalEXT(modeValue))
 		{
 			gem::Error("Failed to change VSync mode to (%s).", EnumToString(mode));
 			return false;

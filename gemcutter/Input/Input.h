@@ -8,7 +8,7 @@ typedef tagMSG MSG;
 
 namespace gem
 {
-	enum class Key
+	enum class Key : uint16_t
 	{
 		Space = 0x20,
 		PageUp,
