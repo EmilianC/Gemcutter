@@ -6,6 +6,7 @@
 
 namespace gem
 {
+	// Defaults to a point light.
 	class Light : public Component<Light>
 	{
 	public:
@@ -20,8 +21,7 @@ namespace gem
 		Light(Entity& owner, const vec3& color);
 		Light(Entity& owner, const vec3& color, Type type);
 
-		// Defaults to a point light.
-		UniformHandle<Type> type;
+		Type type = Type::Point;
 		// Defaults to a white light.
 		UniformHandle<vec3> color;
 		// Defaults to zero.
@@ -38,12 +38,11 @@ namespace gem
 
 	private:
 		void CreateUniformBuffer();
-		void CreateUniformHandles();
-		void InitializeUniformValues();
 
 		UniformHandle<vec3> position;
 		UniformHandle<vec3> direction;
 		UniformHandle<float> cosAngle;
+		UniformHandle<unsigned int> typeHandle;
 		UniformBuffer::Ptr lightBuffer;
 	};
 }

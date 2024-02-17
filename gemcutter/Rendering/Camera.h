@@ -93,7 +93,6 @@ namespace gem
 
 	private:
 		void CreateUniformBuffer();
-		void CreateUniformHandles();
 
 		mutable UniformBuffer buffer;
 		mat4 projection;

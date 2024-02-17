@@ -13,7 +13,6 @@ namespace gem
 		: Component(_owner)
 	{
 		CreateUniformBuffer();
-		CreateUniformHandles();
 		SetPerspective(fovyDegrees, aspectRatio, zNear, zFar);
 	}
 
@@ -21,7 +20,6 @@ namespace gem
 		: Component(_owner)
 	{
 		CreateUniformBuffer();
-		CreateUniformHandles();
 		SetPerspective(_fovyDegrees, _aspectRatio, _zNear, _zFar);
 	}
 
@@ -29,7 +27,6 @@ namespace gem
 		: Component(_owner)
 	{
 		CreateUniformBuffer();
-		CreateUniformHandles();
 		SetOrthographic(_left, _right, _top, _bottom, _zNear, _zFar);
 	}
 
@@ -497,23 +494,13 @@ namespace gem
 
 	void Camera::CreateUniformBuffer()
 	{
-		buffer.AddUniform<mat4>("View");
-		buffer.AddUniform<mat4>("Proj");
-		buffer.AddUniform<mat4>("ViewProj");
-		buffer.AddUniform<mat4>("InvView");
-		buffer.AddUniform<mat4>("InvProj");
-		buffer.AddUniform<vec3>("CameraPosition");
+		uniformView = buffer.AddUniform<mat4>("View");
+		uniformProj = buffer.AddUniform<mat4>("Proj");
+		uniformViewProj = buffer.AddUniform<mat4>("ViewProj");
+		uniformInvView  = buffer.AddUniform<mat4>("InvView");
+		uniformInvProj  = buffer.AddUniform<mat4>("InvProj");
+		uniformCameraPosition = buffer.AddUniform<vec3>("CameraPosition");
 		buffer.InitBuffer(BufferUsage::Dynamic);
-	}
-
-	void Camera::CreateUniformHandles()
-	{
-		uniformView = buffer.MakeHandle<mat4>("View");
-		uniformProj = buffer.MakeHandle<mat4>("Proj");
-		uniformViewProj = buffer.MakeHandle<mat4>("ViewProj");
-		uniformInvView = buffer.MakeHandle<mat4>("InvView");
-		uniformInvProj = buffer.MakeHandle<mat4>("InvProj");
-		uniformCameraPosition = buffer.MakeHandle<vec3>("CameraPosition");
 	}
 }
 
