@@ -190,18 +190,22 @@ if (ENABLE_PCH)
 	target_precompile_headers(gemcutter
 		PRIVATE
 			<algorithm>
+			<cstdint>
 			<cstring>
+			<fstream>
 			<functional>
 			<map>
 			<memory>
 			<numeric>
 			<optional>
+			<queue>
 			<span>
 			<string_view>
 			<string>
 			<type_traits>
 			<unordered_map>
 			<vector>
+			Application/FileSystem.h
 			Application/Logging.h
 			Application/Reflection.h
 			Entity/Entity.h
