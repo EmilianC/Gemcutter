@@ -1,7 +1,5 @@
 // Copyright (c) 2022 Emilian Cioca
 #include "Reflection.h"
-#include "gemcutter/Entity/Entity.h"
-#include "gemcutter/Resource/Resource.h"
 
 namespace gem
 {
@@ -21,9 +19,9 @@ namespace gem
 		reflection_tables = loupe::reflect(1);
 		loupe::clear_reflect_tasks();
 
-		EntityTypeId        = &ReflectType<Entity>();
-		BaseComponentTypeId = &ReflectType<ComponentBase>();
-		BaseResourceTypeId  = &ReflectType<ResourceBase>();
+		EntityTypeId        = reflection_tables.find<class Entity>();
+		BaseComponentTypeId = reflection_tables.find<class ComponentBase>();
+		BaseResourceTypeId  = reflection_tables.find<class ResourceBase>();
 	}
 }
 

@@ -4,10 +4,25 @@ namespace gem
 	template<typename T> [[nodiscard]]
 	const loupe::type& ReflectType()
 	{
-		static const loupe::type* descriptor = reflection_tables.find<T>();
-		ASSERT(descriptor, "The type was not reflected.");
+		if constexpr (std::is_same_v<std::remove_cv_t<T>, class Entity>)
+		{
+			return *EntityTypeId;
+		}
+		else if constexpr (std::is_same_v<std::remove_cv_t<T>, class ComponentBase>)
+		{
+			return *BaseComponentTypeId;
+		}
+		else if constexpr (std::is_same_v<std::remove_cv_t<T>, class ResourceBase>)
+		{
+			return *BaseResourceTypeId;
+		}
+		else
+		{
+			static const loupe::type* descriptor = reflection_tables.find<T>();
+			ASSERT(descriptor, "The type was not reflected.");
 
-		return *descriptor;
+			return *descriptor;
+		}
 	}
 
 	template<typename Enum> [[nodiscard]]
