@@ -55,6 +55,33 @@ TEST_CASE("Hierarchy")
 		CHECK(!e4->Has<HierarchyRoot>());
 	}
 
+	SECTION("Removal")
+	{
+		e1->Remove<Hierarchy>();
+		CHECK_FALSE(root->Get<Hierarchy>().IsDescendant(*e1));
+		CHECK(root->Get<Hierarchy>().IsDescendant(*e2));
+		CHECK(root->Get<Hierarchy>().IsDescendant(*e3));
+		CHECK(root->Get<Hierarchy>().IsDescendant(*e4));
+
+		e2->Remove<Hierarchy>();
+		CHECK_FALSE(root->Get<Hierarchy>().IsDescendant(*e1));
+		CHECK_FALSE(root->Get<Hierarchy>().IsDescendant(*e2));
+		CHECK(root->Get<Hierarchy>().IsDescendant(*e3));
+		CHECK(root->Get<Hierarchy>().IsDescendant(*e4));
+
+		e3->Remove<Hierarchy>();
+		CHECK_FALSE(root->Get<Hierarchy>().IsDescendant(*e1));
+		CHECK_FALSE(root->Get<Hierarchy>().IsDescendant(*e2));
+		CHECK_FALSE(root->Get<Hierarchy>().IsDescendant(*e3));
+		CHECK_FALSE(root->Get<Hierarchy>().IsDescendant(*e4));
+
+		e4->Remove<Hierarchy>();
+		CHECK_FALSE(root->Get<Hierarchy>().IsDescendant(*e1));
+		CHECK_FALSE(root->Get<Hierarchy>().IsDescendant(*e2));
+		CHECK_FALSE(root->Get<Hierarchy>().IsDescendant(*e3));
+		CHECK_FALSE(root->Get<Hierarchy>().IsDescendant(*e4));
+	}
+
 	SECTION("Parents")
 	{
 		CHECK(root->Get<Hierarchy>().GetParent() == nullptr);

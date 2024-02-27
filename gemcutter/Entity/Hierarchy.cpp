@@ -13,7 +13,12 @@ namespace gem
 	{
 		if (auto lock = parent.lock())
 		{
-			parentHierarchy->RemoveChild(owner);
+			auto& siblings = parentHierarchy->children;
+			auto itr = std::find_if(std::begin(siblings), std::end(siblings), [&](const Entity::Ptr& child) {
+				return child == owner;
+			});
+
+			siblings.erase(itr);
 		}
 		else
 		{
