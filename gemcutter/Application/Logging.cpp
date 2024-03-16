@@ -5,6 +5,7 @@
 #include <fstream>
 #include <iostream>
 #include <loupe/loupe.h>
+#include <stacktrace>
 #include <Windows.h>
 
 namespace
@@ -192,6 +193,9 @@ namespace gem
 		va_start(argptr, format);
 		auto message = FormatString(format, argptr);
 		va_end(argptr);
+
+		message += "\n-------\n";
+		message += std::to_string(std::stacktrace::current(1));
 
 		auto header = FormatString("ASSERT:  ( %s )\n", exp);
 		PushMessage(header, message, ConsoleColor::Pink);
