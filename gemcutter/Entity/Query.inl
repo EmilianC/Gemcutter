@@ -268,11 +268,8 @@ namespace gem
 	// * Adding/Removing Components or Tags of the queried types will invalidate the returned Range *
 	// For this reason, you must not do this until after you are finished using the Range.
 	template<typename... Args> [[nodiscard]]
-	auto With()
+	auto With() requires (sizeof...(Args) > 0)
 	{
-		static_assert(sizeof...(Args) >= 1,
-			"With<>() must receive at least one template argument.");
-
 		static_assert(meta::all_of_v<std::is_base_of_v<ComponentBase, Args>...>,
 			"All template arguments must be either Components or Tags.");
 
@@ -280,6 +277,25 @@ namespace gem
 
 		auto&& itr = BuildRootIterator<Args...>();
 		return detail::Range(itr);
+	}
+
+	// Returns the first entity found which has an active instance of each specified Component/Tag.
+	// Disabled Components and Components belonging to disabled Entities are not considered.
+	template<typename... Args> [[nodiscard]]
+	Entity* FirstWith() requires (sizeof...(Args) > 0)
+	{
+		static_assert(meta::all_of_v<std::is_base_of_v<ComponentBase, Args>...>,
+			"All template arguments must be either Components or Tags.");
+
+		using namespace detail;
+
+		auto&& itr = BuildRootIterator<Args...>();
+		if (itr != RangeEndSentinel{})
+		{
+			return &(*itr);
+		}
+
+		return nullptr;
 	}
 
 	// Returns all Entities which have an active instance of each specified Component/Tag.

@@ -1199,6 +1199,43 @@ TEST_CASE("Entity-Component-System")
 			}
 		}
 
+		SECTION("FirstWith<>()")
+		{
+			ent1->Add<DerivedA>();
+			ent1->Tag<TagB>();
+			ent2->Add<DerivedB>();
+			ent2->Tag<TagB>();
+
+			// Some database noise.
+			ent1->Tag<TagA>();
+			ent1->Add<Comp2>();
+			ent3->Add<Comp1, Comp2>();
+			ent3->Tag<TagC>();
+			ent3->Disable();
+			ent4->Add<Comp2>();
+			ent4->Tag<TagB>();
+
+			auto* result = FirstWith<Base>();
+			REQUIRE(result);
+			CHECK(*result != ent4);
+
+			result = FirstWith<DerivedA, TagB>();
+			REQUIRE(result);
+			CHECK(*result == ent1);
+
+			result = FirstWith<DerivedB, TagB>();
+			REQUIRE(result);
+			CHECK(*result == ent2);
+
+			// No results expected.
+			auto count = 0;
+			if (FirstWith<Comp1, Comp2>()     != nullptr) { count++; }
+			if (FirstWith<TagA, TagB, TagC>() != nullptr) { count++; }
+			if (FirstWith<TagC>()             != nullptr) { count++; }
+			if (FirstWith<DerivedC>()         != nullptr) { count++; }
+			CHECK(count == 0);
+		}
+
 		SECTION("CaptureWith<>()")
 		{
 			ent1->Add<Comp2>();
