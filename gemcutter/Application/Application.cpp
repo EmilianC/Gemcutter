@@ -524,10 +524,15 @@ namespace gem
 	bool ApplicationSingleton::Startup()
 	{
 		OpenOutputLog();
+
 #ifdef GEM_DEBUG
 		CreateConsoleWindow();
-#endif
+		Log("-- Application Starting Up [DEBUG] --");
+#elif defined(GEM_DEV)
+		Log("-- Application Starting Up [DEVELOPMENT] --");
+#else
 		Log("-- Application Starting Up --");
+#endif
 
 		InitializeReflectionTables();
 		SeedRandomNumberGenerator();
@@ -541,7 +546,13 @@ namespace gem
 	{
 		ASSERT(hwnd == NULL, __FUNCTION__ "() cannot be called while a game window is still active.");
 
+#ifdef GEM_DEBUG
+		Log("-- Application Shutting Down [DEBUG] --");
+#elif defined(GEM_DEV)
+		Log("-- Application Shutting Down [DEVELOPMENT] --");
+#else
 		Log("-- Application Shutting Down --");
+#endif
 
 		SoundSystem.Unload();
 
@@ -622,11 +633,19 @@ namespace gem
 		LONG style = GetStyle(fullscreen, bordered, resizable);
 		RECT windowRect = GetWindowSize(style, screenViewport.width, screenViewport.height);
 
+#ifdef GEM_DEBUG
+		std::string windowTitle = std::string(title) + " [DEBUG]";
+#elif defined(GEM_DEV)
+		std::string windowTitle = std::string(title) + " [DEVELOPMENT]";
+#else
+		const auto& windowTitle = title;
+#endif
+
 		// This will internally send a WM_CREATE message that is handled before the function returns.
 		if (!CreateWindowEx(
 			STYLE_EXTENDED,
 			"Gemcutter",  // Class name.
-			title.data(),
+			windowTitle.data(),
 			style,
 			CW_USEDEFAULT, CW_USEDEFAULT,
 			windowRect.right - windowRect.left,
