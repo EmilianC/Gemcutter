@@ -91,8 +91,6 @@ REFLECT(gem::Light::Type)
 	}
 REF_END;
 
-REFLECT_SIMPLE(gem::UniformHandle<gem::Light::Type>);
-
 REFLECT_COMPONENT(gem::Light, gem::ComponentBase)
 	MEMBERS {
 		REF_MEMBER(type)

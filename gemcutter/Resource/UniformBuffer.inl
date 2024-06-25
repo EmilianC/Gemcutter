@@ -1,11 +1,9 @@
 // Copyright (c) 2017 Emilian Cioca
 namespace gem
 {
-	template<class T>
+	template<shader_uniform T>
 	UniformHandle<T> UniformBuffer::AddUniform(std::string_view name, unsigned count)
 	{
-		static_assert(std::is_standard_layout_v<T>, "Uniforms cannot be complex types.");
-
 		unsigned alignment = sizeof(T);
 		unsigned size = sizeof(T);
 
@@ -30,11 +28,9 @@ namespace gem
 		return MakeHandle<T>(name);
 	}
 
-	template<class T>
+	template<shader_uniform T>
 	void UniformBuffer::SetUniform(std::string_view name, const T& data)
 	{
-		static_assert(std::is_standard_layout_v<T>, "Uniforms cannot be complex types.");
-
 		T* dest = static_cast<T*>(GetBufferLoc(name));
 		ASSERT(dest, "Could not find uniform parameter ( %s ).", name.data());
 		ASSERT(reinterpret_cast<std::byte*>(dest) + sizeof(T) <= static_cast<std::byte*>(buffer) + bufferSize,
@@ -44,10 +40,9 @@ namespace gem
 		dirty = true;
 	}
 
-	template<class T>
+	template<shader_uniform T>
 	void UniformBuffer::SetUniformArray(std::string_view name, unsigned numElements, T* data)
 	{
-		static_assert(std::is_standard_layout_v<T>, "Uniforms cannot be complex types.");
 		ASSERT(data != nullptr, "Source data cannot be null.");
 
 		void* dest = GetBufferLoc(name);
@@ -59,7 +54,7 @@ namespace gem
 		dirty = true;
 	}
 
-	template<class T>
+	template<shader_uniform T>
 	UniformHandle<T> UniformBuffer::MakeHandle(std::string_view name)
 	{
 		auto itr = table.find(name);
@@ -71,20 +66,20 @@ namespace gem
 	extern template void UniformBuffer::SetUniform<mat2>(std::string_view name, const mat2& data);
 	extern template void UniformBuffer::SetUniform<mat3>(std::string_view name, const mat3& data);
 
-	template<class T>
+	template<shader_uniform T>
 	UniformHandle<T>::UniformHandle(UniformBuffer& buff, unsigned _offset)
 		: uniformBuffer(&buff), offset(_offset)
 	{
 	}
 
-	template<class T>
+	template<shader_uniform T>
 	UniformHandle<T>& UniformHandle<T>::operator=(const T& value)
 	{
 		Set(value);
 		return *this;
 	}
 
-	template<class T>
+	template<shader_uniform T>
 	void UniformHandle<T>::Set(const T& value)
 	{
 		ASSERT(uniformBuffer, "Uniform handle is not associated with a UniformBuffer.");
@@ -96,7 +91,7 @@ namespace gem
 		uniformBuffer->dirty = true;
 	}
 
-	template<class T>
+	template<shader_uniform T>
 	T UniformHandle<T>::Get() const
 	{
 		ASSERT(uniformBuffer, "Uniform handle is not associated with a UniformBuffer.");

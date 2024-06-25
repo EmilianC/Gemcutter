@@ -4,6 +4,7 @@
 #include "gemcutter/Math/Matrix.h"
 #include "gemcutter/Rendering/Rendering.h"
 #include "gemcutter/Resource/Shareable.h"
+#include "gemcutter/Utilities/Meta.h"
 #include "gemcutter/Utilities/StdExt.h"
 
 #include <span>
@@ -14,12 +15,17 @@
 
 namespace gem
 {
+	template<typename T>
+	concept shader_uniform = meta::is_any_of_v<T,
+		bool, unsigned, int, float, double, vec2, vec3, vec4, mat2, mat3, mat4, quat
+	>;
+
 	// A collection of parameters that are used by a shader.
 	// To be used by a shader, an instance must either be attached to the
 	// shader directly, or to a Material component.
 	class UniformBuffer : public Shareable<UniformBuffer>
 	{
-		template<class T> friend class UniformHandle;
+		template<shader_uniform T> friend class UniformHandle;
 	public:
 		UniformBuffer() = default;
 		~UniformBuffer();
@@ -29,7 +35,7 @@ namespace gem
 
 		// During the initialization phase, appends a new variable to the buffer.
 		// Returns a handle to the newly added uniform.
-		template<class T>
+		template<shader_uniform T>
 		UniformHandle<T> AddUniform(std::string_view name, unsigned count = 1);
 
 		// Once this is called, no more uniforms can be added and the buffer is ready for use.
@@ -41,14 +47,14 @@ namespace gem
 
 		// Once initialized, this sets the value of a uniform.
 		// * If used regularly, consider caching a UniformHandle instead. It will be faster *
-		template<class T>
+		template<shader_uniform T>
 		void SetUniform(std::string_view name, const T& data);
-		template<class T>
+		template<shader_uniform T>
 		void SetUniformArray(std::string_view name, unsigned numElements, T* data);
 
 		// Returns a handle that can be used to directly modify the value of a uniform.
 		// This is more performant then SetUniform() or SetUniformArray().
-		template<class T> [[nodiscard]]
+		template<shader_uniform T> [[nodiscard]]
 		UniformHandle<T> MakeHandle(std::string_view name);
 
 		int GetByteSize() const;
@@ -101,10 +107,9 @@ namespace gem
 	// Provides direct and performant access to a uniform member value.
 	// * No type checking is done. It is your responsibility to ensure the type is correct *
 	// * Usage is unsafe after the source uniform buffer is deleted *
-	template<class T>
+	template<shader_uniform T>
 	class UniformHandle
 	{
-		static_assert(std::is_standard_layout_v<T>, "Uniforms cannot be complex types.");
 	public:
 		UniformHandle<T>() = default;
 		UniformHandle<T>(UniformBuffer& buff, unsigned offset);
