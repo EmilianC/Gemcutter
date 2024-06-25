@@ -45,6 +45,12 @@ namespace gem::meta
 	template<bool... b>
 	constexpr bool none_of_v = none_of<b...>::value;
 
+	template<class T, class... Types>
+	constexpr bool is_any_of_v = (std::is_same_v<T, Types> || ...);
+
+	template<class T, class... Types>
+	constexpr bool is_none_of_v = !(std::is_same_v<T, Types> || ...);
+
 	namespace detail
 	{
 		static inline constexpr unsigned crc_table[] = { 0x0U,

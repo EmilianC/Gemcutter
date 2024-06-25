@@ -68,6 +68,31 @@ TEST_CASE("Metaprogramming")
 		CHECK(!meta::none_of_v<true, true, false>);
 	}
 
+	SECTION("is_any_of")
+	{
+		CHECK(!meta::is_any_of_v<bool>);
+
+		CHECK(meta::is_any_of_v<bool, bool, int, float>);
+		CHECK(meta::is_any_of_v<bool, float, int, bool>);
+
+		CHECK(!meta::is_any_of_v<bool, int, float>);
+		CHECK(!meta::is_any_of_v<bool, double, double>);
+		CHECK(!meta::is_any_of_v<bool, const bool>);
+	}
+
+	SECTION("is_none_of")
+	{
+		CHECK(meta::is_none_of_v<bool>);
+
+		CHECK(meta::is_none_of_v<bool, int, float, double>);
+		CHECK(meta::is_none_of_v<bool, char, float>);
+		CHECK(meta::is_none_of_v<bool, char, char>);
+		CHECK(meta::is_none_of_v<bool, const bool>);
+
+		CHECK(!meta::is_none_of_v<bool, bool, int, float>);
+		CHECK(!meta::is_none_of_v<bool, float, int, bool>);
+	}
+
 	SECTION("GetTypeName")
 	{
 		CHECK(GetTypeName<void>() == "void");
