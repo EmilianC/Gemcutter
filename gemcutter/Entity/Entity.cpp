@@ -291,17 +291,22 @@ namespace gem
 		return isEnabled;
 	}
 
-	ComponentBase& Entity::Add(const loupe::type& compType)
+	bool Entity::CanAdd(const loupe::type& compType) const
 	{
 		ASSERT(compType.is_a(*BaseComponentTypeId), "\"compType\" must refer to a component type.");
 
-#if GEM_DEBUG
 		for (const auto* comp : components)
 		{
-			ASSERT(!comp->IsA(compType), "The Component (or one sharing a hierarchy) already exists on this entity.");
-			ASSERT(!compType.is_a(*comp->typeId), "The Component (or one sharing a hierarchy) already exists on this entity.");
+			if (loupe::find_common_ancestor(comp->GetType(), compType) != BaseComponentTypeId)
+				return false;
 		}
-#endif
+
+		return true;
+	}
+
+	ComponentBase& Entity::Add(const loupe::type& compType)
+	{
+		ASSERT(CanAdd(compType), "The Component (or one sharing a hierarchy) already exists on this entity.");
 
 		auto* newComponent = static_cast<ComponentBase*>(_aligned_malloc(compType.size, compType.alignment));
 		compType.user_construct_at(newComponent, *this);

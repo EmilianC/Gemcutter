@@ -179,6 +179,10 @@ namespace gem
 		// Whether or not this Entity is visible to queries.
 		bool IsEnabled() const;
 
+		// Returns false when the Component type (or one sharing a hierarchy) already exists on this entity.
+		// This is required since Reflection API does not have access to the efficient staticComponentId check.
+		bool CanAdd(const loupe::type&) const;
+
 		// Reflection API equivalent for Add<>().
 		ComponentBase& Add(const loupe::type&);
 
