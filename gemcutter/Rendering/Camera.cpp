@@ -507,7 +507,7 @@ namespace gem
 REFLECT_COMPONENT(gem::Camera, gem::ComponentBase)
 	MEMBERS {
 		REF_PRIVATE_MEMBER(isPerspective, gem::ReadOnly)
-		REF_PRIVATE_MEMBER_GET_SET(fovyDegrees, nullptr, &gem::Camera::SetNearPlane)
+		REF_PRIVATE_MEMBER_GET_SET(fovyDegrees, nullptr, &gem::Camera::SetFovy)
 		REF_PRIVATE_MEMBER_GET_SET(aspectRatio, nullptr, &gem::Camera::SetAspectRatio)
 		REF_PRIVATE_MEMBER_GET_SET(zNear,       nullptr, &gem::Camera::SetNearPlane)
 		REF_PRIVATE_MEMBER_GET_SET(zFar,        nullptr, &gem::Camera::SetFarPlane)
