@@ -3,14 +3,11 @@
 #include "gemcutter/Application/Logging.h"
 
 #include <loupe/loupe.h>
+#include <loupe/metadata.h>
 #include <optional>
 
 namespace gem
 {
-	// Reflection metadata Tags.
-	struct ReadOnly {};
-	struct Hidden {};
-
 	// The core reflection data for the whole program.
 	extern loupe::reflection_blob reflection_tables;
 

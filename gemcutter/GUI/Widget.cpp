@@ -113,8 +113,8 @@ namespace gem
 
 REFLECT(gem::Edge)
 	MEMBERS {
-		REF_MEMBER(anchor)
-		REF_MEMBER(offset)
+		REF_MEMBER(anchor, description("Percentage of total distance from a parent edge."))
+		REF_MEMBER(offset, description("Flat offset from the anchor."))
 	}
 REF_END;
 

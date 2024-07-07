@@ -123,6 +123,6 @@ REFLECT_COMPONENT(gem::Text, gem::Renderable)
 		REF_MEMBER(string)
 		REF_MEMBER(centeredX)
 		REF_MEMBER(centeredY)
-		REF_MEMBER(kerning)
+		REF_MEMBER(kerning, description("Extra spacing between letters."))
 	}
 REF_END;

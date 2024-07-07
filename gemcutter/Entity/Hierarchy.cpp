@@ -251,9 +251,10 @@ namespace gem
 
 REFLECT_COMPONENT(gem::Hierarchy, gem::ComponentBase)
 	MEMBERS {
-		REF_MEMBER(propagateTransform)
-		REF_PRIVATE_MEMBER(parentHierarchy, gem::ReadOnly, gem::Hidden)
-		REF_PRIVATE_MEMBER(parent, gem::ReadOnly, gem::Hidden)
-		REF_PRIVATE_MEMBER(children, gem::ReadOnly, gem::Hidden)
+		REF_MEMBER(propagateTransform,
+			description("Whether or not this Entity propagates its transformations downwards through the hierarchy."))
+		REF_PRIVATE_MEMBER(parentHierarchy, readonly(), hidden())
+		REF_PRIVATE_MEMBER(parent,          readonly(), hidden())
+		REF_PRIVATE_MEMBER(children,        readonly(), hidden())
 	}
 REF_END;

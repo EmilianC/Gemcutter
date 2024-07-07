@@ -195,6 +195,6 @@ REFLECT_COMPONENT(gem::Button, gem::Widget)
 		REF_MEMBER(idleTexture)
 		REF_MEMBER(hoverTexture)
 		REF_MEMBER(pressedTexture)
-		REF_PRIVATE_MEMBER(state, gem::ReadOnly)
+		REF_PRIVATE_MEMBER(state, readonly())
 	}
 REF_END;

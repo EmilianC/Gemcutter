@@ -308,9 +308,9 @@ REF_END;
 REFLECT_COMPONENT(gem::ParticleEmitter, gem::Renderable)
 	MEMBERS {
 		REF_MEMBER(velocity)
-		REF_MEMBER(lifetime)
+		REF_MEMBER(lifetime, min(0.0f))
 		REF_MEMBER(spawnType)
-		REF_MEMBER(spawnPerSecond)
+		REF_MEMBER(spawnPerSecond, min(0.0f))
 		REF_MEMBER(axisX)
 		REF_MEMBER(axisY)
 		REF_MEMBER(axisZ)

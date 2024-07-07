@@ -97,6 +97,6 @@ REFLECT_COMPONENT(gem::Light, gem::ComponentBase)
 		REF_MEMBER(color)
 		REF_MEMBER(attenuationLinear)
 		REF_MEMBER(attenuationQuadratic)
-		REF_MEMBER(angle)
+		REF_MEMBER(angle, range(0.0f, 360.0f))
 	}
 REF_END;

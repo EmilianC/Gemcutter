@@ -556,8 +556,8 @@ REFLECT_SIMPLE(gem::detail::ComponentId);
 
 REFLECT(gem::ComponentBase)
 	MEMBERS {
-		REF_PRIVATE_MEMBER(typeId,    gem::ReadOnly)
-		REF_PRIVATE_MEMBER(isEnabled, gem::ReadOnly)
+		REF_PRIVATE_MEMBER(typeId,    readonly())
+		REF_PRIVATE_MEMBER(isEnabled, readonly())
 	}
 REF_END;
 
@@ -566,8 +566,8 @@ REFLECT(gem::Entity)
 		REF_BASE(gem::Transform)
 	}
 	MEMBERS {
-		REF_PRIVATE_MEMBER(components, gem::ReadOnly)
-		REF_PRIVATE_MEMBER(tags,       gem::ReadOnly)
-		REF_PRIVATE_MEMBER(isEnabled,  gem::ReadOnly)
+		REF_PRIVATE_MEMBER(components, readonly())
+		REF_PRIVATE_MEMBER(tags,       readonly())
+		REF_PRIVATE_MEMBER(isEnabled,  readonly(), display_name("Enabled"))
 	}
 REF_END;

@@ -72,7 +72,6 @@ namespace gem
 		LeftWindows,
 		RightWindows,
 
-		// Mouse buttons
 		MouseLeft = 0x101,
 		MouseRight,
 		MouseMiddle,

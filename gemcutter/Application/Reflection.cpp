@@ -24,6 +24,3 @@ namespace gem
 		BaseResourceTypeId  = reflection_tables.find<class ResourceBase>();
 	}
 }
-
-REFLECT_SIMPLE(gem::ReadOnly);
-REFLECT_SIMPLE(gem::Hidden);

@@ -328,6 +328,6 @@ REFLECT(gem::Key)
 		REF_VALUE(MouseRight)
 		REF_VALUE(MouseMiddle)
 
-		REF_VALUE(NUM_KEYS, gem::Hidden)
+		REF_VALUE(NUM_KEYS, hidden())
 	}
 REF_END;
