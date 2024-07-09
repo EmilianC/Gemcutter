@@ -37,6 +37,9 @@ namespace gem
 	// Results will vary by compiler and are best used for debug purposes only.
 	template<typename T> [[nodiscard]]
 	consteval std::string_view GetTypeName();
+
+	[[nodiscard]] std::string_view GetDisplayName(const loupe::member&);
+	[[nodiscard]] std::string_view GetDisplayName(const loupe::enum_entry&);
 }
 
 #define REFLECT_RESOURCE(resource)         REFLECT(resource)  BASES { REF_BASE(gem::ResourceBase) }

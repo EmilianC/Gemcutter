@@ -23,4 +23,24 @@ namespace gem
 		BaseComponentTypeId = reflection_tables.find<class ComponentBase>();
 		BaseResourceTypeId  = reflection_tables.find<class ResourceBase>();
 	}
+
+	std::string_view GetDisplayName(const loupe::member& member)
+	{
+		if (auto* displayName = member.metadata.find<loupe::metadata::display_name>())
+		{
+			return displayName->name;
+		}
+
+		return member.name;
+	}
+
+	std::string_view GetDisplayName(const loupe::enum_entry& entry)
+	{
+		if (auto* displayName = entry.metadata.find<loupe::metadata::display_name>())
+		{
+			return displayName->name;
+		}
+
+		return entry.name;
+	}
 }
