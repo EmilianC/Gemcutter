@@ -771,66 +771,66 @@ namespace gem
 			if (!appIsRunning) [[unlikely]]
 				return;
 
-				// Record the FPS for the previous second of time.
-				int64_t currentTime = Timer::GetCurrentTick();
-				if (currentTime - lastFpsCapture >= Timer::GetTicksPerSecond())
-				{
-					// We don't want to update the timer variable with "+= 1.0" here. After a lag spike this
-					// would cause FPS to suddenly be recorded more often than once a second.
-					lastFpsCapture = currentTime;
+			// Record the FPS for the previous second of time.
+			int64_t currentTime = Timer::GetCurrentTick();
+			if (currentTime - lastFpsCapture >= Timer::GetTicksPerSecond())
+			{
+				// We don't want to update the timer variable with "+= 1.0" here. After a lag spike this
+				// would cause FPS to suddenly be recorded more often than once a second.
+				lastFpsCapture = currentTime;
 
-					fps = fpsCounter;
-					fpsCounter = 0;
-				}
+				fps = fpsCounter;
+				fpsCounter = 0;
+			}
 
-				// Update to keep up with real time.
-				unsigned updateCount = 0;
-				while (currentTime - lastUpdate >= updateStep)
-				{
+			// Update to keep up with real time.
+			unsigned updateCount = 0;
+			while (currentTime - lastUpdate >= updateStep)
+			{
 #if IMGUI_ENABLED
-					ImGui_ImplWin32_NewFrame();
-					ImGui_ImplOpenGL3_NewFrame();
-					ImGui::NewFrame();
-					updateFunc();
-					ImGui::EndFrame();
+				ImGui_ImplWin32_NewFrame();
+				ImGui_ImplOpenGL3_NewFrame();
+				ImGui::NewFrame();
+				updateFunc();
+				ImGui::EndFrame();
 #else
-					updateFunc();
+				updateFunc();
 #endif
-					// The user might have requested to exit during update().
-					if (!appIsRunning) [[unlikely]]
-						return;
+				// The user might have requested to exit during updateFunc().
+				if (!appIsRunning) [[unlikely]]
+					return;
 
-						lastUpdate += updateStep;
-						updateCount++;
+				lastUpdate += updateStep;
+				updateCount++;
 
-						if (skipToPresent) [[unlikely]]
-							{
-								lastUpdate = currentTime;
-								skipToPresent = false;
-								break;
-							}
-
-								// Avoid spiral of death. This also allows us to keep rendering even in a worst-case scenario.
-								if (updateCount >= MAX_CONCURRENT_UPDATES)
-									break;
-				}
-
-				if (updateCount > 0)
+				if (skipToPresent) [[unlikely]]
 				{
-					// If the frame rate is uncapped or we are due for a new frame, render the latest game-state.
-					if (FPSCap == 0 || (currentTime - lastRender) >= renderStep)
-					{
-						drawFunc();
-#if IMGUI_ENABLED
-						ImGui::Render();
-						ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-#endif
-						SwapBuffers(deviceContext);
-
-						lastRender += renderStep;
-						fpsCounter++;
-					}
+					lastUpdate = currentTime;
+					skipToPresent = false;
+					break;
 				}
+
+				// Avoid spiral of death. This also allows us to keep rendering even in a worst-case scenario.
+				if (updateCount >= MAX_CONCURRENT_UPDATES)
+					break;
+			}
+
+			if (updateCount > 0)
+			{
+				// If the frame rate is uncapped or we are due for a new frame, render the latest game-state.
+				if (FPSCap == 0 || (currentTime - lastRender) >= renderStep)
+				{
+					drawFunc();
+#if IMGUI_ENABLED
+					ImGui::Render();
+					ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+#endif
+					SwapBuffers(deviceContext);
+
+					lastRender += renderStep;
+					fpsCounter++;
+				}
+			}
 		}
 	}
 
