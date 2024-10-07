@@ -9,6 +9,7 @@
 #include "gemcutter/Utilities/Meta.h"
 
 #include <span>
+#include <string>
 #include <tuple>
 #include <unordered_map>
 #include <vector>
