@@ -38,6 +38,9 @@ namespace gem
 	template<typename T> [[nodiscard]]
 	consteval std::string_view GetTypeName();
 
+	// Returns all component type descriptors (except ComponentBase).
+	std::span<const loupe::type*> GetAllComponentTypes();
+
 	[[nodiscard]] std::string_view GetDisplayName(const loupe::member&);
 	[[nodiscard]] std::string_view GetDisplayName(const loupe::enum_entry&);
 }
