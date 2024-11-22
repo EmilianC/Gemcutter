@@ -37,6 +37,7 @@ namespace gem
 				componentTypes.push_back(&type);
 			}
 		}
+		componentTypes.shrink_to_fit();
 	}
 
 	std::string_view GetDisplayName(const loupe::member& member)
