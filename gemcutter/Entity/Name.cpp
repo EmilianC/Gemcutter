@@ -4,36 +4,6 @@
 
 namespace gem
 {
-	void LogSceneGraphRecursive(const Entity& entity, unsigned tabLevel)
-	{
-		std::string output;
-		output.append(tabLevel * 2, ' ');
-
-		if (auto* nameComp = entity.Try<Name>())
-		{
-			output += "|- " + nameComp->name;
-		}
-		else
-		{
-			output += "|- NO_NAME";
-		}
-
-		Log(output);
-
-		if (auto* hierarchy = entity.Try<Hierarchy>())
-		{
-			for (auto& child : hierarchy->GetChildren())
-			{
-				LogSceneGraphRecursive(*child, tabLevel + 1);
-			}
-		}
-	}
-
-	void LogSceneGraph(const Entity& root)
-	{
-		LogSceneGraphRecursive(root, 0);
-	}
-
 	Entity* FindChild(const Entity& root, std::string_view name)
 	{
 		if (name.empty())

@@ -7,9 +7,6 @@
 
 namespace gem
 {
-	// Writes the sub-tree of Entity names to the program log.
-	void LogSceneGraph(const Entity& root);
-
 	// Searches the given entity's sub-tree for the first child with the specified name.
 	Entity* FindChild(const Entity& root, std::string_view name);
 
