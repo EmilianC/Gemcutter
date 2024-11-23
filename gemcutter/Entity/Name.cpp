@@ -36,6 +36,11 @@ namespace gem
 
 	Entity* FindChild(const Entity& root, std::string_view name)
 	{
+		if (name.empty())
+		{
+			return nullptr;
+		}
+
 		auto& hierarchy = root.Get<Hierarchy>();
 
 		for (auto& child : hierarchy.GetChildren())
@@ -60,6 +65,11 @@ namespace gem
 
 	Entity* FindEntity(std::string_view name)
 	{
+		if (name.empty())
+		{
+			return nullptr;
+		}
+
 		for (auto& comp : All<Name>())
 		{
 			if (comp.name == name)
