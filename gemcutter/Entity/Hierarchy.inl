@@ -1,10 +1,10 @@
 // Copyright (c) 2022 Emilian Cioca
 namespace gem
 {
-	template<class Functor>
-	void Hierarchy::ForEachChild(bool recursive, Functor&& Func)
+	template<class Self, class Functor>
+	void Hierarchy::ForEachChild(this Self& self, bool recursive, Functor&& Func)
 	{
-		for (Entity::Ptr& entity : children)
+		for (auto& entity : self.children)
 		{
 			Func(*entity);
 
