@@ -52,24 +52,19 @@ namespace gem
 	template<typename... Params>
 	auto Delegate<Return(Args...)>::operator()(Params&&... params) -> std::conditional_t<HasReturnValue, std::optional<Return>, void>
 	{
-		if (!IsPtrNull(lifetimePtr))
-		{
-			if (lifetimePtr.expired())
-			{
-				Clear();
-			}
-		}
-
 		if constexpr (HasReturnValue)
 		{
 			std::optional<Return> result;
 			if (func)
 			{
-				result = func(std::forward<Params>(params)...);
-			}
-			else
-			{
-				Clear();
+				if (IsPtrNull(lifetimePtr) || !lifetimePtr.expired())
+				{
+					result = func(std::forward<Params>(params)...);
+				}
+				else
+				{
+					Clear();
+				}
 			}
 
 			return result;
@@ -78,11 +73,14 @@ namespace gem
 		{
 			if (func)
 			{
-				func(std::forward<Params>(params)...);
-			}
-			else
-			{
-				Clear();
+				if (IsPtrNull(lifetimePtr) || !lifetimePtr.expired())
+				{
+					func(std::forward<Params>(params)...);
+				}
+				else
+				{
+					Clear();
+				}
 			}
 		}
 	}
@@ -100,6 +98,10 @@ namespace gem
 	DelegateHandle Dispatcher<Return(Args...)>::Add(std::function<Return(Args...)> functor)
 	{
 		ASSERT(functor, "'functor' is null.");
+#ifdef GEM_DEBUG
+		ASSERT(!dispatching,
+			"Adding a new functor cannot be done safely because the Dispatcher is currently being invoked higher in the call stack.");
+#endif
 
 		const auto id = GenerateUniqueId<detail::DelegateId>();
 		bindings.emplace_back(std::weak_ptr<void>{}, std::move(functor), id);
@@ -112,6 +114,10 @@ namespace gem
 	{
 		ASSERT(functor, "'functor' is null.");
 		ASSERT(!lifetimeObject.expired(), "'lifetimeObject' is already expired.");
+#ifdef GEM_DEBUG
+		ASSERT(!dispatching,
+			"Adding a new functor cannot be done safely because the Dispatcher is currently being invoked higher in the call stack.");
+#endif
 
 		bindings.emplace_back(std::move(lifetimeObject), std::move(functor), detail::DelegateId{});
 	}
@@ -120,6 +126,10 @@ namespace gem
 	void Dispatcher<Return(Args...)>::AddOwned(std::function<Return(Args...)> functor)
 	{
 		ASSERT(functor, "'functor' is null.");
+#ifdef GEM_DEBUG
+		ASSERT(!dispatching,
+			"Adding a new functor cannot be done safely because the Dispatcher is currently being invoked higher in the call stack.");
+#endif
 
 		const auto id = GenerateUniqueId<detail::DelegateId>();
 		bindings.emplace_back(std::weak_ptr<void>{}, std::move(functor), id);
@@ -128,6 +138,12 @@ namespace gem
 	template<typename Return, typename... Args>
 	void Dispatcher<Return(Args...)>::Clear()
 	{
+#ifdef GEM_DEBUG
+		ASSERT(!dispatching,
+			"Clear() cannot be executed safely because the Dispatcher is currently being invoked higher in the call stack.\n"
+			"Consider calling Expire() on a DelegateHandle instead.");
+#endif
+
 		bindings.clear();
 	}
 
@@ -147,34 +163,30 @@ namespace gem
 	template<typename... Params>
 	void Dispatcher<Return(Args...)>::Dispatch(Params&&... params)
 	{
-		const unsigned size = bindings.size();
-		for (unsigned i = 0; i < size; ++i)
+#ifdef GEM_DEBUG
+		ASSERT(!dispatching,
+			"Call to Dispatch() cannot be executed because it is already being dispatched higher in the call stack.");
+		dispatching = true;
+#endif
+
+		for (auto itr = std::begin(bindings); itr < std::end(bindings);)
 		{
-			Binding& binding = bindings[i];
+			Binding& binding = *itr;
 
-			if (!IsPtrNull(binding.lifetimePtr))
-			{
-				if (binding.lifetimePtr.expired())
-				{
-					binding.func = nullptr;
-					continue;
-				}
-			}
-
-			if (binding.func)
+			if (binding.func && (IsPtrNull(binding.lifetimePtr) || !binding.lifetimePtr.expired()))
 			{
 				binding.func(std::forward<Params>(params)...);
+				++itr;
+			}
+			else
+			{
+				itr = bindings.erase(itr);
 			}
 		}
 
-		// Clear empty bindings now that it is safe to do so.
-		for (unsigned i = size; i-- > 0;)
-		{
-			if (!bindings[i].func)
-			{
-				bindings.erase(bindings.begin() + i);
-			}
-		}
+#ifdef GEM_DEBUG
+		dispatching = false;
+#endif
 	}
 
 	template<typename Return, typename... Args>

@@ -164,9 +164,60 @@ TEST_CASE("Events")
 			CHECK(countB == 3);
 		}
 
+		SECTION("Expiry During Dispatch")
+		{
+			auto lifetimeObjectC = std::make_shared<int>(0);
+			auto lifetimeObjectD = std::make_shared<int>(0);
+			int countC = 0;
+			int countD = 0;
+			bool shouldRemoveA = false;
+			bool shouldRemoveD = false;
+
+			dispatcher.Add(lifetimeObjectC, [&]() {
+				countC++;
+
+				if (shouldRemoveA)
+				{
+					handleA.Expire();
+					shouldRemoveA = false;
+				}
+
+				if (shouldRemoveD)
+				{
+					lifetimeObjectD.reset();
+					shouldRemoveD = false;
+				}
+			});
+
+			dispatcher.Add(lifetimeObjectD, [&]() { countD++; });
+
+			dispatcher.Dispatch();
+			CHECK(countA == 3);
+			CHECK(countB == 3);
+			CHECK(countC == 1);
+			CHECK(countD == 1);
+
+			shouldRemoveA = true;
+			dispatcher.Dispatch();
+			CHECK(countA == 4);
+			CHECK(countB == 4);
+			CHECK(countC == 2);
+			CHECK(countD == 2);
+			CHECK(!shouldRemoveA);
+
+			shouldRemoveD = true;
+			dispatcher.Dispatch();
+			CHECK(countA == 4);
+			CHECK(countB == 5);
+			CHECK(countC == 3);
+			CHECK(countD == 2);
+			CHECK(!shouldRemoveD);
+		}
+
 		SECTION("Moved")
 		{
 			Dispatcher movedDispatcher = std::move(dispatcher);
+			CHECK(!dispatcher);
 			CHECK(movedDispatcher);
 
 			movedDispatcher.Dispatch();

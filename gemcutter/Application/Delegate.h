@@ -117,6 +117,8 @@ namespace gem
 		// Checks if at least one functor is bound, but does not verify that its lifetime is valid.
 		operator bool() const;
 
+		// Invokes all the bound and valid functors.
+		// Functors cannot be added or removed during the dispatch, except through a DelegateHandle's Expire().
 		template<typename... Params>
 		void Dispatch(Params&&... params);
 
@@ -131,6 +133,10 @@ namespace gem
 		};
 
 		std::vector<Binding> bindings;
+
+#ifdef GEM_DEBUG
+		bool dispatching = false;
+#endif
 	};
 
 	Delegate()   -> Delegate<void()>;
