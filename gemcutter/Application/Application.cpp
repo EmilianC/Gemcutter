@@ -82,7 +82,7 @@ namespace
 
 		if (!wglSwapIntervalEXT(modeValue))
 		{
-			gem::Error("Failed to change VSync mode to (%s).", EnumToString(mode));
+			gem::Error("Failed to change VSync mode to (%s).", EnumToString(mode).data());
 			return false;
 		}
 
