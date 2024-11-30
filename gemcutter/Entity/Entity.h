@@ -52,7 +52,7 @@ namespace gem
 
 	private:
 		// The type descriptor of the instantiated component.
-		const loupe::type* typeId;
+		const loupe::type* typeId = nullptr;
 
 		bool isEnabled = true;
 
@@ -77,7 +77,6 @@ namespace gem
 	{
 	public:
 		Component(Entity& owner);
-		virtual ~Component() = default;
 
 		// Used to detect if a type is a first-order decedent from Component<>.
 		// This enables some optimizations in templated functions.
