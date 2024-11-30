@@ -627,8 +627,8 @@ namespace gem
 
 		size_t pos = block.start;
 
-		char type[16] = { '\0' };
-		char name[128] = { '\0' };
+		char type[16] = {};
+		char name[128] = {};
 		unsigned Id = 0;
 
 		while (pos < block.end)
@@ -673,7 +673,7 @@ namespace gem
 
 		// The first keyword in the block might be an external reference.
 		size_t pos = block.start;
-		char includePath[256] = { '\0' };
+		char includePath[256] = {};
 		while (pos < block.end)
 		{
 			if (!std::isspace(block.source[pos]))
@@ -729,8 +729,8 @@ namespace gem
 
 		size_t pos = block.start;
 
-		char modifer[32] = { '\0' };
-		char name[128] = { '\0' };
+		char modifer[32] = {};
+		char name[128] = {};
 		unsigned Id = 0;
 
 		while (pos < block.end)
@@ -1065,8 +1065,8 @@ namespace gem
 
 		size_t pos = block.start;
 
-		char type[32] = { '\0' };
-		char name[128] = { '\0' };
+		char type[32] = {};
+		char name[128] = {};
 		unsigned Id = 0;
 
 		while (pos < block.end)

@@ -489,7 +489,7 @@ namespace gem
 		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
 		glReadBuffer(GL_COLOR_ATTACHMENT0 + index);
 
-		unsigned char pixel[4] = { 0 };
+		unsigned char pixel[4] = {};
 		glReadPixels(x, y, 1, 1, ResolvePixelFormat(format), GL_UNSIGNED_BYTE, pixel);
 		outR = pixel[0];
 		outG = pixel[1];
@@ -513,7 +513,7 @@ namespace gem
 		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
 		glReadBuffer(GL_COLOR_ATTACHMENT0 + index);
 
-		unsigned short pixel[4] = { 0 };
+		unsigned short pixel[4] = {};
 		glReadPixels(x, y, 1, 1, ResolvePixelFormat(format), GL_UNSIGNED_SHORT, pixel);
 		outR = pixel[0];
 		outG = pixel[1];
@@ -537,7 +537,7 @@ namespace gem
 		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
 		glReadBuffer(GL_COLOR_ATTACHMENT0 + index);
 
-		unsigned pixel[4] = { 0 };
+		unsigned pixel[4] = {};
 		glReadPixels(x, y, 1, 1, ResolvePixelFormat(format), GL_UNSIGNED_INT, pixel);
 		outR = pixel[0];
 		outG = pixel[1];

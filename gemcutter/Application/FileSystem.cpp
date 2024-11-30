@@ -100,7 +100,7 @@ namespace gem
 			return false;
 		}
 
-		char result[_MAX_EXT] = { '\0' };
+		char result[_MAX_EXT] = {};
 		if (_splitpath_s(path.data(), nullptr, 0, nullptr, 0, nullptr, 0, result, _MAX_EXT) != SUCCESS)
 		{
 			Error("FileSystem: Invalid path.");
@@ -185,7 +185,7 @@ namespace gem
 
 	std::string GetCurrentDirectory()
 	{
-		char result[MAX_PATH] = { '\0' };
+		char result[MAX_PATH] = {};
 		GetCurrentDirectoryA(MAX_PATH, result);
 
 		return result;
@@ -216,7 +216,7 @@ namespace gem
 			return '\0';
 		}
 
-		char result[_MAX_DRIVE] = { '\0' };
+		char result[_MAX_DRIVE] = {};
 		if (_splitpath_s(path.data(), result, _MAX_DRIVE, nullptr, 0, nullptr, 0, nullptr, 0) != SUCCESS)
 		{
 			Error("FileSystem: Invalid path.");
@@ -236,8 +236,8 @@ namespace gem
 			return result;
 		}
 
-		char drive[_MAX_DRIVE] = { '\0' };
-		char dir[_MAX_DIR] = { '\0' };
+		char drive[_MAX_DRIVE] = {};
+		char dir[_MAX_DIR] = {};
 		if (_splitpath_s(path.data(), drive, _MAX_DRIVE, dir, _MAX_DIR, nullptr, 0, nullptr, 0) != SUCCESS)
 		{
 			Error("FileSystem: Invalid path.");
@@ -264,7 +264,7 @@ namespace gem
 			return {};
 		}
 
-		char result[_MAX_FNAME] = { '\0' };
+		char result[_MAX_FNAME] = {};
 		if (_splitpath_s(path.data(), nullptr, 0, nullptr, 0, result, _MAX_FNAME, nullptr, 0) != SUCCESS)
 		{
 			Error("FileSystem: Invalid path.");
@@ -282,7 +282,7 @@ namespace gem
 			return {};
 		}
 
-		char result[_MAX_EXT] = { '\0' };
+		char result[_MAX_EXT] = {};
 		if (_splitpath_s(path.data(), nullptr, 0, nullptr, 0, nullptr, 0, result, _MAX_EXT) != SUCCESS)
 		{
 			Error("FileSystem: Invalid path.");

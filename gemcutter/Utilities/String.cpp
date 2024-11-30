@@ -7,7 +7,7 @@
 namespace
 {
 	constexpr unsigned BUFFER_SIZE = 1024;
-	char buffer[BUFFER_SIZE] = { '\0' };
+	char buffer[BUFFER_SIZE] = {};
 }
 
 namespace gem
