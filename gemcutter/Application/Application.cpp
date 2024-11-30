@@ -364,8 +364,7 @@ namespace
 			}
 
 			// Get the function we can use to generate a modern context.
-			auto wglCreateContextAttribsARB = reinterpret_cast<PFNWGLCREATECONTEXTATTRIBSARBPROC>(wglGetProcAddress("wglCreateContextAttribsARB"));
-			if (wglCreateContextAttribsARB)
+			if (auto wglCreateContextAttribsARB = reinterpret_cast<PFNWGLCREATECONTEXTATTRIBSARBPROC>(wglGetProcAddress("wglCreateContextAttribsARB")))
 			{
 				// Create modern OpenGL context using the new function and delete the old one.
 				renderContext = wglCreateContextAttribsARB(deviceContext, 0, attribs);

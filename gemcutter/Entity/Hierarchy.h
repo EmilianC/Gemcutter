@@ -63,7 +63,7 @@ namespace gem
 		const auto& GetChildren() const { return children; }
 		auto& GetChildren() { return children; }
 
-		// Iterates over all direct children, and optionally all decedents. 
+		// Iterates over all direct children, and optionally all decedents.
 		// Children should not be added or removed in during this function.
 		template<class Self, class Functor>
 		void ForEachChild(this Self& self, bool recursive, Functor&& Func);

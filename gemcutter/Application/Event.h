@@ -53,7 +53,7 @@ namespace gem
 	{
 		friend Listener<derived>;
 	public:
-		virtual ~Event() = default;
+		~Event() override = default;
 
 		// Returns true if at least one listener responds to this event.
 		bool HasListeners() const final override;
