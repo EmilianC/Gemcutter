@@ -1,6 +1,11 @@
 // Copyright (c) 2022 Emilian Cioca
 #include "Reflection.h"
 
+namespace
+{
+	std::vector<const loupe::type*> componentTypes;
+}
+
 namespace gem
 {
 	loupe::reflection_blob reflection_tables;
@@ -8,7 +13,6 @@ namespace gem
 	const loupe::type* EntityTypeId = nullptr;
 	const loupe::type* BaseComponentTypeId = nullptr;
 	const loupe::type* BaseResourceTypeId = nullptr;
-	std::vector<const loupe::type*> componentTypes;
 
 	void InitializeReflectionTables()
 	{

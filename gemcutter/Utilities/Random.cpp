@@ -7,10 +7,13 @@
 #include <loupe/loupe.h>
 #include <random>
 
-namespace gem
+namespace
 {
 	std::mt19937 engine;
+}
 
+namespace gem
+{
 	void SeedRandomNumberGenerator()
 	{
 		std::random_device rd;
