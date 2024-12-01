@@ -68,23 +68,23 @@ namespace gem
 		public:
 			VertexRange(VertexBuffer& buffer, const VertexStream& _stream, VertexAccess access)
 				: mapping(buffer.MapBuffer(access))
-				, stream(_stream)
+				, stream(&_stream)
 			{
 			}
 
 			VertexIterator<Type> begin()
 			{
-				return { mapping.GetPtr() + stream.startOffset, stream.stride };
+				return { mapping.GetPtr() + stream->startOffset, stream->stride };
 			}
 
 			VertexIterator<Type> end()
 			{
-				return { mapping.GetPtr() + stream.startOffset + mapping.GetBuffer().GetSize(), stream.stride };
+				return { mapping.GetPtr() + stream->startOffset + mapping.GetBuffer().GetSize(), stream->stride };
 			}
 
 		private:
 			BufferMapping mapping;
-			const VertexStream& stream;
+			const VertexStream* stream;
 		};
 	}
 

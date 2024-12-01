@@ -21,6 +21,9 @@ namespace gem
 		BufferMapping(VertexBuffer& buffer, VertexAccess accessMode);
 		~BufferMapping();
 
+		BufferMapping(const BufferMapping&) = delete;
+		BufferMapping& operator=(const BufferMapping&) = delete;
+
 		void ZeroData(unsigned start, unsigned size);
 		void SetData(unsigned start, unsigned size, const void* source);
 
@@ -37,7 +40,7 @@ namespace gem
 		void SetRestartIndex(unsigned offset);
 
 	private:
-		VertexBuffer& buffer;
+		VertexBuffer* buffer;
 		unsigned char* data;
 	};
 

@@ -11,32 +11,32 @@
 namespace gem
 {
 	BufferMapping::BufferMapping(VertexBuffer& _buffer, VertexAccess accessMode)
-		: buffer(_buffer)
+		: buffer(&_buffer)
 	{
-		buffer.Bind();
-		data = static_cast<unsigned char*>(glMapBuffer(buffer.target, ResolveVertexAccess(accessMode)));
-		buffer.UnBind();
+		buffer->Bind();
+		data = static_cast<unsigned char*>(glMapBuffer(buffer->target, ResolveVertexAccess(accessMode)));
+		buffer->UnBind();
 
 		ASSERT(data, "Failed to map VertexBuffer.");
 	}
 
 	BufferMapping::~BufferMapping()
 	{
-		buffer.Bind();
-		glUnmapBuffer(buffer.target);
-		buffer.UnBind();
+		buffer->Bind();
+		glUnmapBuffer(buffer->target);
+		buffer->UnBind();
 	}
 
 	void BufferMapping::ZeroData(unsigned start, unsigned size)
 	{
-		ASSERT(start + size <= buffer.size, "Out of bounds.");
+		ASSERT(start + size <= buffer->size, "Out of bounds.");
 
 		std::memset(data + start, 0, size);
 	}
 
 	void BufferMapping::SetData(unsigned start, unsigned size, const void* source)
 	{
-		ASSERT(start + size <= buffer.size, "Out of bounds.");
+		ASSERT(start + size <= buffer->size, "Out of bounds.");
 
 		std::memcpy(data + start, source, size);
 	}
@@ -48,13 +48,13 @@ namespace gem
 
 	const VertexBuffer& BufferMapping::GetBuffer() const
 	{
-		return buffer;
+		return *buffer;
 	}
 
 	void BufferMapping::FillIndexSequence(unsigned start, unsigned count, unsigned short firstIndex)
 	{
-		ASSERT(buffer.target == GL_ELEMENT_ARRAY_BUFFER, "Index sequences can only used for index buffers.");
-		ASSERT(start + count * sizeof(unsigned short) <= buffer.size, "Out of bounds.");
+		ASSERT(buffer->target == GL_ELEMENT_ARRAY_BUFFER, "Index sequences can only used for index buffers.");
+		ASSERT(start + count * sizeof(unsigned short) <= buffer->size, "Out of bounds.");
 
 		auto* begin = reinterpret_cast<unsigned short*>(data + start);
 		auto* end   = begin + count;
@@ -63,8 +63,8 @@ namespace gem
 
 	void BufferMapping::SetRestartIndex(unsigned offset)
 	{
-		ASSERT(buffer.target == GL_ELEMENT_ARRAY_BUFFER, "Restart indices can only be set inside index buffers.");
-		ASSERT(offset <= buffer.size, "Out of bounds.");
+		ASSERT(buffer->target == GL_ELEMENT_ARRAY_BUFFER, "Restart indices can only be set inside index buffers.");
+		ASSERT(offset <= buffer->size, "Out of bounds.");
 
 		auto* dest = reinterpret_cast<unsigned short*>(data + offset);
 		*dest = VertexBuffer::RESTART_INDEX;
