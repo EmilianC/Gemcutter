@@ -277,7 +277,7 @@ namespace gem
 		}
 
 		// Add as a new define.
-		defines.push_back({ std::string(name), std::string(value) });
+		defines.emplace_back(std::string(name), std::string(value));
 	}
 
 	void ShaderVariantControl::Switch(std::string_view name, bool state)
@@ -307,7 +307,7 @@ namespace gem
 			}
 		}
 
-		defines.push_back({std::string(name), ""});
+		defines.emplace_back(std::string(name), "");
 	}
 
 	bool ShaderVariantControl::IsDefined(std::string_view name) const
