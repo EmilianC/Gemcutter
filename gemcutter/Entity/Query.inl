@@ -126,7 +126,7 @@ namespace gem
 			using pointer           = Entity**;
 			using reference         = Entity*&;
 
-			LogicalIterator(EntityIterator _itr1, Iterator _itr2)
+			LogicalIterator(const EntityIterator& _itr1, const Iterator& _itr2)
 				: itr1(_itr1), itr2(_itr2)
 			{
 				if constexpr (isLeaf)
