@@ -857,10 +857,9 @@ namespace gem
 		return { vec.x * scalar, vec.y * scalar };
 	}
 
-	vec2 operator/(float divisor, const vec2& vec)
+	vec2 operator/(float dividend, const vec2& vec)
 	{
-		float inverse = 1.0f / divisor;
-		return { vec.x * inverse, vec.y * inverse };
+		return { dividend / vec.x, dividend / vec.y };
 	}
 
 	vec3 operator*(float scalar, const vec3& vec)
@@ -868,10 +867,9 @@ namespace gem
 		return { vec.x * scalar, vec.y * scalar, vec.z * scalar };
 	}
 
-	vec3 operator/(float divisor, const vec3& vec)
+	vec3 operator/(float dividend, const vec3& vec)
 	{
-		float inverse = 1.0f / divisor;
-		return { vec.x * inverse, vec.y * inverse, vec.z * inverse };
+		return { dividend / vec.x, dividend / vec.y, dividend / vec.z };
 	}
 
 	vec4 operator*(float scalar, const vec4& vec)
@@ -879,10 +877,9 @@ namespace gem
 		return { vec.x * scalar, vec.y * scalar, vec.z * scalar, vec.w * scalar };
 	}
 
-	vec4 operator/(float divisor, const vec4& vec)
+	vec4 operator/(float dividend, const vec4& vec)
 	{
-		float inverse = 1.0f / divisor;
-		return { vec.x * inverse, vec.y * inverse, vec.z * inverse, vec.w * inverse };
+		return { dividend / vec.x, dividend / vec.y, dividend / vec.z, dividend / vec.w };
 	}
 }
 
