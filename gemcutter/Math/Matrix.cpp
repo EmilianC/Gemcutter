@@ -534,6 +534,21 @@ namespace gem
 			data[0] * data[4] - data[3] * data[1]) / det;
 	}
 
+	void mat3::Cofactor()
+	{
+		*this = mat3 {
+			 (data[4] * data[8] - data[7] * data[5]),
+			-(data[3] * data[8] - data[6] * data[5]),
+			 (data[3] * data[7] - data[6] * data[4]),
+			-(data[1] * data[8] - data[7] * data[2]),
+			 (data[0] * data[8] - data[6] * data[2]),
+			-(data[0] * data[7] - data[6] * data[1]),
+			 (data[1] * data[5] - data[4] * data[2]),
+			-(data[0] * data[5] - data[3] * data[2]),
+			 (data[0] * data[4] - data[3] * data[1])
+		};
+	}
+
 	mat3 mat3::GetTranspose() const
 	{
 		mat3 result(*this);
@@ -545,6 +560,13 @@ namespace gem
 	{
 		mat3 result(*this);
 		result.Inverse();
+		return result;
+	}
+
+	mat3 mat3::GetCofactor() const
+	{
+		mat3 result(*this);
+		result.Cofactor();
 		return result;
 	}
 

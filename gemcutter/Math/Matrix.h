@@ -105,8 +105,10 @@ namespace gem
 
 		void Transpose();
 		void Inverse();
+		void Cofactor();
 		mat3 GetTranspose() const;
 		mat3 GetInverse() const;
+		mat3 GetCofactor() const;
 		float GetDeterminant() const;
 
 		void Scale(const vec3& scale);
