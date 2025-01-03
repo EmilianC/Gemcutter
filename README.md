@@ -58,7 +58,7 @@ Future highlight features include:
 
 # Dependencies
 All Dependencies used under their respective licenses. Copyright is held by their respective owners.
-* [GLEW 2.0.0](http://glew.sourceforge.net/)
+* [GLEW 2.2.0](https://github.com/Perlmint/glew-cmake)
 * [FreeType 2](https://www.freetype.org/)
 * [Catch 2.13.8](https://github.com/catchorg/Catch2/tree/v2.x)
 * [SoLoud](https://github.com/EmilianC/soloud)
