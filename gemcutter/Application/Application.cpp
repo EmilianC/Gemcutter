@@ -18,8 +18,8 @@
 #include "gemcutter/Resource/VertexArray.h"
 #include "gemcutter/Sound/SoundSystem.h"
 
-#include <glew/glew.h>
-#include <glew/wglew.h>
+#include <GL/glew.h>
+#include <GL/wglew.h>
 #include <Windows.h>
 #if IMGUI_ENABLED
 	#include <imgui.h>

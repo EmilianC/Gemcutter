@@ -32,11 +32,13 @@ endforeach()
 
 # GLEW #
 set(CMAKE_FOLDER "${PARENT_FOLDER}/external/glew")
-add_library(glew INTERFACE)
-target_include_directories(glew INTERFACE glew/)
-target_link_directories(glew INTERFACE glew/)
-target_link_libraries(glew INTERFACE glew32s${CMAKE_STATIC_LIBRARY_SUFFIX})
-target_compile_definitions(glew INTERFACE GLEW_STATIC)
+set(glew-cmake_BUILD_SHARED OFF CACHE BOOL "")
+set(glew-cmake_BUILD_STATIC ON  CACHE BOOL "")
+set(ONLY_LIBS               ON  CACHE BOOL "")
+cmake_policy(PUSH)
+set(CMAKE_POLICY_DEFAULT_CMP0069 NEW) # Allow IPO
+add_subdirectory(glew)
+cmake_policy(POP)
 
 # Imgui #
 if (ENABLE_IMGUI_SUPPORT OR ENABLE_IMGUI_DEV_SUPPORT)
@@ -87,6 +89,8 @@ set(SOLOUD_DYNAMIC               OFF CACHE BOOL "")
 set(SOLOUD_GENERATE_GLUE         OFF CACHE BOOL "")
 set(SOLOUD_INSTALL               OFF CACHE BOOL "")
 set(SOLOUD_STATIC                ON  CACHE BOOL "")
-set(CMAKE_POLICY_DEFAULT_CMP0069 NEW) # Allow LTO
+cmake_policy(PUSH)
+set(CMAKE_POLICY_DEFAULT_CMP0069 NEW) # Allow IPO
 add_subdirectory(soloud/contrib)
+cmake_policy(POP)
 target_include_directories(soloud INTERFACE soloud/include/)

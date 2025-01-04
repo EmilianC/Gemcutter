@@ -160,7 +160,7 @@ target_link_libraries(gemcutter
 		soil
 		$<$<PLATFORM_ID:Windows>:ws2_32>
 		Xinput
-		glew
+		libglew_static
 		soloud
 		loupe
 )

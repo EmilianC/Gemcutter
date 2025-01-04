@@ -4,7 +4,7 @@
 #include "gemcutter/Math/Math.h"
 #include "gemcutter/Utilities/ScopeGuard.h"
 
-#include <glew/glew.h>
+#include <GL/glew.h>
 #include <loupe/loupe.h>
 #include <numeric>
 

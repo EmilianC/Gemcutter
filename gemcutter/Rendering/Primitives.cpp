@@ -4,7 +4,7 @@
 #include "gemcutter/Math/Vector.h"
 #include "gemcutter/Resource/Texture.h"
 
-#include <glew/glew.h>
+#include <GL/glew.h>
 
 namespace
 {

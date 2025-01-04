@@ -8,7 +8,7 @@
 
 #include <cctype>
 #include <functional>
-#include <glew/glew.h>
+#include <GL/glew.h>
 
 namespace
 {

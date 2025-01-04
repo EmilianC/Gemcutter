@@ -6,7 +6,7 @@
 #include "gemcutter/Math/Vector.h"
 
 #include <algorithm>
-#include <glew/glew.h>
+#include <GL/glew.h>
 #include <loupe/loupe.h>
 
 namespace
