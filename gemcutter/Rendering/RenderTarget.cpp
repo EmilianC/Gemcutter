@@ -8,7 +8,7 @@
 #include "gemcutter/Resource/Texture.h"
 #include "gemcutter/Utilities/ScopeGuard.h"
 
-#include <glew/glew.h>
+#include <GL/glew.h>
 
 namespace
 {

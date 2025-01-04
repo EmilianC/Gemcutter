@@ -5,7 +5,7 @@
 #include "gemcutter/Utilities/ScopeGuard.h"
 
 #include <algorithm>
-#include <glew/glew.h>
+#include <GL/glew.h>
 #include <soil/SOIL.h>
 
 namespace gem

@@ -7,7 +7,7 @@
 #include "gemcutter/Utilities/ScopeGuard.h"
 
 #include <cstdio>
-#include <glew/glew.h>
+#include <GL/glew.h>
 
 namespace gem
 {

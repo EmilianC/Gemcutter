@@ -6,8 +6,7 @@
 #include "gemcutter/Math/Vector.h"
 #include "gemcutter/Utilities/String.h"
 
-#include <glew/glew.h>
-#include <glew/wglew.h>
+#include <GL/glew.h>
 #include <loupe/loupe.h>
 #include <SOIL/SOIL.h>
 

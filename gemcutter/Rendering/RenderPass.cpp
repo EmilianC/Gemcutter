@@ -20,7 +20,7 @@
 // Renderables
 #include "gemcutter/Rendering/Text.h"
 
-#include <glew/glew.h>
+#include <GL/glew.h>
 
 namespace
 {
