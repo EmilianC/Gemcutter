@@ -14,3 +14,6 @@
 [submodule "external/loupe"]
 	path = external/loupe
 	url = https://github.com/EmilianC/Loupe.git
+[submodule "external/glew"]
+	path = external/glew
+	url = https://github.com/Perlmint/glew-cmake.git
