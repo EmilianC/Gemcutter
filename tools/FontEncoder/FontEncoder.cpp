@@ -3,6 +3,7 @@
 #include <gemcutter/Rendering/Rendering.h>
 #include <gemcutter/Utilities/String.h>
 
+#include <array>
 #include <freetype/config/ftheader.h>
 #include <freetype/freetype.h>
 #include <vector>
@@ -125,16 +126,16 @@ bool FontEncoder::Validate(const gem::ConfigTable& metadata, unsigned loadedVers
 bool FontEncoder::Convert(std::string_view source, std::string_view destination, const gem::ConfigTable& metadata) const
 {
 	const std::string outputFile = std::string(destination) + gem::ExtractFilename(source) + ".font";
-	const unsigned width = static_cast<unsigned>(metadata.GetInt("width"));
+	const unsigned width  = static_cast<unsigned>(metadata.GetInt("width"));
 	const unsigned height = static_cast<unsigned>(metadata.GetInt("height"));
 	const auto filter = gem::StringToEnum<gem::TextureFilter>(metadata.GetString("texture_filter")).value();
 
 	// File preparation.
 	std::vector<unsigned char> bitmapBuffer;
-	CharData dimensions[94] = { CharData() };
-	CharData positions[94] = { CharData() };
-	CharData advances[94] = { CharData() };
-	bool masks[94] = { false }; // If a character is present in the font face.
+	std::array<CharData, 94> dimensions;
+	std::array<CharData, 94> positions;
+	std::array<CharData, 94> advances;
+	std::array<bool, 94> masks; // If a character is present in the font face.
 
 	// FreeType variables.
 	FT_Library library;
@@ -177,15 +178,16 @@ bool FontEncoder::Convert(std::string_view source, std::string_view destination,
 			return false;
 		}
 
-		if (charIndex != 0 &&
-			face->glyph->bitmap.width * face->glyph->bitmap.rows != 0)
+		const unsigned numRows = face->glyph->bitmap.rows;
+		const unsigned numColumns = face->glyph->bitmap.width;
+		if (charIndex != 0 && numRows > 1 && numColumns != 0)
 		{
 			// Save the bitmap as a flipped image.
-			for (int i = face->glyph->bitmap.rows - 1; i >= 0; i--)
+			for (unsigned i = numRows; i-- > 0;)
 			{
-				for (int j = 0; j < face->glyph->bitmap.width; ++j)
+				for (unsigned j = 0; j < numColumns; ++j)
 				{
-					bitmapBuffer.push_back(face->glyph->bitmap.buffer[face->glyph->bitmap.width * i + j]);
+					bitmapBuffer.push_back(face->glyph->bitmap.buffer[numColumns * i + j]);
 				}
 			}
 
@@ -196,11 +198,11 @@ bool FontEncoder::Convert(std::string_view source, std::string_view destination,
 			masks[index] = false;
 		}
 
-		dimensions[index].x = face->glyph->bitmap.width;
-		dimensions[index].y = face->glyph->bitmap.rows;
+		dimensions[index].x = numColumns;
+		dimensions[index].y = numRows;
 
 		positions[index].x = face->glyph->bitmap_left;
-		positions[index].y = face->glyph->bitmap_top - face->glyph->bitmap.rows;
+		positions[index].y = face->glyph->bitmap_top - numRows;
 
 		advances[index].x = face->glyph->advance.x / 64;
 		advances[index].y = face->glyph->advance.y / 64;
@@ -215,18 +217,18 @@ bool FontEncoder::Convert(std::string_view source, std::string_view destination,
 	}
 
 	// Write header.
-	unsigned long int bitmapSize = bitmapBuffer.size();
-	fwrite(&bitmapSize, sizeof(unsigned long int), 1, fontFile);
-	fwrite(&width, sizeof(unsigned), 1, fontFile);
-	fwrite(&height, sizeof(unsigned), 1, fontFile);
-	fwrite(&filter, sizeof(gem::TextureFilter), 1, fontFile);
+	const size_t bitmapSize = bitmapBuffer.size();
+	fwrite(&bitmapSize, sizeof(bitmapSize), 1, fontFile);
+	fwrite(&width, sizeof(width), 1, fontFile);
+	fwrite(&height, sizeof(height), 1, fontFile);
+	fwrite(&filter, sizeof(filter), 1, fontFile);
 
 	// Write Data.
 	fwrite(bitmapBuffer.data(), sizeof(unsigned char), bitmapSize, fontFile);
-	fwrite(dimensions, sizeof(CharData), 94, fontFile);
-	fwrite(positions, sizeof(CharData), 94, fontFile);
-	fwrite(advances, sizeof(CharData), 94, fontFile);
-	fwrite(masks, sizeof(bool), 94, fontFile);
+	fwrite(dimensions.data(), sizeof(dimensions), 1, fontFile);
+	fwrite(positions.data(), sizeof(positions), 1, fontFile);
+	fwrite(advances.data(), sizeof(advances), 1, fontFile);
+	fwrite(masks.data(), sizeof(masks), 1, fontFile);
 
 	auto result = fclose(fontFile);
 
