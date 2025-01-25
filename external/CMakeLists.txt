@@ -16,20 +16,6 @@ set(CMAKE_FOLDER "${PARENT_FOLDER}/external/dirent")
 add_library(dirent INTERFACE)
 target_include_directories(dirent INTERFACE dirent/)
 
-# FreeType #
-set(CMAKE_FOLDER "${PARENT_FOLDER}/external/freetype")
-add_library(freetype INTERFACE)
-target_include_directories(freetype INTERFACE freetype/)
-target_link_directories(freetype INTERFACE freetype/)
-target_link_libraries(freetype INTERFACE freetype${CMAKE_STATIC_LIBRARY_SUFFIX})
-foreach(LOOP_CONFIG IN LISTS CMAKE_CONFIGURATION_TYPES) # Copy dlls alongside project executables.
-	file(MAKE_DIRECTORY "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${LOOP_CONFIG}/")
-	execute_process(
-		COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_LIST_DIR}/freetype/freetype6.dll" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${LOOP_CONFIG}/"
-		COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_LIST_DIR}/freetype/zlib1.dll" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${LOOP_CONFIG}/"
-	)
-endforeach()
-
 # GLEW #
 set(CMAKE_FOLDER "${PARENT_FOLDER}/external/glew")
 set(glew-cmake_BUILD_SHARED OFF CACHE BOOL "")
