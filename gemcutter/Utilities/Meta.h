@@ -92,13 +92,6 @@ namespace gem::meta
 		{
 			return ~detail::ComputeCRC(str, length, ~0u);
 		}
-
-		// Safely extract a single char from a cstring.
-		template<unsigned index, unsigned size>
-		constexpr char getChar(const char (&c)[size])
-		{
-			return c[index < size ? index : size - 1];
-		}
 	}
 
 	[[nodiscard]] constexpr unsigned HashCRC(std::string_view str)
