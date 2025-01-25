@@ -16,6 +16,18 @@ set(CMAKE_FOLDER "${PARENT_FOLDER}/external/dirent")
 add_library(dirent INTERFACE)
 target_include_directories(dirent INTERFACE dirent/)
 
+# Freetype #
+set(CMAKE_FOLDER "${PARENT_FOLDER}/external/freetype")
+set(FT_DISABLE_ZLIB     ON CACHE BOOL "")
+set(FT_DISABLE_BZIP2    ON CACHE BOOL "")
+set(FT_DISABLE_PNG      ON CACHE BOOL "")
+set(FT_DISABLE_HARFBUZZ ON CACHE BOOL "")
+set(FT_DISABLE_BROTLI   ON CACHE BOOL "")
+cmake_policy(PUSH)
+set(CMAKE_POLICY_DEFAULT_CMP0069 NEW) # Allow IPO
+add_subdirectory(freetype)
+cmake_policy(POP)
+
 # GLEW #
 set(CMAKE_FOLDER "${PARENT_FOLDER}/external/glew")
 set(glew-cmake_BUILD_SHARED OFF CACHE BOOL "")
