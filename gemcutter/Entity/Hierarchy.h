@@ -57,7 +57,7 @@ namespace gem
 		Hierarchy* GetParentHierarchy() const;
 
 		// Returns the number of children currently held by this Entity.
-		unsigned GetNumChildren() const;
+		std::size_t GetNumChildren() const;
 
 		// Gets the list of children held by this Entity.
 		const auto& GetChildren() const { return children; }

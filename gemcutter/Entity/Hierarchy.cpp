@@ -178,7 +178,7 @@ namespace gem
 		return nullptr;
 	}
 
-	unsigned Hierarchy::GetNumChildren() const
+	std::size_t Hierarchy::GetNumChildren() const
 	{
 		return children.size();
 	}

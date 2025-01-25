@@ -19,7 +19,7 @@ namespace gem
 		// Returns true if the setting has a value in the table.
 		bool HasSetting(std::string_view setting) const;
 		// Returns the number of entries in the table.
-		unsigned GetSize() const;
+		std::size_t GetSize() const;
 
 		std::string GetString(std::string_view setting) const;
 		float GetFloat(std::string_view setting) const;

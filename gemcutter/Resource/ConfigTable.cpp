@@ -94,7 +94,7 @@ namespace gem
 		return settings.contains(setting);
 	}
 
-	unsigned ConfigTable::GetSize() const
+	std::size_t ConfigTable::GetSize() const
 	{
 		return settings.size();
 	}

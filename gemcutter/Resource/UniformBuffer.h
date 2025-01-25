@@ -93,7 +93,7 @@ namespace gem
 		void Remove(unsigned unit);
 		void Clear();
 
-		unsigned Size() const;
+		size_t Size() const;
 
 		// Returns the buffer bound at the specified unit.
 		UniformBuffer& operator[](unsigned unit);

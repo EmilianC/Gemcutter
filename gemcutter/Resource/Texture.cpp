@@ -448,7 +448,7 @@ namespace gem
 		textureSlots.clear();
 	}
 
-	unsigned TextureList::Size() const
+	size_t TextureList::Size() const
 	{
 		return textureSlots.size();
 	}

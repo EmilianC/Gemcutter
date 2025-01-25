@@ -260,7 +260,7 @@ namespace gem
 		buffers.clear();
 	}
 
-	unsigned BufferList::Size() const
+	size_t BufferList::Size() const
 	{
 		return buffers.size();
 	}
