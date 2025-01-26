@@ -393,7 +393,7 @@ namespace gem
 		UnBindRenderable(*renderable, shader.get());
 	}
 
-	void RenderPass::Render(std::span<Entity::Ptr> entities)
+	void RenderPass::Render(std::span<const Entity::Ptr> entities)
 	{
 		ASSERT(boundPass == this, "RenderPass must be bound to render.");
 

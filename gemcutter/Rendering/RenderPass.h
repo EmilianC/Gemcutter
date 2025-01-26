@@ -43,7 +43,7 @@ namespace gem
 		// Renders only the given Entity.
 		void Render(const Entity&);
 		// Renders all Entities in the list in order.
-		void Render(std::span<Entity::Ptr> entities);
+		void Render(std::span<const Entity::Ptr> entities);
 		// Renders the root Entity along with all renderable descendants (depth first traversal).
 		void RenderRoot(const Entity& root);
 
