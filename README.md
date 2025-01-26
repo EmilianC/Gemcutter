@@ -63,7 +63,7 @@ All Dependencies used under their respective licenses. Copyright is held by thei
 * [Catch 2.13.8](https://github.com/catchorg/Catch2/tree/v2.x)
 * [SoLoud](https://github.com/EmilianC/soloud)
 * [Scaffold](https://github.com/EmilianC/scaffold)
-* [SOIL ext](https://github.com/fenbf/SOIL_ext)
+* [SOIL2](https://github.com/SpartanJ/SOIL2)
 * [dirent 1.23.2](https://github.com/tronkko/dirent)
 * [XInput 1.4](https://msdn.microsoft.com/en-us/library/windows/desktop/ee417001(v=vs.85).aspx)
 * [Imgui 1.85](https://github.com/ocornut/imgui)

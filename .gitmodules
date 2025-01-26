@@ -20,3 +20,6 @@
 [submodule "external/freetype"]
 	path = external/freetype
 	url = https://github.com/freetype/freetype.git
+[submodule "external/soil2"]
+	path = external/soil2
+	url = https://github.com/SpartanJ/SOIL2.git

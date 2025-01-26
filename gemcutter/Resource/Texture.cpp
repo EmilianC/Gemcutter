@@ -6,7 +6,7 @@
 
 #include <algorithm>
 #include <GL/glew.h>
-#include <soil/SOIL.h>
+#include <SOIL2.h>
 
 namespace gem
 {
