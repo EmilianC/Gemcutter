@@ -8,7 +8,7 @@
 
 #include <GL/glew.h>
 #include <loupe/loupe.h>
-#include <SOIL/SOIL.h>
+#include <SOIL2.h>
 
 namespace
 {
