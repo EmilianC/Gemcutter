@@ -28,7 +28,7 @@ namespace gem
 			unsigned numSamples = 1);
 
 		// Replaces the texture with the provided raw image data.
-		void SetData(const unsigned char* data, TextureFormat sourceFormat);
+		void SetData(const std::byte* data, TextureFormat sourceFormat);
 
 		// Loads packed *.texture resources, as well as *.png, *.jpg, *.tga, *.bmp.
 		bool Load(std::string_view filePath);
@@ -129,12 +129,12 @@ namespace gem
 		int width;
 		int height;
 		TextureFormat format;
-		unsigned char* data;
+		std::byte* data;
 
 	private:
-		RawImage(int width, int height, TextureFormat format, unsigned char* data);
+		RawImage(int width, int height, TextureFormat format, std::byte* data);
 	};
 
 	// Flips the image contained in `data` on the Y axis.
-	void FlipImage(unsigned char* data, int width, int height, int numChannels);
+	void FlipImage(std::byte* data, int width, int height, int numChannels);
 }

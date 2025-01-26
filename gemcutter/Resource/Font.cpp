@@ -90,7 +90,7 @@ namespace gem
 		// Load bitmap data.
 		TextureFilter filter;
 		unsigned long int bitmapSize = 0;
-		unsigned char* bitmap = nullptr;
+		std::byte* bitmap = nullptr;
 		defer{ free(bitmap); };
 
 		// Read header.
@@ -100,8 +100,8 @@ namespace gem
 		fread(&filter, sizeof(TextureFilter), 1, fontFile);
 
 		// Load Data.
-		bitmap = static_cast<unsigned char*>(malloc(sizeof(unsigned char) * bitmapSize));
-		fread(bitmap, sizeof(unsigned char), bitmapSize, fontFile);
+		bitmap = static_cast<std::byte*>(malloc(sizeof(std::byte) * bitmapSize));
+		fread(bitmap, sizeof(std::byte), bitmapSize, fontFile);
 		fread(dimensions, sizeof(CharData), 94, fontFile);
 		fread(positions, sizeof(CharData), 94, fontFile);
 		fread(advances, sizeof(CharData), 94, fontFile);
@@ -112,7 +112,7 @@ namespace gem
 		// Upload data to OpenGL.
 		glGenTextures(94, textures);
 
-		unsigned char* bitmapItr = bitmap;
+		std::byte* bitmapItr = bitmap;
 		for (unsigned i = 0; i < 94; ++i)
 		{
 			if (!masks[i])

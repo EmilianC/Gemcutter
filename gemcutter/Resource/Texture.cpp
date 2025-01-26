@@ -72,7 +72,7 @@ namespace gem
 		return true;
 	}
 
-	void Texture::SetData(const unsigned char* data, TextureFormat sourceFormat)
+	void Texture::SetData(const std::byte* data, TextureFormat sourceFormat)
 	{
 		ASSERT(hTex != 0, "Texture object is not yet initialized.");
 		ASSERT(data, "'data' cannot be null.");
@@ -134,10 +134,10 @@ namespace gem
 			const unsigned dataFormat  = ResolveDataFormat(format);
 			if (isCubeMap)
 			{
-				auto* image = static_cast<unsigned char*>(malloc(sizeof(unsigned char) * textureSize * 6));
+				auto* image = static_cast<std::byte*>(malloc(sizeof(std::byte) * textureSize * 6));
 				defer{ free(image); };
 
-				fread(image, sizeof(unsigned char), textureSize * 6, textureFile);
+				fread(image, sizeof(std::byte), textureSize * 6, textureFile);
 
 				glGenTextures(1, &hTex);
 				glBindTexture(GL_TEXTURE_CUBE_MAP, hTex);
@@ -159,10 +159,10 @@ namespace gem
 			}
 			else
 			{
-				auto* image = static_cast<unsigned char*>(malloc(sizeof(unsigned char) * textureSize));
+				auto* image = static_cast<std::byte*>(malloc(sizeof(std::byte) * textureSize));
 				defer{ free(image); };
 
-				fread(image, sizeof(unsigned char), textureSize, textureFile);
+				fread(image, sizeof(std::byte), textureSize, textureFile);
 
 				glGenTextures(1, &hTex);
 				glBindTexture(GL_TEXTURE_2D, hTex);
@@ -465,7 +465,7 @@ namespace gem
 
 	//-----------------------------------------------------------------------------------------------------
 
-	RawImage::RawImage(int _width, int _height, TextureFormat _format, unsigned char* _data)
+	RawImage::RawImage(int _width, int _height, TextureFormat _format, std::byte* _data)
 		: width(_width)
 		, height(_height)
 		, format(_format)
@@ -484,7 +484,7 @@ namespace gem
 		int height = 0;
 		int numChannels = 0;
 
-		unsigned char* data = SOIL_load_image(file.data(), &width, &height, &numChannels, SOIL_LOAD_AUTO);
+		std::byte* data = reinterpret_cast<std::byte*>(SOIL_load_image(file.data(), &width, &height, &numChannels, SOIL_LOAD_AUTO));
 		if (data == nullptr)
 		{
 			Error("RawImage: ( %s )\n%s", file.data(), SOIL_last_result());
@@ -512,7 +512,7 @@ namespace gem
 		}
 	}
 
-	void FlipImage(unsigned char* data, int width, int height, int numChannels)
+	void FlipImage(std::byte* data, int width, int height, int numChannels)
 	{
 		const int totalWidth = width * numChannels;
 		for (int j = 0; j * 2 < height; ++j)

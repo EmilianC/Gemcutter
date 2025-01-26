@@ -131,7 +131,7 @@ bool FontEncoder::Convert(std::string_view source, std::string_view destination,
 	const auto filter = gem::StringToEnum<gem::TextureFilter>(metadata.GetString("texture_filter")).value();
 
 	// File preparation.
-	std::vector<unsigned char> bitmapBuffer;
+	std::vector<std::byte> bitmapBuffer;
 	std::array<CharData, 94> dimensions;
 	std::array<CharData, 94> positions;
 	std::array<CharData, 94> advances;
@@ -187,7 +187,8 @@ bool FontEncoder::Convert(std::string_view source, std::string_view destination,
 			{
 				for (unsigned j = 0; j < numColumns; ++j)
 				{
-					bitmapBuffer.push_back(face->glyph->bitmap.buffer[numColumns * i + j]);
+					unsigned char data = face->glyph->bitmap.buffer[numColumns * i + j];
+					bitmapBuffer.push_back(static_cast<std::byte>(data));
 				}
 			}
 
@@ -224,7 +225,7 @@ bool FontEncoder::Convert(std::string_view source, std::string_view destination,
 	fwrite(&filter, sizeof(filter), 1, fontFile);
 
 	// Write Data.
-	fwrite(bitmapBuffer.data(), sizeof(unsigned char), bitmapSize, fontFile);
+	fwrite(bitmapBuffer.data(), sizeof(std::byte), bitmapSize, fontFile);
 	fwrite(dimensions.data(), sizeof(dimensions), 1, fontFile);
 	fwrite(positions.data(), sizeof(positions), 1, fontFile);
 	fwrite(advances.data(), sizeof(advances), 1, fontFile);

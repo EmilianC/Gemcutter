@@ -152,7 +152,7 @@ namespace gem
 		}
 
 		BufferMapping mapping = buffer->MapBuffer(VertexAccess::WriteOnly);
-		unsigned char* data = mapping.GetPtr();
+		std::byte* data = mapping.GetPtr();
 
 		memcpy(data, positions, sizeof(vec3) * activeParticles);
 		data += sizeof(vec3) * maxParticles;

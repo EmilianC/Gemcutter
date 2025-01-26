@@ -15,7 +15,7 @@ namespace gem
 			using reference         = Type&;
 
 			VertexIterator(const VertexIterator&) = default;
-			VertexIterator(unsigned char* _itr, unsigned _stride)
+			VertexIterator(std::byte* _itr, unsigned _stride)
 				: itr(_itr), stride(_stride) {}
 
 			VertexIterator& operator=(const VertexIterator&) = default;
@@ -57,7 +57,7 @@ namespace gem
 			Type* operator->() const { return *reinterpret_cast<Type*>(itr); }
 
 		private:
-			unsigned char* itr;
+			std::byte* itr;
 			unsigned stride;
 		};
 

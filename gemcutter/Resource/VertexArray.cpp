@@ -14,7 +14,7 @@ namespace gem
 		: buffer(&_buffer)
 	{
 		buffer->Bind();
-		data = static_cast<unsigned char*>(glMapBuffer(buffer->target, ResolveVertexAccess(accessMode)));
+		data = static_cast<std::byte*>(glMapBuffer(buffer->target, ResolveVertexAccess(accessMode)));
 		buffer->UnBind();
 
 		ASSERT(data, "Failed to map VertexBuffer.");
@@ -41,7 +41,7 @@ namespace gem
 		std::memcpy(data + start, source, size);
 	}
 
-	unsigned char* BufferMapping::GetPtr()
+	std::byte* BufferMapping::GetPtr()
 	{
 		return data;
 	}

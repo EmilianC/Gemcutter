@@ -60,7 +60,7 @@ namespace gem
 
 	private:
 		SoLoud::AudioSource* source = nullptr;
-		std::vector<unsigned char> buffer;
+		std::vector<std::byte> buffer;
 
 		bool is3D = false;
 		bool loop = false;

@@ -82,7 +82,7 @@ namespace gem
 
 		// Retrieves a pixel from the specified color buffer.
 		// * This is very expensive and not recommended for real-time use *
-		void ReadPixel(unsigned index, int x, int y, unsigned char& outR, unsigned char& outG, unsigned char& outB, unsigned char& outA) const;
+		void ReadPixel(unsigned index, int x, int y, std::byte& outR, std::byte& outG, std::byte& outB, std::byte& outA) const;
 		void ReadPixel(unsigned index, int x, int y, unsigned short& outR, unsigned short& outG, unsigned short& outB, unsigned short& outA) const;
 		void ReadPixel(unsigned index, int x, int y, unsigned& outR, unsigned& outG, unsigned& outB, unsigned& outA) const;
 		void ReadPixel(unsigned index, int x, int y, vec4& out) const;

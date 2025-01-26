@@ -66,7 +66,7 @@ namespace gem
 
 		mutable bool dirty  = true;
 		unsigned UBO        = 0;
-		void* buffer        = nullptr;
+		std::byte* buffer   = nullptr;
 		unsigned bufferSize = 0;
 
 		std::unordered_map<std::string, unsigned, string_hash, std::equal_to<>> table;

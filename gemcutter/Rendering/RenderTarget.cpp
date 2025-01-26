@@ -473,7 +473,7 @@ namespace gem
 		glBindFramebuffer(GL_FRAMEBUFFER, GL_NONE);
 	}
 
-	void RenderTarget::ReadPixel(unsigned index, int x, int y, unsigned char& outR, unsigned char& outG, unsigned char& outB, unsigned char& outA) const
+	void RenderTarget::ReadPixel(unsigned index, int x, int y, std::byte& outR, std::byte& outG, std::byte& outB, std::byte& outA) const
 	{
 		ASSERT(index < numColorTextures, "'index' must specify a valid color texture.");
 		ASSERT(numSamples == 1, "RenderTarget must not be multi-sampled.");
@@ -484,12 +484,12 @@ namespace gem
 			format == TextureFormat::RGB_8 ||
 			format == TextureFormat::RGBA_8 ||
 			format == TextureFormat::sRGB_8 ||
-			format == TextureFormat::sRGBA_8, "Invalid texture format for reading 'unsigned char's.");
+			format == TextureFormat::sRGBA_8, "Invalid texture format for reading 'unsigned byte's.");
 
 		glBindFramebuffer(GL_FRAMEBUFFER, FBO);
 		glReadBuffer(GL_COLOR_ATTACHMENT0 + index);
 
-		unsigned char pixel[4] = {};
+		std::byte pixel[4] = {};
 		glReadPixels(x, y, 1, 1, ResolvePixelFormat(format), GL_UNSIGNED_BYTE, pixel);
 		outR = pixel[0];
 		outG = pixel[1];

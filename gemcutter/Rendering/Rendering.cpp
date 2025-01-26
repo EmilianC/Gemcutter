@@ -57,7 +57,7 @@ namespace
 		2,  // short
 		2,  // unsigned short
 		1,  // char
-		1   // unsigned char
+		1   // unsigned byte
 	};
 
 	constexpr int textureFormatChannelCount_Resolve[] = {

@@ -27,7 +27,7 @@ namespace gem
 		void ZeroData(unsigned start, unsigned size);
 		void SetData(unsigned start, unsigned size, const void* source);
 
-		unsigned char* GetPtr();
+		std::byte* GetPtr();
 		const VertexBuffer& GetBuffer() const;
 
 		template<typename T>
@@ -41,7 +41,7 @@ namespace gem
 
 	private:
 		VertexBuffer* buffer;
-		unsigned char* data;
+		std::byte* data;
 	};
 
 	// A single OpenGL buffer object.

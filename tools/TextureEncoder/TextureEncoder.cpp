@@ -168,11 +168,11 @@ bool TextureEncoder::Convert(std::string_view source, std::string_view destinati
 
 		// Write faces.
 		const unsigned textureSize = faceSize * faceSize * elementCount;
-		unsigned char* data = static_cast<unsigned char*>(malloc(sizeof(unsigned char) * textureSize * 6));
+		std::byte* data = static_cast<std::byte*>(malloc(sizeof(std::byte) * textureSize * 6));
 		defer { free(data); };
 
 		// Strip out the dead space of the source texture, the final data is 6 textures in sequence.
-		auto copyFace = [&image, faceSize, elementCount](unsigned char* dest, unsigned startX, unsigned startY)
+		auto copyFace = [&image, faceSize, elementCount](std::byte* dest, unsigned startX, unsigned startY)
 		{
 			for (unsigned y = startY; y < startY + faceSize; ++y)
 			{
@@ -193,7 +193,7 @@ bool TextureEncoder::Convert(std::string_view source, std::string_view destinati
 		copyFace(data + 4 * textureSize, faceSize, faceSize);		// +Z
 		copyFace(data + 5 * textureSize, faceSize * 3, faceSize);	// -Z
 
-		fwrite(data, sizeof(unsigned char), textureSize * 6, textureFile);
+		fwrite(data, sizeof(std::byte), textureSize * 6, textureFile);
 	}
 	else
 	{
@@ -209,7 +209,7 @@ bool TextureEncoder::Convert(std::string_view source, std::string_view destinati
 
 		// Write Data.
 		const unsigned textureSize = image.width * image.height * elementCount;
-		fwrite(image.data, sizeof(unsigned char), textureSize, textureFile);
+		fwrite(image.data, sizeof(std::byte), textureSize, textureFile);
 	}
 
 	auto result = fclose(textureFile);

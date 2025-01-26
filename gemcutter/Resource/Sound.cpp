@@ -41,7 +41,7 @@ namespace gem
 
 		auto sound = std::make_unique<SoLoud::Wav>();
 
-		SoLoud::result result = sound->loadMem(buffer.data(), size, false, false);
+		SoLoud::result result = sound->loadMem(reinterpret_cast<unsigned char*>(buffer.data()), size, false, false);
 		if (result != SoLoud::SOLOUD_ERRORS::SO_NO_ERROR)
 		{
 			Error("Sound: %s", audioEngine.getErrorString(result));
