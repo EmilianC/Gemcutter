@@ -71,9 +71,9 @@ namespace gem
 			glBindBuffer(GL_ARRAY_BUFFER, VBO);
 			glBufferData(GL_ARRAY_BUFFER, verticesSize + texCoordsSize + normalsSize, data, GL_STATIC_DRAW);
 
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<void*>(0));
-			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<void*>(verticesSize));
-			glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, reinterpret_cast<void*>(verticesSize + texCoordsSize));
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (std::byte*)nullptr + 0);
+			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (std::byte*)nullptr + verticesSize);
+			glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (std::byte*)nullptr + verticesSize + texCoordsSize);
 
 			glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
 			glBindVertexArray(GL_NONE);

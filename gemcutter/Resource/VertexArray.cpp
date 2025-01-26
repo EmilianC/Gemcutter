@@ -238,24 +238,24 @@ namespace gem
 		switch (ptr.format)
 		{
 		case VertexFormat::Float:
-			glVertexAttribPointer(ptr.bindingUnit, 1, GL_FLOAT, ptr.normalized, ptr.stride, reinterpret_cast<void*>(ptr.startOffset));
+			glVertexAttribPointer(ptr.bindingUnit, 1, GL_FLOAT, ptr.normalized, ptr.stride, (std::byte*)nullptr + ptr.startOffset);
 			break;
 		case VertexFormat::Double:
-			glVertexAttribLPointer(ptr.bindingUnit, 1, GL_DOUBLE, ptr.stride, reinterpret_cast<void*>(ptr.startOffset));
+			glVertexAttribLPointer(ptr.bindingUnit, 1, GL_DOUBLE, ptr.stride, (std::byte*)nullptr + ptr.startOffset);
 			break;
 
 		case VertexFormat::Vec2:
-			glVertexAttribPointer(ptr.bindingUnit, 2, GL_FLOAT, ptr.normalized, ptr.stride, reinterpret_cast<void*>(ptr.startOffset));
+			glVertexAttribPointer(ptr.bindingUnit, 2, GL_FLOAT, ptr.normalized, ptr.stride, (std::byte*)nullptr + ptr.startOffset);
 			break;
 		case VertexFormat::Vec3:
-			glVertexAttribPointer(ptr.bindingUnit, 3, GL_FLOAT, ptr.normalized, ptr.stride, reinterpret_cast<void*>(ptr.startOffset));
+			glVertexAttribPointer(ptr.bindingUnit, 3, GL_FLOAT, ptr.normalized, ptr.stride, (std::byte*)nullptr + ptr.startOffset);
 			break;
 		case VertexFormat::Vec4:
-			glVertexAttribPointer(ptr.bindingUnit, 4, GL_FLOAT, ptr.normalized, ptr.stride, reinterpret_cast<void*>(ptr.startOffset));
+			glVertexAttribPointer(ptr.bindingUnit, 4, GL_FLOAT, ptr.normalized, ptr.stride, (std::byte*)nullptr + ptr.startOffset);
 			break;
 
 		case VertexFormat::Mat2:
-			glVertexAttribPointer(ptr.bindingUnit, 4, GL_FLOAT, ptr.normalized, ptr.stride, reinterpret_cast<void*>(ptr.startOffset));
+			glVertexAttribPointer(ptr.bindingUnit, 4, GL_FLOAT, ptr.normalized, ptr.stride, (std::byte*)nullptr + ptr.startOffset);
 			break;
 		case VertexFormat::Mat3:
 		{
@@ -269,9 +269,9 @@ namespace gem
 			glEnableVertexAttribArray(unit2);
 			glVertexAttribDivisor(unit1, ptr.divisor);
 			glVertexAttribDivisor(unit2, ptr.divisor);
-			glVertexAttribPointer(unit0, 3, GL_FLOAT, ptr.normalized, ptr.stride, reinterpret_cast<void*>(ptr.startOffset));
-			glVertexAttribPointer(unit1, 3, GL_FLOAT, ptr.normalized, ptr.stride, reinterpret_cast<void*>(ptr.startOffset + 12));
-			glVertexAttribPointer(unit2, 3, GL_FLOAT, ptr.normalized, ptr.stride, reinterpret_cast<void*>(ptr.startOffset + 24));
+			glVertexAttribPointer(unit0, 3, GL_FLOAT, ptr.normalized, ptr.stride, (std::byte*)nullptr + ptr.startOffset);
+			glVertexAttribPointer(unit1, 3, GL_FLOAT, ptr.normalized, ptr.stride, (std::byte*)nullptr + ptr.startOffset + 12);
+			glVertexAttribPointer(unit2, 3, GL_FLOAT, ptr.normalized, ptr.stride, (std::byte*)nullptr + ptr.startOffset + 24);
 			break;
 		}
 		case VertexFormat::Mat4:
@@ -289,10 +289,10 @@ namespace gem
 			glVertexAttribDivisor(unit1, ptr.divisor);
 			glVertexAttribDivisor(unit2, ptr.divisor);
 			glVertexAttribDivisor(unit3, ptr.divisor);
-			glVertexAttribPointer(unit0, 4, GL_FLOAT, ptr.normalized, ptr.stride, reinterpret_cast<void*>(ptr.startOffset));
-			glVertexAttribPointer(unit1, 4, GL_FLOAT, ptr.normalized, ptr.stride, reinterpret_cast<void*>(ptr.startOffset + 16));
-			glVertexAttribPointer(unit2, 4, GL_FLOAT, ptr.normalized, ptr.stride, reinterpret_cast<void*>(ptr.startOffset + 32));
-			glVertexAttribPointer(unit3, 4, GL_FLOAT, ptr.normalized, ptr.stride, reinterpret_cast<void*>(ptr.startOffset + 48));
+			glVertexAttribPointer(unit0, 4, GL_FLOAT, ptr.normalized, ptr.stride, (std::byte*)nullptr + ptr.startOffset);
+			glVertexAttribPointer(unit1, 4, GL_FLOAT, ptr.normalized, ptr.stride, (std::byte*)nullptr + ptr.startOffset + 16);
+			glVertexAttribPointer(unit2, 4, GL_FLOAT, ptr.normalized, ptr.stride, (std::byte*)nullptr + ptr.startOffset + 32);
+			glVertexAttribPointer(unit3, 4, GL_FLOAT, ptr.normalized, ptr.stride, (std::byte*)nullptr + ptr.startOffset + 48);
 			break;
 		}
 
@@ -302,7 +302,7 @@ namespace gem
 		case VertexFormat::uShort: [[fallthrough]];
 		case VertexFormat::Byte:   [[fallthrough]];
 		case VertexFormat::uByte:
-			glVertexAttribIPointer(ptr.bindingUnit, 1, ResolveVertexFormat(ptr.format), ptr.stride, reinterpret_cast<void*>(ptr.startOffset));
+			glVertexAttribIPointer(ptr.bindingUnit, 1, ResolveVertexFormat(ptr.format), ptr.stride, (std::byte*)nullptr + ptr.startOffset);
 			break;
 		}
 
@@ -456,7 +456,7 @@ namespace gem
 		if (indexBuffer)
 		{
 			indexBuffer->Bind();
-			glDrawElementsInstanced(ResolveVertexArrayFormat(formatOverride), vertexCount, GL_UNSIGNED_SHORT, reinterpret_cast<void*>(firstIndex * sizeof(unsigned short)), instanceCount);
+			glDrawElementsInstanced(ResolveVertexArrayFormat(formatOverride), vertexCount, GL_UNSIGNED_SHORT, (std::byte*)nullptr + firstIndex * sizeof(unsigned short), instanceCount);
 		}
 		else
 		{
