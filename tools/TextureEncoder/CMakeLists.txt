@@ -13,5 +13,5 @@ sf_target_compile_warnings_as_errors(texture_encoder OPTIONAL)
 target_link_libraries(texture_encoder
 	PRIVATE
 		gemcutter
-		soil
+		soil2
 )

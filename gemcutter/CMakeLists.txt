@@ -157,7 +157,7 @@ target_link_libraries(gemcutter
 		dirent
 	PUBLIC
 		OpenGL::GL
-		soil
+		soil2
 		$<$<PLATFORM_ID:Windows>:ws2_32>
 		Xinput
 		libglew_static

@@ -60,6 +60,11 @@ endif()
 set(CMAKE_FOLDER "${PARENT_FOLDER}/external/loupe")
 add_subdirectory(loupe)
 
+# SOIL2 #
+set(CMAKE_FOLDER "${PARENT_FOLDER}/external/soil2")
+set(SOIL2_BUILD_TESTS OFF CACHE BOOL "")
+add_subdirectory(soil2)
+
 # SoLoud #
 set(CMAKE_FOLDER "${PARENT_FOLDER}/external/soloud")
 set(SOLOUD_BACKEND_ALSA          OFF CACHE BOOL "")
