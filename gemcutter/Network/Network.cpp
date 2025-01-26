@@ -19,8 +19,8 @@ namespace gem
 	NetworkUDP::NetworkUDP()
 		: remotePort(-1)
 		, localPort(-1)
-		, inputSocket(-1)
-		, outputSocket(-1)
+		, inputSocket(INVALID_SOCKET)
+		, outputSocket(INVALID_SOCKET)
 	{
 		memset(&localAddress, 0, sizeof(sockaddr_in));
 		memset(&remoteAddress, 0, sizeof(sockaddr_in));
@@ -77,16 +77,16 @@ namespace gem
 
 	void NetworkUDP::Destroy()
 	{
-		if (inputSocket != -1)
+		if (inputSocket != INVALID_SOCKET)
 		{
 			closesocket(inputSocket);
-			inputSocket = -1;
+			inputSocket = INVALID_SOCKET;
 		}
 
-		if (outputSocket != -1)
+		if (outputSocket != INVALID_SOCKET)
 		{
 			closesocket(outputSocket);
-			outputSocket = -1;
+			outputSocket = INVALID_SOCKET;
 		}
 
 		memset(&localAddress, 0, sizeof(sockaddr_in));
@@ -96,7 +96,7 @@ namespace gem
 
 	bool NetworkUDP::Send(std::string_view packet)
 	{
-		return sendto(outputSocket, packet.data(), packet.size(), 0, reinterpret_cast<sockaddr*>(&remoteAddress), sizeof(sockaddr)) != SOCKET_ERROR;
+		return sendto(outputSocket, packet.data(), static_cast<int>(packet.size()), 0, reinterpret_cast<sockaddr*>(&remoteAddress), sizeof(sockaddr)) != SOCKET_ERROR;
 	}
 
 	bool NetworkUDP::Receive(std::string& out_packet)
@@ -122,7 +122,7 @@ namespace gem
 		: isConnected(false)
 		, remotePort(-1)
 		, localPort(-1)
-		, socketId(-1)
+		, socketId(INVALID_SOCKET)
 	{
 		memset(&address, 0, sizeof(sockaddr_in));
 		memset(receiveBuffer, '\0', PACKET_LENGTH);
@@ -150,10 +150,10 @@ namespace gem
 			shutdown(socketId, SD_BOTH);
 		}
 
-		if (socketId != -1)
+		if (socketId != INVALID_SOCKET)
 		{
 			closesocket(socketId);
-			socketId = -1;
+			socketId = INVALID_SOCKET;
 		}
 
 		memset(&address, 0, sizeof(sockaddr_in));
@@ -248,7 +248,7 @@ namespace gem
 	{
 		ASSERT(isConnected, "Network must have a connection to call this function.");
 
-		return send(socketId, packet.data(), packet.size(), 0) != SOCKET_ERROR;
+		return send(socketId, packet.data(), static_cast<int>(packet.size()), 0) != SOCKET_ERROR;
 	}
 
 	bool NetworkTCP::Receive(std::string& out_packet)
@@ -273,9 +273,9 @@ namespace gem
 	}
 
 	NetworkClient::NetworkClient()
-		: TCPSocket(-1)
-		, UDPSendSocket(-1)
-		, UDPReceiveSocket(-1)
+		: TCPSocket(INVALID_SOCKET)
+		, UDPSendSocket(INVALID_SOCKET)
+		, UDPReceiveSocket(INVALID_SOCKET)
 		, localPortTCP(-1)
 		, localPortUDP(-1)
 		, remotePortTCP(-1)
@@ -343,11 +343,11 @@ namespace gem
 
 	void NetworkClient::Destroy()
 	{
-		if (TCPSocket != -1 && isConnected)
+		if (TCPSocket != INVALID_SOCKET && isConnected)
 		{
 			shutdown(TCPSocket, SD_BOTH);
 			closesocket(TCPSocket);
-			TCPSocket = -1;
+			TCPSocket = INVALID_SOCKET;
 		}
 
 		memset(&TCPAddress, 0, sizeof(sockaddr_in));
@@ -404,7 +404,7 @@ namespace gem
 
 	bool NetworkClient::SendUDP(std::string_view packet)
 	{
-		return sendto(UDPSendSocket, packet.data(), packet.size(), 0, reinterpret_cast<sockaddr*>(&UDPAddress), sizeof(sockaddr)) != SOCKET_ERROR;
+		return sendto(UDPSendSocket, packet.data(), static_cast<int>(packet.size()), 0, reinterpret_cast<sockaddr*>(&UDPAddress), sizeof(sockaddr)) != SOCKET_ERROR;
 	}
 
 	bool NetworkClient::ReceiveUDP(std::string& out_packet)
@@ -429,7 +429,7 @@ namespace gem
 
 	bool NetworkClient::SendTCP(std::string_view packet)
 	{
-		return send(TCPSocket, packet.data(), packet.size(), 0) != SOCKET_ERROR;
+		return send(TCPSocket, packet.data(), static_cast<int>(packet.size()), 0) != SOCKET_ERROR;
 	}
 
 	bool NetworkClient::ReceiveTCP(std::string& out_packet)
@@ -454,9 +454,9 @@ namespace gem
 	}
 
 	NetworkServer::NetworkServer()
-		: TCPSocket(-1)
-		, UDPSendSocket(-1)
-		, UDPReceiveSocket(-1)
+		: TCPSocket(INVALID_SOCKET)
+		, UDPSendSocket(INVALID_SOCKET)
+		, UDPReceiveSocket(INVALID_SOCKET)
 		, localPortTCP(-1)
 		, localPortUDP(-1)
 		, idCounter(-1)
@@ -515,11 +515,11 @@ namespace gem
 
 	void NetworkServer::Destroy()
 	{
-		if (TCPSocket != -1)
+		if (TCPSocket != INVALID_SOCKET)
 		{
 			shutdown(TCPSocket, SD_BOTH);
 			closesocket(TCPSocket);
-			TCPSocket = -1;
+			TCPSocket = INVALID_SOCKET;
 		}
 
 		memset(&TCPAddress, 0, sizeof(sockaddr_in));
@@ -587,7 +587,7 @@ namespace gem
 		return GetClientIndex(ID) != -1;
 	}
 
-	unsigned NetworkServer::GetNumClients() const
+	size_t NetworkServer::GetNumClients() const
 	{
 		return clients.size();
 	}
@@ -608,7 +608,7 @@ namespace gem
 		unsigned i = GetClientIndex(ID);
 		ASSERT(i != -1, "Client with ID %d could not be found.", ID);
 
-		return sendto(UDPSendSocket, packet.data(), packet.size(), 0, reinterpret_cast<sockaddr*>(&clients[i].UDPAddress), clients[i].UDPAddressSize) != SOCKET_ERROR;
+		return sendto(UDPSendSocket, packet.data(), static_cast<int>(packet.size()), 0, reinterpret_cast<sockaddr*>(&clients[i].UDPAddress), clients[i].UDPAddressSize) != SOCKET_ERROR;
 	}
 
 	bool NetworkServer::SendUDP(std::string_view packet)
@@ -616,7 +616,7 @@ namespace gem
 		bool okay = true;
 		for (auto& client : clients)
 		{
-			bool result = sendto(UDPSendSocket, packet.data(), packet.size(), 0, reinterpret_cast<sockaddr*>(&client.UDPAddress), client.UDPAddressSize) != SOCKET_ERROR;
+			bool result = sendto(UDPSendSocket, packet.data(), static_cast<int>(packet.size()), 0, reinterpret_cast<sockaddr*>(&client.UDPAddress), client.UDPAddressSize) != SOCKET_ERROR;
 			okay = okay && result;
 		}
 
@@ -631,7 +631,7 @@ namespace gem
 			if (client.ID == excludedID)
 				continue;
 
-			bool result = sendto(UDPSendSocket, packet.data(), packet.size(), 0, reinterpret_cast<sockaddr*>(&client.UDPAddress), client.UDPAddressSize) != SOCKET_ERROR;
+			bool result = sendto(UDPSendSocket, packet.data(), static_cast<int>(packet.size()), 0, reinterpret_cast<sockaddr*>(&client.UDPAddress), client.UDPAddressSize) != SOCKET_ERROR;
 			okay = okay && result;
 		}
 
@@ -677,7 +677,7 @@ namespace gem
 		unsigned i = GetClientIndex(ID);
 		ASSERT(i != -1, "Client with ID %d could not be found.", ID);
 
-		return send(clients[i].TCPSocket, packet.data(), packet.size(), 0) != SOCKET_ERROR;
+		return send(clients[i].TCPSocket, packet.data(), static_cast<int>(packet.size()), 0) != SOCKET_ERROR;
 	}
 
 	bool NetworkServer::SendTCP(std::string_view packet)
@@ -685,7 +685,7 @@ namespace gem
 		bool okay = true;
 		for (auto& client : clients)
 		{
-			bool result = send(client.TCPSocket, packet.data(), packet.size(), 0) != SOCKET_ERROR;
+			bool result = send(client.TCPSocket, packet.data(), static_cast<int>(packet.size()), 0) != SOCKET_ERROR;
 			okay = okay && result;
 		}
 
@@ -700,7 +700,7 @@ namespace gem
 			if (client.ID == excludedID)
 				continue;
 
-			bool result = send(client.TCPSocket, packet.data(), packet.size(), 0) != SOCKET_ERROR;
+			bool result = send(client.TCPSocket, packet.data(), static_cast<int>(packet.size()), 0) != SOCKET_ERROR;
 			okay = okay && result;
 		}
 

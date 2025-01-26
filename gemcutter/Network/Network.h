@@ -38,8 +38,8 @@ namespace gem
 		int localPort;
 		std::string remoteIp;
 
-		int inputSocket;
-		int outputSocket;
+		SOCKET inputSocket;
+		SOCKET outputSocket;
 
 		char receiveBuffer[PACKET_LENGTH];
 	};
@@ -73,7 +73,7 @@ namespace gem
 		int localPort;
 		std::string remoteIp;
 
-		int socketId;
+		SOCKET socketId;
 
 		char receiveBuffer[PACKET_LENGTH];
 	};
@@ -100,9 +100,9 @@ namespace gem
 	private:
 		sockaddr_in TCPAddress;
 		sockaddr_in UDPAddress;
-		int TCPSocket;
-		int UDPSendSocket;
-		int UDPReceiveSocket;
+		SOCKET TCPSocket;
+		SOCKET UDPSendSocket;
+		SOCKET UDPReceiveSocket;
 		int localPortTCP;
 		int localPortUDP;
 		int remotePortTCP;
@@ -129,7 +129,7 @@ namespace gem
 		// Returns true a client with ID is connected.
 		bool IsConnected(int ID) const;
 
-		unsigned GetNumClients() const;
+		size_t GetNumClients() const;
 
 		void RemoveClient(int ID);
 
@@ -158,15 +158,15 @@ namespace gem
 			sockaddr_in UDPAddress;
 			int TCPAddressSize = sizeof(sockaddr);
 			int UDPAddressSize = sizeof(sockaddr);
-			int TCPSocket = -1;
+			SOCKET TCPSocket = INVALID_SOCKET;
 			int ID = -1;
 		};
 
 		sockaddr_in TCPAddress;
 		sockaddr_in UDPAddress;
-		int TCPSocket;
-		int UDPSendSocket;
-		int UDPReceiveSocket;
+		SOCKET TCPSocket;
+		SOCKET UDPSendSocket;
+		SOCKET UDPReceiveSocket;
 		int localPortTCP;
 		int localPortUDP;
 		int idCounter;
