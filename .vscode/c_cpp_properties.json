@@ -1,7 +1,7 @@
 {
     "configurations": [
         {
-            "name": "Win32",
+            "name": "x64",
             "includePath": [
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/external/catch/**",
@@ -25,7 +25,7 @@
             ],
             "cStandard": "c11",
             "cppStandard": "c++23",
-            "intelliSenseMode": "msvc-x86",
+            "intelliSenseMode": "msvc-x64",
             "configurationProvider": "ms-vscode.cmake-tools"
         }
     ],

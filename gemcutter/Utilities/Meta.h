@@ -96,7 +96,7 @@ namespace gem::meta
 
 	[[nodiscard]] constexpr unsigned HashCRC(std::string_view str)
 	{
-		return detail::HashCRC(str.data(), str.size());
+		return detail::HashCRC(str.data(), static_cast<unsigned>(str.size()));
 	}
 
 	// Forces compile-time evaluation of the given expression.

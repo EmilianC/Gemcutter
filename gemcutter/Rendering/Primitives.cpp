@@ -452,7 +452,7 @@ namespace gem
 		}
 
 		{
-			auto buffer = VertexBuffer::MakeNew(sizeof(quad_Data), quad_Data, BufferUsage::Static, VertexBufferType::Data);
+			auto buffer = VertexBuffer::MakeNew(static_cast<unsigned>(sizeof(quad_Data)), quad_Data, BufferUsage::Static, VertexBufferType::Data);
 
 			VertexStream streamPos {
 				.buffer      = buffer,
@@ -477,7 +477,7 @@ namespace gem
 		}
 
 		{
-			auto buffer = VertexBuffer::MakeNew(sizeof(unitQuad_Data), unitQuad_Data, BufferUsage::Static, VertexBufferType::Data);
+			auto buffer = VertexBuffer::MakeNew(static_cast<unsigned>(sizeof(unitQuad_Data)), unitQuad_Data, BufferUsage::Static, VertexBufferType::Data);
 
 			VertexStream streamPos {
 				.buffer      = buffer,
@@ -502,7 +502,7 @@ namespace gem
 		}
 
 		{
-			auto buffer = VertexBuffer::MakeNew(sizeof(unitCube_Data), unitCube_Data, BufferUsage::Static, VertexBufferType::Data);
+			auto buffer = VertexBuffer::MakeNew(static_cast<unsigned>(sizeof(unitCube_Data)), unitCube_Data, BufferUsage::Static, VertexBufferType::Data);
 
 			VertexStream streamPos {
 				.buffer = std::move(buffer),
