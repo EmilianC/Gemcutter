@@ -220,16 +220,16 @@ bool FontEncoder::Convert(std::string_view source, std::string_view destination,
 	// Write header.
 	const size_t bitmapSize = bitmapBuffer.size();
 	fwrite(&bitmapSize, sizeof(bitmapSize), 1, fontFile);
-	fwrite(&width, sizeof(width), 1, fontFile);
-	fwrite(&height, sizeof(height), 1, fontFile);
-	fwrite(&filter, sizeof(filter), 1, fontFile);
+	fwrite(&width,      sizeof(width),      1, fontFile);
+	fwrite(&height,     sizeof(height),     1, fontFile);
+	fwrite(&filter,     sizeof(filter),     1, fontFile);
 
 	// Write Data.
-	fwrite(bitmapBuffer.data(), sizeof(std::byte), bitmapSize, fontFile);
-	fwrite(dimensions.data(), sizeof(dimensions), 1, fontFile);
-	fwrite(positions.data(), sizeof(positions), 1, fontFile);
-	fwrite(advances.data(), sizeof(advances), 1, fontFile);
-	fwrite(masks.data(), sizeof(masks), 1, fontFile);
+	fwrite(bitmapBuffer.data(), sizeof(std::byte),  bitmapSize, fontFile);
+	fwrite(dimensions.data(),   sizeof(dimensions), 1,          fontFile);
+	fwrite(positions.data(),    sizeof(positions),  1,          fontFile);
+	fwrite(advances.data(),     sizeof(advances),   1,          fontFile);
+	fwrite(masks.data(),        sizeof(masks),      1,          fontFile);
 
 	auto result = fclose(fontFile);
 

@@ -107,9 +107,9 @@ namespace gem
 			bool isCubeMap = false;
 			int _width = 0;
 			int _height = 0;
-			fread(&isCubeMap, sizeof(bool), 1, textureFile);
-			fread(&_width, sizeof(unsigned), 1, textureFile);
-			fread(&_height, sizeof(unsigned), 1, textureFile);
+			fread(&isCubeMap, sizeof(isCubeMap), 1, textureFile);
+			fread(&_width,    sizeof(_width),    1, textureFile);
+			fread(&_height,   sizeof(_height),   1, textureFile);
 
 			const int maxSize = isCubeMap ? GPUInfo.GetMaxCubeMapSize() : GPUInfo.GetMaxTextureSize();
 			if (_width > maxSize || _height > maxSize)
@@ -122,11 +122,11 @@ namespace gem
 
 			width = _width;
 			height = _height;
-			fread(&format, sizeof(TextureFormat), 1, textureFile);
-			fread(&filter, sizeof(TextureFilter), 1, textureFile);
-			fread(&wraps.x, sizeof(TextureWrap), 1, textureFile);
-			fread(&wraps.y, sizeof(TextureWrap), 1, textureFile);
-			fread(&anisotropicLevel, sizeof(float), 1, textureFile);
+			fread(&format,           sizeof(format),           1, textureFile);
+			fread(&filter,           sizeof(filter),           1, textureFile);
+			fread(&wraps.x,          sizeof(wraps.x),          1, textureFile);
+			fread(&wraps.y,          sizeof(wraps.y),          1, textureFile);
+			fread(&anisotropicLevel, sizeof(anisotropicLevel), 1, textureFile);
 
 			numLevels = CountMipLevels(width, height, filter);
 			const unsigned numChannels = CountChannels(format);

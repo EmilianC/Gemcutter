@@ -156,14 +156,14 @@ bool SoundEncoder::Convert(std::string_view source, std::string_view destination
 		return false;
 	}
 
-	fwrite(&is3D, sizeof(bool), 1, soundFile);
-	fwrite(&loop, sizeof(bool), 1, soundFile);
-	fwrite(&unique, sizeof(bool), 1, soundFile);
-	fwrite(&attenuation, sizeof(gem::AttenuationFunc), 1, soundFile);
-	fwrite(&rolloff, sizeof(float), 1, soundFile);
-	fwrite(&volume, sizeof(float), 1, soundFile);
-	fwrite(&minDistance, sizeof(float), 1, soundFile);
-	fwrite(&maxDistance, sizeof(float), 1, soundFile);
+	fwrite(&is3D, sizeof(is3D), 1, soundFile);
+	fwrite(&loop, sizeof(loop), 1, soundFile);
+	fwrite(&unique, sizeof(unique), 1, soundFile);
+	fwrite(&attenuation, sizeof(attenuation), 1, soundFile);
+	fwrite(&rolloff, sizeof(rolloff), 1, soundFile);
+	fwrite(&volume, sizeof(volume), 1, soundFile);
+	fwrite(&minDistance, sizeof(minDistance), 1, soundFile);
+	fwrite(&maxDistance, sizeof(maxDistance), 1, soundFile);
 
 	std::vector<std::byte> rawSoundFile;
 	if (!gem::LoadFileAsBinary(source, rawSoundFile))
@@ -173,7 +173,7 @@ bool SoundEncoder::Convert(std::string_view source, std::string_view destination
 	}
 
 	const size_t size = rawSoundFile.size();
-	fwrite(&size, sizeof(size_t), 1, soundFile);
+	fwrite(&size, sizeof(size), 1, soundFile);
 	fwrite(rawSoundFile.data(), size, 1, soundFile);
 
 	auto result = fclose(soundFile);

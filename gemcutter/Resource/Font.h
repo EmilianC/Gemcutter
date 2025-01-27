@@ -3,6 +3,8 @@
 #include "gemcutter/Resource/Resource.h"
 #include "gemcutter/Resource/Shareable.h"
 
+#include <array>
+#include <span>
 #include <string_view>
 
 namespace gem
@@ -33,11 +35,11 @@ namespace gem
 		// Returns the width required to advance forward by a space.
 		int GetSpaceWidth() const;
 
-		const unsigned* GetTextures() const;
-		const CharData* GetDimensions() const;
-		const CharData* GetPositions() const;
-		const CharData* GetAdvances() const;
-		const bool* GetMasks() const;
+		std::span<const unsigned> GetTextures() const;
+		std::span<const CharData> GetDimensions() const;
+		std::span<const CharData> GetPositions() const;
+		std::span<const CharData> GetAdvances() const;
+		std::span<const bool> GetMasks() const;
 		unsigned GetFontWidth() const;
 		unsigned GetFontHeight() const;
 
@@ -45,15 +47,16 @@ namespace gem
 		static unsigned GetVBO();
 
 	private:
-		unsigned textures[94] = {};
+		std::array<unsigned, 94> textures;
 		// Each character's dimensions.
-		CharData dimensions[94] = {};
+		std::array<CharData, 94> dimensions;
 		// The position of each character.
-		CharData positions[94] = {};
+		std::array<CharData, 94> positions;
 		// The distance from one character to the next.
-		CharData advances[94] = {};
+		std::array<CharData, 94> advances;
 		// Whether the character is included in the font.
-		bool masks[94] = {};
+		std::array<bool, 94> masks;
+
 		unsigned width  = 0;
 		unsigned height = 0;
 

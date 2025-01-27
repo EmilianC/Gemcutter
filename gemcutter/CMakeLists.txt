@@ -190,6 +190,7 @@ if (ENABLE_PCH)
 	target_precompile_headers(gemcutter
 		PRIVATE
 			<algorithm>
+			<array>
 			<cstddef>
 			<cstdint>
 			<cstring>

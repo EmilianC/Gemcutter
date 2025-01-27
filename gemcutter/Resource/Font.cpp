@@ -89,28 +89,28 @@ namespace gem
 
 		// Load bitmap data.
 		TextureFilter filter;
-		unsigned long int bitmapSize = 0;
+		size_t bitmapSize = 0;
 		std::byte* bitmap = nullptr;
 		defer{ free(bitmap); };
 
 		// Read header.
-		fread(&bitmapSize, sizeof(unsigned long int), 1, fontFile);
-		fread(&width, sizeof(unsigned), 1, fontFile);
-		fread(&height, sizeof(unsigned), 1, fontFile);
-		fread(&filter, sizeof(TextureFilter), 1, fontFile);
+		fread(&bitmapSize, sizeof(bitmapSize), 1, fontFile);
+		fread(&width, sizeof(width), 1, fontFile);
+		fread(&height, sizeof(height), 1, fontFile);
+		fread(&filter, sizeof(filter), 1, fontFile);
 
 		// Load Data.
 		bitmap = static_cast<std::byte*>(malloc(sizeof(std::byte) * bitmapSize));
 		fread(bitmap, sizeof(std::byte), bitmapSize, fontFile);
-		fread(dimensions, sizeof(CharData), 94, fontFile);
-		fread(positions, sizeof(CharData), 94, fontFile);
-		fread(advances, sizeof(CharData), 94, fontFile);
-		fread(masks, sizeof(bool), 94, fontFile);
+		fread(dimensions.data(), sizeof(dimensions), 1, fontFile);
+		fread(positions.data(),  sizeof(positions),  1, fontFile);
+		fread(advances.data(),   sizeof(advances),   1, fontFile);
+		fread(masks.data(),      sizeof(masks),      1, fontFile);
 
 		fclose(fontFile);
 
 		// Upload data to OpenGL.
-		glGenTextures(94, textures);
+		glGenTextures(94, textures.data());
 
 		std::byte* bitmapItr = bitmap;
 		for (unsigned i = 0; i < 94; ++i)
@@ -151,9 +151,9 @@ namespace gem
 
 	void Font::Unload()
 	{
-		glDeleteTextures(94, textures);
+		glDeleteTextures(94, textures.data());
 
-		memset(textures, GL_NONE, sizeof(unsigned) * 94);
+		textures.fill(GL_NONE);
 	}
 
 	int Font::GetStringWidth(std::string_view text) const
@@ -205,27 +205,27 @@ namespace gem
 		return dimensions['Z' - '!'].x;
 	}
 
-	const unsigned* Font::GetTextures() const
+	std::span<const unsigned> Font::GetTextures() const
 	{
 		return textures;
 	}
 
-	const CharData* Font::GetDimensions() const
+	std::span<const CharData> Font::GetDimensions() const
 	{
 		return dimensions;
 	}
 
-	const CharData* Font::GetPositions() const
+	std::span<const CharData> Font::GetPositions() const
 	{
 		return positions;
 	}
 
-	const CharData* Font::GetAdvances() const
+	std::span<const CharData> Font::GetAdvances() const
 	{
 		return advances;
 	}
 
-	const bool* Font::GetMasks() const
+	std::span<const bool> Font::GetMasks() const
 	{
 		return masks;
 	}

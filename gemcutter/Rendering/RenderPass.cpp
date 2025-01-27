@@ -257,10 +257,10 @@ namespace gem
 			auto& font = text->font;
 			ASSERT(font != nullptr, "Entity has a Text component but does not have a Font to render with.");
 
-			auto* dimensions = font->GetDimensions();
-			auto* positions = font->GetPositions();
-			auto* advances = font->GetAdvances();
-			auto* masks = font->GetMasks();
+			std::span<const CharData> dimensions = font->GetDimensions();
+			std::span<const CharData> positions = font->GetPositions();
+			std::span<const CharData> advances = font->GetAdvances();
+			std::span<const bool> masks = font->GetMasks();
 
 			// We have to send the vertices of each character we render. We'll store them here.
 			float points[18] =

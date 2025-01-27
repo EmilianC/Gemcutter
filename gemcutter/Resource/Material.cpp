@@ -21,7 +21,7 @@ namespace gem
 		char pathBuffer[MAX_PATH + 1];
 
 		size_t shaderLen = 0;
-		fread(&shaderLen, sizeof(size_t), 1, binaryFile);
+		fread(&shaderLen, sizeof(shaderLen), 1, binaryFile);
 		if (shaderLen == 0)
 		{
 			shader = Shader::MakeNewPassThrough();
@@ -45,7 +45,7 @@ namespace gem
 		}
 
 		size_t textureCount = 0;
-		fread(&textureCount, sizeof(size_t), 1, binaryFile);
+		fread(&textureCount, sizeof(textureCount), 1, binaryFile);
 		if (textureCount > GPUInfo.GetMaxTextureSlots())
 		{
 			Error("Material: ( %s )\nMaterial contains more texture units than is supported ( %d ).", filePath.data(), GPUInfo.GetMaxTextureSlots());
@@ -55,10 +55,10 @@ namespace gem
 		for (size_t i = 0; i < textureCount; ++i)
 		{
 			int unit = 0;
-			fread(&unit, sizeof(int), 1, binaryFile);
+			fread(&unit, sizeof(unit), 1, binaryFile);
 
 			size_t textureLen = 0;
-			fread(&textureLen, sizeof(size_t), 1, binaryFile);
+			fread(&textureLen, sizeof(textureLen), 1, binaryFile);
 			if (textureLen == 0 || textureLen > MAX_PATH)
 			{
 				Error("Material: ( %s )\nInvalid Texture file path length.", filePath.data());
@@ -78,9 +78,9 @@ namespace gem
 			textures.Add(std::move(texture), unit);
 		}
 
-		fread(&blendMode, sizeof(BlendFunc), 1, binaryFile);
-		fread(&depthMode, sizeof(DepthFunc), 1, binaryFile);
-		fread(&cullMode, sizeof(CullFunc), 1, binaryFile);
+		fread(&blendMode, sizeof(blendMode), 1, binaryFile);
+		fread(&depthMode, sizeof(depthMode), 1, binaryFile);
+		fread(&cullMode, sizeof(cullMode), 1, binaryFile);
 
 		return true;
 	}

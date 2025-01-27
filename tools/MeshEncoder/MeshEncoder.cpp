@@ -368,15 +368,15 @@ bool MeshEncoder::Convert(std::string_view source, std::string_view destination,
 	}
 
 	// Write header.
-	fwrite(&minBounds, sizeof(gem::vec3), 1, modelFile);
-	fwrite(&maxBounds, sizeof(gem::vec3), 1, modelFile);
-	fwrite(&useUvs, sizeof(bool), 1, modelFile);
-	fwrite(&useNormals, sizeof(bool), 1, modelFile);
-	fwrite(&useTangents, sizeof(bool), 1, modelFile);
-	fwrite(&numVertices, sizeof(int), 1, modelFile);
+	fwrite(&minBounds,   sizeof(minBounds),   1, modelFile);
+	fwrite(&maxBounds,   sizeof(maxBounds),   1, modelFile);
+	fwrite(&useUvs,      sizeof(useUvs),      1, modelFile);
+	fwrite(&useNormals,  sizeof(useNormals),  1, modelFile);
+	fwrite(&useTangents, sizeof(useTangents), 1, modelFile);
+	fwrite(&numVertices, sizeof(numVertices), 1, modelFile);
 
 	// Write Data.
-	fwrite(data, sizeof(float), bufferSize, modelFile);
+	fwrite(data, sizeof(data[0]), bufferSize, modelFile);
 	auto result = fclose(modelFile);
 
 	// Report results.

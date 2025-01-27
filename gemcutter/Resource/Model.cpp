@@ -16,16 +16,16 @@ namespace gem
 		}
 		defer { fclose(binaryFile); };
 
-		int numVertices;
-		fread(&minBounds, sizeof(vec3), 1, binaryFile);
-		fread(&maxBounds, sizeof(vec3), 1, binaryFile);
-		fread(&hasUvs, sizeof(bool), 1, binaryFile);
-		fread(&hasNormals, sizeof(bool), 1, binaryFile);
-		fread(&hasTangents, sizeof(bool), 1, binaryFile);
-		fread(&numVertices, sizeof(int), 1, binaryFile);
+		unsigned numVertices;
+		fread(&minBounds,   sizeof(minBounds),   1, binaryFile);
+		fread(&maxBounds,   sizeof(maxBounds),   1, binaryFile);
+		fread(&hasUvs,      sizeof(hasUvs),      1, binaryFile);
+		fread(&hasNormals,  sizeof(hasNormals),  1, binaryFile);
+		fread(&hasTangents, sizeof(hasTangents), 1, binaryFile);
+		fread(&numVertices, sizeof(numVertices), 1, binaryFile);
 
 		// Determine mesh properties.
-		int bufferSize = numVertices * 3;
+		unsigned bufferSize = numVertices * 3;
 		int stride = sizeof(float) * 3;
 		if (hasUvs)
 		{

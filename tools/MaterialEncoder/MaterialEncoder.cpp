@@ -175,30 +175,30 @@ bool MaterialEncoder::Convert(std::string_view source, std::string_view destinat
 	}
 
 	const size_t shaderLen = shader.size();
-	fwrite(&shaderLen, sizeof(size_t), 1, materialFile);
+	fwrite(&shaderLen, sizeof(shaderLen), 1, materialFile);
 	if (shaderLen)
 	{
 		fwrite(shader.c_str(), sizeof(char), shaderLen, materialFile);
 	}
 
 	const size_t textureCount = textures.size();
-	fwrite(&textureCount, sizeof(size_t), 1, materialFile);
+	fwrite(&textureCount, sizeof(textureCount), 1, materialFile);
 	for (size_t i = 0; i < textureCount; ++i)
 	{
-		fwrite(&units[i], sizeof(int), 1, materialFile);
+		fwrite(&units[i], sizeof(units[0]), 1, materialFile);
 
 		// Omit the file extension. It will be resolved when loading the texture.
 		const char* start = textures[i].data();
 		const char* end = strchr(textures[i].data(), '.');
 		const size_t textureLen = end - start;
 
-		fwrite(&textureLen, sizeof(size_t), 1, materialFile);
+		fwrite(&textureLen, sizeof(textureLen), 1, materialFile);
 		fwrite(textures[i].c_str(), sizeof(char), textureLen, materialFile);
 	}
 
-	fwrite(&BlendMode, sizeof(gem::BlendFunc), 1, materialFile);
-	fwrite(&DepthMode, sizeof(gem::DepthFunc), 1, materialFile);
-	fwrite(&cullMode, sizeof(gem::CullFunc), 1, materialFile);
+	fwrite(&BlendMode, sizeof(BlendMode), 1, materialFile);
+	fwrite(&DepthMode, sizeof(DepthMode), 1, materialFile);
+	fwrite(&cullMode, sizeof(cullMode), 1, materialFile);
 
 	auto result = fclose(materialFile);
 	if (result != 0)

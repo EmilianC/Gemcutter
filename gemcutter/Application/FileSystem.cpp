@@ -319,9 +319,9 @@ namespace gem
 		defer { fclose(handle); };
 
 		// Find the length to the end of the file.
-		const size_t startPos = ftell(handle);
+		const long startPos = ftell(handle);
 		fseek(handle, 0, SEEK_END);
-		const size_t size = ftell(handle);
+		const long size = ftell(handle);
 		fseek(handle, startPos, SEEK_SET);
 
 		if (size == -1)
@@ -330,7 +330,7 @@ namespace gem
 		}
 
 		output.resize(size);
-		if (fread(output.data(), 1, size, handle) != size)
+		if (fread(output.data(), sizeof(std::byte), size, handle) != static_cast<size_t>(size))
 		{
 			output.clear();
 			return false;

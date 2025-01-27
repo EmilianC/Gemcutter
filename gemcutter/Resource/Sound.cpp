@@ -25,17 +25,17 @@ namespace gem
 		}
 		defer { fclose(soundFile); };
 
-		fread(&is3D, sizeof(bool), 1, soundFile);
-		fread(&loop, sizeof(bool), 1, soundFile);
-		fread(&unique, sizeof(bool), 1, soundFile);
-		fread(&attenuation, sizeof(AttenuationFunc), 1, soundFile);
-		fread(&rolloff, sizeof(float), 1, soundFile);
-		fread(&volume, sizeof(float), 1, soundFile);
-		fread(&minDistance, sizeof(float), 1, soundFile);
-		fread(&maxDistance, sizeof(float), 1, soundFile);
+		fread(&is3D,        sizeof(is3D),        1, soundFile);
+		fread(&loop,        sizeof(loop),        1, soundFile);
+		fread(&unique,      sizeof(unique),      1, soundFile);
+		fread(&attenuation, sizeof(attenuation), 1, soundFile);
+		fread(&rolloff,     sizeof(rolloff),     1, soundFile);
+		fread(&volume,      sizeof(volume),      1, soundFile);
+		fread(&minDistance, sizeof(minDistance), 1, soundFile);
+		fread(&maxDistance, sizeof(maxDistance), 1, soundFile);
 
 		size_t size = 0;
-		fread(&size, sizeof(size_t), 1, soundFile);
+		fread(&size, sizeof(size), 1, soundFile);
 		buffer.resize(size);
 		fread(buffer.data(), size, 1, soundFile);
 

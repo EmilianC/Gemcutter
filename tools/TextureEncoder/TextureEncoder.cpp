@@ -153,18 +153,18 @@ bool TextureEncoder::Convert(std::string_view source, std::string_view destinati
 			gem::Warning("Cubemaps must have \"Clamp\" wrap modes. Forcing wrap modes to \"Clamp\".");
 		}
 
-		const unsigned faceSize = image.width / 4;
+		const int faceSize = image.width / 4;
 		const gem::TextureWrap cubeMapWrapMode = gem::TextureWrap::Clamp;
 
 		// Write header.
-		fwrite(&isCubemap, sizeof(bool), 1, textureFile);
-		fwrite(&faceSize, sizeof(unsigned), 1, textureFile);
-		fwrite(&faceSize, sizeof(unsigned), 1, textureFile);
-		fwrite(&image.format, sizeof(gem::TextureFormat), 1, textureFile);
-		fwrite(&filter, sizeof(gem::TextureFilter), 1, textureFile);
-		fwrite(&cubeMapWrapMode, sizeof(gem::TextureWrap), 1, textureFile);
-		fwrite(&cubeMapWrapMode, sizeof(gem::TextureWrap), 1, textureFile);
-		fwrite(&anisotropicLevel, sizeof(float), 1, textureFile);
+		fwrite(&isCubemap, sizeof(isCubemap), 1, textureFile);
+		fwrite(&faceSize, sizeof(faceSize), 1, textureFile);
+		fwrite(&faceSize, sizeof(faceSize), 1, textureFile);
+		fwrite(&image.format, sizeof(image.format), 1, textureFile);
+		fwrite(&filter, sizeof(filter), 1, textureFile);
+		fwrite(&cubeMapWrapMode, sizeof(cubeMapWrapMode), 1, textureFile);
+		fwrite(&cubeMapWrapMode, sizeof(cubeMapWrapMode), 1, textureFile);
+		fwrite(&anisotropicLevel, sizeof(anisotropicLevel), 1, textureFile);
 
 		// Write faces.
 		const unsigned textureSize = faceSize * faceSize * elementCount;
@@ -198,14 +198,14 @@ bool TextureEncoder::Convert(std::string_view source, std::string_view destinati
 	else
 	{
 		// Write header.
-		fwrite(&isCubemap, sizeof(bool), 1, textureFile);
-		fwrite(&image.width, sizeof(unsigned), 1, textureFile);
-		fwrite(&image.height, sizeof(unsigned), 1, textureFile);
-		fwrite(&image.format, sizeof(gem::TextureFormat), 1, textureFile);
-		fwrite(&filter, sizeof(gem::TextureFilter), 1, textureFile);
-		fwrite(&wrapX, sizeof(gem::TextureWrap), 1, textureFile);
-		fwrite(&wrapY, sizeof(gem::TextureWrap), 1, textureFile);
-		fwrite(&anisotropicLevel, sizeof(float), 1, textureFile);
+		fwrite(&isCubemap,        sizeof(isCubemap),        1, textureFile);
+		fwrite(&image.width,      sizeof(image.width),      1, textureFile);
+		fwrite(&image.height,     sizeof(image.height),     1, textureFile);
+		fwrite(&image.format,     sizeof(image.format),     1, textureFile);
+		fwrite(&filter,           sizeof(filter),           1, textureFile);
+		fwrite(&wrapX,            sizeof(wrapX),            1, textureFile);
+		fwrite(&wrapY,            sizeof(wrapY),            1, textureFile);
+		fwrite(&anisotropicLevel, sizeof(anisotropicLevel), 1, textureFile);
 
 		// Write Data.
 		const unsigned textureSize = image.width * image.height * elementCount;
