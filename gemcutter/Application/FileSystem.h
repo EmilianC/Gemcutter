@@ -118,7 +118,7 @@ namespace gem
 		std::ifstream file;
 		std::string buffer;
 
-		unsigned currentPos = 0;
+		size_t currentPos = 0;
 		unsigned length = 0;
 	};
 }

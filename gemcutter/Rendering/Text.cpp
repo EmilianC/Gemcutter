@@ -98,7 +98,7 @@ namespace gem
 			}
 
 			size_t end = string.size();
-			for (unsigned i = start + 1; i < string.size(); ++i)
+			for (size_t i = start + 1; i < string.size(); ++i)
 			{
 				if (string[i] == '\n')
 				{

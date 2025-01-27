@@ -41,7 +41,7 @@ namespace gem
 		std::string GetString() const;
 
 		// Returns a hash value generated from all internal defines.
-		unsigned GetHash() const;
+		std::size_t GetHash() const;
 
 		bool operator==(const ShaderVariantControl&) const;
 		bool operator!=(const ShaderVariantControl&) const;
@@ -56,7 +56,7 @@ namespace gem
 		};
 
 		std::vector<Entry> defines;
-		unsigned hash = 0;
+		std::size_t hash = 0;
 	};
 }
 

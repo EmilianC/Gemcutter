@@ -311,7 +311,7 @@ bool MeshEncoder::Convert(std::string_view source, std::string_view destination,
 		}
 	}
 
-	const unsigned numVertices = faceData.size() * 3;
+	const unsigned numVertices = static_cast<unsigned>(faceData.size() * 3);
 	if (numVertices >= gem::VertexBuffer::RESTART_INDEX)
 	{
 		gem::Error("The mesh is too large. It has %d vertices, but needs less than %d.", numVertices, gem::VertexBuffer::RESTART_INDEX);

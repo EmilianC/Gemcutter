@@ -363,7 +363,7 @@ namespace gem
 		return result;
 	}
 
-	unsigned ShaderVariantControl::GetHash() const
+	std::size_t ShaderVariantControl::GetHash() const
 	{
 		return hash;
 	}
@@ -863,7 +863,7 @@ namespace gem
 			std::vector<UniformMember> uniforms;
 
 			// Find all uniforms and parse their information.
-			for (unsigned i = 0; i < rawStruct.size(); ++i)
+			for (size_t i = 0; i < rawStruct.size(); ++i)
 			{
 				if (std::isspace(rawStruct[i]))
 					continue;
