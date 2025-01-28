@@ -37,8 +37,11 @@ if (ENABLE_IMGUI_DEV_SUPPORT OR ENABLE_IMGUI_SUPPORT)
 	update_submodule("${CMAKE_CURRENT_LIST_DIR}/external/imgui")
 endif()
 
+update_submodule("${CMAKE_CURRENT_LIST_DIR}/external/freetype")
+update_submodule("${CMAKE_CURRENT_LIST_DIR}/external/glew")
 update_submodule("${CMAKE_CURRENT_LIST_DIR}/external/loupe")
 update_submodule("${CMAKE_CURRENT_LIST_DIR}/external/scaffold")
+update_submodule("${CMAKE_CURRENT_LIST_DIR}/external/soil2")
 update_submodule("${CMAKE_CURRENT_LIST_DIR}/external/soloud")
 
 # Load Scaffold CMake utilities.
