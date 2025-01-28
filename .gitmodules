@@ -19,7 +19,7 @@
 	url = https://github.com/Perlmint/glew-cmake.git
 [submodule "external/freetype"]
 	path = external/freetype
-	url = https://github.com/freetype/freetype.git
+	url = https://github.com/EmilianC/freetype.git
 [submodule "external/soil2"]
 	path = external/soil2
 	url = https://github.com/SpartanJ/SOIL2.git
