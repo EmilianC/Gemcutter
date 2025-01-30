@@ -12,7 +12,7 @@ find_package(OpenGL REQUIRED)
 function(update_submodule submodule_dir)
 	if (NOT EXISTS "${submodule_dir}/.git")
 		execute_process(
-			COMMAND "${GIT_EXECUTABLE}" submodule update --init --recursive --remote --merge "${submodule_dir}/"
+			COMMAND "${GIT_EXECUTABLE}" submodule update --init --recursive "${submodule_dir}/"
 			WORKING_DIRECTORY "${CMAKE_CURRENT_LIST_DIR}"
 			RESULT_VARIABLE error_code_submodule
 		)
