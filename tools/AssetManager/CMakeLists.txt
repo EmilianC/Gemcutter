@@ -111,12 +111,27 @@ function(gem_set_up_workspace workspace_directory)
 	get_target_property(ASSET_MANAGER_SOURCE_DIR asset_manager SOURCE_DIR)
 	get_target_property(ASSET_MANAGER_BINARY_DIR asset_manager BINARY_DIR)
 
-	# Create symlink to gemcutter's default assets.
+	# Create a junction/symlink to gemcutter's default assets.
 	cmake_path(GET GEMCUTTER_SOURCE_DIR PARENT_PATH GEMCUTTER_ROOT_DIR)
-	file(CREATE_LINK ${GEMCUTTER_ROOT_DIR}/resources ${workspace_directory}/Engine RESULT SYMLINK_ERROR SYMBOLIC)
+	file(TO_NATIVE_PATH "${GEMCUTTER_ROOT_DIR}/resources" dest_dir)
+	file(TO_NATIVE_PATH "${workspace_directory}/Engine" src_dir)
 
-	if (SYMLINK_ERROR)
-		message(FATAL_ERROR ${SYMLINK_ERROR})
+	if (NOT EXISTS ${src_dir})
+		if (WIN32)
+			execute_process(
+				COMMAND cmd /c mklink /j ${src_dir} ${dest_dir}
+				ERROR_VARIABLE SYMLINK_ERROR
+			)
+		else()
+			execute_process(
+				COMMAND ${CMAKE_COMMAND} -E create_symlink ${dest_dir} ${src_dir}
+				ERROR_VARIABLE SYMLINK_ERROR
+			)
+		endif()
+
+		if (SYMLINK_ERROR)
+			message(FATAL_ERROR "Error creating symlink: ${SYMLINK_ERROR}")
+		endif()
 	endif()
 
 	configure_file(
