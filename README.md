@@ -5,29 +5,32 @@ Gemcutter is a free C++ game development framework for Windows. It features a po
 and fine-grain control of both 2D and 3D rendering.
 
 # Why use Gemcutter?
-The framework facilitates expressive and succinct code that is both easy to read, and to use.
-With a thin API and C++23 features, Gemcutter provides powerful features without feeling clunky.
+Gemcutter provides a programmer-centric modern C++ workflow that is expressive yet succinct.
+
+The API is kept slim with a philosophy of minimizing boilerplate and unifying code paths.
+For example: `Widgets`, `Sprites`, `Meshes`, and `Particles` all render the same way - a Renderable component with a Material and VertexArray.
 
 Highlight features include:
 * [A rich shader workflow](docs/Shader.md)
-* [Efficient entity queries](docs/Entity.md)
+* [Queryable Entity-Component-System](docs/Entity.md)
 * [Extendable asset management](docs/AssetManager.md)
 * Run-time reflection
-* A modular and extendable particle system
+* A modular & extendable particle system
 * Audio powered by [SoLoud](https://github.com/EmilianC/soloud)
 * Mesh and Texture loading
-* GUI support
+* Dynamic GUI widgets
 * [FreeType text rendering](docs/Text.md)
-* Safe function delegates and event management
-* Robust fixed-timestep updates
-* A complete math library
+* Event handling & lifetime-safe delegates
+* A robust fixed-timestep gameloop
 * Keyboard/Mouse/Xbox-Controller support
+* [ImGui](https://github.com/ocornut/imgui) integration
+* A complete math library
 * Local networking
 
 # Quick Start
 If you're looking to start a new project using Gemcutter, then you can use [this repository template](https://github.com/EmilianC/Gemcutter-Project-Template) to get started quickly.
 
-If you just want to download the framework, then simply clone the repo and configure the project with CMake from the root directory:
+If you just want to download the framework, then simply clone the repo and configure the project with CMake from the root folder:
 ```
 > mkdir build
 > cd build
@@ -43,18 +46,20 @@ The following build configurations will be available:
 | RelWithDebInfo | GEM_DEV            | on            | off     | on    |
 | Release        | GEM_PRODUCTION     | on            | off     | off   |
 
-# Upcoming Features
-Gemcutter is always being updated and improved. See the [Trello board](https://trello.com/b/Oc2GFT2A/gemcutter) to follow development.
+# Development Roadmap
+See the [Trello board](https://trello.com/b/Oc2GFT2A/gemcutter) to follow development in more detail.
 
-Future highlight features include:
-* A fully featured world/UI editor
-* Bullet physics integration
-* Configurable memory management
-* C++ reflection driven features:
-	* Serialization and deserialization
-	* Seamless editor integration of user data-types
-	* Animation of arbitrary values
-	* Replication over networks
+### v1.0
+- [ ] A fully featured 3D world editor
+- [ ] Input remapping utilities
+- [ ] Serialization & deserialization
+- [ ] Single draw-call text rendering
+### v1.x
+- CLI asset manager in Rust
+- Native Linux support
+- Memory management utilities
+- Physics library integration
+- UI screen designer
 
 # Dependencies
 All Dependencies used under their respective licenses. Copyright is held by their respective owners.
