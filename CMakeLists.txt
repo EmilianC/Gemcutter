@@ -33,19 +33,10 @@ endif()
 
 option(ENABLE_IMGUI_DEV_SUPPORT "Build and use ImGui in development configurations." ON)
 option(ENABLE_IMGUI_SUPPORT "Build and use ImGui in all configurations." OFF)
-if (ENABLE_IMGUI_DEV_SUPPORT OR ENABLE_IMGUI_SUPPORT)
-	update_submodule("${CMAKE_CURRENT_LIST_DIR}/external/imgui")
-endif()
-
-update_submodule("${CMAKE_CURRENT_LIST_DIR}/external/freetype")
-update_submodule("${CMAKE_CURRENT_LIST_DIR}/external/glew")
-update_submodule("${CMAKE_CURRENT_LIST_DIR}/external/loupe")
-update_submodule("${CMAKE_CURRENT_LIST_DIR}/external/scaffold")
-update_submodule("${CMAKE_CURRENT_LIST_DIR}/external/soil2")
-update_submodule("${CMAKE_CURRENT_LIST_DIR}/external/soloud")
 
 # Load Scaffold CMake utilities.
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/external/scaffold")
+update_submodule("${CMAKE_CURRENT_LIST_DIR}/external/scaffold")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/external/scaffold")
 include(scaffold)
 sf_is_project_top_level(IS_TOP_LEVEL)
 

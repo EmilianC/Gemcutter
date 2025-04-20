@@ -1,7 +1,7 @@
 # Append to any IDE folders already set be calling scripts.
 set(PARENT_FOLDER ${CMAKE_FOLDER})
 
-# Catch #
+## Catch ##
 set(CMAKE_FOLDER "${PARENT_FOLDER}/external/catch")
 add_library(catch INTERFACE)
 target_include_directories(catch INTERFACE catch/)
@@ -11,12 +11,13 @@ target_compile_definitions(catch
 		CATCH_CONFIG_DISABLE_EXCEPTIONS
 )
 
-# Dirent #
+## Dirent ##
 set(CMAKE_FOLDER "${PARENT_FOLDER}/external/dirent")
 add_library(dirent INTERFACE)
 target_include_directories(dirent INTERFACE dirent/)
 
-# Freetype #
+## Freetype ##
+update_submodule("${CMAKE_CURRENT_LIST_DIR}/freetype")
 set(CMAKE_FOLDER "${PARENT_FOLDER}/external/freetype")
 set(FT_DISABLE_ZLIB     ON CACHE BOOL "")
 set(FT_DISABLE_BZIP2    ON CACHE BOOL "")
@@ -30,7 +31,8 @@ set(CMAKE_POLICY_DEFAULT_CMP0069 NEW) # Allow IPO
 add_subdirectory(freetype)
 cmake_policy(POP)
 
-# GLEW #
+## GLEW ##
+update_submodule("${CMAKE_CURRENT_LIST_DIR}/glew")
 set(CMAKE_FOLDER "${PARENT_FOLDER}/external/glew")
 set(glew-cmake_BUILD_SHARED OFF CACHE BOOL "")
 set(glew-cmake_BUILD_STATIC ON  CACHE BOOL "")
@@ -40,8 +42,9 @@ set(CMAKE_POLICY_DEFAULT_CMP0069 NEW) # Allow IPO
 add_subdirectory(glew)
 cmake_policy(POP)
 
-# Imgui #
+## Imgui ##
 if (ENABLE_IMGUI_SUPPORT OR ENABLE_IMGUI_DEV_SUPPORT)
+	update_submodule("${CMAKE_CURRENT_LIST_DIR}/imgui")
 	set(CMAKE_FOLDER "${PARENT_FOLDER}/external/imgui")
 	add_library(imgui STATIC
 		"imgui/backends/imgui_impl_win32.cpp"
@@ -58,16 +61,19 @@ if (ENABLE_IMGUI_SUPPORT OR ENABLE_IMGUI_DEV_SUPPORT)
 	sf_target_compile_disable_exceptions(imgui)
 endif()
 
-# Loupe #
+## Loupe ##
+update_submodule("${CMAKE_CURRENT_LIST_DIR}/loupe")
 set(CMAKE_FOLDER "${PARENT_FOLDER}/external/loupe")
 add_subdirectory(loupe)
 
-# SOIL2 #
+## SOIL2 ##
+update_submodule("${CMAKE_CURRENT_LIST_DIR}/soil2")
 set(CMAKE_FOLDER "${PARENT_FOLDER}/external/soil2")
 set(SOIL2_BUILD_TESTS OFF CACHE BOOL "")
 add_subdirectory(soil2)
 
-# SoLoud #
+## SoLoud ##
+update_submodule("${CMAKE_CURRENT_LIST_DIR}/soloud")
 set(CMAKE_FOLDER "${PARENT_FOLDER}/external/soloud")
 set(SOLOUD_BACKEND_ALSA          OFF CACHE BOOL "")
 set(SOLOUD_BACKEND_COREAUDIO     OFF CACHE BOOL "")
