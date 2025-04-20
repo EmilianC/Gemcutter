@@ -22,8 +22,11 @@ namespace gem
 		// The set of definitions used to permute the shader.
 		ShaderVariantControl variants;
 
-		// Provide per-instance uniform data for the Material's shader.
+		// Per-instance uniform data for the Material's shader.
 		BufferList buffers;
+
+		// Per-instance texture overrides for the Material.
+		TextureList textures;
 
 		// The main geometry data to be rendered.
 		VertexArray::Ptr array;

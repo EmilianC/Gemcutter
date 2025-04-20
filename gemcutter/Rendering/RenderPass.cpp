@@ -44,8 +44,9 @@ namespace
 			renderable.array->Bind();
 		}
 
-		renderable.buffers.Bind();
 		material.textures.Bind();
+		renderable.buffers.Bind();
+		renderable.textures.Bind();
 		gem::SetBlendFunc(material.blendMode);
 		gem::SetDepthFunc(material.depthMode);
 		gem::SetCullFunc(material.cullMode);
@@ -69,6 +70,7 @@ namespace
 			renderable.array->UnBind();
 		}
 
+		renderable.textures.UnBind();
 		renderable.buffers.UnBind();
 		material.textures.UnBind();
 	}
