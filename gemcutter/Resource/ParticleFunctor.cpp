@@ -5,6 +5,11 @@
 
 namespace gem
 {
+	void ParticleFunctor::Init(ParticleBuffer&, ParticleEmitter&, unsigned, unsigned)
+	{
+		// This function is defined here in order to avoid unused-variable warnings.
+	}
+
 	FunctorList::FunctorList(const FunctorList& other)
 		: functors(other.functors)
 	{
@@ -35,7 +40,7 @@ namespace gem
 	{
 	}
 
-	void RotationFunc::Init(ParticleBuffer& particles, ParticleEmitter& emitter, unsigned startIndex, unsigned count)
+	void RotationFunc::Init(ParticleBuffer& particles, ParticleEmitter&, unsigned startIndex, unsigned count)
 	{
 		ASSERT(startIndex + count <= particles.GetMaxParticles(), "Indices out of range.");
 

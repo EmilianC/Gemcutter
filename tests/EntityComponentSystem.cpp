@@ -446,13 +446,13 @@ TEST_CASE("Entity-Component-System")
 
 			auto count = 0;
 			Visit(typeId.data,
-				[](const loupe::fundamental& data) {
+				[](const loupe::fundamental&) {
 					CHECK(false);
 				},
-				[&](const loupe::structure& data) {
+				[&](const loupe::structure&) {
 					++count;
 				},
-				[](const loupe::enumeration& data) {
+				[](const loupe::enumeration&) {
 					CHECK(false);
 				}
 			);
@@ -1188,13 +1188,13 @@ TEST_CASE("Entity-Component-System")
 
 				// Query the Entity Database. No Entities should match these queries.
 				auto count = 0;
-				for (Entity& e : With<Comp1, Comp2>())     { count++; }
-				for (Entity& e : With<TagA, TagB, TagC>()) { count++; }
-				for (Entity& e : With<Base>())             { count++; }
-				for (Entity& e : With<DerivedA>())         { count++; }
-				for (Entity& e : With<DerivedB>())         { count++; }
-				for (Entity& e : With<DerivedC>())         { count++; }
-				for (Base& b   : All<Base>())              { count++; }
+				for ([[maybe_unused]] Entity& _ : With<Comp1, Comp2>())     { count++; }
+				for ([[maybe_unused]] Entity& _ : With<TagA, TagB, TagC>()) { count++; }
+				for ([[maybe_unused]] Entity& _ : With<Base>())             { count++; }
+				for ([[maybe_unused]] Entity& _ : With<DerivedA>())         { count++; }
+				for ([[maybe_unused]] Entity& _ : With<DerivedB>())         { count++; }
+				for ([[maybe_unused]] Entity& _ : With<DerivedC>())         { count++; }
+				for ([[maybe_unused]] Base& _   : All<Base>())              { count++; }
 				CHECK(count == 0);
 			}
 		}
