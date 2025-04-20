@@ -1,27 +1,24 @@
 #define CATCH_CONFIG_RUNNER
-#define CATCH_CONFIG_COLOUR_WINDOWS
 #include <catch/catch.hpp>
-#include <gemcutter/Application/CmdArgs.h>
-#include <gemcutter/Application/Logging.h>
+#include <chrono>
+#include <print>
+#include <thread>
+
 #include <gemcutter/Application/Reflection.h>
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, INT nCmdShow)
+int main(int argc, char** argv)
 {
-	using namespace gem;
+	gem::InitializeReflectionTables();
 
-	CreateConsoleWindow();
-	InitializeReflectionTables();
-
-	int result = Catch::Session().run(GetArgc(), GetArgv());
-
-	FocusConsoleWindow();
+	const int result = Catch::Session().run(argc, argv);
 	if (result != 0)
 	{
-		system("pause");
+		std::println("Press any key to continue...");
+		std::cin.get();
 	}
 	else
 	{
-		Sleep(800);
+		std::this_thread::sleep_for(std::chrono::seconds(1));
 	}
 
 	return result;
