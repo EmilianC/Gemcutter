@@ -133,7 +133,7 @@ namespace gem
 		for (unsigned i = 0; i < text.size(); ++i)
 		{
 			const char ch = text[i];
-			const Character& data = characters[ch - 33];
+			const Char& data = characters[ch - 33];
 
 			if (ch == ' ')
 			{

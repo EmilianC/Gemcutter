@@ -19,10 +19,11 @@ namespace gem
 
 		// ASCII characters from 33 ('!'), to 126 ('~').
 		static constexpr unsigned NUM_CHARACTERS = 94;
-		struct Character
+		struct Char
 		{
 			// Whether the character is available in the font.
 			bool isValid;
+
 			// The character's dimensions.
 			int width;
 			int height;
@@ -54,21 +55,21 @@ namespace gem
 		int GetStringHeight() const;
 
 		Texture* GetTexture() const;
-		std::span<const Character> GetCharacters() const;
 
 		static unsigned GetVAO();
 		static unsigned GetVBO();
 
+		std::span<const Char> GetCharacters() const;
 	private:
 		Texture::Ptr texture;
 
 		int spaceWidth = 0;
 		int stringHeight = 0;
 
-		std::array<Character, NUM_CHARACTERS> characters;
 
 		static unsigned VBO;
 		static unsigned VAO;
+		std::array<Char, NUM_CHARACTERS> characters;
 
 	public:
 		PRIVATE_MEMBER(Font, texture);
