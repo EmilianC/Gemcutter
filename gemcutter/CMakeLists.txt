@@ -152,13 +152,14 @@ sf_target_compile_warnings(gemcutter)
 
 target_compile_features(gemcutter PUBLIC cxx_std_23)
 target_include_directories(gemcutter PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../)
+target_include_directories(gemcutter SYSTEM PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../external/dirent/)
 target_link_libraries(gemcutter
 	PRIVATE
 		dirent
 	PUBLIC
 		OpenGL::GL
 		soil2
-		$<$<PLATFORM_ID:Windows>:ws2_32>
+		$<$<BOOL:${CMAKE_OS_IS_WINDOWS}>:ws2_32>
 		Xinput
 		libglew_static
 		soloud
