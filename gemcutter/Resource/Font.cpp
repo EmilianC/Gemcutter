@@ -180,40 +180,9 @@ namespace gem
 		return texture.get();
 	}
 
-<<<<<<< HEAD
-	std::span<const CharData> Font::GetDimensions() const
-	{
-		return dimensions;
-	}
-
-	std::span<const CharData> Font::GetPositions() const
-	{
-		return positions;
-	}
-
-	std::span<const CharData> Font::GetAdvances() const
-	{
-		return advances;
-	}
-
-	std::span<const bool> Font::GetMasks() const
-	{
-		return masks;
-	}
-
-	unsigned Font::GetFontWidth() const
-	{
-		return width;
-	}
-
-	unsigned Font::GetFontHeight() const
-	{
-		return height;
-=======
-	const Font::Character* Font::GetCharacters() const
+	std::span<const Font::Char> Font::GetCharacters() const
 	{
 		return characters;
->>>>>>> 5b16803 ([WIP] Font encoding)
 	}
 
 	unsigned Font::GetVAO()
