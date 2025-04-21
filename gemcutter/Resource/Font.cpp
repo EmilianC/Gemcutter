@@ -11,9 +11,6 @@
 
 namespace gem
 {
-	unsigned Font::VAO = 0;
-	unsigned Font::VBO = 0;
-
 	Font::~Font()
 	{
 		Unload();
@@ -21,64 +18,6 @@ namespace gem
 
 	bool Font::Load(std::string_view filePath)
 	{
-		if (VAO == GL_NONE)
-		{
-			// Prepare VBO's and VAO.
-			unsigned verticesSize = sizeof(float) * 6 * 3;
-			unsigned texCoordsSize = sizeof(float) * 6 * 2;
-			unsigned normalsSize = sizeof(float) * 6 * 3;
-			GLfloat data[48] =
-			{
-				/* Vertices */
-				// face 1
-				0.0f, 0.0f, 0.0f,
-				0.0f, 0.0f, 0.0f,
-				0.0f, 0.0f, 0.0f,
-				// face 2
-				0.0f, 0.0f, 0.0f,
-				0.0f, 0.0f, 0.0f,
-				0.0f, 0.0f, 0.0f,
-
-				/* Texcoords */
-				// face 1
-				0.0f, 0.0f,
-				1.0f, 0.0f,
-				0.0f, 1.0f,
-				// face 2
-				1.0f, 0.0f,
-				1.0f, 1.0f,
-				0.0f, 1.0f,
-
-				/* Normals */
-				// face 1
-				0.0f, 0.0f, 1.0f,
-				0.0f, 0.0f, 1.0f,
-				0.0f, 0.0f, 1.0f,
-				// face 2
-				0.0f, 0.0f, 1.0f,
-				0.0f, 0.0f, 1.0f,
-				0.0f, 0.0f, 1.0f
-			};
-
-			glGenVertexArrays(1, &VAO);
-			glBindVertexArray(VAO);
-
-			glEnableVertexAttribArray(0); // Position
-			glEnableVertexAttribArray(1); // UV
-			glEnableVertexAttribArray(2); // Normals
-
-			glGenBuffers(1, &VBO);
-			glBindBuffer(GL_ARRAY_BUFFER, VBO);
-			glBufferData(GL_ARRAY_BUFFER, verticesSize + texCoordsSize + normalsSize, data, GL_STATIC_DRAW);
-
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (std::byte*)nullptr + 0);
-			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (std::byte*)nullptr + verticesSize);
-			glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, (std::byte*)nullptr + verticesSize + texCoordsSize);
-
-			glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
-			glBindVertexArray(GL_NONE);
-		}
-
 		/* Load Font from file */
 		FILE* fontFile = fopen(filePath.data(), "rb");
 		if (fontFile == nullptr)
@@ -183,16 +122,6 @@ namespace gem
 	std::span<const Font::Char> Font::GetCharacters() const
 	{
 		return characters;
-	}
-
-	unsigned Font::GetVAO()
-	{
-		return VAO;
-	}
-
-	unsigned Font::GetVBO()
-	{
-		return VBO;
 	}
 }
 

@@ -56,9 +56,6 @@ namespace gem
 
 		Texture* GetTexture() const;
 
-		static unsigned GetVAO();
-		static unsigned GetVBO();
-
 		std::span<const Char> GetCharacters() const;
 	private:
 		Texture::Ptr texture;
@@ -66,9 +63,6 @@ namespace gem
 		int spaceWidth = 0;
 		int stringHeight = 0;
 
-
-		static unsigned VBO;
-		static unsigned VAO;
 		std::array<Char, NUM_CHARACTERS> characters;
 
 	public:
