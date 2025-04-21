@@ -7,6 +7,7 @@
 #include "gemcutter/Math/Transform.h"
 #include "gemcutter/Rendering/Camera.h"
 #include "gemcutter/Rendering/Primitives.h"
+#include "gemcutter/Rendering/Renderable.h"
 #include "gemcutter/Rendering/Rendering.h"
 #include "gemcutter/Rendering/RenderTarget.h"
 #include "gemcutter/Rendering/Viewport.h"
@@ -17,8 +18,6 @@
 #include "gemcutter/Resource/UniformBuffer.h"
 #include "gemcutter/Resource/VertexArray.h"
 #include "gemcutter/Utilities/StdExt.h"
-// Renderables
-#include "gemcutter/Rendering/Text.h"
 
 #include <GL/glew.h>
 
@@ -254,139 +253,10 @@ namespace gem
 
 		transformBuffer.Bind(static_cast<unsigned>(UniformBufferSlot::Model));
 
-		if (auto* text = component_cast<Text*>(renderable))
-		{
-			auto& font = text->font;
-			ASSERT(font != nullptr, "Entity has a Text component but does not have a Font to render with.");
+		auto* vertexArray = renderable->array.get();
+		ASSERT(vertexArray, "Renderable Entity does not have a valid VertexArray to render.");
 
-			std::span<const Font::Character> chardata = font->GetCharacters();
-
-			// We have to send the vertices of each character we render. We'll store them here.
-			float points[18] =
-			{
-				0.0f, 0.0f, 0.0f,
-				0.0f, 0.0f, 0.0f,
-				0.0f, 0.0f, 0.0f,
-
-				0.0f, 0.0f, 0.0f,
-				0.0f, 0.0f, 0.0f,
-				0.0f, 0.0f, 0.0f,
-			};
-
-			const vec3 advanceDirection = worldTransform.GetRight();
-			const vec3 upDirection = worldTransform.GetUp();
-			const vec3 initialPosition = ent.position;
-			vec3 linePosition = initialPosition;
-			unsigned currentLine = 1;
-
-			if (text->centeredX)
-			{
-				text->owner.position -= advanceDirection * (((text->GetLineWidth(currentLine) + text->kerning * text->string.size())) / 2.0f);
-			}
-
-			if (text->centeredY)
-			{
-				text->owner.position -= upDirection * ((font->GetStringHeight() * static_cast<float>(text->GetNumLines())) / 2.0f);
-			}
-
-			glBindVertexArray(Font::GetVAO());
-			glBindBuffer(GL_ARRAY_BUFFER, Font::GetVBO());
-			font->GetTexture()->Bind(0);
-
-			for (unsigned i = 0; i < text->string.size(); ++i)
-			{
-				char character = text->string[i];
-				unsigned charIndex = static_cast<unsigned>(character) - '!';
-
-				// Handle whitespace.
-				if (character == ' ')
-				{
-					text->owner.position += advanceDirection * (font->GetSpaceWidth() + text->kerning);
-					continue;
-				}
-				else if (character == '\n')
-				{
-					linePosition += -upDirection * static_cast<float>(font->GetStringHeight()) * 1.33f;
-					text->owner.position = linePosition;
-					currentLine++;
-
-					if (text->centeredX)
-					{
-						text->owner.position -= advanceDirection * (((text->GetLineWidth(currentLine) + text->kerning * text->string.size())) / 2.0f);
-					}
-
-					continue;
-				}
-				else if (character == '\t')
-				{
-					text->owner.position += advanceDirection * (font->GetSpaceWidth() + text->kerning) * 4;
-					continue;
-				}
-
-				if (!chardata[charIndex].isValid)
-				{
-					// Character does not exist in this font. Advance to next character.
-					text->owner.position += advanceDirection * ((chardata[charIndex].advanceX + text->kerning));
-					continue;
-				}
-
-				/* Adjusts the node's position based on the character. */
-				vec3 characterPosition;
-				characterPosition += advanceDirection * static_cast<float>(chardata[charIndex].offsetX);
-				characterPosition += upDirection * static_cast<float>(chardata[charIndex].offsetY);
-				text->owner.position += characterPosition;
-
-				const mat4 newTransform = ent.GetWorldTransform();
-
-				/* Construct a polygon based on the current character's dimensions. */
-				points[3] = static_cast<float>(chardata[charIndex].width);
-				points[7] = static_cast<float>(chardata[charIndex].height);
-				points[9] = static_cast<float>(chardata[charIndex].width);
-				points[12] = static_cast<float>(chardata[charIndex].width);
-				points[13] = static_cast<float>(chardata[charIndex].height);
-				points[16] = static_cast<float>(chardata[charIndex].height);
-
-				/* Update buffers with the new polygon. */
-				glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * 18, points);
-
-				/* Render */
-				if (!IsPtrNull(camera))
-				{
-					const mat4 mv = viewMatrix * newTransform;
-
-					MVP.Set(viewProjMatrix * mv);
-					modelView.Set(mv);
-				}
-				else
-				{
-					MVP.Set(mat4::Identity);
-					modelView.Set(mat4::Identity);
-				}
-
-				model.Set(newTransform);
-				invModel.Set(newTransform.GetFastInverse());
-				transformBuffer.Bind(static_cast<unsigned>(UniformBufferSlot::Model));
-
-				glDrawArrays(GL_TRIANGLES, 0, 6);
-
-				/* Adjust position for the next node. */
-				// Undo character translate.
-				text->owner.position -= characterPosition;
-				// Advance to next character.
-				text->owner.position += advanceDirection * ((chardata[charIndex].advanceX + text->kerning));
-			}
-
-			glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);
-
-			text->owner.position = initialPosition;
-		}
-		else
-		{
-			auto* vertexArray = renderable->array.get();
-			ASSERT(vertexArray, "Renderable Entity does not have a valid VertexArray to render.");
-
-			vertexArray->Draw();
-		}
+		vertexArray->Draw();
 
 		UnBindRenderable(*renderable, shader.get());
 	}
