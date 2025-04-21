@@ -2,6 +2,7 @@
 #include "FontEncoder.h"
 #include <gemcutter/Math/Math.h>
 #include <gemcutter/Rendering/Rendering.h>
+#include <gemcutter/Resource/Font.h>
 #include <gemcutter/Utilities/String.h>
 
 #include <array>
@@ -11,13 +12,25 @@
 
 #define CURRENT_VERSION 3
 
-constexpr unsigned NUM_CHARACTERS = 94;
+constexpr float ESTIMATED_SPACE_EFFICIENCY = 0.8f;
 
-struct CharData
+unsigned ComputeRequiredDimensions(unsigned totalArea, unsigned maxCharacterHeight, gem::TextureFilter filter)
 {
-	int x = 0;
-	int y = 0;
-};
+	float effectiveArea = totalArea * (1.0f / ESTIMATED_SPACE_EFFICIENCY);
+
+	if (ResolveMipMapping(filter))
+	{
+		// We should prefer textures that are a power of 2.
+		return gem::NextPowerOfTwo(static_cast<unsigned>(std::sqrtf(effectiveArea)));
+	}
+
+	unsigned result = static_cast<unsigned>(std::sqrtf(effectiveArea));
+
+	// Make sure the result will be a multiple of the character height.
+	result += result % maxCharacterHeight;
+
+	return result;
+}
 
 FontEncoder::FontEncoder()
 	: Encoder(CURRENT_VERSION)
@@ -133,6 +146,7 @@ bool FontEncoder::Convert(std::string_view source, std::string_view destination,
 	const unsigned height = static_cast<unsigned>(metadata.GetInt("height"));
 	const auto filter = gem::StringToEnum<gem::TextureFilter>(metadata.GetString("texture_filter")).value();
 
+<<<<<<< HEAD
 	// 10x10 grid of textures.
 	const unsigned characterDimension = gem::Max(width, height);
 	const unsigned textureWidth = characterDimension * 10;
@@ -146,8 +160,16 @@ bool FontEncoder::Convert(std::string_view source, std::string_view destination,
 	std::array<CharData, NUM_CHARACTERS> advances;
 	std::array<bool, NUM_CHARACTERS> masks; // If a character is present in the font face.
 	std::array<FT_Face> faces;              // This is probably incorrect.
+=======
+	gem::Font::Character characters[gem::Font::NUM_CHARACTERS] = {};
+	unsigned char* bitmaps[gem::Font::NUM_CHARACTERS] = { nullptr };
+	defer {
+		for (auto* bitmap : bitmaps) free(bitmap);
+	};
+>>>>>>> 5b16803 ([WIP] Font encoding)
 
 	FT_Library library;
+	FT_Face face;
 
 	if (FT_Init_FreeType(&library))
 	{
@@ -170,65 +192,103 @@ bool FontEncoder::Convert(std::string_view source, std::string_view destination,
 		return false;
 	}
 
-	// Process ASCII characters from 33 ('!'), to 126 ('~').
-	for (unsigned i = 0; i < NUM_CHARACTERS; ++i)
+	// Retrieve width of spaces.
+	int spaceWidth = 0;
 	{
-		unsigned char c = static_cast<char>(i + 33);
-		auto charIndex = FT_Get_Char_Index(face, c);
-
-		// Prepare bitmap.
-		if (FT_Load_Glyph(face, charIndex, FT_LOAD_RENDER))
+		FT_UInt charIndex = FT_Get_Char_Index(face, ' ');
+		if (charIndex == 0 || FT_Load_Glyph(face, charIndex, FT_LOAD_RENDER))
 		{
-			gem::Error("Glyph (%c) could not be processed.", c);
+			gem::Error("Could not retrieve the width of spaces for the font.");
 			return false;
 		}
 
-		dimensions[i].x = face->glyph->bitmap.width;
-		dimensions[i].y = face->glyph->bitmap.rows;
+		spaceWidth = face->glyph->advance.x >> 6;
+	}
 
-		positions[i].x = face->glyph->bitmap_left;
-		positions[i].y = face->glyph->bitmap_top - face->glyph->bitmap.rows;
-
-		advances[i].x = face->glyph->advance.x >> 6;
-		advances[i].y = face->glyph->advance.y >> 6;
-
-		if (charIndex == 0 || (face->glyph->bitmap.width * face->glyph->bitmap.rows == 0))
+	// Process ASCII characters from 33 ('!'), to 126 ('~').
+	unsigned totalArea = 0;
+	int stringHeight = 0;
+	for (unsigned i = 0; i < gem::Font::NUM_CHARACTERS; ++i)
+	{
+		unsigned char c = static_cast<char>(i + 33);
+		FT_UInt charIndex = FT_Get_Char_Index(face, c);
+		if (charIndex == 0)
 		{
+			gem::Warning("Glyph (%c) is not available in the font.", c);
 			continue;
 		}
 
-		if (face->glyph->bitmap.width > width)
+		if (FT_Load_Glyph(face, charIndex, FT_LOAD_RENDER))
 		{
-			Jwl::Error("Glyph (%c) is too wide", c);
-			return false;
+			gem::Warning("Glyph (%c) could not be rendered.", c);
+			continue;
 		}
 
-		if (face->glyph->bitmap.rows > (int)height)
+		const unsigned glyphWidth  = face->glyph->bitmap.width;
+		const unsigned glyphHeight = face->glyph->bitmap.rows;
+		const unsigned glyphSize   = glyphWidth * glyphHeight;
+
+		if (glyphWidth == 0 || glyphHeight == 0)
 		{
-			Jwl::Error("Glyph (%c) is too tall", c);
-			return false;
+			gem::Warning("Glyph (%c) is zero-sized.", c);
+			continue;
 		}
 
-		masks[i] = true;
+		if (glyphWidth > width)
+		{
+			gem::Warning("Glyph (%c) is too wide and is being discarded.", c);
+			continue;
+		}
+
+		if (glyphHeight > height)
+		{
+			gem::Warning("Glyph (%c) is too tall and is being discarded.", c);
+			continue;
+		}
+
+
+		totalArea += glyphSize;
+		stringHeight = gem::Max(stringHeight, static_cast<int>(glyphHeight));
+
+		bitmaps[i] = static_cast<unsigned char*>(malloc(glyphSize * sizeof(unsigned char)));
+		memcpy(bitmaps[i], face->glyph->bitmap.buffer, glyphSize * sizeof(unsigned char));
+
+		gem::FlipImage(bitmaps[i], glyphWidth, glyphHeight, 1);
+
+		auto& character = characters[i];
+		character.isValid = true;
+
+		character.width = glyphWidth;
+		character.height = face->glyph->bitmap.rows;
+
+		character.offsetX = face->glyph->bitmap_left;
+		character.offsetY = face->glyph->bitmap_top - face->glyph->bitmap.rows;
+
+		character.advanceX = face->glyph->advance.x >> 6;
+		character.advanceY = face->glyph->advance.y >> 6;
 	}
 
-	unsigned char* writer = bitmapBuffer;
-	writer += (i / 10u) * textureWidth * characterDimension;
-	writer += (i % 10u) * characterDimension;
+	// Create packed texture
+	auto PackTexture = [&](unsigned bitmapSize) -> unsigned char* {
+		// Allocate Texture space.
+		auto* bitmapBuffer = static_cast<unsigned char*>(calloc(bitmapSize, sizeof(unsigned char)));
 
-	// Save the bitmap as a flipped image.
-	for (int y = face->glyph->bitmap.rows - 1; y-- > 0;)
+
+
+		return bitmapBuffer;
+	};
+
+	unsigned char* bitmapBuffer = nullptr;
+	unsigned textureWidth = ComputeRequiredDimensions(totalArea, static_cast<unsigned>(stringHeight), filter);
+	while (true)
 	{
-		for (int x = 0; x < face->glyph->bitmap.width; ++x)
-		{
-			unsigned char pixel = face->glyph->bitmap.buffer[face->glyph->bitmap.width * y + x];
+		bitmapBuffer = PackTexture(textureWidth * textureWidth);
+		if (bitmapBuffer)
+			break;
 
-			*(writer + x) = pixel;
-		}
 
-		// Step to the next row.
-		writer += textureWidth;
 	}
+	defer { free(bitmapBuffer); };
 
 	// Save file.
 	FILE* fontFile = fopen(outputFile.c_str(), "wb");
@@ -241,26 +301,22 @@ bool FontEncoder::Convert(std::string_view source, std::string_view destination,
 	// Write header.
 	fwrite(&textureWidth,  sizeof(textureWidth),  1, fontFile);
 	fwrite(&textureHeight, sizeof(textureHeight), 1, fontFile);
-	fwrite(&width,         sizeof(width),         1, fontFile);
-	fwrite(&height,        sizeof(height),        1, fontFile);
+	fwrite(&spaceWidth,    sizeof(spaceWidth),    1, fontFile);
+	fwrite(&stringHeight,  sizeof(stringHeight),  1, fontFile);
 	fwrite(&filter,        sizeof(filter),        1, fontFile);
 
 	// Write Data.
-	const size_t bitmapSize = bitmapBuffer.size();
-	fwrite(bitmapBuffer.data(), sizeof(std::byte),  bitmapSize, fontFile);
-	fwrite(dimensions.data(),   sizeof(dimensions), 1,          fontFile);
-	fwrite(positions.data(),    sizeof(positions),  1,          fontFile);
-	fwrite(advances.data(),     sizeof(advances),   1,          fontFile);
-	fwrite(masks.data(),        sizeof(masks),      1,          fontFile);
+	fwrite(bitmapBuffer.data(), sizeof(std::byte),  bitmapBuffer.size(), fontFile);
+	fwrite(characters.data(),   sizeof(characters), 1,                   fontFile);
 
 	int result = fclose(fontFile);
 
 	// Report results.
 	unsigned count = 0;
 	std::string missingChars;
-	for (unsigned i = 0; i < NUM_CHARACTERS; ++i)
+	for (unsigned i = 0; i < gem::Font::NUM_CHARACTERS; ++i)
 	{
-		if (masks[i])
+		if (characters[i].isValid)
 		{
 			count++;
 		}
@@ -282,9 +338,9 @@ bool FontEncoder::Convert(std::string_view source, std::string_view destination,
 	}
 	else
 	{
-		if (count != NUM_CHARACTERS)
+		if (count != gem::Font::NUM_CHARACTERS)
 		{
-			gem::Warning("%d characters were not created.\n%s", NUM_CHARACTERS - count, missingChars.c_str());
+			gem::Warning("%d characters were not created.\n%s", gem::Font::NUM_CHARACTERS - count, missingChars.c_str());
 		}
 
 		return true;

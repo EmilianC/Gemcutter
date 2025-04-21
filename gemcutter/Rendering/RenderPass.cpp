@@ -259,10 +259,7 @@ namespace gem
 			auto& font = text->font;
 			ASSERT(font != nullptr, "Entity has a Text component but does not have a Font to render with.");
 
-			std::span<const CharData> dimensions = font->GetDimensions();
-			std::span<const CharData> positions = font->GetPositions();
-			std::span<const CharData> advances = font->GetAdvances();
-			std::span<const bool> masks = font->GetMasks();
+			std::span<const Font::Character> chardata = font->GetCharacters();
 
 			// We have to send the vertices of each character we render. We'll store them here.
 			float points[18] =
@@ -326,28 +323,28 @@ namespace gem
 					continue;
 				}
 
-				if (!masks[charIndex])
+				if (!chardata[charIndex].isValid)
 				{
 					// Character does not exist in this font. Advance to next character.
-					text->owner.position += advanceDirection * ((advances[charIndex].x + text->kerning));
+					text->owner.position += advanceDirection * ((chardata[charIndex].advanceX + text->kerning));
 					continue;
 				}
 
 				/* Adjusts the node's position based on the character. */
 				vec3 characterPosition;
-				characterPosition += advanceDirection * static_cast<float>(positions[charIndex].x);
-				characterPosition += upDirection * static_cast<float>(positions[charIndex].y);
+				characterPosition += advanceDirection * static_cast<float>(chardata[charIndex].offsetX);
+				characterPosition += upDirection * static_cast<float>(chardata[charIndex].offsetY);
 				text->owner.position += characterPosition;
 
 				const mat4 newTransform = ent.GetWorldTransform();
 
 				/* Construct a polygon based on the current character's dimensions. */
-				points[3] = static_cast<float>(dimensions[charIndex].x);
-				points[7] = static_cast<float>(dimensions[charIndex].y);
-				points[9] = static_cast<float>(dimensions[charIndex].x);
-				points[12] = static_cast<float>(dimensions[charIndex].x);
-				points[13] = static_cast<float>(dimensions[charIndex].y);
-				points[16] = static_cast<float>(dimensions[charIndex].y);
+				points[3] = static_cast<float>(chardata[charIndex].width);
+				points[7] = static_cast<float>(chardata[charIndex].height);
+				points[9] = static_cast<float>(chardata[charIndex].width);
+				points[12] = static_cast<float>(chardata[charIndex].width);
+				points[13] = static_cast<float>(chardata[charIndex].height);
+				points[16] = static_cast<float>(chardata[charIndex].height);
 
 				/* Update buffers with the new polygon. */
 				glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * 18, points);
@@ -376,7 +373,7 @@ namespace gem
 				// Undo character translate.
 				text->owner.position -= characterPosition;
 				// Advance to next character.
-				text->owner.position += advanceDirection * ((advances[charIndex].x + text->kerning));
+				text->owner.position += advanceDirection * ((chardata[charIndex].advanceX + text->kerning));
 			}
 
 			glBindBuffer(GL_ARRAY_BUFFER, GL_NONE);

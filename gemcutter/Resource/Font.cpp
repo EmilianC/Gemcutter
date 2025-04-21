@@ -97,17 +97,15 @@ namespace gem
 		// Read header.
 		fread(&textureWidth,  sizeof(textureWidth),  1, fontFile);
 		fread(&textureHeight, sizeof(textureHeight), 1, fontFile);
-		fread(&width,         sizeof(width),         1, fontFile);
-		fread(&height,        sizeof(height),        1, fontFile);
+		fread(&spaceWidth,    sizeof(spaceWidth),    1, fontFile);
+		fread(&stringHeight,  sizeof(stringHeight),  1, fontFile);
 		fread(&filter,        sizeof(filter),        1, fontFile);
+		const unsigned textureSize = textureWidth * textureHeight;
 
 		// Load Data.
-		bitmap = static_cast<std::byte*>(malloc(sizeof(std::byte) * textureWidth * textureHeight));
-		fread(bitmap, sizeof(std::byte), textureWidth * textureHeight, fontFile);
-		fread(dimensions.data(), sizeof(dimensions), 1, fontFile);
-		fread(positions.data(),  sizeof(positions),  1, fontFile);
-		fread(advances.data(),   sizeof(advances),   1, fontFile);
-		fread(masks.data(),      sizeof(masks),      1, fontFile);
+		bitmap = static_cast<std::byte*>(malloc(sizeof(std::byte) * textureSize));
+		fread(bitmap, sizeof(std::byte), textureSize, fontFile);
+		fread(characters.data(), sizeof(characters), 1, fontFile);
 
 		fclose(fontFile);
 
@@ -131,11 +129,12 @@ namespace gem
 	{
 		int length = 0;
 		int largest = INT_MIN;
-		const int spaceWidth = GetSpaceWidth();
 
 		for (unsigned i = 0; i < text.size(); ++i)
 		{
 			const char ch = text[i];
+			const Character& data = characters[ch - 33];
+
 			if (ch == ' ')
 			{
 				length += spaceWidth;
@@ -149,16 +148,16 @@ namespace gem
 			{
 				length += spaceWidth * 4;
 			}
-			else
+			else if (data.isValid)
 			{
 				if (i == text.size() - 1)
 				{
 					// The last character doesn't have an advance, only it's own total width.
-					length += positions[ch - '!'].x + dimensions[ch - '!'].x;
+					length += data.offsetX + data.width;
 				}
 				else
 				{
-					length += advances[ch - '!'].x;
+					length += data.advanceX;
 				}
 			}
 		}
@@ -168,19 +167,20 @@ namespace gem
 
 	int Font::GetStringHeight() const
 	{
-		return dimensions['Z' - '!'].y;
+		return stringHeight;
 	}
 
 	int Font::GetSpaceWidth() const
 	{
-		return dimensions['Z' - '!'].x;
+		return spaceWidth;
 	}
 
-	Texture::Ptr Font::GetTexture() const
+	Texture* Font::GetTexture() const
 	{
-		return texture;
+		return texture.get();
 	}
 
+<<<<<<< HEAD
 	std::span<const CharData> Font::GetDimensions() const
 	{
 		return dimensions;
@@ -209,6 +209,11 @@ namespace gem
 	unsigned Font::GetFontHeight() const
 	{
 		return height;
+=======
+	const Font::Character* Font::GetCharacters() const
+	{
+		return characters;
+>>>>>>> 5b16803 ([WIP] Font encoding)
 	}
 
 	unsigned Font::GetVAO()
