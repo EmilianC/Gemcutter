@@ -20,6 +20,7 @@ namespace gem
 
 	Light::Light(Entity& _owner, const vec3& _color, Type _type)
 		: Component(_owner)
+		, type(_type)
 	{
 		CreateUniformBuffer();
 		color.Set(_color);
