@@ -177,12 +177,14 @@ endif()
 
 target_compile_definitions(gemcutter
 	PUBLIC
-		_CRT_SECURE_NO_WARNINGS
-		WIN32_LEAN_AND_MEAN
-		NOMINMAX
 		$<$<CONFIG:Debug>:GEM_DEBUG>
 		$<$<CONFIG:Debug,RelWithDebInfo>:GEM_DEV>
 		$<$<CONFIG:Release>:GEM_PRODUCTION>
+		$<$<BOOL:${CMAKE_OS_IS_LINUX}>:GEM_LINUX>
+		$<$<BOOL:${CMAKE_OS_IS_WINDOWS}>:GEM_WINDOWS>
+		$<$<BOOL:${CMAKE_OS_IS_WINDOWS}>:WIN32_LEAN_AND_MEAN>
+		$<$<BOOL:${CMAKE_OS_IS_WINDOWS}>:_CRT_SECURE_NO_WARNINGS>
+		$<$<BOOL:${CMAKE_OS_IS_WINDOWS}>:NOMINMAX>
 )
 
 option(ENABLE_PCH "Use a precompiled header file." TRUE)
