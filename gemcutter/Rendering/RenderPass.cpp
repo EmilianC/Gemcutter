@@ -294,7 +294,7 @@ namespace gem
 
 			glBindVertexArray(Font::GetVAO());
 			glBindBuffer(GL_ARRAY_BUFFER, Font::GetVBO());
-			glActiveTexture(GL_TEXTURE0);
+			font->GetTexture()->Bind(0);
 
 			for (unsigned i = 0; i < text->string.size(); ++i)
 			{
@@ -370,7 +370,6 @@ namespace gem
 				invModel.Set(newTransform.GetFastInverse());
 				transformBuffer.Bind(static_cast<unsigned>(UniformBufferSlot::Model));
 
-				glBindTexture(GL_TEXTURE_2D, font->GetTextures()[charIndex]);
 				glDrawArrays(GL_TRIANGLES, 0, 6);
 
 				/* Adjust position for the next node. */

@@ -1,5 +1,6 @@
 // Copyright (c) 2017 Emilian Cioca
 #include "FontEncoder.h"
+#include <gemcutter/Math/Math.h>
 #include <gemcutter/Rendering/Rendering.h>
 #include <gemcutter/Utilities/String.h>
 
@@ -9,6 +10,8 @@
 #include <vector>
 
 #define CURRENT_VERSION 3
+
+constexpr unsigned NUM_CHARACTERS = 94;
 
 struct CharData
 {
@@ -130,16 +133,21 @@ bool FontEncoder::Convert(std::string_view source, std::string_view destination,
 	const unsigned height = static_cast<unsigned>(metadata.GetInt("height"));
 	const auto filter = gem::StringToEnum<gem::TextureFilter>(metadata.GetString("texture_filter")).value();
 
-	// File preparation.
-	std::vector<std::byte> bitmapBuffer;
-	std::array<CharData, 94> dimensions;
-	std::array<CharData, 94> positions;
-	std::array<CharData, 94> advances;
-	std::array<bool, 94> masks; // If a character is present in the font face.
+	// 10x10 grid of textures.
+	const unsigned characterDimension = gem::Max(width, height);
+	const unsigned textureWidth = characterDimension * 10;
+	const unsigned textureHeight = textureWidth;
+	const unsigned long int bitmapSize = textureWidth * textureHeight;
+	auto* bitmapBuffer = static_cast<unsigned char*>(calloc(bitmapSize, sizeof(unsigned char)));
+	defer { free(bitmapBuffer); };
 
-	// FreeType variables.
+	std::array<CharData, NUM_CHARACTERS> dimensions;
+	std::array<CharData, NUM_CHARACTERS> positions;
+	std::array<CharData, NUM_CHARACTERS> advances;
+	std::array<bool, NUM_CHARACTERS> masks; // If a character is present in the font face.
+	std::array<FT_Face> faces;              // This is probably incorrect.
+
 	FT_Library library;
-	FT_Face face;
 
 	if (FT_Init_FreeType(&library))
 	{
@@ -155,20 +163,17 @@ bool FontEncoder::Convert(std::string_view source, std::string_view destination,
 		return false;
 	}
 
-	// Set font size.
-	if (FT_Set_Char_Size(face, width * 64, height * 64, 96, 96))
+	// Set font size. 1pt = 1/72inch.
+	if (FT_Set_Char_Size(face, width << 6, height << 6, 72, 72))
 	{
 		gem::Error("The width and height could not be processed.");
 		return false;
 	}
 
-	// Estimation of the buffer size we will need.
-	bitmapBuffer.reserve(width * height * 94);
-
 	// Process ASCII characters from 33 ('!'), to 126 ('~').
-	for (unsigned char c = 33; c < 127; c++)
+	for (unsigned i = 0; i < NUM_CHARACTERS; ++i)
 	{
-		unsigned index = c - 33;
+		unsigned char c = static_cast<char>(i + 33);
 		auto charIndex = FT_Get_Char_Index(face, c);
 
 		// Prepare bitmap.
@@ -178,35 +183,51 @@ bool FontEncoder::Convert(std::string_view source, std::string_view destination,
 			return false;
 		}
 
-		const unsigned numRows = face->glyph->bitmap.rows;
-		const unsigned numColumns = face->glyph->bitmap.width;
-		if (charIndex != 0 && numRows > 1 && numColumns != 0)
-		{
-			// Save the bitmap as a flipped image.
-			for (unsigned i = numRows; i-- > 0;)
-			{
-				for (unsigned j = 0; j < numColumns; ++j)
-				{
-					unsigned char data = face->glyph->bitmap.buffer[numColumns * i + j];
-					bitmapBuffer.push_back(static_cast<std::byte>(data));
-				}
-			}
+		dimensions[i].x = face->glyph->bitmap.width;
+		dimensions[i].y = face->glyph->bitmap.rows;
 
-			masks[index] = true;
-		}
-		else
+		positions[i].x = face->glyph->bitmap_left;
+		positions[i].y = face->glyph->bitmap_top - face->glyph->bitmap.rows;
+
+		advances[i].x = face->glyph->advance.x >> 6;
+		advances[i].y = face->glyph->advance.y >> 6;
+
+		if (charIndex == 0 || (face->glyph->bitmap.width * face->glyph->bitmap.rows == 0))
 		{
-			masks[index] = false;
+			continue;
 		}
 
-		dimensions[index].x = numColumns;
-		dimensions[index].y = numRows;
+		if (face->glyph->bitmap.width > width)
+		{
+			Jwl::Error("Glyph (%c) is too wide", c);
+			return false;
+		}
 
-		positions[index].x = face->glyph->bitmap_left;
-		positions[index].y = face->glyph->bitmap_top - numRows;
+		if (face->glyph->bitmap.rows > (int)height)
+		{
+			Jwl::Error("Glyph (%c) is too tall", c);
+			return false;
+		}
 
-		advances[index].x = face->glyph->advance.x / 64;
-		advances[index].y = face->glyph->advance.y / 64;
+		masks[i] = true;
+	}
+
+	unsigned char* writer = bitmapBuffer;
+	writer += (i / 10u) * textureWidth * characterDimension;
+	writer += (i % 10u) * characterDimension;
+
+	// Save the bitmap as a flipped image.
+	for (int y = face->glyph->bitmap.rows - 1; y-- > 0;)
+	{
+		for (int x = 0; x < face->glyph->bitmap.width; ++x)
+		{
+			unsigned char pixel = face->glyph->bitmap.buffer[face->glyph->bitmap.width * y + x];
+
+			*(writer + x) = pixel;
+		}
+
+		// Step to the next row.
+		writer += textureWidth;
 	}
 
 	// Save file.
@@ -218,25 +239,26 @@ bool FontEncoder::Convert(std::string_view source, std::string_view destination,
 	}
 
 	// Write header.
-	const size_t bitmapSize = bitmapBuffer.size();
-	fwrite(&bitmapSize, sizeof(bitmapSize), 1, fontFile);
-	fwrite(&width,      sizeof(width),      1, fontFile);
-	fwrite(&height,     sizeof(height),     1, fontFile);
-	fwrite(&filter,     sizeof(filter),     1, fontFile);
+	fwrite(&textureWidth,  sizeof(textureWidth),  1, fontFile);
+	fwrite(&textureHeight, sizeof(textureHeight), 1, fontFile);
+	fwrite(&width,         sizeof(width),         1, fontFile);
+	fwrite(&height,        sizeof(height),        1, fontFile);
+	fwrite(&filter,        sizeof(filter),        1, fontFile);
 
 	// Write Data.
+	const size_t bitmapSize = bitmapBuffer.size();
 	fwrite(bitmapBuffer.data(), sizeof(std::byte),  bitmapSize, fontFile);
 	fwrite(dimensions.data(),   sizeof(dimensions), 1,          fontFile);
 	fwrite(positions.data(),    sizeof(positions),  1,          fontFile);
 	fwrite(advances.data(),     sizeof(advances),   1,          fontFile);
 	fwrite(masks.data(),        sizeof(masks),      1,          fontFile);
 
-	auto result = fclose(fontFile);
+	int result = fclose(fontFile);
 
 	// Report results.
 	unsigned count = 0;
 	std::string missingChars;
-	for (unsigned i = 0; i < 94; ++i)
+	for (unsigned i = 0; i < NUM_CHARACTERS; ++i)
 	{
 		if (masks[i])
 		{
@@ -255,14 +277,14 @@ bool FontEncoder::Convert(std::string_view source, std::string_view destination,
 	}
 	else if (count == 0)
 	{
-		gem::Error("Failed to generate Font Binary\n0 out of 94 characters loaded.");
+		gem::Error("Failed to generate Font Binary\n0 characters loaded.");
 		return false;
 	}
 	else
 	{
-		if (count != 94)
+		if (count != NUM_CHARACTERS)
 		{
-			gem::Warning("%d characters were not created.\n%s", 94 - count, missingChars.c_str());
+			gem::Warning("%d characters were not created.\n%s", NUM_CHARACTERS - count, missingChars.c_str());
 		}
 
 		return true;

@@ -2,6 +2,7 @@
 #pragma once
 #include "gemcutter/Resource/Resource.h"
 #include "gemcutter/Resource/Shareable.h"
+#include "gemcutter/Resource/Texture.h"
 
 #include <array>
 #include <span>
@@ -35,7 +36,7 @@ namespace gem
 		// Returns the width required to advance forward by a space.
 		int GetSpaceWidth() const;
 
-		std::span<const unsigned> GetTextures() const;
+		Texture::Ptr GetTexture() const;
 		std::span<const CharData> GetDimensions() const;
 		std::span<const CharData> GetPositions() const;
 		std::span<const CharData> GetAdvances() const;
@@ -47,7 +48,7 @@ namespace gem
 		static unsigned GetVBO();
 
 	private:
-		std::array<unsigned, 94> textures;
+		Texture::Ptr texture;
 		// Each character's dimensions.
 		std::array<CharData, 94> dimensions;
 		// The position of each character.
@@ -62,5 +63,8 @@ namespace gem
 
 		static unsigned VBO;
 		static unsigned VAO;
+
+	public:
+		PRIVATE_MEMBER(Font, texture);
 	};
 }
