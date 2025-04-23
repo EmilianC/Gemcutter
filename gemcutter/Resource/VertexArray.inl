@@ -115,6 +115,23 @@ namespace gem
 	{
 		auto& stream = GetStream(bindingUnit);
 
+#if GEM_DEBUG
+		if constexpr (std::is_same_v<Type, float>)          { ASSERT(stream.format == VertexFormat::Float,  "Stream requested with mismatched type."); }
+		if constexpr (std::is_same_v<Type, double>)         { ASSERT(stream.format == VertexFormat::Double, "Stream requested with mismatched type."); }
+		if constexpr (std::is_same_v<Type, vec2>)           { ASSERT(stream.format == VertexFormat::Vec2,   "Stream requested with mismatched type."); }
+		if constexpr (std::is_same_v<Type, vec3>)           { ASSERT(stream.format == VertexFormat::Vec3,   "Stream requested with mismatched type."); }
+		if constexpr (std::is_same_v<Type, vec4>)           { ASSERT(stream.format == VertexFormat::Vec4,   "Stream requested with mismatched type."); }
+		if constexpr (std::is_same_v<Type, mat2>)           { ASSERT(stream.format == VertexFormat::Mat2,   "Stream requested with mismatched type."); }
+		if constexpr (std::is_same_v<Type, mat3>)           { ASSERT(stream.format == VertexFormat::Mat3,   "Stream requested with mismatched type."); }
+		if constexpr (std::is_same_v<Type, mat4>)           { ASSERT(stream.format == VertexFormat::Mat4,   "Stream requested with mismatched type."); }
+		if constexpr (std::is_same_v<Type, int>)            { ASSERT(stream.format == VertexFormat::Int,    "Stream requested with mismatched type."); }
+		if constexpr (std::is_same_v<Type, unsigned>)       { ASSERT(stream.format == VertexFormat::uInt,   "Stream requested with mismatched type."); }
+		if constexpr (std::is_same_v<Type, short>)          { ASSERT(stream.format == VertexFormat::Short,  "Stream requested with mismatched type."); }
+		if constexpr (std::is_same_v<Type, unsigned short>) { ASSERT(stream.format == VertexFormat::uShort, "Stream requested with mismatched type."); }
+		if constexpr (std::is_same_v<Type, std::byte>)      { ASSERT(stream.format == VertexFormat::Byte,   "Stream requested with mismatched type."); }
+		if constexpr (std::is_same_v<Type, unsigned char>)  { ASSERT(stream.format == VertexFormat::uByte,  "Stream requested with mismatched type."); }
+#endif
+
 		return { *stream.buffer, stream, access };
 	}
 }
