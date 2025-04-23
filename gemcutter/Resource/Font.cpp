@@ -39,7 +39,7 @@ namespace gem
 		fread(&spaceWidth,    sizeof(spaceWidth),    1, fontFile);
 		fread(&stringHeight,  sizeof(stringHeight),  1, fontFile);
 		fread(&filter,        sizeof(filter),        1, fontFile);
-		const unsigned textureSize = textureWidth * textureHeight;
+		const size_t textureSize = textureWidth * textureHeight;
 
 		// Load Data.
 		bitmap = static_cast<std::byte*>(malloc(sizeof(std::byte) * textureSize));
@@ -50,7 +50,7 @@ namespace gem
 
 		// Upload data to OpenGL.
 		texture = Texture::MakeNew();
-		texture->Create(textureWidth, textureHeight, TextureFormat::R_8, filter, TextureWrap::Clamp);
+		texture->Create(static_cast<unsigned>(textureWidth), static_cast<unsigned>(textureHeight), TextureFormat::R_8, filter, TextureWrap::Clamp);
 
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 		texture->SetData(bitmap, TextureFormat::R_8);

@@ -11,6 +11,7 @@
 #include "gemcutter/Rendering/Primitives.h"
 #include "gemcutter/Rendering/Rendering.h"
 #include "gemcutter/Rendering/RenderTarget.h"
+#include "gemcutter/Rendering/Text.h"
 #include "gemcutter/Resource/Font.h"
 #include "gemcutter/Resource/Model.h"
 #include "gemcutter/Resource/Shader.h"
@@ -839,6 +840,7 @@ namespace gem
 		EventQueue.Dispatch();
 
 		// Update engine components.
+		Text::UpdateAll();
 		Widget::UpdateAll();
 
 		for (auto& button : All<Button>())

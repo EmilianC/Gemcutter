@@ -12,8 +12,8 @@ namespace gem
 		material->blendMode = BlendFunc::Linear;
 
 		text = &owner.Require<Text>();
-		text->centeredX = true;
-		text->centeredY = true;
+		text->SetCenteredX(true);
+		text->SetCenteredY(true);
 		text->SetMaterial(std::move(material));
 	}
 
@@ -28,8 +28,8 @@ namespace gem
 		: Widget(_owner)
 	{
 		text = &owner.Require<Text>();
-		text->centeredX = true;
-		text->centeredY = true;
+		text->SetCenteredX(true);
+		text->SetCenteredY(true);
 
 		SetFont(std::move(font));
 		SetString(string);
@@ -48,24 +48,24 @@ namespace gem
 
 	void Label::SetString(std::string_view string)
 	{
-		text->string = string;
+		text->SetString(std::string(string));
 
 		textWidth = text->GetLineWidth(1);
 	}
 
 	const std::string& Label::GetString() const
 	{
-		return text->string;
+		return text->GetString();
 	}
 
 	void Label::SetFont(Font::Ptr font)
 	{
-		text->font = std::move(font);
+		text->SetFont(std::move(font));
 	}
 
 	Font::Ptr Label::GetFont() const
 	{
-		return text->font;
+		return text->GetFont();
 	}
 
 	void Label::SetMaterial(Material::Ptr material)

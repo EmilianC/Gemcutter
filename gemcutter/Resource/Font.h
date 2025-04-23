@@ -55,8 +55,8 @@ namespace gem
 		int GetStringHeight() const;
 
 		Texture* GetTexture() const;
-
 		std::span<const Char> GetCharacters() const;
+
 	private:
 		Texture::Ptr texture;
 
