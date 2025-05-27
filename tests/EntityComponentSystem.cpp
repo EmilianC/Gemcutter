@@ -67,7 +67,7 @@ REFLECT_COMPONENT(Base, gem::ComponentBase)
 	MEMBERS {
 		REF_MEMBER(onEnableCalled)
 		REF_MEMBER(onDisableCalled)
-		REF_MEMBER_GET_SET(reflectionTarget, &Base::GetReflectionTarget, &Base::SetReflectionTarget)
+		REF_MEMBER_EX(reflectionTarget, &Base::GetReflectionTarget, &Base::SetReflectionTarget)
 	}
 REF_END;
 

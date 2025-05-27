@@ -2,6 +2,7 @@
 #include "Timer.h"
 #include "gemcutter/Application/Logging.h"
 
+#include <loupe/loupe.h>
 #include <Windows.h>
 
 namespace

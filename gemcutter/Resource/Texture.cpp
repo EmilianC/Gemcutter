@@ -533,9 +533,9 @@ REFLECT(gem::Texture) BASES { REF_BASE(gem::ResourceBase) }
 		REF_PRIVATE_MEMBER(width,      readonly())
 		REF_PRIVATE_MEMBER(height,     readonly())
 		REF_PRIVATE_MEMBER(format,     readonly())
-		REF_PRIVATE_MEMBER_GET_SET(filter, nullptr, &gem::Texture::SetFilter)
-		REF_PRIVATE_MEMBER_GET_SET(wraps,  nullptr, &gem::Texture::SetWrap)
-		REF_PRIVATE_MEMBER_GET_SET(anisotropicLevel, nullptr, &gem::Texture::SetAnisotropicLevel, range(1.0f, 16.0f))
+		REF_PRIVATE_MEMBER_EX(filter,           nullptr, &gem::Texture::SetFilter)
+		REF_PRIVATE_MEMBER_EX(wraps,            nullptr, &gem::Texture::SetWrap)
+		REF_PRIVATE_MEMBER_EX(anisotropicLevel, nullptr, &gem::Texture::SetAnisotropicLevel, range(1.0f, 16.0f))
 	}
 REF_END;
 

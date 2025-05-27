@@ -182,13 +182,13 @@ REF_END;
 
 REFLECT(gem::Sound) BASES { REF_BASE(gem::ResourceBase) }
 	MEMBERS {
-		REF_PRIVATE_MEMBER_GET_SET(is3D,   nullptr, &gem::Sound::SetIs3D)
-		REF_PRIVATE_MEMBER_GET_SET(loop,   nullptr, &gem::Sound::SetLooping)
-		REF_PRIVATE_MEMBER_GET_SET(unique, nullptr, &gem::Sound::SetIsUnique)
-		REF_PRIVATE_MEMBER(attenuation,    readonly())
-		REF_PRIVATE_MEMBER(rolloff,        readonly(), min(0.0f))
-		REF_PRIVATE_MEMBER_GET_SET(volume, nullptr, &gem::Sound::SetVolume, min(0.0f))
-		REF_PRIVATE_MEMBER(minDistance,    readonly(), display_name("Minimum distance"), min(0.0f))
-		REF_PRIVATE_MEMBER(maxDistance,    readonly(), display_name("Maximum distance"), min(0.0f))
+		REF_PRIVATE_MEMBER_EX(is3D,     nullptr, &gem::Sound::SetIs3D)
+		REF_PRIVATE_MEMBER_EX(loop,     nullptr, &gem::Sound::SetLooping)
+		REF_PRIVATE_MEMBER_EX(unique,   nullptr, &gem::Sound::SetIsUnique)
+		REF_PRIVATE_MEMBER(attenuation, readonly())
+		REF_PRIVATE_MEMBER(rolloff,     readonly(), min(0.0f))
+		REF_PRIVATE_MEMBER_EX(volume,   nullptr, &gem::Sound::SetVolume, min(0.0f))
+		REF_PRIVATE_MEMBER(minDistance, readonly(), display_name("Minimum distance"), min(0.0f))
+		REF_PRIVATE_MEMBER(maxDistance, readonly(), display_name("Maximum distance"), min(0.0f))
 }
 REF_END;

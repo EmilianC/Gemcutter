@@ -2,7 +2,7 @@
 #pragma once
 
 #include <cstdint>
-#include <loupe/loupe.h>
+#include <loupe/private_members.h>
 
 namespace gem
 {

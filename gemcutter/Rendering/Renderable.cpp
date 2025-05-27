@@ -75,6 +75,6 @@ namespace gem
 
 REFLECT_COMPONENT(gem::Renderable, gem::ComponentBase)
 	MEMBERS {
-		REF_PRIVATE_MEMBER_GET_SET(material, nullptr, &gem::Renderable::SetMaterial)
+		REF_PRIVATE_MEMBER_EX(material, nullptr, &gem::Renderable::SetMaterial)
 	}
 REF_END;

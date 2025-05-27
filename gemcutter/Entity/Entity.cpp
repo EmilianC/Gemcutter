@@ -476,16 +476,16 @@ namespace gem
 		Index(comp, *comp.typeId);
 
 		auto implementation = [this](this auto self, ComponentBase& comp, const loupe::structure& structure) -> bool {
-			for (const loupe::type* type : structure.bases)
+			for (const loupe::base& base : structure.bases)
 			{
-				if (type == BaseComponentTypeId)
+				if (base.type == BaseComponentTypeId)
 				{
 					return true;
 				}
 
-				if (self(comp, std::get<loupe::structure>(type->data)))
+				if (self(comp, std::get<loupe::structure>(base.type->data)))
 				{
-					Index(comp, *type);
+					Index(comp, *base.type);
 					return true;
 				}
 			}
@@ -501,16 +501,16 @@ namespace gem
 		Unindex(comp, *comp.typeId);
 
 		auto implementation = [this](this auto self, const ComponentBase& comp, const loupe::structure& structure) -> bool {
-			for (const loupe::type* type : structure.bases)
+			for (const loupe::base& base : structure.bases)
 			{
-				if (type == BaseComponentTypeId)
+				if (base.type == BaseComponentTypeId)
 				{
 					return true;
 				}
 
-				if (self(comp, std::get<loupe::structure>(type->data)))
+				if (self(comp, std::get<loupe::structure>(base.type->data)))
 				{
-					Unindex(comp, *type);
+					Unindex(comp, *base.type);
 					return true;
 				}
 			}
