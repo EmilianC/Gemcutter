@@ -4,6 +4,7 @@
 #include "gemcutter/Math/Math.h"
 #include "gemcutter/Math/Vector.h"
 
+#include <cstdlib>
 #include <loupe/loupe.h>
 #include <random>
 
@@ -17,12 +18,15 @@ namespace gem
 	void SeedRandomNumberGenerator()
 	{
 		std::random_device rd;
+
 		engine.seed(rd());
+		srand(static_cast<unsigned>(time(nullptr)));
 	}
 
 	void SeedRandomNumberGenerator(unsigned seed)
 	{
 		engine.seed(seed);
+		srand(seed);
 	}
 
 	float RandomRange(float min, float max)
