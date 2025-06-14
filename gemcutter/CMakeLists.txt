@@ -194,6 +194,8 @@ if (ENABLE_PCH)
 		PRIVATE
 			<algorithm>
 			<array>
+			<bit>
+			<concepts>
 			<cstddef>
 			<cstdint>
 			<cstring>

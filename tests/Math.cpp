@@ -43,11 +43,20 @@ TEST_CASE("Math")
 		CHECK(Equals(PercentInRange(3.0f, 0.0f, 1.0f), 3.0f));
 		CHECK(Equals(PercentInRange(0.0f, 1.0f, 1.0f), 0.0f));
 
-		CHECK(NextPowerOfTwo(0) == 1);
-		CHECK(NextPowerOfTwo(1) == 1);
-		CHECK(NextPowerOfTwo(2) == 2);
-		CHECK(NextPowerOfTwo(10) == 16);
-		CHECK(NextPowerOfTwo(1025) == 2048);
-		CHECK(NextPowerOfTwo(2048) == 2048);
+		CHECK(PowerOfTwoCeil(0u) == 1u);
+		CHECK(PowerOfTwoCeil(1u) == 1u);
+		CHECK(PowerOfTwoCeil(2u) == 2u);
+		CHECK(PowerOfTwoCeil(3u) == 4u);
+		CHECK(PowerOfTwoCeil(10u) == 16u);
+		CHECK(PowerOfTwoCeil(1025u) == 2048u);
+		CHECK(PowerOfTwoCeil(2048u) == 2048u);
+
+		CHECK(PowerOfTwoFloor(0u) == 0u);
+		CHECK(PowerOfTwoFloor(1u) == 1u);
+		CHECK(PowerOfTwoFloor(2u) == 2u);
+		CHECK(PowerOfTwoFloor(3u) == 2u);
+		CHECK(PowerOfTwoFloor(10u) == 8u);
+		CHECK(PowerOfTwoFloor(1025u) == 1024u);
+		CHECK(PowerOfTwoFloor(2048u) == 2048u);
 	}
 }

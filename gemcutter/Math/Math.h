@@ -1,6 +1,8 @@
 // Copyright (c) 2017 Emilian Cioca
 #pragma once
+#include <bit>
 #include <cmath>
+#include <concepts>
 
 namespace gem
 {
@@ -141,23 +143,18 @@ namespace gem
 			data1;
 	}
 
-	// Returns the next highest power of 2, or the same value if already a power of 2.
-	// Returns 1 if the value is 0.
-	[[nodiscard]]
-	constexpr unsigned NextPowerOfTwo(unsigned value)
+	// Returns the next power of 2 larger than the value (or the same value if already a power of 2).
+	template<std::unsigned_integral T> [[nodiscard]]
+	constexpr T PowerOfTwoCeil(T value)
 	{
-		if (value == 0)
-			return 1;
+		return std::bit_ceil(value);
+	}
 
-		value--;
-		value |= value >> 1;
-		value |= value >> 2;
-		value |= value >> 4;
-		value |= value >> 8;
-		value |= value >> 16;
-		value++;
-
-		return value;
+	// Returns the largest power of 2 smaller than the value (or the same value if already a power of 2).
+	template<std::unsigned_integral T> [[nodiscard]]
+	constexpr T PowerOfTwoFloor(T value)
+	{
+		return std::bit_floor(value);
 	}
 
 	// Returns the closest multiple of step.
