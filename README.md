@@ -63,7 +63,7 @@ See the [Trello board](https://trello.com/b/Oc2GFT2A/gemcutter) to follow develo
 
 # Dependencies
 All Dependencies used under their respective licenses. Copyright is held by their respective owners.
-* [GLEW 2.2.0](https://github.com/Perlmint/glew-cmake)
+* [GLEW 2.2.0+](https://github.com/Perlmint/glew-cmake)
 * [FreeType 2.13.3](https://github.com/EmilianC/freetype)
 * [Catch 2.13.8](https://github.com/catchorg/Catch2/tree/v2.x)
 * [SoLoud](https://github.com/EmilianC/soloud)
