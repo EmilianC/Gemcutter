@@ -63,10 +63,11 @@ namespace gem
 		const auto& GetChildren() const { return children; }
 		auto& GetChildren() { return children; }
 
-		// Iterates over all direct children, and optionally all decedents.
+		// Iterates over all direct children. A child entity will also be
+		// recursed into whenever the provided functor returns true.
 		// Children should not be added or removed in during this function.
 		template<class Self, class Functor>
-		void ForEachChild(this Self& self, bool recursive, Functor&& Func);
+		void ForEachChild(this Self& self, Functor&& Func);
 
 		// Gets the depth of this Entity in the hierarchy. The root is always depth 0.
 		// Direct children of the root are at depth 1, and so on.
