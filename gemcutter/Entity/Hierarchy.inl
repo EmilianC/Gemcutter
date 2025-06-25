@@ -2,15 +2,13 @@
 namespace gem
 {
 	template<class Self, class Functor>
-	void Hierarchy::ForEachChild(this Self& self, bool recursive, Functor&& Func)
+	void Hierarchy::ForEachChild(this Self& self, Functor&& Func)
 	{
 		for (auto& entity : self.children)
 		{
-			Func(*entity);
-
-			if (recursive)
+			if (Func(*entity))
 			{
-				entity->Get<Hierarchy>().ForEachChild(true, Func);
+				entity->Get<Hierarchy>().ForEachChild(Func);
 			}
 		}
 	};

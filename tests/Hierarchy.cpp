@@ -165,19 +165,19 @@ TEST_CASE("Hierarchy")
 	{
 		unsigned count = 0;
 
-		root->Get<Hierarchy>().ForEachChild(false, [&](Entity&) { ++count; });
+		root->Get<Hierarchy>().ForEachChild([&](Entity&) { ++count; return false; });
 		CHECK(count == 3);
 
 		count = 0;
-		root->Get<Hierarchy>().ForEachChild(true, [&](Entity&) { ++count; });
+		root->Get<Hierarchy>().ForEachChild([&](Entity&) { ++count; return true; });
 		CHECK(count == 4);
 
 		count = 0;
-		e1->Get<Hierarchy>().ForEachChild(false, [&](Entity&) { ++count; });
+		e1->Get<Hierarchy>().ForEachChild([&](Entity&) { ++count; return false; });
 		CHECK(count == 0);
 
 		count = 0;
-		e2->Get<Hierarchy>().ForEachChild(true, [&](Entity&) { ++count; });
+		e2->Get<Hierarchy>().ForEachChild([&](Entity&) { ++count; return true; });
 		CHECK(count == 0);
 	}
 }
