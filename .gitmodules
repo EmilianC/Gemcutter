@@ -23,3 +23,6 @@
 [submodule "external/soil2"]
 	path = external/soil2
 	url = https://github.com/SpartanJ/SOIL2.git
+[submodule "external/catch2"]
+	path = external/catch2
+	url = https://github.com/catchorg/Catch2.git
