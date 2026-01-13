@@ -10,11 +10,6 @@ namespace gem::meta
 	// Normally the ','s in a template parameter list would interfere with the macro expansion.
 	#define TEMPLATE_TYPE(...) decltype(__VA_ARGS__())
 
-	// Can be used to make a dependent false type, allowing you to write static_asserts which will
-	// always fail for unexpected branches/flow in constexpr contexts.
-	template<typename T>
-	struct always_false : public std::false_type {};
-
 	// Used to help validate parameter packs.
 	// Evaluates to true if all of the expressions are true, or if the range is empty.
 	template<bool... b>    struct all_of;
