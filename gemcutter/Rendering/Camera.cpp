@@ -506,17 +506,17 @@ namespace gem
 
 REFLECT_COMPONENT(gem::Camera, gem::ComponentBase)
 	MEMBERS {
-		REF_PRIVATE_MEMBER(isPerspective, readonly())
-		REF_PRIVATE_MEMBER_EX(fovyDegrees, nullptr, &gem::Camera::SetFovy,
+		REF_MEMBER(isPerspective, readonly())
+		REF_MEMBER_EX(fovyDegrees, nullptr, &gem::Camera::SetFovy,
 			display_name("Field of View"),
 			description("The vertical field of view, in degrees."),
 			range(0.0f, 360.0f))
-		REF_PRIVATE_MEMBER_EX(aspectRatio, nullptr, &gem::Camera::SetAspectRatio)
-		REF_PRIVATE_MEMBER_EX(zNear,       nullptr, &gem::Camera::SetNearPlane, display_name("Near plane"))
-		REF_PRIVATE_MEMBER_EX(zFar,        nullptr, &gem::Camera::SetFarPlane,  display_name("Far plane"))
-		REF_PRIVATE_MEMBER_EX(left,        nullptr, &gem::Camera::SetLeftBound)
-		REF_PRIVATE_MEMBER_EX(right,       nullptr, &gem::Camera::SetRightBound)
-		REF_PRIVATE_MEMBER_EX(top,         nullptr, &gem::Camera::SetTopBound)
-		REF_PRIVATE_MEMBER_EX(bottom,      nullptr, &gem::Camera::SetBottomBound)
+		REF_MEMBER_EX(aspectRatio, nullptr, &gem::Camera::SetAspectRatio)
+		REF_MEMBER_EX(zNear,       nullptr, &gem::Camera::SetNearPlane, display_name("Near plane"))
+		REF_MEMBER_EX(zFar,        nullptr, &gem::Camera::SetFarPlane,  display_name("Far plane"))
+		REF_MEMBER_EX(left,        nullptr, &gem::Camera::SetLeftBound)
+		REF_MEMBER_EX(right,       nullptr, &gem::Camera::SetRightBound)
+		REF_MEMBER_EX(top,         nullptr, &gem::Camera::SetTopBound)
+		REF_MEMBER_EX(bottom,      nullptr, &gem::Camera::SetBottomBound)
 	}
 REF_END;

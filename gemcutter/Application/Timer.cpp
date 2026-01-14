@@ -109,6 +109,6 @@ namespace gem
 
 REFLECT(gem::Timer)
 	MEMBERS {
-		REF_PRIVATE_MEMBER(startTime)
+		REF_MEMBER(startTime)
 	}
 REF_END;

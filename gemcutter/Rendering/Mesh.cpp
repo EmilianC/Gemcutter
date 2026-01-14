@@ -49,6 +49,6 @@ namespace gem
 
 REFLECT_COMPONENT(gem::Mesh, gem::Renderable)
 	MEMBERS {
-		REF_PRIVATE_MEMBER_EX(model, nullptr, &gem::Mesh::SetModel)
+		REF_MEMBER_EX(model, nullptr, &gem::Mesh::SetModel)
 	}
 REF_END;

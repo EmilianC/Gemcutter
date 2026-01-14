@@ -529,13 +529,13 @@ namespace gem
 
 REFLECT(gem::Texture) BASES { REF_BASE(gem::ResourceBase) }
 	MEMBERS {
-		REF_PRIVATE_MEMBER(numSamples, readonly())
-		REF_PRIVATE_MEMBER(width,      readonly())
-		REF_PRIVATE_MEMBER(height,     readonly())
-		REF_PRIVATE_MEMBER(format,     readonly())
-		REF_PRIVATE_MEMBER_EX(filter,           nullptr, &gem::Texture::SetFilter)
-		REF_PRIVATE_MEMBER_EX(wraps,            nullptr, &gem::Texture::SetWrap)
-		REF_PRIVATE_MEMBER_EX(anisotropicLevel, nullptr, &gem::Texture::SetAnisotropicLevel, range(1.0f, 16.0f))
+		REF_MEMBER(numSamples, readonly())
+		REF_MEMBER(width,      readonly())
+		REF_MEMBER(height,     readonly())
+		REF_MEMBER(format,     readonly())
+		REF_MEMBER_EX(filter,           nullptr, &gem::Texture::SetFilter)
+		REF_MEMBER_EX(wraps,            nullptr, &gem::Texture::SetWrap)
+		REF_MEMBER_EX(anisotropicLevel, nullptr, &gem::Texture::SetAnisotropicLevel, range(1.0f, 16.0f))
 	}
 REF_END;
 
@@ -548,6 +548,6 @@ REF_END;
 
 REFLECT(gem::TextureList)
 	MEMBERS {
-		REF_PRIVATE_MEMBER(textureSlots)
+		REF_MEMBER(textureSlots)
 	}
 REF_END;
