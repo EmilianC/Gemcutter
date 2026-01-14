@@ -58,7 +58,6 @@ if (ENABLE_IMGUI_SUPPORT OR ENABLE_IMGUI_DEV_SUPPORT)
 	)
 	target_include_directories(imgui PUBLIC imgui/)
 	target_compile_definitions(imgui PUBLIC IMGUI_ENABLED)
-	sf_target_compile_disable_exceptions(imgui)
 endif()
 
 ## Loupe ##
