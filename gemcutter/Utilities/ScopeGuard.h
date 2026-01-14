@@ -79,7 +79,13 @@ namespace gem
 
 	private:
 		bool active = true;
-		[[no_unique_address]] Functor functor;
+
+#ifdef _MSC_VER
+		[[msvc::no_unique_address]]
+#else
+		[[no_unique_address]]
+#endif
+		Functor functor;
 	};
 }
 
