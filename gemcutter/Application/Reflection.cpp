@@ -1,5 +1,7 @@
 // Copyright (c) 2022 Emilian Cioca
 #include "Reflection.h"
+#include "gemcutter/Entity/Entity.h"
+#include "gemcutter/Resource/Resource.h"
 
 namespace
 {
@@ -24,9 +26,9 @@ namespace gem
 		reflection_tables = loupe::reflect(1);
 		loupe::clear_reflect_tasks();
 
-		EntityTypeId        = reflection_tables.find<class Entity>();
-		BaseComponentTypeId = reflection_tables.find<class ComponentBase>();
-		BaseResourceTypeId  = reflection_tables.find<class ResourceBase>();
+		EntityTypeId        = reflection_tables.find<Entity>();
+		BaseComponentTypeId = reflection_tables.find<ComponentBase>();
+		BaseResourceTypeId  = reflection_tables.find<ResourceBase>();
 
 		// Cache all component types. They will already be sorted alphabetically by loupe.
 		componentTypes.reserve(64);
