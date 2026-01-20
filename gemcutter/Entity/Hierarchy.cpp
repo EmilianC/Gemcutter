@@ -249,6 +249,8 @@ namespace gem
 	}
 }
 
+REFLECT_TAG(gem::HierarchyRoot);
+
 REFLECT_COMPONENT(gem::Hierarchy, gem::ComponentBase)
 	MEMBERS {
 		REF_MEMBER(propagateTransform,

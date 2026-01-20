@@ -141,6 +141,8 @@ namespace gem
 
 		if constexpr (std::is_base_of_v<TagBase, T>)
 		{
+			ASSERT(reflection_tables.find<T>(), "The Tag type must be reflected.");
+
 			for (detail::ComponentId tag : tags)
 			{
 				if (tag == T::staticComponentId)
@@ -175,6 +177,7 @@ namespace gem
 	void Entity::RemoveTag()
 	{
 		static_assert(std::is_base_of_v<TagBase, T>, "Template argument must inherit from Tag.");
+		ASSERT(reflection_tables.find<T>(), "The Tag type must be reflected.");
 
 		RemoveTag(T::staticComponentId);
 	}
@@ -183,6 +186,7 @@ namespace gem
 	void Entity::GlobalRemoveTag()
 	{
 		static_assert(std::is_base_of_v<TagBase, T>, "Template argument must inherit from Tag.");
+		ASSERT(reflection_tables.find<T>(), "The Tag type must be reflected.");
 
 		std::vector<Entity*>& taggedEntities = detail::tagIndex[T::staticComponentId];
 		for (Entity* ent : taggedEntities)

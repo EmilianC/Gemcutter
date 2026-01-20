@@ -13,6 +13,7 @@ namespace gem
 
 	// Common typeIds cached for use in quick comparisons. Will never be null.
 	extern const loupe::type* EntityTypeId;
+	extern const loupe::type* BaseTagTypeId;
 	extern const loupe::type* BaseComponentTypeId;
 	extern const loupe::type* BaseResourceTypeId;
 
@@ -41,11 +42,15 @@ namespace gem
 	// Returns all component type descriptors (except ComponentBase).
 	std::span<const loupe::type*> GetAllComponentTypes();
 
+	// Returns all tag type descriptors (except TagBase).
+	std::span<const loupe::type*> GetAllTagTypes();
+
 	[[nodiscard]] std::string_view GetDisplayName(const loupe::member&);
 	[[nodiscard]] std::string_view GetDisplayName(const loupe::enum_entry&);
 }
 
 #define REFLECT_RESOURCE(resource)         REFLECT(resource)  BASES { REF_BASE(gem::ResourceBase) }
 #define REFLECT_COMPONENT(component, base) REFLECT(component) BASES { REF_BASE(base) } USER_CONSTRUCTOR(gem::Entity&)
+#define REFLECT_TAG(tag)                   REFLECT(tag)       BASES { REF_BASE(gem::TagBase) } REF_END
 
 #include "Reflection.inl"

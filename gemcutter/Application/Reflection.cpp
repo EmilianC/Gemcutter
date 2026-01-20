@@ -6,6 +6,7 @@
 namespace
 {
 	std::vector<const loupe::type*> componentTypes;
+	std::vector<const loupe::type*> tagTypes;
 }
 
 namespace gem
@@ -13,6 +14,7 @@ namespace gem
 	loupe::reflection_blob reflection_tables;
 
 	const loupe::type* EntityTypeId = nullptr;
+	const loupe::type* BaseTagTypeId = nullptr;
 	const loupe::type* BaseComponentTypeId = nullptr;
 	const loupe::type* BaseResourceTypeId = nullptr;
 
@@ -27,23 +29,33 @@ namespace gem
 		loupe::clear_reflect_tasks();
 
 		EntityTypeId        = reflection_tables.find<Entity>();
+		BaseTagTypeId       = reflection_tables.find<TagBase>();
 		BaseComponentTypeId = reflection_tables.find<ComponentBase>();
 		BaseResourceTypeId  = reflection_tables.find<ResourceBase>();
 
-		// Cache all component types. They will already be sorted alphabetically by loupe.
+		// Cache all component & tag types. They will already be sorted alphabetically by loupe.
 		componentTypes.reserve(64);
+		tagTypes.reserve(16);
 		for (const loupe::type& type : reflection_tables.get_types())
 		{
-			// The base component itself is not required.
-			if (&type == BaseComponentTypeId) [[unlikely]]
-				continue;
-
-			if (type.is_a(*BaseComponentTypeId))
+			if (type.is_a(*BaseTagTypeId))
 			{
+				// The literal base type itself is not required.
+				if (&type == BaseTagTypeId) [[unlikely]]
+					continue;
+			
+				tagTypes.push_back(&type);
+			}
+			else if (type.is_a(*BaseComponentTypeId))
+			{
+				if (&type == BaseComponentTypeId) [[unlikely]]
+					continue;
+
 				componentTypes.push_back(&type);
 			}
 		}
 		componentTypes.shrink_to_fit();
+		tagTypes.shrink_to_fit();
 	}
 
 	std::string_view GetDisplayName(const loupe::member& member)
@@ -69,5 +81,10 @@ namespace gem
 	std::span<const loupe::type*> GetAllComponentTypes()
 	{
 		return componentTypes;
+	}
+
+	std::span<const loupe::type*> GetAllTagTypes()
+	{
+		return tagTypes;
 	}
 }

@@ -61,6 +61,10 @@ class TagA : public Tag<TagA> {};
 class TagB : public Tag<TagB> {};
 class TagC : public Tag<TagC> {};
 
+REFLECT_TAG(TagA);
+REFLECT_TAG(TagB);
+REFLECT_TAG(TagC);
+
 REFLECT_COMPONENT(Comp1, gem::ComponentBase) REF_END;
 REFLECT_COMPONENT(Comp2, gem::ComponentBase) REF_END;
 REFLECT_COMPONENT(Base, gem::ComponentBase)
